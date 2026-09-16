@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-09-16 — preset v19 "Street hard" added
+
+- `recipes/wolf4x_v19_street_hard.json` (+ annotations): 45 tables + 3 byte blocks, 1252 bytes vs stock. Target slip time at high torque down to the Alpina B3 level; on-coming/off-going clutch pressures taken cell by cell from Alpina where the axes match (BCAE/BD14, B73E/B7A4/BA78, BE46/BEAC/BD7A) and interpolated onto the stock axes where Alpina's are wider (B80A/B974); sport programs hold a gear longer at part throttle and drop down earlier; TCC branch 1 (S/M) reaches stages 3–4 from 30–50 % pedal. D and manual untouched. Axes untouched everywhere; `0x8EE0–0x8F0E` = stock. Verified: `apply_recipe.py` on stock reproduces `5ee8d309…` byte for byte.
+- В части ячеек v19 мягче v18: v18 применял ×1.15 поверх стока и в ряде мест превышал заводскую Alpina; v19 возвращает эти ячейки на данные Alpina. Рекомендуемый пресет — v19.
+
+
 ## 2026-09-16 — preset v17 → v18 (fix)
 
 **EN.** The v17 preset raised `0x8EEA` from 7000 to 7300 as a "turbine over-speed limit". Disassembly of the write sites (0x20D78: `ADC × 25250 / 1024` → `0xFFFF906C/906E`) proves the function 0x265F4 is a supply-voltage monitor (7.0 / 9.0 V thresholds, 1.5 V channel spread), so the change had moved a 7.0 V threshold to 7.3 V. v18 = v17 with `0x8EEA` back at stock; the recipe `wolf4x_v18_sport_daily.json` replaces the v17 recipe (SHA-256 of the result `0bfd1d0d10037e020bcbfb16fdf5941bf17d0ec085dd5dd0cdec22c65419812e`). Docs 05, 08, 09, 10 and the XDF constant titles updated.

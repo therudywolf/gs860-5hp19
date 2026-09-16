@@ -13,6 +13,8 @@ A recipe is a JSON diff between a stock GS8.60.0 calibration and a tune (schema 
 |---|---|
 | `wolf4x_v18_sport_daily.json` | full diff of the WOLF4X v18 "Sport daily (8HP-like)" preset against the stock calibration it was built from. 43 tables + 3 byte blocks, 1389 bytes |
 | `wolf4x_v18_sport_daily.annotations.json` | groups, names and comments used by `make_recipe.py` to build the recipe above (kept so the recipe can be regenerated) |
+| `wolf4x_v19_street_hard.json` | WOLF4X v19 "Street hard" — v18 taken to the factory Alpina B3 level: shorter target slip time at high torque, on-coming/off-going pressures copied cell by cell from Alpina where the axes match, sport holds a gear longer at part throttle, TCC stages 3–4 from 30–50 % pedal in S/M. 45 tables + 3 byte blocks, 1252 bytes. Result full `5ee8d309…`, partial `bcfd8122…` |
+| `wolf4x_v19_street_hard.annotations.json` | annotations for the recipe above |
 
 ### Base
 
@@ -55,6 +57,8 @@ python3 tools/make_recipe.py stock.bin tuned.bin -o recipes/my_recipe.json -a my
 |---|---|
 | `wolf4x_v18_sport_daily.json` | полный diff пресета WOLF4X v18 «Sport daily (8HP-like)» относительно стоковой калибровки, на которой он собран. 43 таблицы + 3 блока байт, 1389 байт |
 | `wolf4x_v18_sport_daily.annotations.json` | группы, имена и комментарии, по которым `make_recipe.py` построил рецепт выше (хранится, чтобы рецепт можно было перегенерировать) |
+| `wolf4x_v19_street_hard.json` | WOLF4X v19 «Street hard» — v18, доведённый до заводского уровня Alpina B3: короче целевое время скольжения на высоком моменте, давления включаемого/выключаемого поячеечно из Alpina там, где совпадают оси, спорт дольше держит передачу на частичном газе, ГДТ в S/M выходит на 3–4 ступень с 30–50 % педали. 45 таблиц + 3 блока байт, 1252 байта. Результат full `5ee8d309…`, partial `bcfd8122…` |
+| `wolf4x_v19_street_hard.annotations.json` | аннотации к рецепту выше |
 
 ### База
 
@@ -85,3 +89,11 @@ python3 tools/make_recipe.py stock.bin tuned.bin -o recipes/my_recipe.json -a my
 ```
 
 `make_recipe.py` откажется, если тюн меняет ось любой таблицы или байты вне 0x8000–0x10000. Аннотируйте каждую изменённую таблицу (группа, имя, комментарий EN и RU) — рецепты без аннотаций в репозиторий не принимаются (см. CONTRIBUTING).
+
+### v18 vs v19
+
+**v18 "Sport daily"** — conservative: uniform multipliers on top of stock (×0.85 target slip time, ×1.15 pressures). **v19 "Street hard"** — the same levers taken to the factory Alpina B3 data where the axes match, so in some cells v19 is *softer* than v18 (v18 had exceeded Alpina) while the target slip time is shorter. v19 is the recommended preset; v18 stays as the milder option and as a fallback.
+
+### v18 против v19
+
+**v18 «Sport daily»** — осторожный: равномерные множители к стоку (×0.85 целевое время, ×1.15 давления). **v19 «Street hard»** — те же рычаги, доведённые до заводских данных Alpina B3 там, где совпадают оси; поэтому в части ячеек v19 *мягче* v18 (v18 превышал Alpina), а целевое время скольжения короче. Рекомендуемый пресет — v19; v18 остаётся как более мягкий вариант и как откат.

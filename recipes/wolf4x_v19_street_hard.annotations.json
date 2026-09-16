@@ -1,0 +1,281 @@
+{
+ "meta": {
+  "name": "WOLF4X v19 Street hard",
+  "author": "rudywolf (WOLF4X)",
+  "date": "2026-09-16",
+  "description": {
+   "en": "Full diff of GS8600_FINAL_v19 'Street hard' against the stock 19C0/19D0 calibration. Built on v18 for a 2.5 l M52TU (M52TUB25) E39, stock final drive, rev limiter 6784 (spark ~6656), 27.11 output rpm per km/h. v19 = v18 + a harder, faster '8HP-like' hydraulic set taken from the Alpina B3 3.3 (19D0 620P) factory calibration wherever the table axes match byte for byte, resampled onto our axes where only part of the X axis matches, and scaled (never harder than Alpina) where the axes differ: shorter target slip time on load upshifts (row 120 Nm = Alpina, row 240 Nm at/above Alpina's 280 Nm floor), on-coming pressure on 2>3/3>4 at >=196 Nm = Alpina, off-going pressure on load upshifts = Alpina exactly, load-downshift off-going (B73E/B7A4/BA78) and on-coming (BE46/BEAC/BD7A) pressure = Alpina, downshift slip-time targets shorter (C08C = Alpina). Sport programs hold gears longer at part throttle and kick down earlier (kickdown lands at ~5370 rpm). TCC stages 3/4 in branch 1 (S/M) arrive at 30/50 % pedal. D programs, manual programs, fill time/pressure, phase 4/9 durations, ATF corrections, min/max pressures, adaptations and the voltage thresholds 0x8EE0-0x8F0E are untouched. Recalculate the shift points for any other engine, rev limit, final drive or tyre size before use.",
+   "ru": "Полный diff GS8600_FINAL_v19 «Street hard» относительно стоковой калибровки 19C0/19D0. Собран на базе v18 под 2.5 л M52TU (M52TUB25) на E39, стоковая главная пара, отсечка 6784 (искра ~6656), 27.11 об/мин выходного вала на км/ч. v19 = v18 + более жёсткая и быстрая гидравлика «как 8HP», взятая из заводской калибровки Alpina B3 3.3 (19D0 620P) там, где оси таблиц совпадают побайтно, пересчитанная на наши оси там, где совпадает часть оси X, и масштабированная (не жёстче Alpina) там, где оси другие: короче целевое время скольжения при повышении (строка 120 Нм = Alpina, строка 240 Нм не ниже значений Alpina при 280 Нм), давление включаемого на 2>3/3>4 при ≥196 Нм = Alpina, давление выключаемого при повышении = ровно Alpina, при понижении под нагрузкой выключаемое (B73E/B7A4/BA78) и включаемое (BE46/BEAC/BD7A) = Alpina, целевые времена понижения короче (C08C = Alpina). Спорт держит передачу дольше на частичном газе и раньше сбрасывает вниз (кикдаун ≈5370 об/мин на низшей). Ступени 3/4 ГДТ во второй ветке (S/M) с 30/50 % педали. Программы D, ручные программы, время/давление наполнения, длительности фаз 4/9, поправки по ATF, мин/макс давления, адаптации и пороги напряжения 0x8EE0-0x8F0E не тронуты. Под другой мотор/отсечку/главную пару/колёса точки переключения пересчитать."
+  }
+ },
+ "groups": {
+  "shift_points_sport": {
+   "en": "Sport programs 01, 02, 11, 15. WOT upshifts as v18 (66/120/171/231 km/h = ~6570/6520/6550/6260 rpm). v19: part-throttle rows 83/121 upshift later (36/82/130 and 48/98/142 km/h), all downshift columns from row 83 up raised so the box drops a gear earlier: full pedal 50/92/130/213, kickdown 54/99/140/215 km/h (~5370 rpm in the lower gear, below the 6156 rpm guard). 4>5 only above 218 km/h, 5>4 at 190-195 (4-speed sport). Rows 0/46 stock.",
+   "ru": "Спортивные программы 01, 02, 11, 15. Вверх в пол как в v18 (66/120/171/231 км/ч ≈ 6570/6520/6550/6260 об/мин). v19: частичные строки 83/121 вверх позже (36/82/130 и 48/98/142 км/ч), все столбцы вниз со строки 83 подняты — раньше скидывает передачу: в пол 50/92/130/213, кикдаун 54/99/140/215 км/ч (≈5370 об/мин на низшей, ниже запаса 6156). 4>5 только выше 218 км/ч, 5>4 на 190–195 (4-ступенчатый спорт). Строки 0/46 сток."
+  },
+  "shift_points_manual": {
+   "en": "Manual programs 08, 09, 10: upshift columns 255 = never shift up by itself (driver holds the gear to the rev limiter); downshift columns are the factory protection lines and stay stock except the kickdown row (59/108/154/217 km/h = ~5880 rpm in the lower gear after the shift)",
+   "ru": "Ручные программы 08, 09, 10: столбцы вверх 255 = сам не переключается (водитель держит передачу до отсечки); столбцы вниз — заводская защита, оставлены, кроме строки кикдауна (59/108/154/217 км/ч = ~5880 об/мин на низшей передаче после переключения)"
+  },
+  "shift_points_drive_45": {
+   "en": "Drive programs 03, 04, 07: 4>5 upshift in pedal rows 0/10/46 moved from 64 to 75 km/h to stop 4<->5 hunting on the overrun (factory hysteresis 8 km/h -> 19 km/h; 5th now engages at ~1508 rpm instead of ~1286)",
+   "ru": "Программы D 03, 04, 07: 4>5 в строках педали 0/10/46 поднят с 64 на 75 км/ч против челнока 4<->5 на накате (заводской гистерезис 8 км/ч -> 19 км/ч; 5-я включается на ~1508 об/мин вместо ~1286)"
+  },
+  "tcc_thresholds_branch0": {
+   "en": "Torque converter lockup thresholds, calibration branch 0 (D): pedal threshold to leave stage 1 (column 1) lowered from 60/50/90 % to 40 % (102/255) above 62 km/h (2nd), 62 km/h (3rd), 113 km/h (4th) and 94 km/h (5th) - later stages untouched",
+   "ru": "Пороги блокировки ГДТ, ветка 0 (D): порог педали выхода со ступени 1 (столбец 1) опущен с 60/50/90 % до 40 % (102/255) выше 62 км/ч (2-я), 62 (3-я), 113 (4-я) и 94 (5-я); старшие ступени не тронуты"
+  },
+  "tcc_thresholds_branch1": {
+   "en": "TCC thresholds, calibration branch 1 (S/M): column 1 (stage 2) 25 % -> 10-15 % as in v18; v19 also lowers column 2 (stage 3) 115 -> 77 (30 %) and column 3 (stage 4, full duty 240) 179 -> 128 (50 %) in the same speed rows (2nd/3rd >= 62 km/h, 4th 88-147 km/h, 5th >= 94 km/h). Low-speed rows and 4th above 156 km/h stock.",
+   "ru": "Пороги ГДТ, ветка 1 (S/M): столбец 1 (ступень 2) 25 % → 10–15 % как в v18; v19 дополнительно опускает столбец 2 (ступень 3) 115 → 77 (30 %) и столбец 3 (ступень 4, полная величина 240) 179 → 128 (50 %) в тех же строках скорости (2-я/3-я ≥ 62 км/ч, 4-я 88–147 км/ч, 5-я ≥ 94 км/ч). Нижние строки и 4-я выше 156 км/ч — сток."
+  },
+  "tcc_scalars": {
+   "en": "TCC duty ladder 0x888C 32/96/160/224 -> 32/128/176/240 (stage 1 unchanged), apply ramp 0x88C0 5 -> 7 per cycle, branch-1 release matrix 0x88B0 -17/-33/-65 -> -10/-20/-40 (softer release)",
+   "ru": "Лесенка скважности ГДТ 0x888C 32/96/160/224 -> 32/128/176/240 (ступень 1 без изменений), рампа замыкания 0x88C0 5 -> 7 за цикл, матрица сброса ветки 1 0x88B0 -17/-33/-65 -> -10/-20/-40 (мягче размыкание)"
+  },
+  "torque_reduction": {
+   "en": "Six torque-reduction request maps (percentage of engine torque LEFT during the shift): columns 3000/4000/6000 rpm in all non-zero-load rows set to 15 % instead of the factory 25-40 %; zero-load row untouched. Requires a DME that actually honours a deep request",
+   "ru": "Шесть карт снятия момента (процент момента, который ОСТАВЛЯЕТСЯ на время переключения): столбцы 3000/4000/6000 об/мин во всех строках ненулевой нагрузки = 15 % вместо заводских 25-40 %; строка нулевой нагрузки не тронута. Нужен DME, который реально отрабатывает глубокий запрос"
+  },
+  "hyd_slip_time_up": {
+   "en": "Target slip-phase time 3x3 (kind1 f45, controller 0x364A2), load upshifts. X = turbine/32 (25/113/200), Y = torque/4+25. Row Y=55 (120 Nm) = Alpina cell by cell (same axis value). Row Y=85 (240 Nm, our WOT row): Alpina's top row is Y=95 (280 Nm) - other axis, so only scaled, never below Alpina's values: BF9C [40,50,52] (= Alpina floor), BFEC [30,36,36] (Alpina 30/36/26), C028 [32,32,30] (Alpina 32/32/26), C064 [35,35,35] (= Alpina). Units 10 ms.",
+   "ru": "Целевое время фазы скольжения 3x3 (kind1 f45, регулятор 0x364A2), повышение под нагрузкой. X = турбина/32 (25/113/200), Y = момент/4+25. Строка Y=55 (120 Нм) = Alpina поячеечно (тот же узел оси). Строка Y=85 (240 Нм, наша строка «в пол»): у Alpina верхняя строка Y=95 (280 Нм) — другая ось, поэтому только масштаб и не ниже значений Alpina: BF9C [40,50,52] (= граница Alpina), BFEC [30,36,36] (Alpina 30/36/26), C028 [32,32,30] (Alpina 32/32/26), C064 [35,35,35] (= Alpina). Единица 10 мс."
+  },
+  "hyd_slip_time_down": {
+   "en": "Target slip-phase time 3x3 on load downshifts (kind3 f33/f69). C0B4/BFD8 (1<->2) and C08C (4<->5): Alpina data, axes identical. C0C8 (f33 2<->3/3>1/4>2), C014 (f69 2<->3), C050 (f69 3<->4): Alpina has other X axes there - rows >= 63/100 scaled x0.7-0.8, floored at Alpina's values resampled onto our axis.",
+   "ru": "Целевое время фазы скольжения 3x3 при понижении под нагрузкой (kind3 f33/f69). C0B4/BFD8 (1<->2) и C08C (4<->5): данные Alpina, оси совпадают. C0C8 (f33 2<->3/3>1/4>2), C014 (f69 2<->3), C050 (f69 3<->4): у Alpina другие оси X — строки ≥63/100 масштаб ×0.7–0.8 с нижней границей = Alpina, пересчитанная на нашу ось."
+  },
+  "hyd_on_pressure_up": {
+   "en": "On-coming clutch pressure in slip phases 9-11 on load upshifts (kind1 f32). B80A (2>3) and B974 (3>4): rows Y>=74 (>=196 Nm) = Alpina: columns X=31..125 cell by cell (axes coincide), X=147/172 Alpina resampled, X=188 = Alpina at X=203 (6500 rpm, our WOT shift speed; the last column serves all rpm above 6000). Rows Y<=66 stock (town comfort). B656 (1>2) and BADE (4>5) left stock: Alpina is LOWER than stock there and relies on the slip-time target instead.",
+   "ru": "Давление включаемого сцепления в фазах скольжения 9–11 при повышении под нагрузкой (kind1 f32). B80A (2>3) и B974 (3>4): строки Y≥74 (≥196 Нм) = Alpina: столбцы X=31…125 поячеечно (оси совпадают), X=147/172 — Alpina, пересчитанная на наш узел, X=188 = Alpina в узле X=203 (6500 об/мин — наши обороты переключения в пол; последний столбец работает для всех оборотов выше 6000). Строки Y≤66 — сток (комфорт в городе). B656 (1>2) и BADE (4>5) оставлены сток: у Alpina там НИЖЕ стока, она работает целевым временем."
+  },
+  "hyd_off_pressure_down": {
+   "en": "Off-going clutch pressure on load downshifts (kind3 f45, read at 0x38166). B90E (3>2, from v18), B73E (N<->2) and B7A4 (2>1): Alpina data whole, axes identical. BA78 (4>3): Alpina in columns X=16..125 (identical), X=147/172 Alpina resampled from its 125/156/203 axis; replaces v18's x1.15 (which was uniform and wrong at low rpm/high torque).",
+   "ru": "Давление выключаемого сцепления при понижении под нагрузкой (kind3 f45, чтение 0x38166). B90E (3>2, из v18), B73E (N<->2) и B7A4 (2>1): данные Alpina целиком, оси совпадают. BA78 (4>3): Alpina в столбцах X=16…125 (совпадают), X=147/172 — Alpina, пересчитанная с её оси 125/156/203; заменяет равномерное ×1.15 из v18."
+  },
+  "hyd_off_pressure_up": {
+   "en": "Off-going clutch pressure on load upshifts (kind1 f53, read at 0x37B2E, clipped by f47 = 82/104). BCAE (all but 3<->4) and BD14 (3<->4) = exactly Alpina: stock + per-row offset (+4/+4/+8/+8/+10.. and +2/+2/+4/+6..). Replaces v18's uniform x1.15.",
+   "ru": "Давление выключаемого сцепления при повышении под нагрузкой (kind1 f53, чтение 0x37B2E, клип f47 = 82/104). BCAE (все, кроме 3<->4) и BD14 (3<->4) = ровно Alpina: сток + смещение по строке (+4/+4/+8/+8/+10… и +2/+2/+4/+6…). Заменяет равномерное ×1.15 из v18."
+  },
+  "hyd_on_pressure_down": {
+   "en": "On-coming clutch pressure on load downshifts (kind3 f32). BE46 (2<->3, 3>1, 4>2), BEAC (3<->4) and BD7A (N<->2): Alpina data whole - axes identical. Alpina raises BE46/BEAC strongly (up to x2) at turbine <= 3000 rpm and >= 200 Nm and lowers BD7A; replaces v18's uniform x1.15 / x0.85.",
+   "ru": "Давление включаемого сцепления при понижении под нагрузкой (kind3 f32). BE46 (2<->3, 3>1, 4>2), BEAC (3<->4) и BD7A (N<->2): данные Alpina целиком — оси совпадают. Alpina сильно (до ×2) поднимает BE46/BEAC при турбине ≤3000 об/мин и ≥200 Нм и опускает BD7A; заменяет равномерное ×1.15 / ×0.85 из v18."
+  }
+ },
+ "ranges": [
+  {
+   "from": "0x09222",
+   "to": "0x09292",
+   "group": "shift_points_sport",
+   "name": "shift matrix 01 (sport, v19 part-throttle/kickdown rows)"
+  },
+  {
+   "from": "0x09292",
+   "to": "0x09302",
+   "group": "shift_points_sport",
+   "name": "shift matrix 02 (sport, v19 part-throttle/kickdown rows)"
+  },
+  {
+   "from": "0x09682",
+   "to": "0x096F2",
+   "group": "shift_points_sport",
+   "name": "shift matrix 11 (sport, v19 part-throttle/kickdown rows)"
+  },
+  {
+   "from": "0x09842",
+   "to": "0x098B2",
+   "group": "shift_points_sport",
+   "name": "shift matrix 15 (sport, v19 part-throttle/kickdown rows)"
+  },
+  {
+   "from": "0x09532",
+   "to": "0x095A2",
+   "group": "shift_points_manual",
+   "name": "shift matrix 08 (manual)"
+  },
+  {
+   "from": "0x095A2",
+   "to": "0x09612",
+   "group": "shift_points_manual",
+   "name": "shift matrix 09 (manual)"
+  },
+  {
+   "from": "0x09612",
+   "to": "0x09682",
+   "group": "shift_points_manual",
+   "name": "shift matrix 10 (manual)"
+  },
+  {
+   "from": "0x09302",
+   "to": "0x09372",
+   "group": "shift_points_drive_45",
+   "name": "shift matrix 03 (D), column 4>5 rows 0/10/46"
+  },
+  {
+   "from": "0x09372",
+   "to": "0x093E2",
+   "group": "shift_points_drive_45",
+   "name": "shift matrix 04 (D), column 4>5 rows 0/10/46"
+  },
+  {
+   "from": "0x094C2",
+   "to": "0x09532",
+   "group": "shift_points_drive_45",
+   "name": "shift matrix 07 (D), column 4>5 rows 0/10/46"
+  }
+ ],
+ "by_addr": {
+  "0x0905E": {
+   "group": "tcc_thresholds_branch0",
+   "name": "TCC thresholds gear 2, branch 0: col 1 153 -> 102 from 62 km/h"
+  },
+  "0x0909E": {
+   "group": "tcc_thresholds_branch0",
+   "name": "TCC thresholds gear 3, branch 0: col 1 153 -> 102 from 62 km/h"
+  },
+  "0x090DE": {
+   "group": "tcc_thresholds_branch0",
+   "name": "TCC thresholds gear 4, branch 0: col 1 128..191 -> 128/128 then 102 from 113 km/h"
+  },
+  "0x0913E": {
+   "group": "tcc_thresholds_branch0",
+   "name": "TCC thresholds gear 5, branch 0: col 1 230 -> 102 from 94 km/h"
+  },
+  "0x0907E": {
+   "group": "tcc_thresholds_branch1",
+   "name": "TCC thresholds gear 2, branch 1: col 1 64 -> 64/64/31/28/26/26; cols 2/3 -> 77/128 from 62 km/h"
+  },
+  "0x090BE": {
+   "group": "tcc_thresholds_branch1",
+   "name": "TCC thresholds gear 3, branch 1: col 1 -> 31/28/26...; cols 2/3 -> 77/128 all rows"
+  },
+  "0x0910E": {
+   "group": "tcc_thresholds_branch1",
+   "name": "TCC thresholds gear 4, branch 1: col 1 -> 38/31/26...; cols 2/3 -> 77/128 in rows 88-147 km/h"
+  },
+  "0x0915E": {
+   "group": "tcc_thresholds_branch1",
+   "name": "TCC thresholds gear 5, branch 1: col 1 -> 64/64/31/26/26/26; cols 2/3 -> 77/128 from 94 km/h"
+  },
+  "0x0888C": {
+   "group": "tcc_scalars",
+   "name": "TCC duty ladder stages 1..4"
+  },
+  "0x088B0": {
+   "group": "tcc_scalars",
+   "name": "TCC release matrix, branch 1 (row = new stage, col = old; >=128 means ramp down at 256-value)"
+  },
+  "0x088C0": {
+   "group": "tcc_scalars",
+   "name": "TCC apply ramp per cycle"
+  },
+  "0x0AB0C": {
+   "group": "torque_reduction",
+   "name": "torque reduction map 1 (2D16 8x8, X rpm 700..6000, Y load 0..100)"
+  },
+  "0x0ABB0": {
+   "group": "torque_reduction",
+   "name": "torque reduction map 2"
+  },
+  "0x0AC54": {
+   "group": "torque_reduction",
+   "name": "torque reduction map 3"
+  },
+  "0x0ACF8": {
+   "group": "torque_reduction",
+   "name": "torque reduction map 4"
+  },
+  "0x0AD9C": {
+   "group": "torque_reduction",
+   "name": "torque reduction map 5"
+  },
+  "0x0AE40": {
+   "group": "torque_reduction",
+   "name": "torque reduction map 6"
+  },
+  "0x0BA78": {
+   "group": "hyd_off_pressure_down",
+   "name": "kind3 f45 3<->4: off-going pressure on 4>3, Alpina (cols 0-5 exact, 6-7 resampled)"
+  },
+  "0x0BCAE": {
+   "group": "hyd_off_pressure_up",
+   "name": "kind1 f53 (all but 3<->4): off-going pressure on load upshifts = Alpina (stock + row offset)"
+  },
+  "0x0BD14": {
+   "group": "hyd_off_pressure_up",
+   "name": "kind1 f53 3<->4: off-going pressure on 3>4 = Alpina (stock + row offset)"
+  },
+  "0x0BE46": {
+   "group": "hyd_on_pressure_down",
+   "name": "kind3 f32 2<->3 / 3>1 / 4>2: on-coming pressure on load downshifts, Alpina data (same axes)"
+  },
+  "0x0BEAC": {
+   "group": "hyd_on_pressure_down",
+   "name": "kind3 f32 3<->4: on-coming pressure on 4>3, Alpina data (same axes)"
+  },
+  "0x0B73E": {
+   "group": "hyd_off_pressure_down",
+   "name": "kind3 f45 N<->2: off-going pressure, Alpina data (same axes)"
+  },
+  "0x0B7A4": {
+   "group": "hyd_off_pressure_down",
+   "name": "kind3 f45 1<->2: off-going pressure on 2>1, Alpina data (same axes)"
+  },
+  "0x0BD7A": {
+   "group": "hyd_on_pressure_down",
+   "name": "kind3 f32 N<->2: on-coming pressure, Alpina data (same axes)"
+  },
+  "0x0BF9C": {
+   "group": "hyd_slip_time_up",
+   "name": "kind1 f45 1<->2: target slip time; Y55 = Alpina [44,56,70], Y85 [40,50,52] = Alpina floor"
+  },
+  "0x0BFEC": {
+   "group": "hyd_slip_time_up",
+   "name": "kind1 f45 2<->3: target slip time; Y55 = Alpina [38,48,66], Y85 [30,36,36]"
+  },
+  "0x0C028": {
+   "group": "hyd_slip_time_up",
+   "name": "kind1 f45 3<->4: target slip time; Y55 = Alpina [33,44,46], Y85 [32,32,30]"
+  },
+  "0x0C064": {
+   "group": "hyd_slip_time_up",
+   "name": "kind1 f45 4<->5: target slip time; Y85 [35,35,35] = Alpina"
+  },
+  "0x0C0B4": {
+   "group": "hyd_slip_time_down",
+   "name": "kind3 f33 1<->2: target slip time (variant 0xFFFF972C in {3,4}), Alpina data"
+  },
+  "0x0BFD8": {
+   "group": "hyd_slip_time_down",
+   "name": "kind3 f69 1<->2: target slip time, Alpina data"
+  },
+  "0x0C08C": {
+   "group": "hyd_slip_time_down",
+   "name": "kind3 f69 4<->5: target slip time, Alpina data whole (same axes)"
+  },
+  "0x0C0C8": {
+   "group": "hyd_slip_time_down",
+   "name": "kind3 f33 2<->3 / 3>1 / 4>2: target slip time, Y63 [27,28,32], Y100 [20,22,27] (scaled, floored at Alpina)"
+  },
+  "0x0B80A": {
+   "group": "hyd_on_pressure_up",
+   "name": "kind1 f32 2<->3: on-coming pressure phases 9-11; rows Y>=74 = Alpina (cols 0-4 exact, 5-6 resampled, 7 = Alpina@X203), rows Y<=66 stock"
+  },
+  "0x0B974": {
+   "group": "hyd_on_pressure_up",
+   "name": "kind1 f32 3<->4: on-coming pressure phases 9-11; rows Y>=74 = Alpina (cols 0-4 exact, 5-6 resampled, 7 = Alpina@X203), rows Y<=66 stock"
+  },
+  "0x0B90E": {
+   "group": "hyd_off_pressure_down",
+   "name": "kind3 f45 2<->3: off-going pressure on 3>2, Alpina data (same axes)"
+  },
+  "0x0C014": {
+   "group": "hyd_slip_time_down",
+   "name": "kind3 f69 2<->3: target slip time, Y63 [32,37,42], Y100 [20,26,31] (cols 75/125 x0.8)"
+  },
+  "0x0C050": {
+   "group": "hyd_slip_time_down",
+   "name": "kind3 f69 3<->4: target slip time, Y100 [18,24,34] (cols 91/172 x0.8)"
+  }
+ }
+}
