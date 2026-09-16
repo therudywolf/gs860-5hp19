@@ -1,0 +1,23 @@
+cff-version: 1.2.0
+message: "If you use, share or build on this work, credit it as below (NOTICE)."
+title: "GS8.60.0 / GS8.60.4 · ZF 5HP19: reverse engineering, TunerPro XDF and tools"
+type: software
+version: "2026.10.30"
+date-released: "2026-10-30"
+authors:
+  - given-names: Rudy
+    family-names: Wolf
+    alias: rudywolf
+    website: "https://rudywolf.ru"
+repository-code: "https://github.com/therudywolf/gs860-5hp19"
+url: "https://github.com/therudywolf/gs860-5hp19"
+license:
+  - Apache-2.0
+  - CC-BY-SA-4.0
+keywords:
+  - bmw
+  - bosch-gs860
+  - zf-5hp19
+  - tunerpro
+  - xdf
+  - reverse-engineering

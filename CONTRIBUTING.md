@@ -1,0 +1,137 @@
+# Contributing / Как участвовать
+
+**[English](#english) | [Русский](#русский)**
+
+<a name="english"></a>
+## English
+
+**New material is paused** (README, Status). Corrections of errors with evidence are still welcome and will be answered.
+
+### What is welcome
+
+- Dangerous errors (a patch or a table reading that can damage a gearbox): report them privately first, see [`SECURITY.md`](SECURITY.md).
+- Corrections with evidence: a disassembly excerpt, a table dump, a log, anything that lets somebody else re-check it. "I think X is Y" without a code reference goes into an issue as a hypothesis, not into the docs.
+- Logs of shifts (RAM read via DS2 0x06, doc 06 §4) before/after an edit, with the edit named.
+- Information about **other 19x0 calibration revisions** (different `B22K4_04xxxx` label at 0x0FFCE): which tables differ from the `19C0KA20` base.
+- Translations and wording fixes.
+
+### What is not accepted
+
+- **Firmware dumps in issues or pull requests, in any form** (full 256K or 512K, partial 32K, hex pastes). A full dump carries the unit serial and history, the EEPROM carries the VIN. If a comparison needs your dump, post the output of `tools/egs_tables.py info` and `tools/egs_tables.py diff <your dump> <reference>`, that is enough to see what differs, or agree on a private exchange with the maintainer directly. Issues that contain dumps are deleted.
+- **VIN, unit serial numbers and owner names** anywhere: in text, logs, screenshots and file names. Dump files are often named after the VIN, rename them before you paste a command line or its output. `egs_tables.py ids` prints the identification strings of the unit, do not post its output.
+- Anything that mixes GS8.60.0 and GS8.60.4 addresses. The 512 KB images (20C0) have their own catalog, XDF and document (doc 11). A 19x0 address or RAM cell does not apply to them, and the other way round.
+- Anything about the engine ECU or vehicle anti-theft systems. This repository is about the gearbox only.
+- Copies of third-party AI-generated "findings" without verification against the binary. Several such lists have already been refuted (doc 10 §6).
+
+### How to send a log or a calibration difference
+
+1. `python3 tools/egs_tables.py info dump.bin`: paste the output (size, hashes, label, table count). No bytes of the dump itself.
+2. `python3 tools/egs_tables.py diff reference.bin dump.bin --all` against a stock of the same label if you have one: paste the changed cells.
+3. For a log: CSV with a time column and the RAM addresses read (doc 06 §4), plus the build SHA-256 it was recorded with, engine, final drive, tyre size.
+4. Say what the car did (symptom) and what you expected.
+
+### Tests
+
+```bash
+python3 tests/test_tools.py
+GS860_STOCK=stock19x0.bin GS8604_STOCK=stock20c0.bin python3 tests/test_tools.py
+```
+
+Without images the tests check the tools, both catalogs and the XDF files (the image tests are skipped and say so). `GS860_STOCK` is a stock 256 KB 19x0 image, `GS8604_STOCK` a factory 512 KB 20C0 image. With them the catalog tables are read from the image. Run both before a pull request that touches `tools/`, `catalog/` or `xdf/`.
+
+### XDF from the catalog
+
+The XDF files are generated, never edited by hand. Change `catalog/*.json`, then:
+
+```bash
+python3 tools/make_xdf.py check catalog/gs8600_19d0.json
+python3 tools/make_xdf.py build catalog/gs8600_19d0.json xdf/GS8600_19D0_Full256K.xdf --partial xdf/GS8600_19x0_Partial32K.xdf
+python3 tools/make_xdf.py check catalog/gs8604_20c0.json
+python3 tools/make_xdf.py build catalog/gs8604_20c0.json xdf/GS8604_20C0_Full512K.xdf --en xdf/GS8604_20C0_Full512K_EN.xdf
+```
+
+The 20C0 catalog itself is generated from a 20C0 image by the generator of the WOLF4X project (every role with the instruction addresses that prove it, uids kept across regenerations); a correction to it is welcome as an issue with the evidence. `check` refuses a byte span outside the image, two entries reading the same byte, a repeated uid, an unknown category and an empty unit. `build` runs `check` first. The tests compare every XDF file with what its catalog renders. No partial XDF for 20C0 is published until it is known what the flasher reads as a Partial on the GS8.60.4 (doc 11 §13). Every entry carries a `confidence` level, and `proven` entries name the instruction in `proof`.
+
+### Style
+
+Same as the docs: addresses in hex with `0x`, RAM as `0xFFFFxxxx`, units for every number, and a confidence label for every claim about semantics (doc 10 §6 in the documents, the `confidence` levels in the catalogs). What is not established is called not established. Russian and English versions of a document must say the same thing: if you change one, change the other or mark it `TODO translate`.
+
+### Licence of contributions
+
+A pull request is accepted under the licences of this repository: code (`tools/`, `tests/`) under Apache-2.0, documents, catalogs and XDF under CC BY-SA 4.0 ([`NOTICE`](NOTICE)). Material taken from elsewhere comes with its source and a compatible licence; parts of other authors' XDF files are not copied in.
+
+### Collaborators with write access
+
+- Work on a branch of this repository named `<name>/<topic>` and open a pull request into `main`. The maintainer reviews and merges; nobody pushes to `main` directly.
+- `main` is protected. A pull request needs the `tests` check (both catalog checks and `tests/test_tools.py`, run by GitHub Actions on every pull request) and the maintainer's approval; a commit pushed after an approval needs a new one. Force pushes and deleting `main` are blocked, merges are squash-only.
+- One topic per pull request. Paste the output of `make_xdf.py check` and `tests/test_tools.py` (with `GS860_STOCK` / `GS8604_STOCK` when you have the images) into the description; receipts and run logs belong there, not in the tree.
+- Scripts go into `tools/` with tests in `tests/`, documents into `docs/en` and `docs/ru`. There are no per-contributor folders: authorship is the commit author and a line in `CHANGELOG.md`.
+- English for the 19D0 catalog goes into `catalog/gs8600_19d0.json` as `title_en` / `description_en` (entries and the catalog), `units_en` (axes and data), `labels_en` (X and Y axes of a table with Russian `labels`: one English label for each, in the same order; without it the English XDF shows the Russian label) and `categories_en`, and nothing else changes (`test_english_field_placement`). A description is translated in full, with every address, RAM cell, factory value and caveat. Comparisons with private images that nobody else can repeat stay out of the catalog.
+- The 20C0 catalog is generated (see above), so a correction to it comes as an issue with the evidence.
+
+<a name="русский"></a>
+## Русский
+
+**Новое наполнение на паузе** (README, «Статус»). Исправления ошибок с доказательствами по-прежнему принимаются, на них отвечу.
+
+### Что приветствуется
+
+- Опасные ошибки (патч или трактовка таблицы, которые могут повредить коробку): сначала лично, см. [`SECURITY.md`](SECURITY.md).
+- Исправления с доказательством: фрагмент дизассемблера, распечатка таблицы, лог, то, что позволит другому перепроверить. «Я думаю, что X это Y» без ссылки на код идёт в issue как гипотеза, а не в документацию.
+- Логи переключений (чтение RAM через DS2 0x06, документ 06 §4) до/после правки с указанием правки.
+- Сведения о **других ревизиях калибровки 19x0** (другая метка `B22K4_04xxxx` по 0x0FFCE): какие таблицы отличаются от базы `19C0KA20`.
+- Переводы и правки формулировок.
+
+### Что не принимается
+
+- **Дампы прошивок в issues и pull request'ах в любом виде** (полный 256K или 512K, партиал 32K, hex-вставки). Полный дамп содержит серийный номер блока и историю, EEPROM содержит VIN. Если для сравнения нужен ваш дамп, присылайте вывод `tools/egs_tables.py info` и `tools/egs_tables.py diff <ваш дамп> <эталон>`, этого достаточно, чтобы увидеть отличия, либо договаривайтесь о приватном обмене с мейнтейнером напрямую. Issues с дампами удаляются.
+- **VIN, серийные номера блоков и имена владельцев** нигде: ни в тексте, ни в логах, ни на снимках экрана, ни в именах файлов. Файлы дампов часто названы по VIN, переименуйте их, прежде чем вставлять командную строку или её вывод. `egs_tables.py ids` печатает идентификационные строки блока, его вывод не публикуйте.
+- Что-либо, где смешаны адреса GS8.60.0 и GS8.60.4. У образов 512 КБ (20C0) свой каталог, XDF и документ (документ 11). Адрес или ячейка RAM 19x0 к ним не применимы, и наоборот.
+- Что-либо про блок двигателя и штатные противоугонные системы. Этот репозиторий только про коробку.
+- Копии чужих «находок», сгенерированных AI, без проверки по бинарнику. Несколько таких списков уже опровергнуты (документ 10 §6).
+
+### Как прислать лог или отличия калибровки
+
+1. `python3 tools/egs_tables.py info dump.bin`: вывод целиком (размер, хэши, метка, число таблиц). Байтов самого дампа не нужно.
+2. `python3 tools/egs_tables.py diff reference.bin dump.bin --all` против стока с той же меткой, если он у вас есть: изменённые ячейки.
+3. Для лога: CSV с колонкой времени и прочитанными адресами RAM (документ 06 §4), плюс SHA-256 сборки, с которой он записан, мотор, главная пара, размер колёс.
+4. Что делала машина (симптом) и что ожидалось.
+
+### Тесты
+
+```bash
+python3 tests/test_tools.py
+GS860_STOCK=stock19x0.bin GS8604_STOCK=stock20c0.bin python3 tests/test_tools.py
+```
+
+Без образов тесты проверяют инструменты, оба каталога и файлы XDF (тесты по образам пропускаются и пишут почему). `GS860_STOCK` это стоковый образ 19x0 на 256 КБ, `GS8604_STOCK` заводской образ 20C0 на 512 КБ. С ними таблицы каталога читаются по образу. Перед pull request, который трогает `tools/`, `catalog/` или `xdf/`, запустите оба варианта.
+
+### XDF из каталога
+
+Файлы XDF генерируются и руками не правятся. Меняете `catalog/*.json`, затем:
+
+```bash
+python3 tools/make_xdf.py check catalog/gs8600_19d0.json
+python3 tools/make_xdf.py build catalog/gs8600_19d0.json xdf/GS8600_19D0_Full256K.xdf --partial xdf/GS8600_19x0_Partial32K.xdf
+python3 tools/make_xdf.py check catalog/gs8604_20c0.json
+python3 tools/make_xdf.py build catalog/gs8604_20c0.json xdf/GS8604_20C0_Full512K.xdf --en xdf/GS8604_20C0_Full512K_EN.xdf
+```
+
+Сам каталог 20C0 генерируется из образа 20C0 генератором проекта WOLF4X (у каждой роли адреса доказывающих инструкций, uid сохраняются при перегенерации); исправление к нему присылайте issue с доказательством. `check` не пропускает байты вне образа, две записи на одном байте, повтор uid, неизвестную категорию и пустую единицу. `build` сначала запускает `check`. Тесты сравнивают каждый файл XDF с тем, что рендерит его каталог. Частичного XDF для 20C0 нет, пока не известно, что флешер читает как Partial у GS8.60.4 (документ 11 §13). У каждой записи есть уровень `confidence`, у записей `proven` в `proof` указана инструкция.
+
+### Стиль
+
+Как в документах: адреса в hex с `0x`, RAM как `0xFFFFxxxx`, единицы у каждого числа и метка уверенности у каждого утверждения о смысле (в документах по документу 10 §6, в каталогах уровни `confidence`). Неустановленное называется неустановленным. Русская и английская версии документа должны говорить одно и то же: меняете одну, меняйте другую или ставьте `TODO translate`.
+
+### Лицензия вклада
+
+Pull request принимается под лицензиями репозитория: код (`tools/`, `tests/`) под Apache-2.0, документы, каталоги и XDF под CC BY-SA 4.0 ([`NOTICE`](NOTICE)). Взятое из других источников приходит с указанием источника и совместимой лицензией; части чужих XDF не переносятся.
+
+### Участникам с правом записи
+
+- Работа идёт в ветке этого репозитория с именем `<имя>/<тема>` и pull request в `main`. Проверяет и сливает владелец; напрямую в `main` никто не пушит.
+- `main` защищён. Pull request сливается после проверки `tests` (обе проверки каталогов и `tests/test_tools.py`, их запускает GitHub Actions на каждый pull request) и одобрения владельца; коммит после одобрения требует нового одобрения. Force push и удаление `main` запрещены, слияние только squash.
+- Одна тема на один pull request. В описание вставляется вывод `make_xdf.py check` и `tests/test_tools.py` (с `GS860_STOCK` / `GS8604_STOCK`, если образы есть); квитанции и журналы прогонов идут туда, а не в дерево.
+- Скрипты кладутся в `tools/` с тестами в `tests/`, документы в `docs/en` и `docs/ru`. Отдельных папок участников нет: авторство это автор коммита и строка в `CHANGELOG.md`.
+- Английский к каталогу 19D0 добавляется в `catalog/gs8600_19d0.json` полями `title_en` / `description_en` (записи и каталог), `units_en` (оси и данные), `labels_en` (оси X и Y таблицы с русскими `labels`: по английской подписи на каждую, в том же порядке; без него английский XDF показывает русскую подпись) и `categories_en`, остальное не меняется (`test_english_field_placement`). Описание переводится целиком, со всеми адресами, ячейками RAM, заводскими значениями и оговорками. Сравнения с закрытыми образами, которые никто не может повторить, в каталог не идут.
+- Каталог 20C0 генерируется (см. выше), поэтому исправление к нему присылается issue с доказательством.
