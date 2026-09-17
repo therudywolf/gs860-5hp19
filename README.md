@@ -77,8 +77,13 @@ Documentation and XDF files: **CC BY-SA 4.0** (`LICENSE-docs`). Scripts in `tool
 - Everyone who sent logs, dumps for comparison and questions — the "114 km/h" and "minimum temperature" questions from other tuners forced the TCC module to be read to the end.
 - Disassembly and text assistance: AI tools were used for parts of the disassembly, cross-checking and writing; every number was verified against the binaries.
 
----
+### Support the work
 
+This is unpaid hobby research: dumps read by hand, code disassembled instruction by instruction, every
+finding verified on a real car — including the mistakes, which are documented too. Everything here stays
+free and open. If it saved you time, money or a gearbox, you can support it: **[boosty.to/therudywolf](https://boosty.to/therudywolf)**.
+
+---
 <a name="русский"></a>
 ## Русский
 
@@ -151,3 +156,10 @@ recipes/             JSON-рецепты (сток → тюн) и их анно�
 - [Wiki MS4X](https://www.ms4x.net) — источник по моторной части (MS42/MS43), по флешеру и эталонных файлов Alpina.
 - Всем, кто присылал логи, дампы для сравнения и вопросы — вопросы других тюнеров про «114 км/ч» и «минимальную температуру» заставили дочитать модуль ГДТ до конца.
 - Помощь в дизассемблировании и тексте: для части дизассемблирования, перепроверки и написания использовались AI-инструменты; каждое число проверено по бинарникам.
+
+### Поддержать
+
+Это хобби-исследование без бюджета: дампы читаются руками, код разбирается инструкция за инструкцией,
+каждая находка проверяется на живой машине — включая ошибки, которые тоже документируются. Всё здесь
+остаётся бесплатным и открытым. Если это сэкономило вам время, деньги или коробку — поддержать можно
+здесь: **[boosty.to/therudywolf](https://boosty.to/therudywolf)**.
