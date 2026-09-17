@@ -17,7 +17,7 @@
 
 - **Firmware dumps in issues or pull requests, in any form** (full 256K, partial 32K, hex pastes). A full dump carries the unit serial and history; the EEPROM carries the VIN. If a comparison needs your dump, post the output of `tools/egs_tables.py info` and `tools/egs_tables.py diff <your dump> <reference>` — that is enough to see what differs — or agree on a private exchange with the maintainer directly. Issues that contain dumps are deleted.
 - Anything about GS8.60.4 / 512 KB images as if it applied here (open a separate discussion; the layout is different).
-- Anything about the engine ECU, the immobiliser or EWS.
+- Anything about the engine ECU or vehicle anti-theft systems — this repository is about the gearbox only.
 - Copies of third-party AI-generated "findings" without verification against the binary. Several such lists have already been refuted (doc 10 §6).
 
 ### How to send a log or a calibration difference
@@ -46,7 +46,7 @@ Same as the docs: addresses in hex with `0x`, RAM as `0xFFFFxxxx`, units for eve
 
 - **Дампы прошивок в issues и pull request'ах в любом виде** (полный 256K, партиал 32K, hex-вставки). Полный дамп содержит серийный номер блока и историю; EEPROM — VIN. Если для сравнения нужен ваш дамп — присылайте вывод `tools/egs_tables.py info` и `tools/egs_tables.py diff <ваш дамп> <эталон>` — этого достаточно, чтобы увидеть отличия, — либо договаривайтесь о приватном обмене с мейнтейнером напрямую. Issues с дампами удаляются.
 - Что-либо про GS8.60.4 / образы 512 КБ в предположении, что это применимо здесь (отдельное обсуждение; раскладка другая).
-- Что-либо про блок ДВС, иммобилайзер, EWS.
+- Что-либо про блок двигателя и штатные противоугонные системы — этот репозиторий только про коробку.
 - Копии чужих «находок», сгенерированных AI, без проверки по бинарнику. Несколько таких списков уже опровергнуты (документ 10 §6).
 
 ### Как прислать лог или отличия калибровки
