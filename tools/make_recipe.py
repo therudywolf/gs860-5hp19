@@ -8,6 +8,9 @@ A recipe records, for every changed table, its address, format, both axes, the o
 and the new data; scalar / matrix changes outside tables are recorded as byte runs.
 Axes are never part of a change: if the tuned image has different axes than the stock
 image for any table, the tool stops (see docs 09-what-not-to-touch).
+The calibration checksum 0xFFFE-0xFFFF is never part of a recipe either: apply_recipe.py
+computes it (tools/gs860_crc.py). The recorded result hashes are those of the image
+apply_recipe.py produces, that is the tuned image with the checksum recomputed.
 
 Usage:
   make_recipe.py stock.bin tuned.bin -o recipe.json [-a annotations.json]
@@ -17,12 +20,18 @@ annotations.json (optional) adds names, groups and comments:
   "meta":   {"name": "...", "author": "...", "date": "...", "description": {"en": "...", "ru": "..."}},
   "groups": {"group_id": {"en": "...", "ru": "..."}},
   "by_addr": {"0x0BF9C": {"group": "group_id", "name": "...", "comment": {"en": "...", "ru": "..."}}},
-  "ranges":  [{"from": "0x09222", "to": "0x098B2", "group": "...", "name": "...", "comment": {...}}]
+  "ranges":  [{"from": "0x09222", "to": "0x098B2", "group": "...", "name": "...", "comment": {...}}],
+  "history": [{"date": "...", "change": {"en": "...", "ru": "..."}, "full_sha256": "...", ...}]
 }
+"history" is copied into the recipe as is: earlier result hashes and why they changed.
 """
 import sys, json, hashlib, argparse, os
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from egs_tables import FW, CAL_LO, CAL_HI, WIN_LO, WIN_HI, CODE_LO, CODE_HI
+import gs860_crc
+
+SCHEMA = "gs860-recipe/2"
+CRC_AT = 0xFFFE                              # calibration checksum: computed by apply_recipe.py, never recorded
 
 # Structures the table heuristic mis-detects as tables (their "axis" is really data),
 # or that are not tables at all but have a known shape. addr -> (width_bits, count, name)
@@ -56,7 +65,23 @@ def main():
         sys.exit(f"tuned image differs outside the calibration window 0x8000-0x10000 at {len(d)} bytes "
                  f"(first {d[0]:05X}); a recipe cannot describe that - stop")
 
-    ann = json.load(open(args.annotations, encoding="utf-8")) if args.annotations else {}
+    for name, img in (("stock", st), ("tuned", tn)):
+        bad = [n for n, _s, _e, _at, s, c in gs860_crc.sums(bytes(img.d)) if n != "calibration" and s != c]
+        if bad:
+            sys.exit(f"{name} image: {' and '.join(bad)} checksum does not match - damaged or a different software")
+    result = gs860_crc.fixed(bytes(tn.d))            # what apply_recipe.py will produce from stock + recipe
+    crc_stock = int.from_bytes(st.d[CRC_AT:CRC_AT + 2], "big")
+    crc_tuned = int.from_bytes(tn.d[CRC_AT:CRC_AT + 2], "big")
+    crc_result = int.from_bytes(result[CRC_AT:CRC_AT + 2], "big")
+    if crc_tuned != crc_result:
+        print(f"note: the tuned image carries a stale calibration checksum 0x{crc_tuned:04X} "
+              f"(computed 0x{crc_result:04X}); the recipe leaves it out, apply_recipe.py recomputes it")
+
+    if args.annotations:
+        with open(args.annotations, encoding="utf-8") as f:
+            ann = json.load(f)
+    else:
+        ann = {}
     by_addr = {int(k, 16): v for k, v in ann.get("by_addr", {}).items()}
     ranges = [(int(r["from"], 16), int(r["to"], 16), r) for r in ann.get("ranges", [])]
 
@@ -96,8 +121,9 @@ def main():
         print("\n".join(axis_errors))
         sys.exit("axes changed - refusing to build a recipe (axes are never part of a recipe)")
 
-    # bytes outside tables
-    changed = [i for i in range(WIN_LO, WIN_HI) if st.d[i] != tn.d[i] and i not in covered]
+    # bytes outside tables (the checksum is not a calibration change)
+    changed = [i for i in range(WIN_LO, WIN_HI) if st.d[i] != tn.d[i] and i not in covered
+               and not CRC_AT <= i < CRC_AT + 2]
     out_bytes, i = [], 0
     handled = set()
     for a, (bits, cnt, name) in sorted(KNOWN_BLOCKS.items()):
@@ -121,7 +147,7 @@ def main():
 
     meta = ann.get("meta", {})
     rec = {
-        "schema": "gs860-recipe/1",
+        "schema": SCHEMA,
         "name": meta.get("name", os.path.splitext(os.path.basename(args.out))[0]),
         "author": meta.get("author", ""),
         "date": meta.get("date", ""),
@@ -133,20 +159,31 @@ def main():
             "stock_calibration_label": bytes(st.d[0xFFCE:0xFFDE]).decode("latin1"),
         },
         "result": {
-            "full_sha256": tn.sha256(),
-            "partial_sha256": tn.sha256(WIN_LO, WIN_HI),
-            "bytes_changed": sum(1 for x in range(st.N) if st.d[x] != tn.d[x]),
+            "full_sha256": hashlib.sha256(result).hexdigest(),
+            "partial_sha256": hashlib.sha256(result[WIN_LO:WIN_HI]).hexdigest(),
+            "bytes_changed": sum(1 for x in range(st.N) if st.d[x] != result[x]),
+        },
+        "checksum": {
+            "calibration": "CRC-16/XMODEM over 0x8000-0xFFCD, stored at 0xFFFE; computed by apply_recipe.py, "
+                           "not part of the recipe (tools/gs860_crc.py)",
+            "stock": f"0x{crc_stock:04X}",
+            "result": f"0x{crc_result:04X}",
         },
         "rules": [
             "axes are never changed; apply_recipe.py refuses a table whose axes differ from the recipe",
             "only 0x8000-0x10000 is ever written",
             "old values are checked before writing; a mismatch means a different base calibration",
+            "the calibration checksum at 0xFFFE is recomputed after writing",
         ],
         "groups": ann.get("groups", {}),
         "tables": out_tables,
         "bytes": out_bytes,
     }
-    json.dump(rec, open(args.out, "w", encoding="utf-8"), ensure_ascii=False, indent=1)
+    if ann.get("history"):
+        rec["history"] = ann["history"]
+    with open(args.out, "w", encoding="utf-8") as f:
+        json.dump(rec, f, ensure_ascii=False, indent=1)
+        f.write("\n")
     print(f"tables changed: {len(out_tables)}  byte blocks: {len(out_bytes)}  total bytes: {rec['result']['bytes_changed']}")
     unnamed = [e["addr"] for e in out_tables + out_bytes if "group" not in e]
     if unnamed:

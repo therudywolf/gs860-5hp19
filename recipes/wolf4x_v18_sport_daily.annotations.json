@@ -2,28 +2,28 @@
  "meta": {
   "name": "WOLF4X v18 Sport daily (8HP-like)",
   "author": "rudywolf (WOLF4X)",
-  "date": "2026-09-16",
+  "date": "2026-09-23",
   "description": {
-   "en": "Full diff of GS8600_FINAL_v18 against the stock 19C0/19D0 calibration it was built from. Built for a 2.5 l M52TU (M52TUB25) E39 with the stock final drive and an engine rev limiter of 6784 rpm (spark cut from about 6656). Sport programs shift up under full throttle at about 6500-6570 rpm; the manual programs never upshift by themselves; torque converter lockup starts at 40 % pedal in the normal branch and at 10-15 % in the second branch; torque reduction during shifts leaves 15 % above 3000 rpm; the shift-execution hydraulics are the 8HP-like set from the 16.09 reverse (shorter target slip time at high torque, higher on-coming pressure at >= 228 Nm on 2>3 and 3>4, Alpina off-going pressure on 3>2). Recalculate the shift points for any other engine, rev limit, final drive or tyre size before use. v18 = v17 with 0x8EEA returned to stock (7000): that constant is a supply-voltage threshold, not a turbine limit (docs 05).",
-   "ru": "Полный diff GS8600_FINAL_v18 относительно стоковой калибровки 19C0/19D0, на которой он собран. Собран под 2.5 л M52TU (M52TUB25) на E39 со стоковой главной парой и отсечкой мотора 6784 (искра гаснет примерно с 6656). Спортивные программы переключаются вверх в пол на ~6500-6570 об/мин; ручные программы сами вверх не переключаются; блокировка ГДТ начинается с 40 % педали в обычной ветке и с 10-15 % во второй; снятие момента на переключении оставляет 15 % выше 3000 об/мин; гидравлика исполнения переключения — набор «8HP-like» по реверсу 16.09 (короче целевое время скольжения при высоком моменте, выше давление включаемого при >= 228 Нм на 2>3 и 3>4, давление выключаемого 3>2 — данные Alpina). Под другой мотор, отсечку, главную пару или размер колёс точки переключения пересчитать до применения. v18 = v17 с возвращённым к стоку 0x8EEA (7000): эта константа — порог напряжения питания, не предел турбины (docs 05)."
+   "en": "Full diff of GS8600_FINAL_v18 against the stock 19C0/19D0 calibration it was built from. Built for a 2.5 l M52TU (M52TUB25) E39 with the stock final drive and an engine rev limiter of 6784 rpm (spark cut from about 6656). Sport programs shift up under full throttle at turbine 5512/6013/6123 rpm (command), the engine reaches the spark cut as the shift completes; the manual programs hold the gear to the limiter under load and shift up by themselves only on the overrun at the fuel cut; torque converter lockup starts at 40 % pedal in the normal branch and at 10-15 % in the second branch; torque reduction during shifts leaves 15 % above 3000 rpm; the shift-execution hydraulics are the 8HP-like set from the 16.09 reverse (shorter target slip time at high torque, higher on-coming pressure at >= 228 Nm on 2>3 and 3>4, Alpina off-going pressure on 3>2). Recalculate the shift points for any other engine, rev limit, final drive or tyre size before use. v18 = v17 with 0x8EEA returned to stock (7000): that constant is a supply-voltage threshold, not a turbine limit (docs 05). Revised 23.09.2026: the shift matrices hold output shaft rpm / 32, not km/h (doc 02 §3). The sport and manual matrices were brought within doc 02 §4 by egs_tables.py verify-shift --spark 6656 --cut 6784 --fix (sport upshifts at most 47/94/136, manual upshift only on the overrun at the fuel cut, every downshift landing at most 6150 rpm). The calibration checksum at 0xFFFE is recomputed by apply_recipe.py. The hydraulic and TCC data are as built on 16.09. Texts that mention a 6500 rpm full-throttle shift describe the 16.09 shift points.",
+   "ru": "Полный diff GS8600_FINAL_v18 относительно стоковой калибровки 19C0/19D0, на которой он собран. Собран под 2.5 л M52TU (M52TUB25) на E39 со стоковой главной парой и отсечкой мотора 6784 (искра гаснет примерно с 6656). Спортивные программы переключаются вверх в пол при 5512/6013/6123 об/мин турбины (команда), мотор доходит до искры к концу переключения; ручные программы под нагрузкой держат передачу до отсечки и сами повышают только на накате на топливной отсечке; блокировка ГДТ начинается с 40 % педали в обычной ветке и с 10-15 % во второй; снятие момента на переключении оставляет 15 % выше 3000 об/мин; гидравлика исполнения переключения — набор «8HP-like» по реверсу 16.09 (короче целевое время скольжения при высоком моменте, выше давление включаемого при >= 228 Нм на 2>3 и 3>4, давление выключаемого 3>2 — данные Alpina). Под другой мотор, отсечку, главную пару или размер колёс точки переключения пересчитать до применения. v18 = v17 с возвращённым к стоку 0x8EEA (7000): эта константа — порог напряжения питания, не предел турбины (docs 05). Исправлено 23.09.2026: матрицы переключения хранят обороты выходного вала / 32, а не км/ч (док. 02 §3). Спортивные и ручные матрицы приведены к правилам док. 02 §4 командой egs_tables.py verify-shift --spark 6656 --cut 6784 --fix (спорт вверх не выше 47/94/136, ручные повышают сами только на накате на топливной отсечке, после любого понижения не выше 6150 об/мин). Контрольную сумму калибровки по 0xFFFE пересчитывает apply_recipe.py. Гидравлика и ГДТ как собраны 16.09, тексты про переключение в пол на 6500 об/мин описывают точки 16.09."
   }
  },
  "groups": {
   "shift_points_sport": {
-   "en": "Shift-point matrices of the sport programs 01, 02, 11, 15 (dedicated 4-speed feel: 4>5 only above 218 km/h at part/full throttle; WOT upshifts 66/120/171 km/h = ~6570/6520/6550 rpm at 99.6/54.3/38.3 rpm per km/h; pedal rows 83 and 121 bridged towards row 160 so no line has a step)",
-   "ru": "Матрицы точек переключения спортивных программ 01, 02, 11, 15 (по сути 4-ступенчатый спорт: 4>5 только выше 218 км/ч; вверх в пол 66/120/171 км/ч = ~6570/6520/6550 об/мин при 99.6/54.3/38.3 об/мин на км/ч; строки педали 83 и 121 подтянуты мостом к строке 160, чтобы на линиях не было обрывов)"
+   "en": "Sport programs 01, 02, 11, 15. Values are output shaft rpm / 32 (doc 02 §3), turbine rpm at a threshold = value x 32 x ratio (1st 117.3, 2nd 64.0, 3rd 45.0, 4th 32.0 per unit). Revised 23.09.2026 with egs_tables.py verify-shift --spark 6656 --cut 6784 --fix (doc 02 §4): upshifts 1-2 / 2-3 / 3-4 at most 47 / 94 / 136 = turbine 5512 / 6013 / 6123 rpm at the command, used from pedal row 160 up. Part-throttle rows 83 and 121 as built on 16.09 (30/78/126 and 42/92/135 = 3518/4990/5673 and 4926/5885/6078 rpm). Downshifts land at most 6150 rpm: 2-1 = 41 where the upshift was lowered, kickdown 41/88/125/192. 4-5 stays 200-231 (4th gear to top speed, as in stock). From row 160 up the 16.09 build asked for 59-66 / 109-120 / 154-171, that is 6920-7740 turbine rpm: never reached under load, the box hung at the limiter.",
+   "ru": "Спортивные программы 01, 02, 11, 15. Значения это обороты выходного вала / 32 (док. 02 §3), обороты турбины на пороге = значение x 32 x передаточное (1-я 117.3, 2-я 64.0, 3-я 45.0, 4-я 32.0 на единицу). Пересчитано 23.09.2026 командой egs_tables.py verify-shift --spark 6656 --cut 6784 --fix (док. 02 §4): вверх 1-2 / 2-3 / 3-4 не выше 47 / 94 / 136 = турбина 5512 / 6013 / 6123 об/мин в момент команды, со строки педали 160 и выше. Частичные строки 83 и 121 как собраны 16.09 (30/78/126 и 42/92/135 = 3518/4990/5673 и 4926/5885/6078 об/мин). После понижения не выше 6150 об/мин: 2-1 = 41 там, где опущено повышение, кикдаун 41/88/125/192. 4-5 оставлен 200-231 (4-я до максимальной скорости, как в стоке). Сборка 16.09 со строки 160 требовала 59-66 / 109-120 / 154-171, то есть 6920-7740 об/мин турбины: под нагрузкой недостижимо, коробка висела в отсечке."
   },
   "shift_points_manual": {
-   "en": "Manual programs 08, 09, 10: upshift columns 255 = never shift up by itself (driver holds the gear to the rev limiter); downshift columns are the factory protection lines and stay stock except the kickdown row (59/108/154/217 km/h = ~5880 rpm in the lower gear after the shift)",
-   "ru": "Ручные программы 08, 09, 10: столбцы вверх 255 = сам не переключается (водитель держит передачу до отсечки); столбцы вниз — заводская защита, оставлены, кроме строки кикдауна (59/108/154/217 км/ч = ~5880 об/мин на низшей передаче после переключения)"
+   "en": "Manual programs 08, 09, 10. Revised 23.09.2026 with egs_tables.py verify-shift --fix. Upshift columns 58 / 106 / 151 / 212 in every row = turbine 6802 / 6781 / 6799 / 6784 rpm, at the fuel cut 6784. Under load the engine stops at the spark cut (about 6656), so the box never shifts up by itself and the driver holds the gear to the limiter. On the overrun (engine braking downhill) it shifts up before the wheels drive the engine past the cut. The 16.09 build had 255 there (never), which removed that protection. Downshift columns of rows 0-254 are the factory lines (the box drops a gear by itself only near standstill). Kickdown row 52 / 96 / 136 / 192: the lower gear lands at most 6099 / 6141 / 6123 / 6144 rpm. The 16.09 kickdown row 59 / 108 / 154 / 217 landed at 6920 / 6909 / 6934 / 6944 rpm, above the spark cut.",
+   "ru": "Ручные программы 08, 09, 10. Пересчитано 23.09.2026 командой egs_tables.py verify-shift --fix. Столбцы вверх 58 / 106 / 151 / 212 во всех строках = турбина 6802 / 6781 / 6799 / 6784 об/мин, на топливной отсечке 6784. Под нагрузкой мотор упирается в искру (около 6656), поэтому сама коробка вверх не переключает и водитель держит передачу до отсечки. На накате (торможение мотором под горку) она повышает раньше, чем колёса раскрутят мотор выше отсечки. В сборке 16.09 там стояло 255 (никогда), эта защита была снята. Столбцы вниз строк 0-254 заводские (сама коробка сбрасывает передачу только у остановки). Строка кикдауна 52 / 96 / 136 / 192: на низшей передаче не выше 6099 / 6141 / 6123 / 6144 об/мин. Кикдаун 16.09 59 / 108 / 154 / 217 приходил на 6920 / 6909 / 6934 / 6944 об/мин, выше искры."
   },
   "shift_points_drive_45": {
-   "en": "Drive programs 03, 04, 07: 4>5 upshift in pedal rows 0/10/46 moved from 64 to 75 km/h to stop 4<->5 hunting on the overrun (factory hysteresis 8 km/h -> 19 km/h; 5th now engages at ~1508 rpm instead of ~1286)",
-   "ru": "Программы D 03, 04, 07: 4>5 в строках педали 0/10/46 поднят с 64 на 75 км/ч против челнока 4<->5 на накате (заводской гистерезис 8 км/ч -> 19 км/ч; 5-я включается на ~1508 об/мин вместо ~1286)"
+   "en": "Drive programs 03, 04, 07: 4-5 in pedal rows 0/10/46 raised from 64 to 75 (output shaft rpm / 32) against 4-5-4 hunting on the overrun. The gap to 5-4 (56) grows from 8 to 19 units (9 to 22 km/h on an E39 2.5), 5th engages at turbine 1781 rpm instead of 1520.",
+   "ru": "Программы D 03, 04, 07: 4-5 в строках педали 0/10/46 поднят с 64 до 75 (обороты выходного вала / 32) против челнока 4-5-4 на накате. Зазор до 5-4 (56) вырос с 8 до 19 единиц (с 9 до 22 км/ч на E39 2.5), 5-я включается при 1781 об/мин турбины вместо 1520."
   },
   "tcc_thresholds_branch0": {
-   "en": "Torque converter lockup thresholds, calibration branch 0 (D): pedal threshold to leave stage 1 (column 1) lowered from 60/50/90 % to 40 % (102/255) above 62 km/h (2nd), 62 km/h (3rd), 113 km/h (4th) and 94 km/h (5th) - later stages untouched",
-   "ru": "Пороги блокировки ГДТ, ветка 0 (D): порог педали выхода со ступени 1 (столбец 1) опущен с 60/50/90 % до 40 % (102/255) выше 62 км/ч (2-я), 62 (3-я), 113 (4-я) и 94 (5-я); старшие ступени не тронуты"
+   "en": "Torque converter lockup thresholds, calibration branch 0 (D): pedal threshold to leave stage 1 (column 1) lowered from 60/50/90 % to 40 % (102/255) from speed row 62 (2nd, 3rd), 113 (4th) and 94 (5th) up. Speed rows are output shaft rpm / 32 like the shift matrices: 62 / 113 / 94 = 73 / 133 / 111 km/h on an E39 2.5 (the 16.09 text read them as km/h). Later stages untouched.",
+   "ru": "Пороги блокировки ГДТ, ветка 0 (D): порог педали выхода со ступени 1 (столбец 1) опущен с 60/50/90 % до 40 % (102/255) начиная со строки скорости 62 (2-я, 3-я), 113 (4-я) и 94 (5-я). Строки скорости, как и в матрицах переключения, это обороты выходного вала / 32: 62 / 113 / 94 = 73 / 133 / 111 км/ч на E39 2.5 (в тексте 16.09 они прочитаны как км/ч). Старшие ступени не тронуты."
   },
   "tcc_thresholds_branch1": {
    "en": "Torque converter lockup thresholds, calibration branch 1 (selector positions 2/3/4, see docs 03): column 1 lowered from 25 % to 10-15 % (26-38/255) with a softer entry at the lowest speed rows",
@@ -127,19 +127,19 @@
  "by_addr": {
   "0x0905E": {
    "group": "tcc_thresholds_branch0",
-   "name": "TCC thresholds gear 2, branch 0: col 1 153 -> 102 from 62 km/h"
+   "name": "TCC thresholds gear 2, branch 0: col 1 153 -> 102 from speed row 62 (73 km/h E39 2.5)"
   },
   "0x0909E": {
    "group": "tcc_thresholds_branch0",
-   "name": "TCC thresholds gear 3, branch 0: col 1 153 -> 102 from 62 km/h"
+   "name": "TCC thresholds gear 3, branch 0: col 1 153 -> 102 from speed row 62 (73 km/h E39 2.5)"
   },
   "0x090DE": {
    "group": "tcc_thresholds_branch0",
-   "name": "TCC thresholds gear 4, branch 0: col 1 128..191 -> 128/128 then 102 from 113 km/h"
+   "name": "TCC thresholds gear 4, branch 0: col 1 128..191 -> 128/128 then 102 from speed row 113 (133 km/h E39 2.5)"
   },
   "0x0913E": {
    "group": "tcc_thresholds_branch0",
-   "name": "TCC thresholds gear 5, branch 0: col 1 230 -> 102 from 94 km/h"
+   "name": "TCC thresholds gear 5, branch 0: col 1 230 -> 102 from speed row 94 (111 km/h E39 2.5)"
   },
   "0x0907E": {
    "group": "tcc_thresholds_branch1",
@@ -269,5 +269,24 @@
    "group": "hyd_off_pressure_down",
    "name": "kind3 f45 2<->3: off-going pressure on 3>2, Alpina data (same axes)"
   }
- }
+ },
+ "history": [
+  {
+   "date": "2026-09-16",
+   "change": {
+    "en": "first version (schema gs860-recipe/1): result hashes taken with the stale calibration checksum 0x47DB, shift matrices read as km/h",
+    "ru": "первая версия (схема gs860-recipe/1): хэши результата сняты со старой суммой калибровки 0x47DB, матрицы переключения прочитаны как км/ч"
+   },
+   "full_sha256": "0bfd1d0d10037e020bcbfb16fdf5941bf17d0ec085dd5dd0cdec22c65419812e",
+   "partial_sha256": "657531fa400e0070f1cc37ebaac497c84d1ef690b1329bfdb3f81726d9ee60e4",
+   "bytes_changed": 1389
+  },
+  {
+   "date": "2026-09-23",
+   "change": {
+    "en": "calibration checksum recomputed (tools/gs860_crc.py); sport and manual shift matrices recomputed by egs_tables.py verify-shift --spark 6656 --cut 6784 --fix (doc 02 §3-4)",
+    "ru": "пересчитана сумма калибровки (tools/gs860_crc.py); спортивные и ручные матрицы пересчитаны egs_tables.py verify-shift --spark 6656 --cut 6784 --fix (док. 02 §3-4)"
+   }
+  }
+ ]
 }

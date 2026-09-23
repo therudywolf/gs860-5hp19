@@ -21,7 +21,7 @@ Everything below applies to the Bosch GS8.60.0 with a **256 KB** image and progr
 | `0x08000–0x10000` | **calibration window** — the only thing that gets edited. Exactly what the flasher calls Partial (32 KB) |
 | `0x080D0–0x0E4A2` | table zone inside the window (§2) |
 | `0x0E49A–0x0FFCE` | 6964 bytes of `0xFF` (free) |
-| `0x0FFCE–0x10000` | calibration label `B22K4_0419C0KA20` ×3 + 2 bytes (0x47DB in stock, 0x1851 in Alpina). These 2 bytes are not reproduced by a simple sum/XOR of the window; edited calibrations with the tail untouched run fine — apparently the ECU does not verify a window checksum (hypothesis) |
+| `0x0FFCE–0x10000` | calibration label `B22K4_0419C0KA20` ×3 + 2 bytes at `0xFFFE`: the calibration checksum, CRC-16/XMODEM over `0x8000–0xFFCD` (0x47DB in stock, 0x1851 in Alpina). The ECU computes it only when a tester asks (command 0x0A), so edited calibrations with a stale sum still drive; the tools recompute it (doc 07 §6) |
 | `0x10000–0x13400` | second data area, strings (`BK8D1920BMW51911` @0x131BC), shift-automaton matrices (0x12E30, 0x12F9C, 0x12FAA, 0x12FDC, 0x13012, 0x13034) |
 | `0x13784–0x15000` | `0xFF` |
 | `0x15000–0x3A800` | main code (including the shift-execution module 0x34000–0x39600) |
@@ -120,7 +120,7 @@ The active program number is `0xFFFF91B0`. Shift-point matrices: 0x91B2 + k·0x7
 | 06, 14 | 0x9452, 0x97D2 | D-like (economy) | shape |
 | **08, 09, 10** | 0x9532, 0x95A2, 0x9612 | **manual**: rows do not depend on pedal; downshift columns are protection lines | shape; by log, manual mode = program 178 in byte 22 of the status frame |
 | 11, 15 | 0x9682, 0x9842 | sport (11 — early shifts) | shape |
-| 12 | 0x96F2 | only 1→2 (30 km/h), never above 2nd | shape |
+| 12 | 0x96F2 | only 1→2 (at 30, 35 km/h on the reference car), never above 2nd | shape |
 | 13 | 0x9762 | start in 2nd (1→2 = 0) — winter | shape |
 
 Everything "by shape" is a hypothesis: the mapping of program number to button/selector lives in code (0x2300C → 0x23110 → 0x23230 → `0xFFFF91A0`) and is not fully traced.
@@ -136,7 +136,7 @@ Dispatcher 0xC8E–0xF84, command table `0x3E54` — 9 entries `[cmd][pad][ptr32
 | 0x00 | 0x0F8A | identification |
 | 0x06 | 0x1088 | **memory read** by segment |
 | 0x07 | 0x112E | memory write |
-| 0x0A | 0x1360 | checksum |
+| 0x0A | 0x1360 | checksums: CRC-16 of three regions by routine 0x221C (doc 07 §6) |
 | 0x0D | 0x152E | block 0x3E0E |
 | 0x90 / 0x91 | 0x1598 / 0x1708 | flash |
 | 0x9E / 0x9F | 0x17D2 / 0x17F2 | — |

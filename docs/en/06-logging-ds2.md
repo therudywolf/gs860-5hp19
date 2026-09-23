@@ -51,7 +51,7 @@ Command 0x06, segment 4, period 10–20 ms. Addresses and meaning from the execu
 | `0xFFFF97A0` (u16) | engine torque, Nm | link to the Y axis of the maps (Y = Nm/4 + 25) |
 | `0xFFFF9725` | turbine/32 at start | X axis of the pressure maps |
 | `0xFFFF971A`, `0xFFFF971B` | transition type, kind | which record was active |
-| `0xFFFF9182`, `0xFFFF918F`, `0xFFFF91B0`, `0xFFFF91CB` | pedal, speed km/h, program, branch | gear selection and TCC |
+| `0xFFFF9182`, `0xFFFF918F`, `0xFFFF91B0`, `0xFFFF91CB` | pedal, output shaft rpm / 32 (filtered, doc 02 §3), program, branch | gear selection and TCC |
 | `0xFFFF91AC`, `0xFFFF9216` | TCC stage, TCC control value | lockup |
 
 "Better" for hydraulics means: a shorter phase 10 at the same torque, no rise in the peak d(turbine)/dt after sync, `0xFFFF9720` not hitting f24, no turbine overshoot on downshifts above ~150 rpm over the new gear's synchronous speed, and `0xFFFF96AE` not growing shift after shift (otherwise the adaptation is fighting the calibration).

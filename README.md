@@ -58,11 +58,15 @@ Everything here comes from disassembling the firmware (capstone m68k), diffing a
 ### Quick start
 
 ```bash
-python3 tools/egs_tables.py info  my_dump.bin          # size, SHA-256, code hash, table count
-python3 tools/egs_tables.py shift my_dump.bin          # the 16 shift-point matrices
+python3 tools/egs_tables.py info  my_dump.bin          # size, SHA-256, code hash, table count, checksums
+python3 tools/egs_tables.py shift my_dump.bin --turbine    # the 16 shift-point matrices in turbine rpm
 python3 tools/egs_tables.py dump  my_dump.bin 0xBF9C   # any table by address
 python3 tools/apply_recipe.py recipes/wolf4x_v20_track_hard.json my_dump.bin -o build.bin
+python3 tools/gs860_crc.py check build.bin             # the three CRC-16 checksums
+python3 tools/egs_tables.py verify-shift build.bin --spark 6656 --cut 6784 --stock my_dump.bin
 ```
+
+`apply_recipe.py` recomputes the calibration checksum. After editing an image in TunerPro run `gs860_crc.py fix edited.bin fixed.bin`.
 
 Open `xdf/GS8600_19D0_Full256K.xdf` in TunerPro with a 256 KB dump, or `xdf/GS8600_19x0_Partial32K.xdf` with a 32 KB partial. **Read `docs/en/07-reading-and-flashing.md` before you flash anything.**
 
@@ -71,12 +75,12 @@ Open `xdf/GS8600_19D0_Full256K.xdf` in TunerPro with a 256 KB dump, or `xdf/GS86
 | | |
 |---|---|
 | [01 · Firmware layout](docs/en/01-firmware-layout.md) | memory map, table format, the 536 tables, pointer catalogue, the two calibration branches, the 16 programs, DS2 dispatcher |
-| [02 · Shift points](docs/en/02-shift-points.md) | the 16 matrices, pedal rows, km/h ↔ rpm, how to compute a point for your engine |
+| [02 · Shift points](docs/en/02-shift-points.md) | the 16 matrices, pedal rows, the unit (output shaft rpm / 32), how to check a point against your engine's limiter |
 | [03 · Torque converter lockup](docs/en/03-torque-converter-lockup.md) | the 4-stage ladder, threshold tables, the "temperature window" myth, where ATF temperature really is |
 | [04 · Shift execution and hydraulics](docs/en/04-shift-execution-hydraulics.md) | the shift automaton: record sets, transition types, phases, the slip-time controller, clutch pressures, table families, stock vs Alpina — and why copying Alpina data blindly destroys a shift |
 | [05 · Protections](docs/en/05-protections.md) | function `0x265F4` is a supply-voltage monitor (and how the "turbine 7000 rpm" reading was disproved), thermal derate, limp mode |
 | [06 · Logging over DS2](docs/en/06-logging-ds2.md) | 9600 baud, reading RAM, status-frame bytes, the addresses worth logging for A/B |
-| [07 · Reading and flashing](docs/en/07-reading-and-flashing.md) | full 256K vs partial 32K, order of operations, Reset Adaptation, what a dump contains |
+| [07 · Reading and flashing](docs/en/07-reading-and-flashing.md) | full 256K vs partial 32K, order of operations, Reset Adaptation, what a dump contains, the three checksums |
 | [08 · Recipes and presets](docs/en/08-recipes-and-presets.md) | the recipe format and every preset change justified table by table |
 | [09 · What not to touch](docs/en/09-what-not-to-touch.md) | the prohibitions, each with the reason |
 | [10 · Methodology](docs/en/10-methodology.md) | how the reverse was done, what counts as proven, refuted readings, open questions |
@@ -94,15 +98,16 @@ A preset here is a **recipe** — a JSON diff against the stock calibration, not
 | `wolf4x_v19_street_hard` | factory Alpina B3 level where the axes match |
 | `wolf4x_v20_track_hard` | short slip time, raised pressure ceiling, early lockup in Sport/Manual |
 
-All three were built for a 2.5 M52TU with a stock final drive — `docs/en/08` §4 explains what to recalculate for a different engine, rev limit or final drive.
+All three are built for a 2.5 M52TU with the spark cut from about 6656 rpm and the fuel cut at 6784. Their shift points were recomputed on 23.09.2026 after the matrix unit was proven to be output shaft rpm / 32, not km/h (CHANGELOG). Shift points depend only on the engine limiter, not on the final drive or tyres: check them against yours with `egs_tables.py verify-shift` (`docs/en/08` §4).
 
 ### Repository layout
 
 ```
 docs/en, docs/ru     documentation, identical set of files
 xdf/                 TunerPro definitions: full 256K and partial 32K
-tools/               egs_tables.py, make_recipe.py, apply_recipe.py — Python 3, no dependencies
+tools/               egs_tables.py, make_recipe.py, apply_recipe.py, gs860_crc.py — Python 3, no dependencies
 recipes/             presets as JSON diffs, with annotations
+tests/               self-tests: python3 -m unittest discover -s tests (GS860_STOCK=stock.bin for the full set)
 ```
 
 ### Disclaimer
@@ -151,11 +156,15 @@ Unpaid hobby research: dumps read by hand, code disassembled instruction by inst
 ### Быстрый старт
 
 ```bash
-python3 tools/egs_tables.py info  my_dump.bin          # размер, SHA-256, хэш кода, число таблиц
-python3 tools/egs_tables.py shift my_dump.bin          # 16 матриц точек переключения
+python3 tools/egs_tables.py info  my_dump.bin          # размер, SHA-256, хэш кода, число таблиц, контрольные суммы
+python3 tools/egs_tables.py shift my_dump.bin --turbine    # 16 матриц точек переключения в оборотах турбины
 python3 tools/egs_tables.py dump  my_dump.bin 0xBF9C   # любая таблица по адресу
 python3 tools/apply_recipe.py recipes/wolf4x_v20_track_hard.json my_dump.bin -o build.bin
+python3 tools/gs860_crc.py check build.bin             # три контрольные суммы CRC-16
+python3 tools/egs_tables.py verify-shift build.bin --spark 6656 --cut 6784 --stock my_dump.bin
 ```
+
+`apply_recipe.py` сам пересчитывает контрольную сумму калибровки. После правки образа в TunerPro запустите `gs860_crc.py fix edited.bin fixed.bin`.
 
 XDF открывается в TunerPro: `xdf/GS8600_19D0_Full256K.xdf` — для дампа 256 КБ, `xdf/GS8600_19x0_Partial32K.xdf` — для партиала 32 КБ. **Перед любой прошивкой прочитайте `docs/ru/07-reading-and-flashing.md`.**
 
@@ -164,12 +173,12 @@ XDF открывается в TunerPro: `xdf/GS8600_19D0_Full256K.xdf` — дл�
 | | |
 |---|---|
 | [01 · Устройство прошивки](docs/ru/01-firmware-layout.md) | карта памяти, формат таблиц, 536 таблиц, каталог указателей, две ветки калибровки, 16 программ, диспетчер DS2 |
-| [02 · Точки переключения](docs/ru/02-shift-points.md) | 16 матриц, строки педали, км/ч ↔ об/мин, как посчитать точку под свой мотор |
+| [02 · Точки переключения](docs/ru/02-shift-points.md) | 16 матриц, строки педали, единица (обороты выходного вала / 32), как проверить точку под ограничитель своего мотора |
 | [03 · Блокировка гидротрансформатора](docs/ru/03-torque-converter-lockup.md) | лесенка из 4 ступеней, таблицы порогов, миф о «температурном окне», где на самом деле температура ATF |
 | [04 · Исполнение переключения и гидравлика](docs/ru/04-shift-execution-hydraulics.md) | автомат переключения: наборы записей, типы переходов, фазы, регулятор времени скольжения, давления сцеплений, семейства таблиц, сток против Alpina — и почему слепое копирование данных Alpina убивает переключение |
 | [05 · Защиты](docs/ru/05-protections.md) | функция `0x265F4` — монитор напряжения бортсети (и как была опровергнута трактовка «турбина 7000»), термодерейт, аварийный режим |
 | [06 · Логирование по DS2](docs/ru/06-logging-ds2.md) | 9600 бод, чтение RAM, байты статусного кадра, адреса, которые стоит писать для сравнения «до/после» |
-| [07 · Чтение и прошивка](docs/ru/07-reading-and-flashing.md) | полный 256K против партиала 32K, порядок действий, сброс адаптаций, что содержит дамп |
+| [07 · Чтение и прошивка](docs/ru/07-reading-and-flashing.md) | полный 256K против партиала 32K, порядок действий, сброс адаптаций, что содержит дамп, три контрольные суммы |
 | [08 · Рецепты и пресеты](docs/ru/08-recipes-and-presets.md) | формат рецепта и обоснование каждой правки пресета, таблица за таблицей |
 | [09 · Что не трогать](docs/ru/09-what-not-to-touch.md) | запреты, у каждого — причина |
 | [10 · Методика](docs/ru/10-methodology.md) | как делался реверс, что считается доказанным, опровергнутые трактовки, открытые вопросы |
@@ -187,15 +196,16 @@ XDF открывается в TunerPro: `xdf/GS8600_19D0_Full256K.xdf` — дл�
 | `wolf4x_v19_street_hard` | уровень заводской Alpina B3 там, где совпадают оси |
 | `wolf4x_v20_track_hard` | короткое время скольжения, поднятый потолок давления, ранняя блокировка в Sport/Manual |
 
-Все три собраны под мотор 2.5 M52TU с заводской главной парой. Что пересчитать под другой мотор, отсечку или главную пару — в `docs/ru/08`, раздел 4.
+Все три собраны под мотор 2.5 M52TU с искрой примерно с 6656 и топливной отсечкой 6784. Точки переключения пересчитаны 23.09.2026, когда доказано, что единица матриц это обороты выходного вала / 32, а не км/ч (CHANGELOG). Точки зависят только от ограничителя мотора, не от главной пары и колёс: проверьте их под свой командой `egs_tables.py verify-shift` (`docs/ru/08`, раздел 4).
 
 ### Структура репозитория
 
 ```
 docs/en, docs/ru     документация, одинаковый набор файлов
 xdf/                 определения TunerPro: полный 256K и партиал 32K
-tools/               egs_tables.py, make_recipe.py, apply_recipe.py — Python 3, без зависимостей
+tools/               egs_tables.py, make_recipe.py, apply_recipe.py, gs860_crc.py — Python 3, без зависимостей
 recipes/             пресеты как JSON-diff, с аннотациями
+tests/               самопроверка: python3 -m unittest discover -s tests (GS860_STOCK=stock.bin для полного набора)
 ```
 
 ### Ответственность

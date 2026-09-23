@@ -11,7 +11,7 @@ EGS GS8.60.0 (256 KB) only. The tool used in the project was MS4X Flasher (see t
 
 In this repository's builds everything outside the `0x8000–0x10000` window is byte-identical to the original dump, so Full and Partial give the same result. Partial is safer: a power loss mid-write only corrupts the calibration, which a repeat write fixes; a power loss during a Full write can hit the boot loader.
 
-`tools/apply_recipe.py` writes both files: `out.bin` and `out_partial32k.bin`; `tools/egs_tables.py info` shows size, SHA-256, code hash and calibration label of either.
+`tools/apply_recipe.py` writes both files: `out.bin` and `out_partial32k.bin`. `tools/egs_tables.py info` shows size, SHA-256, code hash, calibration label and checksums of either, `tools/gs860_crc.py check` checks the checksums alone.
 
 ## 2. Conditions
 
@@ -23,10 +23,10 @@ In this repository's builds everything outside the `0x8000–0x10000` window is 
 ## 3. Order
 
 1. **Read a Full dump** and store it safely under a name with version and size. Dumps are never overwritten — they are the only real roll-back point.
-2. Check the dump: `python3 tools/egs_tables.py info dump.bin` — size 262144, code hash `e151733e…` (= 19C0/19D0), 536 tables in the zone. If the code hash differs or there are not 536 tables, it is different software (e.g. GS8.60.4) and **nothing in this repository applies to it**.
+2. Check the dump: `python3 tools/egs_tables.py info dump.bin` — size 262144, code hash `e151733e…` (= 19C0/19D0), 536 tables in the zone, all three checksums ok. If the code hash differs or there are not 536 tables, it is different software (e.g. GS8.60.4) and **nothing in this repository applies to it**. If the loader or program checksum does not match, the read is damaged: read again.
 3. If the flasher can read a Partial separately, read it too and verify that it is byte-identical to the `0x8000–0xFFFF` slice of the full dump. If not, this version lays out its calibration differently and you must stop.
 4. Build the file: `python3 tools/apply_recipe.py recipes/<recipe>.json dump.bin -o build.bin` (doc 08). The tool refuses to write if the code does not match or if table axes do not match, and warns if old values do not match (a different base calibration — read doc 08 §4 before `--force`).
-5. Verify the SHA-256 of the built file against the build log (`build.log`). If it does not match — do not flash.
+5. Verify the SHA-256 of the built file against the build log (`build.log`) and the checksums: `python3 tools/gs860_crc.py check build.bin build_partial32k.bin`. If either does not match — do not flash.
 6. Flash the **Partial**.
 7. After writing — **Reset Adaptation** with a diagnostic tool. Mandatory: pressure/fill-time adaptations (`0xFFFF9480…`, `0xFFFF965E`, `0xFFFF9668`) were accumulated against the old calibration.
 8. First drives — with a log (doc 06 §4).
@@ -41,4 +41,20 @@ A full dump carries identifiers of the **specific unit**: block 0x5FB6 with a 12
 
 ## 6. Checksum
 
-No simple sum/XOR of the calibration window has been found in the tail at `0xFFFE`; edited calibrations with the tail untouched (`0x47DB` in stock) are accepted and drive. The conclusion "the ECU does not verify a window checksum" is a hypothesis, confirmed in practice on every build of the project (v1…v17) but not by code. Do not touch the tail `0x0FFCE–0x10000`.
+Found 23.09.2026 in the handler of DS2 command `0x0A` (`0x1360`): three CRC-16 checksums computed by the routine `0x221C`.
+
+| Region | Stored at | Stock 19D0 |
+|---|---|---|
+| loader `0x00000–0x042FF` | `0x05FFE` | 0xD5DE |
+| program `0x10000–0x3F77B` | `0x3F7FE` | 0x021E |
+| calibration `0x08000–0x0FFCD` | `0x0FFFE` | 0x47DB |
+
+Algorithm: CRC-16/XMODEM (polynomial 0x1021, initial value 0, MSB first, no final XOR), table of 256 big-endian words at `0x3EDA` in the image. The right bound of a region is not included, the sum is stored big-endian. The stock E39 image and the factory Alpina B3 match on all three (0x1851 is the Alpina calibration sum).
+
+The routine `0x221C` is called only from that handler (three calls at `0x13C4`, `0x1436`, `0x14AA`, no other reference in the image): the ECU computes the sums only when a tester asks. That is why edited calibrations with a stale sum were accepted and drove (every build of the project v1…v21). A tester or flasher that reads the sums sees the mismatch, so the tools keep the sum right:
+
+- `apply_recipe.py` checks the loader and program sums of the input and recomputes the calibration sum after writing.
+- `python3 tools/gs860_crc.py check image.bin` checks full images (256 KB, 512 KB of GS8.60.4) and 32 KB partials.
+- `python3 tools/gs860_crc.py fix edited.bin fixed.bin` writes a new file with the sums recomputed, for an image edited by other means (TunerPro and the like). It refuses when the loader or program sum of the input does not match.
+
+The label `0x0FFCE–0x0FFFD` is left as it is.

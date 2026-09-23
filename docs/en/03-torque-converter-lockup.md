@@ -3,7 +3,7 @@
 ## 1. The essentials
 
 - Lockup in GS8.60.0 is a **ladder of four stages** of a control value (constant `0x8214 = 4`), not on/off and not a closed-loop slip controller. There are no target-slip tables as a class; slip is what remains at a given stage and torque. Confirmed by measurement: manual mode, 3rd gear, pedal 225/255, 100 → 142 km/h with the stage unchanged — slip 128, 256, 160, 128, 96, 64, 0, 0 rpm.
-- Stage thresholds are **in pedal 0..255**, the Y axis of the tables is **road speed in km/h**. ATF temperature never enters the stage decision. There is no separate "speed limit for lockup".
+- Stage thresholds are **in pedal 0..255**, the Y axis of the tables is **output shaft rpm / 32** (`0xFFFF918F`, the same variable as in the shift matrices, doc 02 §3, 1.18 km/h per unit on the reference car). ATF temperature never enters the stage decision. There is no separate "speed limit for lockup".
 - There are two threshold branches (doc 01 §4). There is no hysteresis in the stage decision — its role is played by the dwell `0x8E88 = 5` cycles after a stage change.
 
 ## 2. Code
@@ -27,7 +27,7 @@ entry conditions:
 
 table = pair of the current gear [0xFFFF91AE]; second table of the pair if [0xFFFF91CB] == 1
 for i = 1 .. [0x8214]−1:
-    threshold[i] = table(X = i, Y = [0xFFFF918F] speed km/h)
+    threshold[i] = table(X = i, Y = [0xFFFF918F] output shaft rpm / 32)
 stage = highest i with threshold[i] <= [0xFFFF9182]; else 1
 [0xFFFF91AC] = stage;  [0xFFFF9200] = [0x8E88]
 ```
@@ -50,9 +50,9 @@ Proof that `0xFFFF9182` is the pedal: the same variable is read as the Y input o
 
 ## 3. Threshold tables
 
-All 2D8, X = 1..3 (column = threshold to enter stage 2 / 3 / 4), Y = km/h, value = pedal 0..255.
+All 2D8, X = 1..3 (column = threshold to enter stage 2 / 3 / 4), Y = output shaft rpm / 32, value = pedal 0..255. On the reference car the rows 31 / 62 / 94 / 125 / 156 / 188 are 37 / 73 / 111 / 148 / 184 / 222 km/h (until 23.09.2026 this document read them as km/h).
 
-| Gear | Branch 0 | Branch 1 | Y axis (km/h) |
+| Gear | Branch 0 | Branch 1 | Y axis (n_out / 32) |
 |---|---|---|---|
 | 1 | `0x901E` | `0x903E` | 20, 28, 32, 38, 44, 50 |
 | 2 | `0x905E` | `0x907E` | 31, 47, 62, 68, 76, 85 |
@@ -71,13 +71,13 @@ Stock values (columns 1 / 2 / 3):
 | 4 | 128, 129, 132, 134, 137, 139, 144, 151, 172, 191 / 242 / 252 — **rises** with speed | 64 → 88 / 97 → 141 / 128 → 204 |
 | 5 | **230** / 242 / 252 (90 %) everywhere | 64 / 115 / 179 |
 
-Consequences in stock: in branch 0 the clutch never leaves stage 1 while cruising in 5th (a 90 % pedal threshold is unreachable); it arrives in 5th already "locked" from 4th and stays as long as the pedal is above 25 % (branch 1) — and only 4th has a speed-dependent threshold, which **rises** with speed. The "lockup limited to 114 km/h" discussed in the community is, on this software, neither a scalar nor a code comparison but the breakpoint of the 4th-gear axis (63 / 88 / **113** / 125 …) together with the first pedal threshold in those rows.
+Consequences in stock: in branch 0 the clutch never leaves stage 1 while cruising in 5th (a 90 % pedal threshold is unreachable); it arrives in 5th already "locked" from 4th and stays as long as the pedal is above 25 % (branch 1) — and only 4th has a speed-dependent threshold, which **rises** with speed. The "lockup limited to 114 km/h" discussed in the community is, on this software, neither a scalar nor a code comparison but the breakpoint of the 4th-gear axis (63 / 88 / **113** / 125 …) together with the first pedal threshold in those rows. Row 113 is 3616 output shaft rpm, 133 km/h on the reference car: the figure "114 km/h" is that breakpoint read as km/h.
 
 Measured on the reference car (log under load, throttle > 5°): D gears 1–3 at 17–46 km/h — slip 160…736 rpm, not one locked frame; D 4th at 48–65 km/h — up to 704; S 4th — locked in 100 % of frames. ATF heating in town follows directly.
 
 ## 4. How it was changed (preset v10/v18, doc 08)
 
-Branch 0: column 1 in rows above 62 km/h (2nd, 3rd), 113 km/h (4th), 94 km/h (5th) → 102 (40 %). Branch 1: column 1 → 26…38 (10–15 %) with a gentler entry in the lowest rows. Ladder `0x888C` → 32 / 128 / 176 / 240, `0x88C0` → 7, `0x88B0` → −10 / −20 / −40. First gear and matrix `0x889C` untouched. Locking the clutch hard below ~1500 rpm on a high-mileage converter causes shudder; hence the gentler threshold at 63 km/h in 4th/5th.
+Branch 0: column 1 from speed row 62 (2nd, 3rd), 113 (4th), 94 (5th) → 102 (40 %). Branch 1: column 1 → 26…38 (10–15 %) with a gentler entry in the lowest rows. Ladder `0x888C` → 32 / 128 / 176 / 240, `0x88C0` → 7, `0x88B0` → −10 / −20 / −40. First gear and matrix `0x889C` untouched. Locking the clutch hard below ~1500 rpm on a high-mileage converter causes shudder; hence the gentler threshold at row 63 in 4th/5th (74 km/h on the reference car, turbine 2016 rpm in 4th, 1496 in 5th).
 
 ## 5. Myth check: "TCC temperature window 23 / 27 / 90 / 140 °C"
 

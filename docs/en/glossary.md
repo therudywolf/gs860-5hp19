@@ -26,7 +26,7 @@
 | **WÜK / TCC** | Wandlerüberbrückungskupplung — torque converter lock-up clutch. In GS8.60.0 a four-stage ladder of a control value (doc 03) |
 | **TCC stage** | one of the 4 ladder values `0x888C` (32/96/160/224 stock); chosen by pedal and speed |
 | **Turbine** | speed of the converter turbine = transmission input shaft (`0xFFFF97B4`); equals engine speed with the clutch locked |
-| **n_out** | output shaft speed (`0xFFFF97B2`); 27.11 rpm per km/h on the reference car |
+| **n_out** | output shaft speed (`0xFFFF97B2`); 27.11 rpm per km/h on the reference car. The shift matrices and the TCC speed axes hold n_out / 32 (`0xFFFF918F`), doc 02 §3 |
 | **Torque** | engine torque from CAN, Nm (`0xFFFF97A0`); map Y axis = Nm/4 + 25 |
 | **ATF** | transmission fluid; raw sensor byte `0xFFFF8435`; in the frame °C = byte − 48 |
 | **Thermal derate** | limitation of the effective pedal by ATF temperature (table `0x9A6E`, doc 05 §2) |

@@ -8,7 +8,7 @@ The list of prohibitions. Every item has cost someone an undriveable box, a limp
 |---|---|
 | `0x0000–0x8000` | boot loader, identification, DS2 driver. Without it the ECU cannot be re-flashed |
 | `0x10000–0x40000` | code and record descriptors. Any edit = a code patch; this repository contains no such patches and publishes no hooks |
-| tail `0x0FFCE–0x10000` | calibration label and 2 bytes of unknown purpose (doc 07 §6) |
+| tail `0x0FFCE–0x10000` | calibration label (leave it) and the calibration checksum at `0xFFFE`: not edited by hand, recomputed by `apply_recipe.py` or `gs860_crc.py fix` (doc 07 §6) |
 
 `apply_recipe.py` physically cannot write outside `0x8000–0x10000`.
 

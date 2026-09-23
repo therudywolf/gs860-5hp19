@@ -50,6 +50,6 @@ One step — one build — one log. Do not combine in a first build steps that c
 - Which PWM channel / register corresponds to which solenoid (EDS1…5, MV1…3).
 - Semantics of fields kind1 f70 (4×4) and kind3 f65 (6×6), of tables `0xA066…0xA20A`, `0x917E`, `0x8142`, `0x824A`, of slots 0…11 of the descriptors `0x3AA60`.
 - The argument format of DS2 command `0x06` (segment/address/length) — to be captured from a factory tester.
-- How the ECU derives road speed in km/h (`0xFFFF918F`): from n_out via a constant or from CAN.
+- Closed 23.09.2026: `0xFFFF918F` is the filtered output shaft rpm shifted right by 5, not road speed (doc 02 §3).
 - Purpose of `0xFFFF90C2` and of bytes 21 / 13 / 19 of the status frame.
 - Mapping of internal fault numbers (6–9 at `0x12640`) to DS2 codes (e.g. 0x95).

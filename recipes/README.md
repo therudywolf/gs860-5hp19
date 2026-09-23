@@ -5,16 +5,20 @@
 <a name="english"></a>
 ## English
 
-A recipe is a JSON diff between a stock GS8.60.0 calibration and a tune (schema `gs860-recipe/1`, format described in `docs/en/08-recipes-and-presets.md`). It contains addresses, table formats, **both axes**, old and new data and comments — never a firmware dump.
+A recipe is a JSON diff between a stock GS8.60.0 calibration and a tune (schema `gs860-recipe/2`, the older `/1` is still accepted; format described in `docs/en/08-recipes-and-presets.md`). It contains addresses, table formats, **both axes**, old and new data and comments — never a firmware dump, and never the checksum bytes `0xFFFE–0xFFFF`: `apply_recipe.py` computes those (`docs/en/07` §6).
+
+**23.09.2026.** All three presets were revised: the shift matrices hold output shaft rpm / 32, not km/h (`docs/en/02` §3), so the 16.09 sport shift points were never reached at full throttle and the box hung at the limiter; the manual programs had no protection on the overrun and a kickdown landing above the spark cut. The shift points were recomputed by `egs_tables.py verify-shift --spark 6656 --cut 6784 --fix`, hydraulics and TCC are as built. The 16.09 result hashes are kept in each recipe under `history`.
 
 ### Files
 
 | File | What |
 |---|---|
-| `wolf4x_v18_sport_daily.json` | full diff of the WOLF4X v18 "Sport daily (8HP-like)" preset against the stock calibration it was built from. 43 tables + 3 byte blocks, 1389 bytes |
+| `wolf4x_v18_sport_daily.json` | full diff of the WOLF4X v18 "Sport daily (8HP-like)" preset against the stock calibration it was built from. 43 tables + 3 byte blocks, 1375 bytes with the checksum. Result full `14e15185…`, partial `e50bdaec…` |
 | `wolf4x_v18_sport_daily.annotations.json` | groups, names and comments used by `make_recipe.py` to build the recipe above (kept so the recipe can be regenerated) |
-| `wolf4x_v19_street_hard.json` | WOLF4X v19 "Street hard" — v18 taken to the factory Alpina B3 level: shorter target slip time at high torque, on-coming/off-going pressures copied cell by cell from Alpina where the axes match, sport holds a gear longer at part throttle, TCC stages 3–4 from 30–50 % pedal in S/M. 45 tables + 3 byte blocks, 1252 bytes. Result full `5ee8d309…`, partial `bcfd8122…` |
+| `wolf4x_v19_street_hard.json` | WOLF4X v19 "Street hard" — v18 taken to the factory Alpina B3 level: shorter target slip time at high torque, on-coming/off-going pressures copied cell by cell from Alpina where the axes match, sport holds a gear longer at part throttle, TCC stages 3–4 from 30–50 % pedal in S/M. 45 tables + 3 byte blocks, 1238 bytes. Result full `3b5c2cab…`, partial `6b740fc5…` |
 | `wolf4x_v19_street_hard.annotations.json` | annotations for the recipe above |
+| `wolf4x_v20_track_hard.json` | WOLF4X v20 "Track hard" — v19 with a deliberately harder shift in the cells only Sport/Manual reach: shorter target slip time, raised slip-pressure ceiling f24, higher on-coming pressure, stock torque request at 3000 rpm, TCC stages 3–4 earlier in S/M. 47 tables + 7 byte blocks, 1244 bytes. Result full `1106e3eb…`, partial `faad4369…` |
+| `wolf4x_v20_track_hard.annotations.json` | annotations for the recipe above |
 
 ### Base
 
@@ -22,17 +26,19 @@ A recipe is a JSON diff between a stock GS8.60.0 calibration and a tune (schema 
 |---|---|
 | ECU / software | Bosch GS8.60.0, 256 KB image, program 19C0/19D0 (code SHA-256 `e151733e1cc1a779975680a48722e26ac43c5b3674150576a38fb0b9e57c2546`) |
 | Stock calibration | label `B22K4_0419C0KA20` (E39 2.5, stock final drive); SHA-256 of window 0x8000–0x10000 `d3c2c3fdffb943f5bd848f672c6d3750a79986167c59c72dac367d386cbbdf51` |
-| Built for | 2.5 l M52TU (M52TUB25) with a 6784 rpm rev limit; see `docs/en/08` §4 for what to recalculate otherwise |
-| Result | full `0bfd1d0d10037e020bcbfb16fdf5941bf17d0ec085dd5dd0cdec22c65419812e`, partial `657531fa400e0070f1cc37ebaac497c84d1ef690b1329bfdb3f81726d9ee60e4` |
+| Built for | 2.5 l M52TU (M52TUB25) with the fuel cut at 6784 rpm and the spark cut from about 6656; for another limiter run `egs_tables.py verify-shift` (`docs/en/08` §4). The final drive and tyres do not matter for the shift rpm |
+| Result (v18) | full `14e1518567722bfe53dda79d04e9fcd88d865643095f94c5656423647fe42a3a`, partial `e50bdaec1c27852ebebec3e3de44e9785f43d3a9fa80020b4d7096c9013767b7`, calibration checksum `0xEA30` |
 
 ### How to apply
 
 ```
 python3 tools/egs_tables.py info my_dump.bin
 python3 tools/apply_recipe.py recipes/wolf4x_v18_sport_daily.json my_dump.bin -o build.bin
+python3 tools/gs860_crc.py check build.bin build_partial32k.bin
+python3 tools/egs_tables.py verify-shift build.bin --spark 6656 --cut 6784 --stock my_dump.bin
 ```
 
-`apply_recipe.py` stops if the code hash differs (different software), if any table axis differs (different calibration — do not force), and warns and stops if old values differ (`--force` to override — read `docs/en/08` §5 first). It writes `build.bin` (256K), `build_partial32k.bin` (32K) and `build.log`. Flash the partial; Reset Adaptation afterwards (`docs/en/07`).
+`apply_recipe.py` stops if the code hash differs (different software), if the loader or program checksum of the input does not match (damaged read), if any table axis differs (different calibration — do not force), and warns and stops if old values differ (`--force` to override — read `docs/en/08` §5 first). It recomputes the calibration checksum and writes `build.bin` (256K), `build_partial32k.bin` (32K) and `build.log`. Flash the partial; Reset Adaptation afterwards (`docs/en/07`).
 
 ### v17 → v18
 
@@ -44,21 +50,25 @@ v17 raised `0x8EEA` from 7000 to 7300 believing it to be a turbine over-speed li
 python3 tools/make_recipe.py stock.bin tuned.bin -o recipes/my_recipe.json -a my_annotations.json
 ```
 
-`make_recipe.py` refuses when the tune changes any table axis or any byte outside 0x8000–0x10000. Annotate every changed table (group, name, comment in EN and RU) — unannotated recipes are not accepted into the repository (see CONTRIBUTING).
+`make_recipe.py` refuses when the tune changes any table axis or any byte outside 0x8000–0x10000, and leaves the checksum bytes out. Annotate every changed table (group, name, comment in EN and RU) — unannotated recipes are not accepted into the repository (see CONTRIBUTING). Before a pull request run `python3 -m unittest discover -s tests` with `GS860_STOCK` set and `egs_tables.py verify-shift` for the engine the recipe is meant for.
 
 <a name="русский"></a>
 ## Русский
 
-Рецепт — JSON-diff между стоковой калибровкой GS8.60.0 и тюном (схема `gs860-recipe/1`, формат описан в `docs/ru/08-recipes-and-presets.md`). В нём адреса, форматы таблиц, **обе оси**, старые и новые данные и комментарии — и никогда не дамп прошивки.
+Рецепт — JSON-diff между стоковой калибровкой GS8.60.0 и тюном (схема `gs860-recipe/2`, старая `/1` тоже принимается; формат описан в `docs/ru/08-recipes-and-presets.md`). В нём адреса, форматы таблиц, **обе оси**, старые и новые данные и комментарии — и никогда не дамп прошивки и не байты суммы `0xFFFE–0xFFFF`: их считает `apply_recipe.py` (`docs/ru/07` §6).
+
+**23.09.2026.** Все три пресета исправлены: матрицы переключения хранят обороты выходного вала / 32, а не км/ч (`docs/ru/02` §3), поэтому точки спорта 16.09 в пол были недостижимы и коробка висела в отсечке, а у ручных программ не было защиты на накате и кикдаун приводил мотор выше искры. Точки пересчитаны командой `egs_tables.py verify-shift --spark 6656 --cut 6784 --fix`, гидравлика и ГДТ как собраны. Хэши результата от 16.09 сохранены в каждом рецепте в поле `history`.
 
 ### Файлы
 
 | Файл | Что |
 |---|---|
-| `wolf4x_v18_sport_daily.json` | полный diff пресета WOLF4X v18 «Sport daily (8HP-like)» относительно стоковой калибровки, на которой он собран. 43 таблицы + 3 блока байт, 1389 байт |
+| `wolf4x_v18_sport_daily.json` | полный diff пресета WOLF4X v18 «Sport daily (8HP-like)» относительно стоковой калибровки, на которой он собран. 43 таблицы + 3 блока байт, 1375 байт с суммой. Результат full `14e15185…`, partial `e50bdaec…` |
 | `wolf4x_v18_sport_daily.annotations.json` | группы, имена и комментарии, по которым `make_recipe.py` построил рецепт выше (хранится, чтобы рецепт можно было перегенерировать) |
-| `wolf4x_v19_street_hard.json` | WOLF4X v19 «Street hard» — v18, доведённый до заводского уровня Alpina B3: короче целевое время скольжения на высоком моменте, давления включаемого/выключаемого поячеечно из Alpina там, где совпадают оси, спорт дольше держит передачу на частичном газе, ГДТ в S/M выходит на 3–4 ступень с 30–50 % педали. 45 таблиц + 3 блока байт, 1252 байта. Результат full `5ee8d309…`, partial `bcfd8122…` |
+| `wolf4x_v19_street_hard.json` | WOLF4X v19 «Street hard» — v18, доведённый до заводского уровня Alpina B3: короче целевое время скольжения на высоком моменте, давления включаемого/выключаемого поячеечно из Alpina там, где совпадают оси, спорт дольше держит передачу на частичном газе, ГДТ в S/M выходит на 3–4 ступень с 30–50 % педали. 45 таблиц + 3 блока байт, 1238 байт. Результат full `3b5c2cab…`, partial `6b740fc5…` |
 | `wolf4x_v19_street_hard.annotations.json` | аннотации к рецепту выше |
+| `wolf4x_v20_track_hard.json` | WOLF4X v20 «Track hard» — v19 с осознанно более жёстким переключением в ячейках, куда попадают только Sport/Manual: короче целевое время скольжения, выше потолок давления f24, выше давление включаемого, запрос момента на 3000 об/мин к стоку, ступени 3–4 ГДТ в S/M раньше. 47 таблиц + 7 блоков байт, 1244 байта. Результат full `1106e3eb…`, partial `faad4369…` |
+| `wolf4x_v20_track_hard.annotations.json` | аннотации к рецепту выше |
 
 ### База
 
@@ -66,17 +76,19 @@ python3 tools/make_recipe.py stock.bin tuned.bin -o recipes/my_recipe.json -a my
 |---|---|
 | Блок / ПО | Bosch GS8.60.0, образ 256 КБ, программа 19C0/19D0 (SHA-256 кода `e151733e1cc1a779975680a48722e26ac43c5b3674150576a38fb0b9e57c2546`) |
 | Стоковая калибровка | метка `B22K4_0419C0KA20` (E39 2.5, стоковая главная пара); SHA-256 окна 0x8000–0x10000 `d3c2c3fdffb943f5bd848f672c6d3750a79986167c59c72dac367d386cbbdf51` |
-| Под что собран | 2.5 л M52TU (M52TUB25) с отсечкой 6784; что пересчитывать под другое — `docs/ru/08` §4 |
-| Результат | full `0bfd1d0d10037e020bcbfb16fdf5941bf17d0ec085dd5dd0cdec22c65419812e`, partial `657531fa400e0070f1cc37ebaac497c84d1ef690b1329bfdb3f81726d9ee60e4` |
+| Под что собран | 2.5 л M52TU (M52TUB25), топливная отсечка 6784, искра примерно с 6656; под другой ограничитель запустить `egs_tables.py verify-shift` (`docs/ru/08` §4). Главная пара и колёса на обороты переключения не влияют |
+| Результат (v18) | full `14e1518567722bfe53dda79d04e9fcd88d865643095f94c5656423647fe42a3a`, partial `e50bdaec1c27852ebebec3e3de44e9785f43d3a9fa80020b4d7096c9013767b7`, сумма калибровки `0xEA30` |
 
 ### Как применить
 
 ```
 python3 tools/egs_tables.py info my_dump.bin
 python3 tools/apply_recipe.py recipes/wolf4x_v18_sport_daily.json my_dump.bin -o build.bin
+python3 tools/gs860_crc.py check build.bin build_partial32k.bin
+python3 tools/egs_tables.py verify-shift build.bin --spark 6656 --cut 6784 --stock my_dump.bin
 ```
 
-`apply_recipe.py` останавливается, если не совпал хэш кода (другое ПО), если отличается любая ось таблицы (другая калибровка — не форсировать), и предупреждает и останавливается, если не совпали старые значения (`--force` — только после чтения `docs/ru/08` §5). Пишет `build.bin` (256K), `build_partial32k.bin` (32K) и `build.log`. Шить партиал; после — Reset Adaptation (`docs/ru/07`).
+`apply_recipe.py` останавливается, если не совпал хэш кода (другое ПО), если у входа не сходится сумма загрузчика или программы (дамп снят с ошибкой), если отличается любая ось таблицы (другая калибровка — не форсировать), и предупреждает и останавливается, если не совпали старые значения (`--force` — только после чтения `docs/ru/08` §5). Пересчитывает сумму калибровки и пишет `build.bin` (256K), `build_partial32k.bin` (32K) и `build.log`. Шить партиал; после — Reset Adaptation (`docs/ru/07`).
 
 ### v17 → v18
 
@@ -88,7 +100,7 @@ python3 tools/apply_recipe.py recipes/wolf4x_v18_sport_daily.json my_dump.bin -o
 python3 tools/make_recipe.py stock.bin tuned.bin -o recipes/my_recipe.json -a my_annotations.json
 ```
 
-`make_recipe.py` откажется, если тюн меняет ось любой таблицы или байты вне 0x8000–0x10000. Аннотируйте каждую изменённую таблицу (группа, имя, комментарий EN и RU) — рецепты без аннотаций в репозиторий не принимаются (см. CONTRIBUTING).
+`make_recipe.py` откажется, если тюн меняет ось любой таблицы или байты вне 0x8000–0x10000, а байты суммы в рецепт не включает. Аннотируйте каждую изменённую таблицу (группа, имя, комментарий EN и RU) — рецепты без аннотаций в репозиторий не принимаются (см. CONTRIBUTING). Перед pull request запустите `python3 -m unittest discover -s tests` с `GS860_STOCK` и `egs_tables.py verify-shift` под мотор, для которого рецепт.
 
 ### v18 vs v19
 

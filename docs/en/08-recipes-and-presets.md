@@ -1,12 +1,15 @@
 # 08 · Recipes and the WOLF4X v18 "Sport daily (8HP-like)" preset
 
+> **Revised 23.09.2026.** The shift matrices hold output shaft rpm / 32, not km/h (doc 02 §3). The shift points of all three presets were brought within doc 02 §4 by `egs_tables.py verify-shift --spark 6656 --cut 6784 --fix`, and the recipes moved to schema `gs860-recipe/2`: the calibration checksum at `0xFFFE` is recomputed by `apply_recipe.py` (doc 07 §6). The 16.09 result hashes are kept in each recipe under `history`.
+
 ## 1. What a recipe is
 
-A recipe is a JSON file (`recipes/*.json`, schema `gs860-recipe/1`) describing the **difference** between a stock calibration and a tune:
+A recipe is a JSON file (`recipes/*.json`, schema `gs860-recipe/2`, the older `/1` is still accepted) describing the **difference** between a stock calibration and a tune:
 
 - for every changed table: address, format (`2D8` / `2D16` / `1D8` / `1D16`), dimensions, **both axes**, old and new data, group and comment;
 - for changes outside tables (TCC ladder `0x888C`, matrix `0x88B0`, scalars): address, width, old and new values;
-- base: SHA-256 of the code `0x10000–0x40000`, SHA-256 and label of the stock calibration; result: SHA-256 of the built file.
+- base: SHA-256 of the code `0x10000–0x40000`, SHA-256 and label of the stock calibration. Result: SHA-256 of the built file, checksum recomputed. `checksum`: the calibration checksum of stock and result. `history`: earlier result hashes and why they changed.
+- never the checksum bytes `0xFFFE–0xFFFF`: they are computed, not edited.
 
 Rules built into `tools/apply_recipe.py`:
 
@@ -14,15 +17,16 @@ Rules built into `tools/apply_recipe.py`:
 2. **axes are never changed**: if a table axis in your dump differs from the recipe — stop (doc 04 §11 explains why);
 3. old values are checked cell by cell; a mismatch = a different base calibration → warning and stop, `--force` writes anyway;
 4. only the window `0x8000–0x10000` is written (asserted); output `out.bin`, `out_partial32k.bin`, `out.log`.
+5. the loader and program checksums of the input must match (otherwise a damaged read or modified program: stop), and after writing the calibration checksum at `0xFFFE` is recomputed, so the output passes `gs860_crc.py check`.
 
-A recipe is built from two binaries by `tools/make_recipe.py` (stock → tune); it refuses if the tune changes axes or anything outside the window.
+A recipe is built from two binaries by `tools/make_recipe.py` (stock → tune); it refuses if the tune changes axes or anything outside the window, and leaves the checksum bytes out.
 
 ## 2. What the WOLF4X v18 preset was built for
 
 - GS8.60.0, program 19x0, stock calibration `B22K4_0419C0KA20` (E39 with the 2.5 l M52TU — M52TUB25, stock final drive).
-- An engine with a **6784 rpm rev limit** (the hard engine ceiling in this combination is ~6656 by spark); WOT upshift points in sport ≈ 6520–6570 rpm.
-- Character: **"Sport daily"** — in D almost everything is factory (except the 4↔5 hunting fix and earlier converter lockup on the motorway), in S/M short, crisp shifts under throttle, a manual mode that never upshifts by itself. "8HP-like" refers to the hydraulics: shorter target slip time at high torque, higher on-coming clutch pressure only at ≥ 228 Nm, faster release on 3→2 — the principles of doc 04 §12.
-- 1389 bytes in total relative to stock, 43 tables + 3 blocks outside tables. Result SHA-256: full `0bfd1d0d10037e020bcbfb16fdf5941bf17d0ec085dd5dd0cdec22c65419812e`, partial `657531fa400e0070f1cc37ebaac497c84d1ef690b1329bfdb3f81726d9ee60e4`. `apply_recipe.py` on the original stock reproduces them byte for byte.
+- An engine with a **6784 rpm fuel cut and the spark cut from about 6656**. WOT upshifts in sport at most 47 / 94 / 136 = turbine 5512 / 6013 / 6123 rpm at the command: the engine reaches the spark cut as the shift completes (doc 02 §4). The shift points depend only on the engine limiter, not on the final drive or tyres (doc 02 §3).
+- Character: **"Sport daily"** — in D almost everything is factory (except the 4↔5 hunting fix and earlier converter lockup on the motorway), in S/M short, crisp shifts under throttle, a manual mode that holds the gear to the limiter under load and shifts up by itself only on the overrun at the fuel cut. "8HP-like" refers to the hydraulics: shorter target slip time at high torque, higher on-coming clutch pressure only at ≥ 228 Nm, faster release on 3→2 — the principles of doc 04 §12.
+- 1375 bytes in total relative to stock (checksum included), 43 tables + 3 blocks outside tables. Result SHA-256: full `14e1518567722bfe53dda79d04e9fcd88d865643095f94c5656423647fe42a3a`, partial `e50bdaec1c27852ebebec3e3de44e9785f43d3a9fa80020b4d7096c9013767b7`, checksum `0xEA30`. `apply_recipe.py` on the original stock reproduces them byte for byte. The 16.09 build (`0bfd1d0d…`, stale checksum, km/h shift points) is in `history`.
 - v18 = v17 with one difference: `0x8EEA` returned to stock (7000). v17 had raised it to 7300 as "turbine protection" — a misreading; it is a supply-voltage threshold (doc 05 §1).
 
 ## 3. Table of changes with justification
@@ -31,10 +35,10 @@ Confidence: **P** — role proven by code and data; **E** — role proven, magni
 
 | Group | Addresses | Stock → v18 | Why | Conf. |
 |---|---|---|---|---|
-| Shift points: sport 01/02/11/15 | 0x9222, 0x9292, 0x9682, 0x9842 | WOT upshifts 45–47 / 93 / 134 / 200 → **66 / 120 / 171 / 231** (≈ 6570 / 6520 / 6550 / 6260 rpm); part-throttle rows bridged (rows 83/121 → 30/78/126 and 42/92/135), 4→5 at light pedal 200 (stock), 218–231 under throttle; 5→4 = 190–191 at part throttle (stock 157–189 depending on program), 213–215 at WOT; WOT downshifts 46 / 86 / 122 | a four-speed sport mode up to ~220 km/h, shifting at the limiter without hitting it, no steps in the lines (doc 02 §4) | P |
-| Shift points: manual 08/09/10 | 0x9532, 0x95A2, 0x9612 | upshifts 49/95/137/200 → **255** (never); downshifts in rows 0…254 = stock (0/10/25/69, 0/0/25/39, 0/10/19/28); kickdown downshifts → 59 / 108 / 154 / 217 (≈ 5880 rpm in the lower gear) | honest manual: holds to the limiter; protective downshift lines untouched | P |
-| Shift points: D 03/04/07 | 0x9302, 0x9372, 0x94C2 | 4→5 in pedal rows 0/10/46: 64 → **75** km/h | 4↔5 hunting on the overrun: hysteresis 8 → 19 km/h, 5th at 1508 instead of 1286 rpm | P |
-| TCC, branch 0 | 0x905E, 0x909E, 0x90DE, 0x913E | column 1: 153 → **102** from 62 km/h (2nd, 3rd); 128…191 → 128/128, **102** from 113 km/h (4th); 230 → **102** from 94 km/h (5th) | lockup in D from 40 % pedal instead of 60/50/90 %: less slip and heat on the motorway; a gentler threshold kept at 63–88 km/h in 4th (shudder below ~1500 rpm) | P (role) / E |
+| Shift points: sport 01/02/11/15 | 0x9222, 0x9292, 0x9682, 0x9842 | values in output shaft rpm / 32. From pedal row 160 up: upshifts **47 / 94 / 136** (stock WOT 45–47 / 93 / 134) = turbine 5512 / 6013 / 6123 rpm at the command. Part-throttle rows bridged (rows 83/121 → 30/78/126 and 42/92/135). 4>5 200 (stock) at light pedal, 218–231 under throttle (4th to top speed). Downshifts 2>1 = 41 from row 160, WOT 41 / 86 / 122 / 192, kickdown 41 / 88 / 125 / 192 (at most 6144 rpm after the downshift) | a four-speed sport mode, upshift so that the engine meets the spark cut as the shift completes, no steps in the lines (doc 02 §4). The 16.09 values 66 / 120 / 171 meant 7740 / 7676 / 7699 turbine rpm: never reached, the box hung at the limiter | P |
+| Shift points: manual 08/09/10 | 0x9532, 0x95A2, 0x9612 | upshifts 49/95/137/200 → **58 / 106 / 151 / 212** in every row (turbine 6781…6802 rpm = the fuel cut). Downshifts in rows 0…254 = stock (0/10/25/69, 0/0/25/39, 0/10/19/28). Kickdown downshifts → **52 / 96 / 136 / 192** (at most 6144 rpm in the lower gear) | honest manual: under load the engine stops at the spark cut and the box holds the gear. On the overrun it shifts up before the wheels drive the engine past the cut (doc 02 §5). The 16.09 version had 255 (no overrun protection) and a kickdown landing at 6909…6944 rpm | P |
+| Shift points: D 03/04/07 | 0x9302, 0x9372, 0x94C2 | 4>5 in pedal rows 0/10/46: 64 → **75** | 4↔5 hunting on the overrun: gap to 5>4 8 → 19 units (9 → 22 km/h on the reference car), 5th at turbine 1781 instead of 1520 rpm | P |
+| TCC, branch 0 | 0x905E, 0x909E, 0x90DE, 0x913E | column 1: 153 → **102** from speed row 62 (2nd, 3rd), 128…191 → 128/128 and **102** from row 113 (4th), 230 → **102** from row 94 (5th). Rows are output shaft rpm / 32: 62 / 113 / 94 = 73 / 133 / 111 km/h on the reference car | lockup in D from 40 % pedal instead of 60/50/90 %: less slip and heat on the motorway. A gentler threshold kept at rows 63–88 in 4th (2016…2816 turbine rpm) against shudder | P (role) / E |
 | TCC, branch 1 | 0x907E, 0x90BE, 0x910E, 0x915E | column 1: 64 → 64/64/31/28/26/26 (2nd), 31/28/26/26/26/26 (3rd), 64…88 → 38/31/26… (4th), 64 → 64/64/31/26/26/26 (5th) | in S/M leaving stage 1 from 10–15 % pedal | P / E |
 | TCC, scalars | 0x888C, 0x88C0, 0x88B0 | ladder 32/96/160/224 → **32/128/176/240**; rise ramp 5 → **7**; branch-1 release matrix −17/−33/−65 → **−10/−20/−40** | stages 2–4 hold harder; softer release on lift-off in S/M. Stage 1 and the branch-0 matrix untouched | E (physical channel unproven, doc 03 §2) |
 | Torque reduction | 0xAB0C, 0xABB0, 0xAC54, 0xACF8, 0xAD9C, 0xAE40 | columns 3000/4000/6000 rpm in all non-zero-load rows → **15 %** (stock 25–40) | less torque in the slip phase = less shock with a short target time. Requires a DME that actually honours a deep request | P (map meaning) / E |
@@ -51,18 +55,20 @@ What v18 did **not** touch and why — doc 09. Returned to stock compared with v
 
 Must be recalculated:
 
-1. **Shift points** of the sport programs and the manual kickdown row — for your own spark cut and your own rpm-per-km/h factor (doc 02 §3–4). Formula: `v = (n_limit − 150 − margin) / k_g`. A different final drive or tyre size changes k_g for every gear — all matrices.
+1. **Shift points** of the sport programs, the manual upshift guard and the kickdown rows, for your own spark cut and fuel cut (doc 02 §4): `python3 tools/egs_tables.py verify-shift build.bin --spark <rpm> --cut <rpm> --stock stock.bin`, and `--fix out.bin` to lower what breaks the rules. The matrices hold output shaft rpm / 32, so a different final drive or tyre size does not change the shift rpm (doc 02 §3).
 2. **The Y axis of the pressure maps is engine torque**: 8×10 maps are read by actual torque (Nm/4 + 25). For a torquier engine the "high-torque rows" are the same rows Y ≥ 82, they are simply used more often; there is no extrapolation beyond 400 Nm (axis up to 125 = 400 Nm). The Alpina data in B90E was designed for 335 Nm — on a weaker engine those cells are just visited less.
 3. **The X axis of the maps — turbine/32** up to 188 (6000) or 203 (6500): with a rev limit above 6500 the top cell extrapolates as a constant — for such an engine the X axis would need extending, as Alpina did (219 = 7000), but that is an axis change with all its risks; recipes do not do it.
 4. Torque reduction 15 % — only if the DME actually honours the request; otherwise keep stock.
 
-Not engine-dependent: TCC thresholds (pedal × km/h — but km/h depend on the final drive!), TCC scalars, target times (turbine rpm × torque).
+Not engine-dependent: TCC thresholds (pedal × output shaft speed rows, independent of the final drive in rpm terms), TCC scalars, target times (turbine rpm × torque).
 
 ## 5. How to apply
 
 ```
-python3 tools/egs_tables.py info my_dump.bin                 # code e151733e…, 536 tables
+python3 tools/egs_tables.py info my_dump.bin                 # code e151733e…, 536 tables, three checksums ok
 python3 tools/apply_recipe.py recipes/wolf4x_v18_sport_daily.json my_dump.bin -o build.bin
+python3 tools/gs860_crc.py check build.bin build_partial32k.bin
+python3 tools/egs_tables.py verify-shift build.bin --spark 6656 --cut 6784 --stock my_dump.bin
 ```
 
 If your calibration is not `19C0KA20` but, say, `19D0620P` (Alpina), the tool stops already on the axes: Alpina has different axes in some 3×3 tables (Y 85 → 95) and in C0C8. That is not a tool error — the recipe is not applicable to that base as a whole; take only the groups whose axes match and recalculate the rest. If the axes match but the old values do not (another revision of the 19x0 calibration) — compare `egs_tables.py diff` of your dump against the `old` values in the recipe and decide per group; `--force` only after that.

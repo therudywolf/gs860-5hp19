@@ -2,8 +2,8 @@
 <XDFFORMAT version="1.60">
   <XDFHEADER>
     <flags>0x1</flags>
-    <deftitle>GS8600 19D0 Full 256K — WOLF4X v2 (2026-09-16)</deftitle>
-    <description>Bosch GS8.60.0 (ZF 5HP19, software 19C0/19D0, 256K). Процессор Motorola 68k/CPU32. Таблицы: [u16 nx][u16 ny][X][Y][data] big-endian. Сгенерировано из каталога нарезки калибровочной зоны 0x080D0–0x0E4A2 + расшифровка функций 0x1DEBC (ГДТ), 0x290F6 (переключения), 0x2164C (ATF), 0x265F4 (турбина), 0x20D78 (напряжения). v2 16.09.2026: добавлен автомат переключения (0x34000–0x39600): 4 набора записей 0x3CB3A/0x3CB54/0x3CB7A/0x3CBA0, фазы, единицы 10 мс, оси турбина/32 и момент/4+25. Всё с пометкой «Не расшифровано» — только адрес и размер, без семантики.</description>
+    <deftitle>GS8600 19D0 Full 256K — WOLF4X v2.1 (2026-09-23)</deftitle>
+    <description>Bosch GS8.60.0 (ZF 5HP19, software 19C0/19D0, 256K). Процессор Motorola 68k/CPU32. Таблицы: [u16 nx][u16 ny][X][Y][data] big-endian. Сгенерировано из каталога нарезки калибровочной зоны 0x080D0–0x0E4A2 + расшифровка функций 0x1DEBC (ГДТ), 0x290F6 (переключения), 0x2164C (ATF), 0x265F4 (монитор напряжения питания, не турбина), 0x20D78 (напряжения). v2 16.09.2026: добавлен автомат переключения (0x34000–0x39600): 4 набора записей 0x3CB3A/0x3CB54/0x3CB7A/0x3CBA0, фазы, единицы 10 мс, оси турбина/32 и момент/4+25. Всё с пометкой «Не расшифровано» — только адрес и размер, без семантики. v2.1 23.09.2026: матрицы переключения и оси скорости таблиц ГДТ хранят обороты выходного вала / 32, а не км/ч (docs 02 §3). После правки в TunerPro пересчитать контрольную сумму калибровки: python3 tools/gs860_crc.py fix edited.bin fixed.bin (docs 07 §6). EN: v2.1: shift matrices and TCC speed axes hold output shaft rpm / 32, not km/h. After editing, recompute the calibration checksum with tools/gs860_crc.py fix.</description>
     <author>rudywolf (WOLF4X)</author>
     <baseoffset>0</baseoffset>
     <REGION type="0xFFFFFFFF" startaddress="0x0" size="0x40000" regionflags="0x0" name="Binary File" desc="" />
@@ -680,7 +680,7 @@
   </XDFTABLE>
   <XDFTABLE uniqueid="0x1012" flags="0x0">
     <title>Блокировка ГДТ: пороги педали, 1-я передача, ветка обычная</title>
-    <description>Читает функция 0x1DEBC. Столбец = ступень блокировки (1..3 → переход на ступень 2..4), строка = скорость км/ч, значение = порог педали 0..255 (педаль [0xFFFF9182]). Ступень 4 = полная блокировка. Ветка: [0xFFFF91CB]=0 обычная, 1 злая (выбор по таблице 0x8D92: 254 = злая; заводом злая включена для положений селектора 2/3/4).</description>
+    <description>Читает функция 0x1DEBC. Столбец = ступень блокировки (1..3 → переход на ступень 2..4), строка = обороты выходного вала / 32 ([0xFFFF918F], как у матриц переключения, docs 02 §3; на E39 2.5 единица = 1.18 км/ч, до 23.09.2026 ошибочно читалось как км/ч), значение = порог педали 0..255 (педаль [0xFFFF9182]). Ступень 4 = полная блокировка. Ветка: [0xFFFF91CB]=0 обычная, 1 злая (выбор по таблице 0x8D92: 254 = злая; заводом злая включена для положений селектора 2/3/4).</description>
     <CATEGORYMEM index="0" category="1" />
     <XDFAXIS id="x" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
@@ -698,7 +698,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedaddress="0x9025" mmedelementsizebits="8" mmedcolcount="6" mmedmajorstridebits="0" mmedminorstridebits="0" />
-      <units>скорость</units>
+      <units>n_out/32</units>
       <indexcount>6</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -719,7 +719,7 @@
   </XDFTABLE>
   <XDFTABLE uniqueid="0x1013" flags="0x0">
     <title>Блокировка ГДТ: пороги педали, 1-я передача, ветка злая</title>
-    <description>Читает функция 0x1DEBC. Столбец = ступень блокировки (1..3 → переход на ступень 2..4), строка = скорость км/ч, значение = порог педали 0..255 (педаль [0xFFFF9182]). Ступень 4 = полная блокировка. Ветка: [0xFFFF91CB]=0 обычная, 1 злая (выбор по таблице 0x8D92: 254 = злая; заводом злая включена для положений селектора 2/3/4).</description>
+    <description>Читает функция 0x1DEBC. Столбец = ступень блокировки (1..3 → переход на ступень 2..4), строка = обороты выходного вала / 32 ([0xFFFF918F], как у матриц переключения, docs 02 §3; на E39 2.5 единица = 1.18 км/ч, до 23.09.2026 ошибочно читалось как км/ч), значение = порог педали 0..255 (педаль [0xFFFF9182]). Ступень 4 = полная блокировка. Ветка: [0xFFFF91CB]=0 обычная, 1 злая (выбор по таблице 0x8D92: 254 = злая; заводом злая включена для положений селектора 2/3/4).</description>
     <CATEGORYMEM index="0" category="1" />
     <XDFAXIS id="x" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
@@ -737,7 +737,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedaddress="0x9045" mmedelementsizebits="8" mmedcolcount="6" mmedmajorstridebits="0" mmedminorstridebits="0" />
-      <units>скорость</units>
+      <units>n_out/32</units>
       <indexcount>6</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -758,7 +758,7 @@
   </XDFTABLE>
   <XDFTABLE uniqueid="0x1014" flags="0x0">
     <title>Блокировка ГДТ: пороги педали, 2-я передача, ветка обычная</title>
-    <description>Читает функция 0x1DEBC. Столбец = ступень блокировки (1..3 → переход на ступень 2..4), строка = скорость км/ч, значение = порог педали 0..255 (педаль [0xFFFF9182]). Ступень 4 = полная блокировка. Ветка: [0xFFFF91CB]=0 обычная, 1 злая (выбор по таблице 0x8D92: 254 = злая; заводом злая включена для положений селектора 2/3/4).</description>
+    <description>Читает функция 0x1DEBC. Столбец = ступень блокировки (1..3 → переход на ступень 2..4), строка = обороты выходного вала / 32 ([0xFFFF918F], как у матриц переключения, docs 02 §3; на E39 2.5 единица = 1.18 км/ч, до 23.09.2026 ошибочно читалось как км/ч), значение = порог педали 0..255 (педаль [0xFFFF9182]). Ступень 4 = полная блокировка. Ветка: [0xFFFF91CB]=0 обычная, 1 злая (выбор по таблице 0x8D92: 254 = злая; заводом злая включена для положений селектора 2/3/4).</description>
     <CATEGORYMEM index="0" category="1" />
     <XDFAXIS id="x" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
@@ -776,7 +776,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedaddress="0x9065" mmedelementsizebits="8" mmedcolcount="6" mmedmajorstridebits="0" mmedminorstridebits="0" />
-      <units>скорость</units>
+      <units>n_out/32</units>
       <indexcount>6</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -797,7 +797,7 @@
   </XDFTABLE>
   <XDFTABLE uniqueid="0x1015" flags="0x0">
     <title>Блокировка ГДТ: пороги педали, 2-я передача, ветка злая</title>
-    <description>Читает функция 0x1DEBC. Столбец = ступень блокировки (1..3 → переход на ступень 2..4), строка = скорость км/ч, значение = порог педали 0..255 (педаль [0xFFFF9182]). Ступень 4 = полная блокировка. Ветка: [0xFFFF91CB]=0 обычная, 1 злая (выбор по таблице 0x8D92: 254 = злая; заводом злая включена для положений селектора 2/3/4).</description>
+    <description>Читает функция 0x1DEBC. Столбец = ступень блокировки (1..3 → переход на ступень 2..4), строка = обороты выходного вала / 32 ([0xFFFF918F], как у матриц переключения, docs 02 §3; на E39 2.5 единица = 1.18 км/ч, до 23.09.2026 ошибочно читалось как км/ч), значение = порог педали 0..255 (педаль [0xFFFF9182]). Ступень 4 = полная блокировка. Ветка: [0xFFFF91CB]=0 обычная, 1 злая (выбор по таблице 0x8D92: 254 = злая; заводом злая включена для положений селектора 2/3/4).</description>
     <CATEGORYMEM index="0" category="1" />
     <XDFAXIS id="x" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
@@ -815,7 +815,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedaddress="0x9085" mmedelementsizebits="8" mmedcolcount="6" mmedmajorstridebits="0" mmedminorstridebits="0" />
-      <units>скорость</units>
+      <units>n_out/32</units>
       <indexcount>6</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -836,7 +836,7 @@
   </XDFTABLE>
   <XDFTABLE uniqueid="0x1016" flags="0x0">
     <title>Блокировка ГДТ: пороги педали, 3-я передача, ветка обычная</title>
-    <description>Читает функция 0x1DEBC. Столбец = ступень блокировки (1..3 → переход на ступень 2..4), строка = скорость км/ч, значение = порог педали 0..255 (педаль [0xFFFF9182]). Ступень 4 = полная блокировка. Ветка: [0xFFFF91CB]=0 обычная, 1 злая (выбор по таблице 0x8D92: 254 = злая; заводом злая включена для положений селектора 2/3/4).</description>
+    <description>Читает функция 0x1DEBC. Столбец = ступень блокировки (1..3 → переход на ступень 2..4), строка = обороты выходного вала / 32 ([0xFFFF918F], как у матриц переключения, docs 02 §3; на E39 2.5 единица = 1.18 км/ч, до 23.09.2026 ошибочно читалось как км/ч), значение = порог педали 0..255 (педаль [0xFFFF9182]). Ступень 4 = полная блокировка. Ветка: [0xFFFF91CB]=0 обычная, 1 злая (выбор по таблице 0x8D92: 254 = злая; заводом злая включена для положений селектора 2/3/4).</description>
     <CATEGORYMEM index="0" category="1" />
     <XDFAXIS id="x" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
@@ -854,7 +854,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedaddress="0x90A5" mmedelementsizebits="8" mmedcolcount="6" mmedmajorstridebits="0" mmedminorstridebits="0" />
-      <units>скорость</units>
+      <units>n_out/32</units>
       <indexcount>6</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -875,7 +875,7 @@
   </XDFTABLE>
   <XDFTABLE uniqueid="0x1017" flags="0x0">
     <title>Блокировка ГДТ: пороги педали, 3-я передача, ветка злая</title>
-    <description>Читает функция 0x1DEBC. Столбец = ступень блокировки (1..3 → переход на ступень 2..4), строка = скорость км/ч, значение = порог педали 0..255 (педаль [0xFFFF9182]). Ступень 4 = полная блокировка. Ветка: [0xFFFF91CB]=0 обычная, 1 злая (выбор по таблице 0x8D92: 254 = злая; заводом злая включена для положений селектора 2/3/4).</description>
+    <description>Читает функция 0x1DEBC. Столбец = ступень блокировки (1..3 → переход на ступень 2..4), строка = обороты выходного вала / 32 ([0xFFFF918F], как у матриц переключения, docs 02 §3; на E39 2.5 единица = 1.18 км/ч, до 23.09.2026 ошибочно читалось как км/ч), значение = порог педали 0..255 (педаль [0xFFFF9182]). Ступень 4 = полная блокировка. Ветка: [0xFFFF91CB]=0 обычная, 1 злая (выбор по таблице 0x8D92: 254 = злая; заводом злая включена для положений селектора 2/3/4).</description>
     <CATEGORYMEM index="0" category="1" />
     <XDFAXIS id="x" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
@@ -893,7 +893,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedaddress="0x90C5" mmedelementsizebits="8" mmedcolcount="6" mmedmajorstridebits="0" mmedminorstridebits="0" />
-      <units>скорость</units>
+      <units>n_out/32</units>
       <indexcount>6</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -914,7 +914,7 @@
   </XDFTABLE>
   <XDFTABLE uniqueid="0x1018" flags="0x0">
     <title>Блокировка ГДТ: пороги педали, 4-я передача, ветка обычная</title>
-    <description>Читает функция 0x1DEBC. Столбец = ступень блокировки (1..3 → переход на ступень 2..4), строка = скорость км/ч, значение = порог педали 0..255 (педаль [0xFFFF9182]). Ступень 4 = полная блокировка. Ветка: [0xFFFF91CB]=0 обычная, 1 злая (выбор по таблице 0x8D92: 254 = злая; заводом злая включена для положений селектора 2/3/4).</description>
+    <description>Читает функция 0x1DEBC. Столбец = ступень блокировки (1..3 → переход на ступень 2..4), строка = обороты выходного вала / 32 ([0xFFFF918F], как у матриц переключения, docs 02 §3; на E39 2.5 единица = 1.18 км/ч, до 23.09.2026 ошибочно читалось как км/ч), значение = порог педали 0..255 (педаль [0xFFFF9182]). Ступень 4 = полная блокировка. Ветка: [0xFFFF91CB]=0 обычная, 1 злая (выбор по таблице 0x8D92: 254 = злая; заводом злая включена для положений селектора 2/3/4).</description>
     <CATEGORYMEM index="0" category="1" />
     <XDFAXIS id="x" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
@@ -932,7 +932,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedaddress="0x90E5" mmedelementsizebits="8" mmedcolcount="10" mmedmajorstridebits="0" mmedminorstridebits="0" />
-      <units>скорость</units>
+      <units>n_out/32</units>
       <indexcount>10</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -953,7 +953,7 @@
   </XDFTABLE>
   <XDFTABLE uniqueid="0x1019" flags="0x0">
     <title>Блокировка ГДТ: пороги педали, 4-я передача, ветка злая</title>
-    <description>Читает функция 0x1DEBC. Столбец = ступень блокировки (1..3 → переход на ступень 2..4), строка = скорость км/ч, значение = порог педали 0..255 (педаль [0xFFFF9182]). Ступень 4 = полная блокировка. Ветка: [0xFFFF91CB]=0 обычная, 1 злая (выбор по таблице 0x8D92: 254 = злая; заводом злая включена для положений селектора 2/3/4).</description>
+    <description>Читает функция 0x1DEBC. Столбец = ступень блокировки (1..3 → переход на ступень 2..4), строка = обороты выходного вала / 32 ([0xFFFF918F], как у матриц переключения, docs 02 §3; на E39 2.5 единица = 1.18 км/ч, до 23.09.2026 ошибочно читалось как км/ч), значение = порог педали 0..255 (педаль [0xFFFF9182]). Ступень 4 = полная блокировка. Ветка: [0xFFFF91CB]=0 обычная, 1 злая (выбор по таблице 0x8D92: 254 = злая; заводом злая включена для положений селектора 2/3/4).</description>
     <CATEGORYMEM index="0" category="1" />
     <XDFAXIS id="x" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
@@ -971,7 +971,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedaddress="0x9115" mmedelementsizebits="8" mmedcolcount="10" mmedmajorstridebits="0" mmedminorstridebits="0" />
-      <units>скорость</units>
+      <units>n_out/32</units>
       <indexcount>10</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -992,7 +992,7 @@
   </XDFTABLE>
   <XDFTABLE uniqueid="0x101A" flags="0x0">
     <title>Блокировка ГДТ: пороги педали, 5-я передача, ветка обычная</title>
-    <description>Читает функция 0x1DEBC. Столбец = ступень блокировки (1..3 → переход на ступень 2..4), строка = скорость км/ч, значение = порог педали 0..255 (педаль [0xFFFF9182]). Ступень 4 = полная блокировка. Ветка: [0xFFFF91CB]=0 обычная, 1 злая (выбор по таблице 0x8D92: 254 = злая; заводом злая включена для положений селектора 2/3/4).</description>
+    <description>Читает функция 0x1DEBC. Столбец = ступень блокировки (1..3 → переход на ступень 2..4), строка = обороты выходного вала / 32 ([0xFFFF918F], как у матриц переключения, docs 02 §3; на E39 2.5 единица = 1.18 км/ч, до 23.09.2026 ошибочно читалось как км/ч), значение = порог педали 0..255 (педаль [0xFFFF9182]). Ступень 4 = полная блокировка. Ветка: [0xFFFF91CB]=0 обычная, 1 злая (выбор по таблице 0x8D92: 254 = злая; заводом злая включена для положений селектора 2/3/4).</description>
     <CATEGORYMEM index="0" category="1" />
     <XDFAXIS id="x" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
@@ -1010,7 +1010,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedaddress="0x9145" mmedelementsizebits="8" mmedcolcount="6" mmedmajorstridebits="0" mmedminorstridebits="0" />
-      <units>скорость</units>
+      <units>n_out/32</units>
       <indexcount>6</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -1031,7 +1031,7 @@
   </XDFTABLE>
   <XDFTABLE uniqueid="0x101B" flags="0x0">
     <title>Блокировка ГДТ: пороги педали, 5-я передача, ветка злая</title>
-    <description>Читает функция 0x1DEBC. Столбец = ступень блокировки (1..3 → переход на ступень 2..4), строка = скорость км/ч, значение = порог педали 0..255 (педаль [0xFFFF9182]). Ступень 4 = полная блокировка. Ветка: [0xFFFF91CB]=0 обычная, 1 злая (выбор по таблице 0x8D92: 254 = злая; заводом злая включена для положений селектора 2/3/4).</description>
+    <description>Читает функция 0x1DEBC. Столбец = ступень блокировки (1..3 → переход на ступень 2..4), строка = обороты выходного вала / 32 ([0xFFFF918F], как у матриц переключения, docs 02 §3; на E39 2.5 единица = 1.18 км/ч, до 23.09.2026 ошибочно читалось как км/ч), значение = порог педали 0..255 (педаль [0xFFFF9182]). Ступень 4 = полная блокировка. Ветка: [0xFFFF91CB]=0 обычная, 1 злая (выбор по таблице 0x8D92: 254 = злая; заводом злая включена для положений селектора 2/3/4).</description>
     <CATEGORYMEM index="0" category="1" />
     <XDFAXIS id="x" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
@@ -1049,7 +1049,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedaddress="0x9165" mmedelementsizebits="8" mmedcolcount="6" mmedmajorstridebits="0" mmedminorstridebits="0" />
-      <units>скорость</units>
+      <units>n_out/32</units>
       <indexcount>6</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -1106,7 +1106,7 @@
   </XDFTABLE>
   <XDFTABLE uniqueid="0x101D" flags="0x0">
     <title>Матрица переключений 00 — программа 00 (не используется/сервис)</title>
-    <description>Порог скорости (км/ч по выходному валу, 27.11 об/мин на км/ч) для каждого перехода. Строки — педаль 0..255. 255 = переход запрещён. Замер 11.09: 1-я 99.6, 2-я 54.3, 3-я 38.3, 4-я 27.1, 5-я 20.1 об/мин на км/ч.</description>
+    <description>Порог в оборотах выходного вала / 32 для каждого перехода: блок сравнивает значение с [0xFFFF918F] (повышение 0x24AC8, понижение 0x24B20), 918F = отфильтрованные обороты выходного вала &gt;&gt; 5 (docs 02 §3). Обороты турбины на пороге = значение × 32 × передаточное: 1-я 117.3, 2-я 64.0, 3-я 45.0, 4-я 32.0, 5-я 23.7 об/мин на единицу (для понижения берётся низшая передача). На E39 2.5 со стоковой главной парой единица = 1.18 км/ч. Строки: педаль 0..255. 250/255 в столбце вверх: переход запрещён. Проверка: tools/egs_tables.py verify-shift. До 23.09.2026 значения ошибочно читались как км/ч. EN: threshold in output shaft rpm / 32 (compared with [0xFFFF918F]); turbine rpm = value × 32 × ratio (117.3 / 64.0 / 45.0 / 32.0 / 23.7 per unit in 1st..5th); 1.18 km/h per unit on an E39 2.5; rows = pedal; 250/255 in an upshift column = never. Check with tools/egs_tables.py verify-shift.</description>
     <CATEGORYMEM index="0" category="0" />
     <XDFAXIS id="x" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
@@ -1152,7 +1152,7 @@
     <XDFAXIS id="z">
       <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x91C9" mmedelementsizebits="8" mmedrowcount="11" mmedcolcount="8" mmedmajorstridebits="0" mmedminorstridebits="0" />
       <decimalpl>1</decimalpl>
-      <units>км/ч</units>
+      <units>n_out/32</units>
       <outputtype>1</outputtype>
       <MATH equation="X">
         <VAR id="X" />
@@ -1161,7 +1161,7 @@
   </XDFTABLE>
   <XDFTABLE uniqueid="0x101E" flags="0x0">
     <title>Матрица переключений 01 — СПОРТ (селектор S/DS, вариант 1)</title>
-    <description>Порог скорости (км/ч по выходному валу, 27.11 об/мин на км/ч) для каждого перехода. Строки — педаль 0..255. 255 = переход запрещён. Замер 11.09: 1-я 99.6, 2-я 54.3, 3-я 38.3, 4-я 27.1, 5-я 20.1 об/мин на км/ч.</description>
+    <description>Порог в оборотах выходного вала / 32 для каждого перехода: блок сравнивает значение с [0xFFFF918F] (повышение 0x24AC8, понижение 0x24B20), 918F = отфильтрованные обороты выходного вала &gt;&gt; 5 (docs 02 §3). Обороты турбины на пороге = значение × 32 × передаточное: 1-я 117.3, 2-я 64.0, 3-я 45.0, 4-я 32.0, 5-я 23.7 об/мин на единицу (для понижения берётся низшая передача). На E39 2.5 со стоковой главной парой единица = 1.18 км/ч. Строки: педаль 0..255. 250/255 в столбце вверх: переход запрещён. Проверка: tools/egs_tables.py verify-shift. До 23.09.2026 значения ошибочно читались как км/ч. EN: threshold in output shaft rpm / 32 (compared with [0xFFFF918F]); turbine rpm = value × 32 × ratio (117.3 / 64.0 / 45.0 / 32.0 / 23.7 per unit in 1st..5th); 1.18 km/h per unit on an E39 2.5; rows = pedal; 250/255 in an upshift column = never. Check with tools/egs_tables.py verify-shift.</description>
     <CATEGORYMEM index="0" category="0" />
     <XDFAXIS id="x" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
@@ -1207,7 +1207,7 @@
     <XDFAXIS id="z">
       <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x9239" mmedelementsizebits="8" mmedrowcount="11" mmedcolcount="8" mmedmajorstridebits="0" mmedminorstridebits="0" />
       <decimalpl>1</decimalpl>
-      <units>км/ч</units>
+      <units>n_out/32</units>
       <outputtype>1</outputtype>
       <MATH equation="X">
         <VAR id="X" />
@@ -1216,7 +1216,7 @@
   </XDFTABLE>
   <XDFTABLE uniqueid="0x101F" flags="0x0">
     <title>Матрица переключений 02 — СПОРТ (вариант 2)</title>
-    <description>Порог скорости (км/ч по выходному валу, 27.11 об/мин на км/ч) для каждого перехода. Строки — педаль 0..255. 255 = переход запрещён. Замер 11.09: 1-я 99.6, 2-я 54.3, 3-я 38.3, 4-я 27.1, 5-я 20.1 об/мин на км/ч.</description>
+    <description>Порог в оборотах выходного вала / 32 для каждого перехода: блок сравнивает значение с [0xFFFF918F] (повышение 0x24AC8, понижение 0x24B20), 918F = отфильтрованные обороты выходного вала &gt;&gt; 5 (docs 02 §3). Обороты турбины на пороге = значение × 32 × передаточное: 1-я 117.3, 2-я 64.0, 3-я 45.0, 4-я 32.0, 5-я 23.7 об/мин на единицу (для понижения берётся низшая передача). На E39 2.5 со стоковой главной парой единица = 1.18 км/ч. Строки: педаль 0..255. 250/255 в столбце вверх: переход запрещён. Проверка: tools/egs_tables.py verify-shift. До 23.09.2026 значения ошибочно читались как км/ч. EN: threshold in output shaft rpm / 32 (compared with [0xFFFF918F]); turbine rpm = value × 32 × ratio (117.3 / 64.0 / 45.0 / 32.0 / 23.7 per unit in 1st..5th); 1.18 km/h per unit on an E39 2.5; rows = pedal; 250/255 in an upshift column = never. Check with tools/egs_tables.py verify-shift.</description>
     <CATEGORYMEM index="0" category="0" />
     <XDFAXIS id="x" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
@@ -1262,7 +1262,7 @@
     <XDFAXIS id="z">
       <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x92A9" mmedelementsizebits="8" mmedrowcount="11" mmedcolcount="8" mmedmajorstridebits="0" mmedminorstridebits="0" />
       <decimalpl>1</decimalpl>
-      <units>км/ч</units>
+      <units>n_out/32</units>
       <outputtype>1</outputtype>
       <MATH equation="X">
         <VAR id="X" />
@@ -1271,7 +1271,7 @@
   </XDFTABLE>
   <XDFTABLE uniqueid="0x1020" flags="0x0">
     <title>Матрица переключений 03 — DRIVE (основная D)</title>
-    <description>Порог скорости (км/ч по выходному валу, 27.11 об/мин на км/ч) для каждого перехода. Строки — педаль 0..255. 255 = переход запрещён. Замер 11.09: 1-я 99.6, 2-я 54.3, 3-я 38.3, 4-я 27.1, 5-я 20.1 об/мин на км/ч.</description>
+    <description>Порог в оборотах выходного вала / 32 для каждого перехода: блок сравнивает значение с [0xFFFF918F] (повышение 0x24AC8, понижение 0x24B20), 918F = отфильтрованные обороты выходного вала &gt;&gt; 5 (docs 02 §3). Обороты турбины на пороге = значение × 32 × передаточное: 1-я 117.3, 2-я 64.0, 3-я 45.0, 4-я 32.0, 5-я 23.7 об/мин на единицу (для понижения берётся низшая передача). На E39 2.5 со стоковой главной парой единица = 1.18 км/ч. Строки: педаль 0..255. 250/255 в столбце вверх: переход запрещён. Проверка: tools/egs_tables.py verify-shift. До 23.09.2026 значения ошибочно читались как км/ч. EN: threshold in output shaft rpm / 32 (compared with [0xFFFF918F]); turbine rpm = value × 32 × ratio (117.3 / 64.0 / 45.0 / 32.0 / 23.7 per unit in 1st..5th); 1.18 km/h per unit on an E39 2.5; rows = pedal; 250/255 in an upshift column = never. Check with tools/egs_tables.py verify-shift.</description>
     <CATEGORYMEM index="0" category="0" />
     <XDFAXIS id="x" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
@@ -1317,7 +1317,7 @@
     <XDFAXIS id="z">
       <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x9319" mmedelementsizebits="8" mmedrowcount="11" mmedcolcount="8" mmedmajorstridebits="0" mmedminorstridebits="0" />
       <decimalpl>1</decimalpl>
-      <units>км/ч</units>
+      <units>n_out/32</units>
       <outputtype>1</outputtype>
       <MATH equation="X">
         <VAR id="X" />
@@ -1326,7 +1326,7 @@
   </XDFTABLE>
   <XDFTABLE uniqueid="0x1021" flags="0x0">
     <title>Матрица переключений 04 — DRIVE (вариант 4)</title>
-    <description>Порог скорости (км/ч по выходному валу, 27.11 об/мин на км/ч) для каждого перехода. Строки — педаль 0..255. 255 = переход запрещён. Замер 11.09: 1-я 99.6, 2-я 54.3, 3-я 38.3, 4-я 27.1, 5-я 20.1 об/мин на км/ч.</description>
+    <description>Порог в оборотах выходного вала / 32 для каждого перехода: блок сравнивает значение с [0xFFFF918F] (повышение 0x24AC8, понижение 0x24B20), 918F = отфильтрованные обороты выходного вала &gt;&gt; 5 (docs 02 §3). Обороты турбины на пороге = значение × 32 × передаточное: 1-я 117.3, 2-я 64.0, 3-я 45.0, 4-я 32.0, 5-я 23.7 об/мин на единицу (для понижения берётся низшая передача). На E39 2.5 со стоковой главной парой единица = 1.18 км/ч. Строки: педаль 0..255. 250/255 в столбце вверх: переход запрещён. Проверка: tools/egs_tables.py verify-shift. До 23.09.2026 значения ошибочно читались как км/ч. EN: threshold in output shaft rpm / 32 (compared with [0xFFFF918F]); turbine rpm = value × 32 × ratio (117.3 / 64.0 / 45.0 / 32.0 / 23.7 per unit in 1st..5th); 1.18 km/h per unit on an E39 2.5; rows = pedal; 250/255 in an upshift column = never. Check with tools/egs_tables.py verify-shift.</description>
     <CATEGORYMEM index="0" category="0" />
     <XDFAXIS id="x" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
@@ -1372,7 +1372,7 @@
     <XDFAXIS id="z">
       <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x9389" mmedelementsizebits="8" mmedrowcount="11" mmedcolcount="8" mmedmajorstridebits="0" mmedminorstridebits="0" />
       <decimalpl>1</decimalpl>
-      <units>км/ч</units>
+      <units>n_out/32</units>
       <outputtype>1</outputtype>
       <MATH equation="X">
         <VAR id="X" />
@@ -1381,7 +1381,7 @@
   </XDFTABLE>
   <XDFTABLE uniqueid="0x1022" flags="0x0">
     <title>Матрица переключений 05 — удержание передачи (05)</title>
-    <description>Порог скорости (км/ч по выходному валу, 27.11 об/мин на км/ч) для каждого перехода. Строки — педаль 0..255. 255 = переход запрещён. Замер 11.09: 1-я 99.6, 2-я 54.3, 3-я 38.3, 4-я 27.1, 5-я 20.1 об/мин на км/ч.</description>
+    <description>Порог в оборотах выходного вала / 32 для каждого перехода: блок сравнивает значение с [0xFFFF918F] (повышение 0x24AC8, понижение 0x24B20), 918F = отфильтрованные обороты выходного вала &gt;&gt; 5 (docs 02 §3). Обороты турбины на пороге = значение × 32 × передаточное: 1-я 117.3, 2-я 64.0, 3-я 45.0, 4-я 32.0, 5-я 23.7 об/мин на единицу (для понижения берётся низшая передача). На E39 2.5 со стоковой главной парой единица = 1.18 км/ч. Строки: педаль 0..255. 250/255 в столбце вверх: переход запрещён. Проверка: tools/egs_tables.py verify-shift. До 23.09.2026 значения ошибочно читались как км/ч. EN: threshold in output shaft rpm / 32 (compared with [0xFFFF918F]); turbine rpm = value × 32 × ratio (117.3 / 64.0 / 45.0 / 32.0 / 23.7 per unit in 1st..5th); 1.18 km/h per unit on an E39 2.5; rows = pedal; 250/255 in an upshift column = never. Check with tools/egs_tables.py verify-shift.</description>
     <CATEGORYMEM index="0" category="0" />
     <XDFAXIS id="x" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
@@ -1427,7 +1427,7 @@
     <XDFAXIS id="z">
       <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x93F9" mmedelementsizebits="8" mmedrowcount="11" mmedcolcount="8" mmedmajorstridebits="0" mmedminorstridebits="0" />
       <decimalpl>1</decimalpl>
-      <units>км/ч</units>
+      <units>n_out/32</units>
       <outputtype>1</outputtype>
       <MATH equation="X">
         <VAR id="X" />
@@ -1436,7 +1436,7 @@
   </XDFTABLE>
   <XDFTABLE uniqueid="0x1023" flags="0x0">
     <title>Матрица переключений 06 — программа 06</title>
-    <description>Порог скорости (км/ч по выходному валу, 27.11 об/мин на км/ч) для каждого перехода. Строки — педаль 0..255. 255 = переход запрещён. Замер 11.09: 1-я 99.6, 2-я 54.3, 3-я 38.3, 4-я 27.1, 5-я 20.1 об/мин на км/ч.</description>
+    <description>Порог в оборотах выходного вала / 32 для каждого перехода: блок сравнивает значение с [0xFFFF918F] (повышение 0x24AC8, понижение 0x24B20), 918F = отфильтрованные обороты выходного вала &gt;&gt; 5 (docs 02 §3). Обороты турбины на пороге = значение × 32 × передаточное: 1-я 117.3, 2-я 64.0, 3-я 45.0, 4-я 32.0, 5-я 23.7 об/мин на единицу (для понижения берётся низшая передача). На E39 2.5 со стоковой главной парой единица = 1.18 км/ч. Строки: педаль 0..255. 250/255 в столбце вверх: переход запрещён. Проверка: tools/egs_tables.py verify-shift. До 23.09.2026 значения ошибочно читались как км/ч. EN: threshold in output shaft rpm / 32 (compared with [0xFFFF918F]); turbine rpm = value × 32 × ratio (117.3 / 64.0 / 45.0 / 32.0 / 23.7 per unit in 1st..5th); 1.18 km/h per unit on an E39 2.5; rows = pedal; 250/255 in an upshift column = never. Check with tools/egs_tables.py verify-shift.</description>
     <CATEGORYMEM index="0" category="0" />
     <XDFAXIS id="x" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
@@ -1482,7 +1482,7 @@
     <XDFAXIS id="z">
       <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x9469" mmedelementsizebits="8" mmedrowcount="11" mmedcolcount="8" mmedmajorstridebits="0" mmedminorstridebits="0" />
       <decimalpl>1</decimalpl>
-      <units>км/ч</units>
+      <units>n_out/32</units>
       <outputtype>1</outputtype>
       <MATH equation="X">
         <VAR id="X" />
@@ -1491,7 +1491,7 @@
   </XDFTABLE>
   <XDFTABLE uniqueid="0x1024" flags="0x0">
     <title>Матрица переключений 07 — DRIVE (вариант 7)</title>
-    <description>Порог скорости (км/ч по выходному валу, 27.11 об/мин на км/ч) для каждого перехода. Строки — педаль 0..255. 255 = переход запрещён. Замер 11.09: 1-я 99.6, 2-я 54.3, 3-я 38.3, 4-я 27.1, 5-я 20.1 об/мин на км/ч.</description>
+    <description>Порог в оборотах выходного вала / 32 для каждого перехода: блок сравнивает значение с [0xFFFF918F] (повышение 0x24AC8, понижение 0x24B20), 918F = отфильтрованные обороты выходного вала &gt;&gt; 5 (docs 02 §3). Обороты турбины на пороге = значение × 32 × передаточное: 1-я 117.3, 2-я 64.0, 3-я 45.0, 4-я 32.0, 5-я 23.7 об/мин на единицу (для понижения берётся низшая передача). На E39 2.5 со стоковой главной парой единица = 1.18 км/ч. Строки: педаль 0..255. 250/255 в столбце вверх: переход запрещён. Проверка: tools/egs_tables.py verify-shift. До 23.09.2026 значения ошибочно читались как км/ч. EN: threshold in output shaft rpm / 32 (compared with [0xFFFF918F]); turbine rpm = value × 32 × ratio (117.3 / 64.0 / 45.0 / 32.0 / 23.7 per unit in 1st..5th); 1.18 km/h per unit on an E39 2.5; rows = pedal; 250/255 in an upshift column = never. Check with tools/egs_tables.py verify-shift.</description>
     <CATEGORYMEM index="0" category="0" />
     <XDFAXIS id="x" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
@@ -1537,7 +1537,7 @@
     <XDFAXIS id="z">
       <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x94D9" mmedelementsizebits="8" mmedrowcount="11" mmedcolcount="8" mmedmajorstridebits="0" mmedminorstridebits="0" />
       <decimalpl>1</decimalpl>
-      <units>км/ч</units>
+      <units>n_out/32</units>
       <outputtype>1</outputtype>
       <MATH equation="X">
         <VAR id="X" />
@@ -1546,7 +1546,7 @@
   </XDFTABLE>
   <XDFTABLE uniqueid="0x1025" flags="0x0">
     <title>Матрица переключений 08 — РУЧНОЙ (M, вариант 8)</title>
-    <description>Порог скорости (км/ч по выходному валу, 27.11 об/мин на км/ч) для каждого перехода. Строки — педаль 0..255. 255 = переход запрещён. Замер 11.09: 1-я 99.6, 2-я 54.3, 3-я 38.3, 4-я 27.1, 5-я 20.1 об/мин на км/ч.</description>
+    <description>Порог в оборотах выходного вала / 32 для каждого перехода: блок сравнивает значение с [0xFFFF918F] (повышение 0x24AC8, понижение 0x24B20), 918F = отфильтрованные обороты выходного вала &gt;&gt; 5 (docs 02 §3). Обороты турбины на пороге = значение × 32 × передаточное: 1-я 117.3, 2-я 64.0, 3-я 45.0, 4-я 32.0, 5-я 23.7 об/мин на единицу (для понижения берётся низшая передача). На E39 2.5 со стоковой главной парой единица = 1.18 км/ч. Строки: педаль 0..255. 250/255 в столбце вверх: переход запрещён. Проверка: tools/egs_tables.py verify-shift. До 23.09.2026 значения ошибочно читались как км/ч. EN: threshold in output shaft rpm / 32 (compared with [0xFFFF918F]); turbine rpm = value × 32 × ratio (117.3 / 64.0 / 45.0 / 32.0 / 23.7 per unit in 1st..5th); 1.18 km/h per unit on an E39 2.5; rows = pedal; 250/255 in an upshift column = never. Check with tools/egs_tables.py verify-shift.</description>
     <CATEGORYMEM index="0" category="0" />
     <XDFAXIS id="x" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
@@ -1592,7 +1592,7 @@
     <XDFAXIS id="z">
       <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x9549" mmedelementsizebits="8" mmedrowcount="11" mmedcolcount="8" mmedmajorstridebits="0" mmedminorstridebits="0" />
       <decimalpl>1</decimalpl>
-      <units>км/ч</units>
+      <units>n_out/32</units>
       <outputtype>1</outputtype>
       <MATH equation="X">
         <VAR id="X" />
@@ -1601,7 +1601,7 @@
   </XDFTABLE>
   <XDFTABLE uniqueid="0x1026" flags="0x0">
     <title>Матрица переключений 09 — РУЧНОЙ (вариант 9)</title>
-    <description>Порог скорости (км/ч по выходному валу, 27.11 об/мин на км/ч) для каждого перехода. Строки — педаль 0..255. 255 = переход запрещён. Замер 11.09: 1-я 99.6, 2-я 54.3, 3-я 38.3, 4-я 27.1, 5-я 20.1 об/мин на км/ч.</description>
+    <description>Порог в оборотах выходного вала / 32 для каждого перехода: блок сравнивает значение с [0xFFFF918F] (повышение 0x24AC8, понижение 0x24B20), 918F = отфильтрованные обороты выходного вала &gt;&gt; 5 (docs 02 §3). Обороты турбины на пороге = значение × 32 × передаточное: 1-я 117.3, 2-я 64.0, 3-я 45.0, 4-я 32.0, 5-я 23.7 об/мин на единицу (для понижения берётся низшая передача). На E39 2.5 со стоковой главной парой единица = 1.18 км/ч. Строки: педаль 0..255. 250/255 в столбце вверх: переход запрещён. Проверка: tools/egs_tables.py verify-shift. До 23.09.2026 значения ошибочно читались как км/ч. EN: threshold in output shaft rpm / 32 (compared with [0xFFFF918F]); turbine rpm = value × 32 × ratio (117.3 / 64.0 / 45.0 / 32.0 / 23.7 per unit in 1st..5th); 1.18 km/h per unit on an E39 2.5; rows = pedal; 250/255 in an upshift column = never. Check with tools/egs_tables.py verify-shift.</description>
     <CATEGORYMEM index="0" category="0" />
     <XDFAXIS id="x" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
@@ -1647,7 +1647,7 @@
     <XDFAXIS id="z">
       <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x95B9" mmedelementsizebits="8" mmedrowcount="11" mmedcolcount="8" mmedmajorstridebits="0" mmedminorstridebits="0" />
       <decimalpl>1</decimalpl>
-      <units>км/ч</units>
+      <units>n_out/32</units>
       <outputtype>1</outputtype>
       <MATH equation="X">
         <VAR id="X" />
@@ -1656,7 +1656,7 @@
   </XDFTABLE>
   <XDFTABLE uniqueid="0x1027" flags="0x0">
     <title>Матрица переключений 10 — РУЧНОЙ (вариант 10)</title>
-    <description>Порог скорости (км/ч по выходному валу, 27.11 об/мин на км/ч) для каждого перехода. Строки — педаль 0..255. 255 = переход запрещён. Замер 11.09: 1-я 99.6, 2-я 54.3, 3-я 38.3, 4-я 27.1, 5-я 20.1 об/мин на км/ч.</description>
+    <description>Порог в оборотах выходного вала / 32 для каждого перехода: блок сравнивает значение с [0xFFFF918F] (повышение 0x24AC8, понижение 0x24B20), 918F = отфильтрованные обороты выходного вала &gt;&gt; 5 (docs 02 §3). Обороты турбины на пороге = значение × 32 × передаточное: 1-я 117.3, 2-я 64.0, 3-я 45.0, 4-я 32.0, 5-я 23.7 об/мин на единицу (для понижения берётся низшая передача). На E39 2.5 со стоковой главной парой единица = 1.18 км/ч. Строки: педаль 0..255. 250/255 в столбце вверх: переход запрещён. Проверка: tools/egs_tables.py verify-shift. До 23.09.2026 значения ошибочно читались как км/ч. EN: threshold in output shaft rpm / 32 (compared with [0xFFFF918F]); turbine rpm = value × 32 × ratio (117.3 / 64.0 / 45.0 / 32.0 / 23.7 per unit in 1st..5th); 1.18 km/h per unit on an E39 2.5; rows = pedal; 250/255 in an upshift column = never. Check with tools/egs_tables.py verify-shift.</description>
     <CATEGORYMEM index="0" category="0" />
     <XDFAXIS id="x" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
@@ -1702,7 +1702,7 @@
     <XDFAXIS id="z">
       <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x9629" mmedelementsizebits="8" mmedrowcount="11" mmedcolcount="8" mmedmajorstridebits="0" mmedminorstridebits="0" />
       <decimalpl>1</decimalpl>
-      <units>км/ч</units>
+      <units>n_out/32</units>
       <outputtype>1</outputtype>
       <MATH equation="X">
         <VAR id="X" />
@@ -1711,7 +1711,7 @@
   </XDFTABLE>
   <XDFTABLE uniqueid="0x1028" flags="0x0">
     <title>Матрица переключений 11 — СПОРТ (вариант 11, ранние переключения)</title>
-    <description>Порог скорости (км/ч по выходному валу, 27.11 об/мин на км/ч) для каждого перехода. Строки — педаль 0..255. 255 = переход запрещён. Замер 11.09: 1-я 99.6, 2-я 54.3, 3-я 38.3, 4-я 27.1, 5-я 20.1 об/мин на км/ч.</description>
+    <description>Порог в оборотах выходного вала / 32 для каждого перехода: блок сравнивает значение с [0xFFFF918F] (повышение 0x24AC8, понижение 0x24B20), 918F = отфильтрованные обороты выходного вала &gt;&gt; 5 (docs 02 §3). Обороты турбины на пороге = значение × 32 × передаточное: 1-я 117.3, 2-я 64.0, 3-я 45.0, 4-я 32.0, 5-я 23.7 об/мин на единицу (для понижения берётся низшая передача). На E39 2.5 со стоковой главной парой единица = 1.18 км/ч. Строки: педаль 0..255. 250/255 в столбце вверх: переход запрещён. Проверка: tools/egs_tables.py verify-shift. До 23.09.2026 значения ошибочно читались как км/ч. EN: threshold in output shaft rpm / 32 (compared with [0xFFFF918F]); turbine rpm = value × 32 × ratio (117.3 / 64.0 / 45.0 / 32.0 / 23.7 per unit in 1st..5th); 1.18 km/h per unit on an E39 2.5; rows = pedal; 250/255 in an upshift column = never. Check with tools/egs_tables.py verify-shift.</description>
     <CATEGORYMEM index="0" category="0" />
     <XDFAXIS id="x" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
@@ -1757,7 +1757,7 @@
     <XDFAXIS id="z">
       <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x9699" mmedelementsizebits="8" mmedrowcount="11" mmedcolcount="8" mmedmajorstridebits="0" mmedminorstridebits="0" />
       <decimalpl>1</decimalpl>
-      <units>км/ч</units>
+      <units>n_out/32</units>
       <outputtype>1</outputtype>
       <MATH equation="X">
         <VAR id="X" />
@@ -1766,7 +1766,7 @@
   </XDFTABLE>
   <XDFTABLE uniqueid="0x1029" flags="0x0">
     <title>Матрица переключений 12 — ЗИМА: удержание 2-й</title>
-    <description>Порог скорости (км/ч по выходному валу, 27.11 об/мин на км/ч) для каждого перехода. Строки — педаль 0..255. 255 = переход запрещён. Замер 11.09: 1-я 99.6, 2-я 54.3, 3-я 38.3, 4-я 27.1, 5-я 20.1 об/мин на км/ч.</description>
+    <description>Порог в оборотах выходного вала / 32 для каждого перехода: блок сравнивает значение с [0xFFFF918F] (повышение 0x24AC8, понижение 0x24B20), 918F = отфильтрованные обороты выходного вала &gt;&gt; 5 (docs 02 §3). Обороты турбины на пороге = значение × 32 × передаточное: 1-я 117.3, 2-я 64.0, 3-я 45.0, 4-я 32.0, 5-я 23.7 об/мин на единицу (для понижения берётся низшая передача). На E39 2.5 со стоковой главной парой единица = 1.18 км/ч. Строки: педаль 0..255. 250/255 в столбце вверх: переход запрещён. Проверка: tools/egs_tables.py verify-shift. До 23.09.2026 значения ошибочно читались как км/ч. EN: threshold in output shaft rpm / 32 (compared with [0xFFFF918F]); turbine rpm = value × 32 × ratio (117.3 / 64.0 / 45.0 / 32.0 / 23.7 per unit in 1st..5th); 1.18 km/h per unit on an E39 2.5; rows = pedal; 250/255 in an upshift column = never. Check with tools/egs_tables.py verify-shift.</description>
     <CATEGORYMEM index="0" category="0" />
     <XDFAXIS id="x" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
@@ -1812,7 +1812,7 @@
     <XDFAXIS id="z">
       <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x9709" mmedelementsizebits="8" mmedrowcount="11" mmedcolcount="8" mmedmajorstridebits="0" mmedminorstridebits="0" />
       <decimalpl>1</decimalpl>
-      <units>км/ч</units>
+      <units>n_out/32</units>
       <outputtype>1</outputtype>
       <MATH equation="X">
         <VAR id="X" />
@@ -1821,7 +1821,7 @@
   </XDFTABLE>
   <XDFTABLE uniqueid="0x102A" flags="0x0">
     <title>Матрица переключений 13 — ЗИМА/эко: старт со 2-й, ранние переключения</title>
-    <description>Порог скорости (км/ч по выходному валу, 27.11 об/мин на км/ч) для каждого перехода. Строки — педаль 0..255. 255 = переход запрещён. Замер 11.09: 1-я 99.6, 2-я 54.3, 3-я 38.3, 4-я 27.1, 5-я 20.1 об/мин на км/ч.</description>
+    <description>Порог в оборотах выходного вала / 32 для каждого перехода: блок сравнивает значение с [0xFFFF918F] (повышение 0x24AC8, понижение 0x24B20), 918F = отфильтрованные обороты выходного вала &gt;&gt; 5 (docs 02 §3). Обороты турбины на пороге = значение × 32 × передаточное: 1-я 117.3, 2-я 64.0, 3-я 45.0, 4-я 32.0, 5-я 23.7 об/мин на единицу (для понижения берётся низшая передача). На E39 2.5 со стоковой главной парой единица = 1.18 км/ч. Строки: педаль 0..255. 250/255 в столбце вверх: переход запрещён. Проверка: tools/egs_tables.py verify-shift. До 23.09.2026 значения ошибочно читались как км/ч. EN: threshold in output shaft rpm / 32 (compared with [0xFFFF918F]); turbine rpm = value × 32 × ratio (117.3 / 64.0 / 45.0 / 32.0 / 23.7 per unit in 1st..5th); 1.18 km/h per unit on an E39 2.5; rows = pedal; 250/255 in an upshift column = never. Check with tools/egs_tables.py verify-shift.</description>
     <CATEGORYMEM index="0" category="0" />
     <XDFAXIS id="x" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
@@ -1867,7 +1867,7 @@
     <XDFAXIS id="z">
       <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x9779" mmedelementsizebits="8" mmedrowcount="11" mmedcolcount="8" mmedmajorstridebits="0" mmedminorstridebits="0" />
       <decimalpl>1</decimalpl>
-      <units>км/ч</units>
+      <units>n_out/32</units>
       <outputtype>1</outputtype>
       <MATH equation="X">
         <VAR id="X" />
@@ -1876,7 +1876,7 @@
   </XDFTABLE>
   <XDFTABLE uniqueid="0x102B" flags="0x0">
     <title>Матрица переключений 14 — программа 14</title>
-    <description>Порог скорости (км/ч по выходному валу, 27.11 об/мин на км/ч) для каждого перехода. Строки — педаль 0..255. 255 = переход запрещён. Замер 11.09: 1-я 99.6, 2-я 54.3, 3-я 38.3, 4-я 27.1, 5-я 20.1 об/мин на км/ч.</description>
+    <description>Порог в оборотах выходного вала / 32 для каждого перехода: блок сравнивает значение с [0xFFFF918F] (повышение 0x24AC8, понижение 0x24B20), 918F = отфильтрованные обороты выходного вала &gt;&gt; 5 (docs 02 §3). Обороты турбины на пороге = значение × 32 × передаточное: 1-я 117.3, 2-я 64.0, 3-я 45.0, 4-я 32.0, 5-я 23.7 об/мин на единицу (для понижения берётся низшая передача). На E39 2.5 со стоковой главной парой единица = 1.18 км/ч. Строки: педаль 0..255. 250/255 в столбце вверх: переход запрещён. Проверка: tools/egs_tables.py verify-shift. До 23.09.2026 значения ошибочно читались как км/ч. EN: threshold in output shaft rpm / 32 (compared with [0xFFFF918F]); turbine rpm = value × 32 × ratio (117.3 / 64.0 / 45.0 / 32.0 / 23.7 per unit in 1st..5th); 1.18 km/h per unit on an E39 2.5; rows = pedal; 250/255 in an upshift column = never. Check with tools/egs_tables.py verify-shift.</description>
     <CATEGORYMEM index="0" category="0" />
     <XDFAXIS id="x" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
@@ -1922,7 +1922,7 @@
     <XDFAXIS id="z">
       <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x97E9" mmedelementsizebits="8" mmedrowcount="11" mmedcolcount="8" mmedmajorstridebits="0" mmedminorstridebits="0" />
       <decimalpl>1</decimalpl>
-      <units>км/ч</units>
+      <units>n_out/32</units>
       <outputtype>1</outputtype>
       <MATH equation="X">
         <VAR id="X" />
@@ -1931,7 +1931,7 @@
   </XDFTABLE>
   <XDFTABLE uniqueid="0x102C" flags="0x0">
     <title>Матрица переключений 15 — СПОРТ (вариант 15)</title>
-    <description>Порог скорости (км/ч по выходному валу, 27.11 об/мин на км/ч) для каждого перехода. Строки — педаль 0..255. 255 = переход запрещён. Замер 11.09: 1-я 99.6, 2-я 54.3, 3-я 38.3, 4-я 27.1, 5-я 20.1 об/мин на км/ч.</description>
+    <description>Порог в оборотах выходного вала / 32 для каждого перехода: блок сравнивает значение с [0xFFFF918F] (повышение 0x24AC8, понижение 0x24B20), 918F = отфильтрованные обороты выходного вала &gt;&gt; 5 (docs 02 §3). Обороты турбины на пороге = значение × 32 × передаточное: 1-я 117.3, 2-я 64.0, 3-я 45.0, 4-я 32.0, 5-я 23.7 об/мин на единицу (для понижения берётся низшая передача). На E39 2.5 со стоковой главной парой единица = 1.18 км/ч. Строки: педаль 0..255. 250/255 в столбце вверх: переход запрещён. Проверка: tools/egs_tables.py verify-shift. До 23.09.2026 значения ошибочно читались как км/ч. EN: threshold in output shaft rpm / 32 (compared with [0xFFFF918F]); turbine rpm = value × 32 × ratio (117.3 / 64.0 / 45.0 / 32.0 / 23.7 per unit in 1st..5th); 1.18 km/h per unit on an E39 2.5; rows = pedal; 250/255 in an upshift column = never. Check with tools/egs_tables.py verify-shift.</description>
     <CATEGORYMEM index="0" category="0" />
     <XDFAXIS id="x" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
@@ -1977,7 +1977,7 @@
     <XDFAXIS id="z">
       <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x9859" mmedelementsizebits="8" mmedrowcount="11" mmedcolcount="8" mmedmajorstridebits="0" mmedminorstridebits="0" />
       <decimalpl>1</decimalpl>
-      <units>км/ч</units>
+      <units>n_out/32</units>
       <outputtype>1</outputtype>
       <MATH equation="X">
         <VAR id="X" />
