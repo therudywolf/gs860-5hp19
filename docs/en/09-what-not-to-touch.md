@@ -36,19 +36,23 @@ Also: the low-torque rows (Y ≤ 58, ≤ 132 Nm) of the pressure maps are town c
 
 | What | Why |
 |---|---|
-| `0x8214 = 4` | number of TCC stages — loop size in code |
+| `0x8214 = 4` | number of AGS levels, loop size in the AGS function 0x1DEBC (doc 03 §7). Not related to the TCC |
 | `0x8D92 / 0x8D78 / 0x8975`, `0x88F2 + k` | calibration-branch selection and program attributes: bit 2 in `0x88F2` does **not** enable branch 1 (it writes 5 to `0xFFFF90C2`, purpose unknown) — already stepped on |
-| 1st-gear TCC thresholds `0x901E / 0x903E` | lockup in 1st — vibration and heat, no gain |
-| downshift columns of manual programs 08/09/10 in rows 0…254 | over-rev protection |
-| branch-0 release matrix `0x889C` | unlock in D on lift-off — the factory behaviour everyone is used to |
+| 1st-gear AGS tables `0x901E / 0x903E` | these are the D / S AGS tables, not TCC thresholds. Editing them will not lock the clutch in 1st: the gear mask 0x8978 = 0x3C (2nd-5th) excludes lockup in 1st (doc 03 §2) |
+| minimum-gear table `0x8AE2 + 5 × program` (PB from 0x8B19, PD from 0x8B23) | over-rev protection on manual downshifts (0x1E442, arbiter 0x236C8, doc 02 §5). The downshift columns of the manual matrices only set the automatic downshifts |
+| `0x889C` | AGS parameter of branch D, counterpart of 0x88B0 (AGS point-decrease step in S). Not related to TCC release, not traced separately |
 | `0x81A0 / 0x81B2` | gear-selection module threshold vs engine rpm/32 (doc 05 §4); meaning of the comparison is a hypothesis. Not "phases" |
 | `0xA066 … 0xA20A` (slots 13–15) | purpose not decoded |
+| TCC lower level: 950 engine rpm threshold (cell `[0x3B0C2 + 0x6C]`), `0xB0E2` = 1200 | the clutch opens at an engine speed of 950 rpm or less and is allowed again from 1200 (doc 03 §4). The cells are shared by D, S and M |
+| hold after a shift `0xB139 … 0xB13C`, closing slope `0xB0FC`, "locked" criterion `0xB0D4 / 0xB12E` | shared by D, S and M and read only through the descriptor 0x3B0C2: an edit changes every mode at once. The hold (1.00 s after an upshift, 0.20 s after a downshift) keeps the clutch from closing right after synchronisation (doc 03 §4) |
+| ATF in the TCC lower level (0x320DC) | lower-level protection: below raw 70 (about 22 °C) the clutch is always open, above raw 160 (about 110 °C) no slip (doc 03 §4) |
 
 ## 5. Diagnostic scalars
 
 | What | Why |
 |---|---|
 | `0x8EE0–0x8F0E`, incl. `0x8EE8 / 0x8EEA / 0x8EF0`, `0x8EFC`, `0x8F00`, `0x8F08 / 0x8F0A` | voltage thresholds in mV (doc 03 §5, 05 §1). Not temperature and not turbine rpm (proven by the variable writes in 0x20D78). v17 mistakenly raised 0x8EEA to 7300, v18 restored it. Editing gains nothing and may disable/trigger the supply diagnostics |
+| `0x8B44` (u16, stock 6720) | threshold of the turbine monitor 0x26C84: a turbine speed at or above it for about a second sets fault 0x25 and limp mode (doc 05 §6). Raise only together with the engine rev limit. Do not disable the monitor: no other turbine over-speed protection was found in the code |
 
 ## 6. Method
 
