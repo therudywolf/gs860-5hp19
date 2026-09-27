@@ -17,13 +17,19 @@ Usage:
 
 annotations.json (optional) adds names, groups and comments:
 {
-  "meta":   {"name": "...", "author": "...", "date": "...", "description": {"en": "...", "ru": "..."}},
+  "meta":   {"name": "...", "author": "...", "date": "...", "description": {"en": "...", "ru": "..."},
+             "status": {"en": "...", "ru": "..."}},
   "groups": {"group_id": {"en": "...", "ru": "..."}},
   "by_addr": {"0x0BF9C": {"group": "group_id", "name": "...", "comment": {"en": "...", "ru": "..."}}},
   "ranges":  [{"from": "0x09222", "to": "0x098B2", "group": "...", "name": "...", "comment": {...}}],
   "history": [{"date": "...", "change": {"en": "...", "ru": "..."}, "full_sha256": "...", ...}]
 }
-"history" is copied into the recipe as is: earlier result hashes and why they changed.
+"status" (optional) is copied into the recipe after "description": what is known to be wrong or
+unchecked in the preset. "history" is copied into the recipe as is: earlier result hashes and why
+they changed.
+
+Example:
+  python3 tools/make_recipe.py stock.bin tuned.bin -o recipes/my_recipe.json -a my_annotations.json
 """
 import sys, json, hashlib, argparse, os
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -51,10 +57,11 @@ for a in range(0x8EE0, 0x8F10, 2):           # block of 16-bit diagnostic thresh
 
 
 def main():
-    ap = argparse.ArgumentParser()
-    ap.add_argument("stock"); ap.add_argument("tuned")
-    ap.add_argument("-o", "--out", required=True)
-    ap.add_argument("-a", "--annotations")
+    ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    ap.add_argument("stock", help="stock full 256K GS8.60.0 image")
+    ap.add_argument("tuned", help="tuned full 256K image of the same software")
+    ap.add_argument("-o", "--out", required=True, help="recipe JSON to write")
+    ap.add_argument("-a", "--annotations", help="annotations JSON: names, groups, comments, status, history")
     args = ap.parse_args()
 
     st, tn = FW(args.stock), FW(args.tuned)
@@ -179,6 +186,11 @@ def main():
         "tables": out_tables,
         "bytes": out_bytes,
     }
+    if meta.get("status"):
+        # the status note (not road-tested, corrected group roles) goes right after the description
+        items = list(rec.items())
+        i = [k for k, _ in items].index("description") + 1
+        rec = dict(items[:i] + [("status", meta["status"])] + items[i:])
     if ann.get("history"):
         rec["history"] = ann["history"]
     with open(args.out, "w", encoding="utf-8") as f:

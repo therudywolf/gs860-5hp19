@@ -25,6 +25,10 @@ checksum, so they no longer match the output - the log says so).
 Usage:
   apply_recipe.py recipe.json stock.bin -o out.bin [--force] [--dry-run]
 Outputs: out.bin (256K), out_partial32k.bin (0x8000-0x10000), out.log
+The "status" note of the recipe, if any, is printed and logged: read it before flashing.
+
+Example:
+  python3 tools/apply_recipe.py recipes/wolf4x_v18_sport_daily.json my_dump.bin -o build.bin
 """
 import sys, json, hashlib, argparse, os, datetime
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -36,11 +40,12 @@ CRC_AT = 0xFFFE                              # calibration checksum, 2 bytes, co
 
 
 def main():
-    ap = argparse.ArgumentParser()
-    ap.add_argument("recipe"); ap.add_argument("stock")
-    ap.add_argument("-o", "--out", required=True)
+    ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    ap.add_argument("recipe", help="recipe JSON (recipes/*.json)")
+    ap.add_argument("stock", help="your full 256K GS8.60.0 image")
+    ap.add_argument("-o", "--out", required=True, help="output image; out_partial32k.bin and out.log are written next to it")
     ap.add_argument("--force", action="store_true", help="write even where old values do not match")
-    ap.add_argument("--dry-run", action="store_true")
+    ap.add_argument("--dry-run", action="store_true", help="check everything, write nothing")
     args = ap.parse_args()
 
     with open(args.recipe, encoding="utf-8") as f:
@@ -51,6 +56,8 @@ def main():
     log = [f"apply_recipe.py  {datetime.datetime.now():%Y-%m-%d %H:%M}",
            f"recipe : {args.recipe}  ({rec.get('name')}, {rec.get('author')}, {rec.get('date')})",
            f"input  : {args.stock}  sha256 {fw.sha256()}"]
+    if isinstance(rec.get("status"), dict) and rec["status"].get("en"):
+        log.append(f"status : {rec['status']['en']}")
 
     # 1-2. size and code
     if fw.N != 0x40000:

@@ -8,6 +8,11 @@ Usage:
   make_xdf.py import <in.xdf> <out_catalog.json> [--zero-based]   one-time import of an existing XDF
   make_xdf.py check <catalog.json>          bounds, overlaps, duplicate uids, categories, units
 
+Examples:
+  python3 tools/make_xdf.py check catalog/gs8600_19d0.json
+  python3 tools/make_xdf.py build catalog/gs8600_19d0.json xdf/GS8600_19D0_Full256K.xdf --partial xdf/GS8600_19x0_Partial32K.xdf
+  python3 tools/make_xdf.py build catalog/gs8604_20c0.json xdf/GS8604_20C0_Full512K.xdf
+
 Catalogs: catalog/gs8600_19d0.json (GS8.60.0, 256 KB image, calibration window 0x8000-0xFFFF) and
 catalog/gs8604_20c0.json (GS8.60.4, 512 KB image, calibration window 0x70000-0x7FFFF). The generator
 takes the image size and the window from the catalog; nothing about the software is hard-coded here.
@@ -253,6 +258,9 @@ def check(cat):
 
 
 def main(argv):
+    if argv[:1] in (["-h"], ["--help"]):
+        print(__doc__)
+        return 0
     if len(argv) >= 3 and argv[0] == "build":
         cat = json.load(open(argv[1], encoding="utf-8"))
         probs = check(cat)

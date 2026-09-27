@@ -2,7 +2,7 @@
 
 | Term | Meaning in this repository |
 |---|---|
-| **GS8.60.0 / GS8.60.4** | generations of the Bosch transmission ECU for the ZF 5HP19 in BMWs. GS8.60.0 — 256 KB image (programs 19C0/19D0 and others), GS8.60.4 — 512 KB (e.g. 20C0), different layout |
+| **GS8.60.0 / GS8.60.4** | generations of the Bosch transmission ECU for the ZF 5HP19 in BMWs. GS8.60.0 — 256 KB image (programs 19C0/19D0 and others), GS8.60.4 — 512 KB (e.g. 20C0), different layout (document 11) |
 | **19C0 / 19D0** | software/calibration labels in the image. In both dumps studied the program (code 0x10000–0x40000) is labelled 19D0 and is byte-identical; the calibration label in the window tail (`0x0FFCE`) is `19C0 KA20` on the stock E39 2.5 and `19D0 620P` on the Alpina B3 |
 | **Calibration window / Partial** | image area `0x8000–0x10000`; as a separate 32 KB file, offset = address − 0x8000 |
 | **Stock** | the stock calibration the recipes are relative to (label `19C0KA20`) |

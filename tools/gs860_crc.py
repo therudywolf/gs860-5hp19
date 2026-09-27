@@ -8,6 +8,10 @@ Usage:
   gs860_crc.py check <image.bin> [<image.bin> ...]
   gs860_crc.py fix   <in.bin> <out.bin>
 
+Examples:
+  python3 tools/gs860_crc.py check build.bin build_partial32k.bin
+  python3 tools/gs860_crc.py fix edited.bin fixed.bin
+
 check  reads only. Exit code 0 when every checksum of every image matches.
 fix    writes a NEW file (the input is never touched) with the checksums recomputed.
        It refuses when the loader or program checksum of the input does not match:
@@ -145,6 +149,9 @@ def fixed(d):
 
 
 def main(argv):
+    if argv[:1] in (["-h"], ["--help"]):
+        print(__doc__)
+        return 0
     if len(argv) >= 2 and argv[0] == "check":
         results = [check_file(p) for p in argv[1:]]
         return 0 if all(results) else 1
