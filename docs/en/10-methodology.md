@@ -5,6 +5,7 @@
 - **capstone** ≥ 5, `CS_ARCH_M68K`, mode `CS_MODE_M68K_040` — otherwise `muls.l` / `divs.l` (CPU32) do not decode. A linear listing of the whole image from `0x400`; gaps and data inside code show up as garbage instructions — that is normal; the landmarks are `link.w a6`, `movem.l`, `rts` and jump tables.
 - Own Python scripts with no dependencies: table slicing by the "axes strictly increase" rule (`tools/egs_tables.py`), searching for 32-bit pointers to an address (xref), comparing images table by table (`diff`).
 - DS2 logs (doc 06) — for verification.
+- CPU32 emulation (Unicorn) for functions where the static reading is disputed: the real code of the image runs with a prepared RAM state. That is how the record selection 0x34220, the TCC lower state machine 0x33F66 and the hold 0x32A38 were checked on 23-24.09.2026. A second independent analysis with the same disassembler re-checks chains and numbers.
 
 ## 2. Five steps that are never skipped
 
@@ -42,14 +43,25 @@ One step — one build — one log. Do not combine in a first build steps that c
 | **proven / P** | a read in code, a write of the variable, agreement with a log |
 | **E** | role proven from code, magnitude of the effect estimated |
 | **hypothesis / H** | structure or number found, semantics not confirmed by code; do not tune by shape |
-| **refuted** | an old reading withdrawn by code: "0x81A0 = solenoid phases", "B73E… = fill time", "0x8F00/0x8F08 = TCC temperature", "0xAB0C… = TCC slip maps", "0xA066… = TCC thresholds", "0x265F4 = turbine protection at 7000 rpm" (the variables are voltages, doc 05 §1) |
+| **refuted** | an old reading withdrawn by code: "0x81A0 = solenoid phases", "B73E… = fill time", "0x8F00/0x8F08 = TCC temperature", "0xA066… = TCC thresholds", "0x265F4 = turbine protection at 7000 rpm" (the variables are voltages, doc 05 §1), "0xAB0C… = torque-reduction maps" (they are the reference slip of the TCC regulator, doc 04 §9), "0x888C, 0xFFFF9216, 0x901E-0x915E, 0x88B0 = TCC lockup" (this is AGS, doc 03 §7), "0xFFFF91B0 = active program" and "matrices 01 / 02 = sport" (doc 01 §5), "0xFFFF9113 = limp mode" (it is kickdown, doc 05 §3), "phase 4 ends on the timer or on flag 0xFFFF96A6" (doc 04 §5), "manual upshift threshold at the cut = overrun protection" (doc 02 §5). The former entry of this table "0xAB0C… = TCC slip maps" is removed from the refuted list: by the third-party reverse accepted on 23.09.2026 these maps are indeed the reference slip of the TCC regulator |
 
 ## 7. Open questions
 
-- The cause of limp mode when the engine hits the ~7000 rpm limiter (doc 05 §1).
-- Which PWM channel / register corresponds to which solenoid (EDS1…5, MV1…3).
+- Closed on 23.09.2026: the cause of limp mode at the limiter is the turbine monitor 0x26C84, threshold [0x8B44] = 6720, fault 0x25 (doc 05 §6).
+- Which PWM channel / register corresponds to which solenoid (EDS1…5, MV1…3). Partly closed: the converter clutch is PWM `0xFFFF95BA` and output `0xFFFFFF34` (by the third-party reverse accepted on 23.09.2026, doc 03 §4).
 - Semantics of fields kind1 f70 (4×4) and kind3 f65 (6×6), of tables `0xA066…0xA20A`, `0x917E`, `0x8142`, `0x824A`, of slots 0…11 of the descriptors `0x3AA60`.
 - The argument format of DS2 command `0x06` (segment/address/length) — to be captured from a factory tester.
 - Closed 23.09.2026: `0xFFFF918F` is the filtered output shaft rpm shifted right by 5, not road speed (doc 02 §3).
 - Purpose of `0xFFFF90C2` and of bytes 21 / 13 / 19 of the status frame.
 - Mapping of internal fault numbers (6–9 at `0x12640`) to DS2 codes (e.g. 0x95).
+- Disputed and not checked in code: the input of the filter `0xFFFF8DA4` (`0xFFFF8DA6` or `0xFFFF8DA8`, doc 02 §3), what 0x8EEA is compared with (doc 05 §1).
+- The meaning of `0xFFFF91CA` (replacements PE / PF), the roles of matrices k5 (PA), k12 (P9), k13 (P7), whether the `0xFFFF90CD` steps are hill steps (hypothesis).
+- The conditions of the full-lock permission 0x32150 and the role of state 5 of the TCC lower state machine.
+- Which clutch the slip-time controller drives (`0xFFFF974B`) in each downshift kind, the kind-0 records, the adaptation 0x2AE10.
+- Check the code at 0x21522: if the DME2 buffer is contiguous, `0xFFFF8435` is byte 1 of the DME2 frame, not the ADC of the ATF sensor (doc 03 §6).
+
+## 8. Lesson of 23.09.2026: AGS taken for the TCC lockup
+
+From 16.09 to 23.09.2026 doc 03 described the AGS functions, the adaptive program selection, as the TCC lockup: the "ladder" 0x888C, the value `0xFFFF9216`, the tables 0x901E-0x915E. The role was inferred from the shape (four stages, thresholds by pedal and speed) and from the fact that the function reads pedal and speed. Step 4 of §2 was done only half-way here: nobody followed where the result goes. Every access to `0xFFFF9216` turned out to be a ramp, a minimum or a comparison in the program arbitration, the value never reaches an output. The real clutch chain ends at the output `0xFFFFFF34` (doc 03 §1). The same mistake was behind the readings "0xFFFF91B0 = active program" and "matrices 01 / 02 = sport": the role was assigned by shape without checking what selects the matrix (table 0x24BA4).
+
+Rule added to §2: for every value given a physical role, follow the code to an output (a PWM register, a CAN frame, a gear or program decision). Until the path to an output is found, the role stays a hypothesis.

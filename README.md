@@ -76,7 +76,7 @@ Open `xdf/GS8600_19D0_Full256K.xdf` in TunerPro with a 256 KB dump, or `xdf/GS86
 |---|---|
 | [01 · Firmware layout](docs/en/01-firmware-layout.md) | memory map, table format, the 536 tables, pointer catalogue, the two calibration branches, the 16 programs, DS2 dispatcher |
 | [02 · Shift points](docs/en/02-shift-points.md) | the 16 matrices, pedal rows, the unit (output shaft rpm / 32), how to check a point against your engine's limiter |
-| [03 · Torque converter lockup](docs/en/03-torque-converter-lockup.md) | the 4-stage ladder, threshold tables, the "temperature window" myth, where ATF temperature really is |
+| [03 · Torque converter lockup](docs/en/03-torque-converter-lockup.md) | the real lockup (request 0/1/2, thresholds `0x993A`, state machine 0-8), AGS (the old "4-stage ladder" reading), the "temperature window" myth, where ATF temperature really is |
 | [04 · Shift execution and hydraulics](docs/en/04-shift-execution-hydraulics.md) | the shift automaton: record sets, transition types, phases, the slip-time controller, clutch pressures, table families, stock vs Alpina — and why copying Alpina data blindly destroys a shift |
 | [05 · Protections](docs/en/05-protections.md) | function `0x265F4` is a supply-voltage monitor (and how the "turbine 7000 rpm" reading was disproved), thermal derate, limp mode |
 | [06 · Logging over DS2](docs/en/06-logging-ds2.md) | 9600 baud, reading RAM, status-frame bytes, the addresses worth logging for A/B |
@@ -96,7 +96,7 @@ A preset here is a **recipe** — a JSON diff against the stock calibration, not
 |---|---|
 | `wolf4x_v18_sport_daily` | conservative: uniform correction on top of stock |
 | `wolf4x_v19_street_hard` | factory Alpina B3 level where the axes match |
-| `wolf4x_v20_track_hard` | short slip time, raised pressure ceiling, early lockup in Sport/Manual |
+| `wolf4x_v20_track_hard` | short slip time, raised pressure ceiling, and AGS edits that were meant as early lockup in Sport/Manual (doc 08 §6) |
 
 All three are built for a 2.5 M52TU with the spark cut from about 6656 rpm and the fuel cut at 6784. Their shift points were recomputed on 23.09.2026 after the matrix unit was proven to be output shaft rpm / 32, not km/h (CHANGELOG). Shift points depend only on the engine limiter, not on the final drive or tyres: check them against yours with `egs_tables.py verify-shift` (`docs/en/08` §4).
 
@@ -174,7 +174,7 @@ XDF открывается в TunerPro: `xdf/GS8600_19D0_Full256K.xdf` — дл�
 |---|---|
 | [01 · Устройство прошивки](docs/ru/01-firmware-layout.md) | карта памяти, формат таблиц, 536 таблиц, каталог указателей, две ветки калибровки, 16 программ, диспетчер DS2 |
 | [02 · Точки переключения](docs/ru/02-shift-points.md) | 16 матриц, строки педали, единица (обороты выходного вала / 32), как проверить точку под ограничитель своего мотора |
-| [03 · Блокировка гидротрансформатора](docs/ru/03-torque-converter-lockup.md) | лесенка из 4 ступеней, таблицы порогов, миф о «температурном окне», где на самом деле температура ATF |
+| [03 · Блокировка гидротрансформатора](docs/ru/03-torque-converter-lockup.md) | настоящая блокировка (запрос 0/1/2, пороги `0x993A`, автомат состояний 0-8), AGS (прежнее прочтение «лесенка из 4 ступеней»), миф о «температурном окне», где на самом деле температура ATF |
 | [04 · Исполнение переключения и гидравлика](docs/ru/04-shift-execution-hydraulics.md) | автомат переключения: наборы записей, типы переходов, фазы, регулятор времени скольжения, давления сцеплений, семейства таблиц, сток против Alpina — и почему слепое копирование данных Alpina убивает переключение |
 | [05 · Защиты](docs/ru/05-protections.md) | функция `0x265F4` — монитор напряжения бортсети (и как была опровергнута трактовка «турбина 7000»), термодерейт, аварийный режим |
 | [06 · Логирование по DS2](docs/ru/06-logging-ds2.md) | 9600 бод, чтение RAM, байты статусного кадра, адреса, которые стоит писать для сравнения «до/после» |
@@ -194,7 +194,7 @@ XDF открывается в TunerPro: `xdf/GS8600_19D0_Full256K.xdf` — дл�
 |---|---|
 | `wolf4x_v18_sport_daily` | осторожный: равномерная поправка поверх стока |
 | `wolf4x_v19_street_hard` | уровень заводской Alpina B3 там, где совпадают оси |
-| `wolf4x_v20_track_hard` | короткое время скольжения, поднятый потолок давления, ранняя блокировка в Sport/Manual |
+| `wolf4x_v20_track_hard` | короткое время скольжения, поднятый потолок давления и правки AGS, задуманные как ранняя блокировка в Sport/Manual (документ 08 §6) |
 
 Все три собраны под мотор 2.5 M52TU с искрой примерно с 6656 и топливной отсечкой 6784. Точки переключения пересчитаны 23.09.2026, когда доказано, что единица матриц это обороты выходного вала / 32, а не км/ч (CHANGELOG). Точки зависят только от ограничителя мотора, не от главной пары и колёс: проверьте их под свой командой `egs_tables.py verify-shift` (`docs/ru/08`, раздел 4).
 

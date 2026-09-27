@@ -65,13 +65,13 @@ Interpolators: `0x1E848` — 2D 8-bit, `0x1EB18` — 2D 16-bit, `0x1E680` / `0x1
 | 1, 2 | 0x9AE0, 0x9AE4 | **0x81A0, 0x81B2** — gear-selection module threshold vs engine rpm/32 (doc 05) |
 | 3, 4 | 0x9AE8, 0x9AEC | 0x8226, 0x824A |
 | 5–8 | 0x9AF0–0x9AFC | 0x8EAC, 0x8FF6, 0x9008, 0x9016 |
-| 9–19 | **0x9B00–0x9B28** | **11 torque-converter lockup tables** 0x901E … 0x915E, 0x917E (doc 03) |
+| 9-19 | **0x9B00-0x9B28** | **10 AGS tables** 0x901E … 0x915E: D / S pairs by `0xFFFF91CB` (the pair is chosen at 0x1DF6C), pedal threshold vs speed for the target AGS level. They have nothing to do with the converter clutch (doc 03 §7). Plus 0x917E, role not traced |
 | 20–35 | **0x9B2C–0x9B68** | **16 shift-point matrices** 0x91B2 + k·0x70 (doc 02) |
-| 36–47 | 0x9B6C–0x9B98 | 0x98B2, 0x98C0, 0x98CE, 0x98E0, 0x98F0, 0x993A, 0x9A36, 0x9A50, **0x9A6E** (thermal derate), 0x9A78, 0x9A82, 0x9AA8 |
+| 36-47 | 0x9B6C-0x9B98 | 0x98B2, 0x98C0, 0x98CE, 0x98E0, 0x98F0, **0x993A** (pointer 0x9B80: TCC lockup thresholds 30 × 7, function 0x29056, the main table of the clutch, doc 03 §3), 0x9A36, 0x9A50, **0x9A6E** (thermal derate), 0x9A78, 0x9A82 (apparently the ATF sensor table: hypothesis, not proven), 0x9AA8 |
 
 ## 4. Two calibration branches — flag 0xFFFF91CB
 
-The **gear-selection and TCC logic** has two parameter sets. Byte `[0xFFFF91CB]` switches them: 0 — branch 0 ("normal"), 1 — branch 1. Function `0x242F6–0x24370`:
+Byte `[0xFFFF91CB]` switches two parameter sets: 0 = branch 0 (D, and also M after a +/- tap), 1 = branch 1 (S). It is the S flag, proven by code 0x242EE-0x24370 (analysis of 23.09.2026). The branch is read by the AGS functions, the adaptive program selection (0x1DEBC and the 0x1Fxxx functions, doc 03 §7), and by table 0x81A0 (doc 05 §4). The TCC lockup cannot be tuned through it. Function `0x242EE-0x24370` (simplified):
 
 ```
 [0xFFFF91CB] = 0
@@ -91,15 +91,15 @@ Tables of 3 bytes per selector position (verified against the dump):
 | 4 | 255, **254**, 8 | 255, **254**, 8 |
 | 5–7 | 0, 0, 0 | 0, 0, 0 |
 
-So from the factory branch 1 is enabled for selector positions 2–4 in sub-mode 1. What exactly "selector 2/3/4" and "sub-mode" mean in terms of S/M/taps is not proven from code; by logs branch 1 coincides with S/M (hypothesis).
+So from the factory branch 1 is enabled for selector positions 2-4 in sub-mode 1. The flag is 1 in the gate before a +/- tap (`0xFFFF916C` and `0x8975` = 0xFE) or when the selector table gives 0xFE. In D both tables give 0xFF and the flag is 0: code 0xFE in D is only possible with `0xFFFF91F0` = 1 (program button, which Steptronic cars do not have). After a +/- tap the flag is 0 again and the M flag `0xFFFF91F3` takes over. By code 0x230F0-0x23106 it is 1 only for program code `0xFFFF8784` = 0x0B or 0x0D, and only 0x230A8-0x230D2 sets those codes: lever in the gate (code 8), `0xFFFF91F5` = 2, after a +/- tap (event `0xFFFF9169`, latch `0xFFFF916B`). The selector tables 0x8D74 / 0x8D8E and byte 0x8975 contain no 0x0B / 0x0D, so in D and in S before a tap the M flag is 0. What "selector 2/3/4" and "sub-mode" mean individually is not fully traced.
 
 How the branches differ (all addresses in the calibration window):
 
-| Parameter | Branch 0 | Branch 1 |
+| Parameter | Branch 0 (D) | Branch 1 (S) |
 |---|---|---|
-| TCC threshold table pairs | 0x901E, 0x905E, 0x909E, 0x90DE, 0x913E | 0x903E, 0x907E, 0x90BE, 0x910E, 0x915E |
-| TCC stage release matrix | 0x889C | 0x88B0 |
-| minimum pedal for lockup | 0x819C = 3 | 0x819D = 8 |
+| AGS tables: pedal threshold vs speed for the target level (the pair is chosen at 0x1DF6C) | 0x901E, 0x905E, 0x909E, 0x90DE, 0x913E | 0x903E, 0x907E, 0x90BE, 0x910E, 0x915E |
+| AGS: step of the point decrease (0x1E1A2, branch taken on `0xFFFF91CB`). 0x889C is the branch-0 counterpart, not traced separately | 0x889C | 0x88B0 |
+| pedal threshold of the AGS function: below it the function exits through 0x1E220 and the level is frozen, not reset | 0x819C = 3 | 0x819D = 8 |
 | 0x81A0 (Y row) | 30 / 30 / 255 / 255 | 15 / 15 / 30 / 30 |
 | 0x98CE (Y row) | 0 / 43 / 86 / 128 | 129 / 171 / 213 / 255 |
 
@@ -109,21 +109,38 @@ A mistake already made here once: bit 2 in the program attribute table `0x88F2 +
 
 ## 5. The 16 shift programs and descriptors
 
-The active program number is `0xFFFF91B0`. Shift-point matrices: 0x91B2 + k·0x70 (doc 02). Program roles:
+The active program P0…PF is held in `0xFFFF91A0`. The matrix for it is chosen by the table in function 0x24BA4 (pointer catalog 0x9B2C), so the matrix number k is not the program number. `0xFFFF91B0` is the forced program (values 0 / 4 / 5), not the active one. Shift-point matrices: 0x91B2 + k × 0x70 (doc 02). Matrix roles from code (analysis of 23.09.2026):
 
-| k | Address | Role | Basis |
+| k | Address | Program and role | Basis |
 |---|---|---|---|
-| 00 | 0x91B2 | D-like | shape |
-| 01, 02 | 0x9222, 0x9292 | sport | shape; in stock they differ from D only at part throttle |
-| **03, 04, 07** | 0x9302, 0x9372, 0x94C2 | **D** | 13 of 14 shift events in a log matched these matrices |
-| 05 | 0x93E2 | hold (upshift 250 everywhere) | shape |
-| 06, 14 | 0x9452, 0x97D2 | D-like (economy) | shape |
-| **08, 09, 10** | 0x9532, 0x95A2, 0x9612 | **manual**: rows do not depend on pedal; downshift columns are protection lines | shape; by log, manual mode = program 178 in byte 22 of the status frame |
-| 11, 15 | 0x9682, 0x9842 | sport (11 — early shifts) | shape |
-| 12 | 0x96F2 | only 1→2 (at 30, 35 km/h on the reference car), never above 2nd | shape |
-| 13 | 0x9762 | start in 2nd (1→2 = 0) — winter | shape |
+| 00 | 0x91B2 | P4: step `0xFFFF90CD` = 1, priority above D and S | code 0x24BA4, 0x23230 |
+| 01 | 0x9222 | P5: step `0xFFFF90CD` = 2, overrides S at AGS level 3 and is used in D. Not sport | code |
+| 02 | 0x9292 | P6: step `0xFFFF90CD` = 3, always overrides S and is used in D. Not sport | code |
+| 03 | 0x9302 | PF: D replacement when `0xFFFF91CA` = 2 and the AGS points are at most 192 | code |
+| 04 | 0x9372 | PE: D replacement when `0xFFFF91CA` = 1 and the AGS points are at most 64 | code |
+| 05 | 0x93E2 | PA: role not established. By shape a hold (upshift 250 everywhere) | shape |
+| 06 | 0x9452 | **P1: main D, AGS level 2** | code |
+| 07 | 0x94C2 | PC: D with overheated ATF (`0xFFFF90E4`), from 5th | code |
+| 08 | 0x9532 | PD: M with overheated ATF (program code 0x0D) | code |
+| 09 | 0x95A2 | P8: gate without Steptronic logic (`0xFFFF91F5` not 2). Not M | code |
+| 10 | 0x9612 | **PB: main M** (Steptronic, program code 0x0B) | code. Byte 22 of the frame in M = 178 = 0xB2: program B in the high nibble (doc 06 §3) |
+| 11 | 0x9682 | **P2: S, AGS level 3** | code |
+| 12 | 0x96F2 | P9: role not established. By shape only 1-2 (at 30, 35 km/h on the reference car), never above 2nd | shape |
+| 13 | 0x9762 | P7: role not established. By shape a start in 2nd (1-2 = 0), looks like a winter mode | shape |
+| 14 | 0x97D2 | **P0: main D, AGS level 1** | code |
+| 15 | 0x9842 | **P3: S, AGS level 4** | code |
 
-Everything "by shape" is a hypothesis: the mapping of program number to button/selector lives in code (0x2300C → 0x23110 → 0x23230 → `0xFFFF91A0`) and is not fully traced.
+The "by shape" roles of the previous version of this table (01/02 sport, 03/04/07 D, 08/09/10 manual, 00 unused) were withdrawn on 23.09.2026: the roles above come from table 0x24BA4 and from the program-selection logic. The roles of k5 (PA), k12 (P9) and k13 (P7) are not established in code, only the shape description remains for them.
+
+Program selection (traced on 23.09.2026): 0x2300C, arbitration 0x23110, resolution 0x23230 with the table of "code, priority" pairs 0x11868 and the map 0x11864 = 0, 1, 2, 3.
+
+- D: AGS level 1 or 2 gives P0 or P1. Replacements with priority: PE when `0xFFFF91CA` = 1 and the AGS points are at most 64, PF when `0xFFFF91CA` = 2 and the points are at most 192, PC with overheated ATF (`0xFFFF90E4`, raw `0xFFFF90D0` from 170).
+- S: AGS level 3 or 4 gives P2 or P3. In S the AGS points are clamped to 129…255 (0x1DCB2), so levels 1 and 2 cannot be told apart in S (doc 03 §7).
+- M: program code 0x0B gives PB, code 0x0D (overheated ATF) gives PD.
+- Gate without Steptronic logic (`0xFFFF91F5` not 2) gives P8.
+- Step `0xFFFF90CD` = 1 / 2 / 3 gives P4 / P5 / P6 with priority above D and S: step 2 overrides S at AGS level 3, step 3 always overrides S. The step is computed at 0x1651E from the quantity 0x8D04 = f(0x8D9C, 0x8D06) and reset at 0x165A0 (these three addresses are written without the 0xFFFF prefix in the analysis, probably RAM).
+
+That the `0xFFFF90CD` steps are hill steps (0x8D04 looks like driving resistance, and k0 / k1 / k2 hold each gear longer and longer) is a hypothesis, not proven. The meaning of `0xFFFF91CA` is not established. The ATF temperature that switches to PC and PD was estimated from table 0x9A82 at about 120 °C: hypothesis, not proven.
 
 Descriptors `0x3AA60`: 5 records × 32 pointers (stride 0x80). Slot 12 → six 2D16 4×5 maps `0xA2C6 / 0xA304 / 0xA342 / 0xA380 / 0xA3BE / 0xA3FC` (X axis 140/150/180/255 raw temperature units, values −80 or 0) — cold corrections. Slots 13–15 → 16 tables 4×4 in `0xA066–0xA20A` — purpose not decoded (these are **not** TCC thresholds, as one third-party report claimed).
 
