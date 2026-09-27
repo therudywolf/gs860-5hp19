@@ -4,9 +4,12 @@
 egs_tables.py - table scanner / dumper for Bosch GS8.60.0 (ZF 5HP19) firmware images.
 Part of the GS8.60.0 community repository. License: MIT.
 
-Works on 256K full images (19C0 / 19D0) and on 32K partial images
-(calibration window 0x8000-0x10000 saved as a separate file; addresses minus 0x8000).
-GS8.60.4 (512K, e.g. 20C0) has a different layout - this tool does not know it.
+Works on 256K full images of GS8.60.0 (19C0 / 19D0), on their 32K partial images
+(calibration window 0x8000-0x10000 saved as a separate file; addresses minus 0x8000)
+and, since 27.09.2026, on 512K full images of GS8.60.4 (20C0): calibration zones
+0x70000-0x71BC0 and 0x78000-0x7D858, 16 shift matrices at 0x7120E + k * 0x70, gear
+ratios at 0x0E0D2, program code 0x08000-0x70000 (docs 11). The layout is chosen by the
+file size. What is not proven for 20C0 is said so in the output (matrix roles).
 
 Table formats (big-endian, Motorola 68k/CPU32):
   2D8  : [u16 nx][u16 ny][nx bytes X axis][ny bytes Y axis][nx*ny bytes data]
@@ -14,9 +17,9 @@ Table formats (big-endian, Motorola 68k/CPU32):
   1D8  : [u16 n][n bytes axis][n bytes data]
   1D16 : [u16 n][2n bytes axis][2n bytes data]
 Axes strictly increase - that is how tables are detected. In 19C0/19D0 the zone
-0x080D0-0x0E4A2 yields exactly 536 such tables (15284 bytes); the remaining bytes of
-the zone are scalars, axis-less matrices, pointer catalogs and 2-3 point curves the
-heuristic deliberately skips.
+0x080D0-0x0E4A2 yields exactly 536 such tables (15284 bytes); in 20C0 the two zones
+yield 50 + 564 = 614. The remaining bytes of the zones are scalars, axis-less
+matrices, pointer catalogs and 2-3 point curves the heuristic deliberately skips.
 
 Usage:
   egs_tables.py scan     fw.bin [--csv out.csv] [--md out.md]   catalog of tables
@@ -41,12 +44,27 @@ gs860_crc.py from this folder to recompute the calibration checksum).
 """
 import sys, struct, csv, os, re, hashlib
 
-CAL_LO, CAL_HI = 0x080D0, 0x0E4A2          # table zone inside the calibration window
-WIN_LO, WIN_HI = 0x08000, 0x10000          # calibration window (partial image)
-CODE_LO, CODE_HI = 0x10000, 0x40000        # program code; identical in 19C0 and 19D0
+CAL_LO, CAL_HI = 0x080D0, 0x0E4A2          # 19x0: table zone inside the calibration window
+WIN_LO, WIN_HI = 0x08000, 0x10000          # 19x0: calibration window (partial image)
+CODE_LO, CODE_HI = 0x10000, 0x40000        # 19x0: program code; identical in 19C0 and 19D0
 CODE_SHA256_19x0 = "e151733e1cc1a779975680a48722e26ac43c5b3674150576a38fb0b9e57c2546"
+CODE_SHA256_20C0 = "28d921796ffc1fdaafed346e21808dfac80498bf140222f07906abf74a20e14a"   # 0x08000-0x70000
 
 SHIFT_BASE, SHIFT_STRIDE = 0x091B2, 0x70
+# Layout by file size. zones = table zones, win = calibration window, code = program code and
+# its reference hash, shift = first matrix, ratios = (address, index of 1st gear), labels = program
+# and calibration label, tables = tables the scanner finds in a factory image, manual = matrices
+# known to be the manual program (19x0: by shape of stock and Alpina; 20C0: not proven, None).
+LAYOUTS = {
+    0x40000: dict(name="GS8.60.0 19x0 full 256K", zones=[(CAL_LO, CAL_HI)], win=(WIN_LO, WIN_HI), code=(CODE_LO, CODE_HI),
+                  code_sha=CODE_SHA256_19x0, shift=SHIFT_BASE, ratios=(0x12F9C, 0), labels=(0x4322, 0xFFCE),
+                  tables=536, manual=(8, 9, 10), off=0),
+    0x08000: dict(name="GS8.60.0 19x0 partial 32K", zones=[(CAL_LO, CAL_HI)], win=(WIN_LO, WIN_HI), code=None,
+                  code_sha=None, shift=SHIFT_BASE, ratios=None, labels=(None, 0xFFCE), tables=536, manual=(8, 9, 10), off=WIN_LO),
+    0x80000: dict(name="GS8.60.4 20C0 full 512K", zones=[(0x70000, 0x71BC0), (0x78000, 0x7D858)], win=(0x70000, 0x80000),
+                  code=(0x08000, 0x70000), code_sha=CODE_SHA256_20C0, shift=0x7120E, ratios=(0x0E0D2, 1),
+                  labels=(0x6FF7C, 0x7FFCE), tables=614, manual=None, off=0),
+}
 SHIFT_COLS = ["1>2", "2>3", "3>4", "4>5", "2>1", "3>2", "4>3", "5>4"]
 
 # The shift decision compares the matrix value with [0xFFFF918F]: upshift at 0x24AC8
@@ -78,12 +96,23 @@ class FW:
         with open(path, "rb") as f:
             self.d = bytearray(f.read())
         self.N = len(self.d)
-        if self.N == 0x40000:
-            self.off = 0
-        elif self.N == 0x8000:
-            self.off = WIN_LO
-        else:
-            raise SystemExit(f"{path}: size {self.N} - expected 262144 (full) or 32768 (partial)")
+        if self.N not in LAYOUTS:
+            raise SystemExit(f"{path}: size {self.N} - expected 262144 (GS8.60.0 full), 32768 (GS8.60.0 partial) "
+                             "or 524288 (GS8.60.4 full)")
+        self.L = LAYOUTS[self.N]
+        self.off = self.L["off"]
+
+    @property
+    def is_20c0(self):
+        return self.N == 0x80000
+
+    def zones(self):
+        """Table zones clipped to the bytes the file holds."""
+        return [(max(lo, self.off), min(hi, self.off + self.N)) for lo, hi in self.L["zones"] if lo < self.off + self.N and hi > self.off]
+
+    def window(self):
+        lo, hi = self.L["win"]
+        return max(lo, self.off), min(hi, self.off + self.N)
 
     # --- raw access by full-image address -------------------------------
     def valid(self, a):
@@ -123,8 +152,14 @@ class FW:
                 return dict(addr=a, kind="1D16", nx=n, ny=1, end=e)
         return None
 
-    def tile(self, lo=CAL_LO, hi=CAL_HI):
-        """Tile [lo, hi) with tables, byte by byte where nothing matches."""
+    def tile(self, lo=None, hi=None):
+        """Tile [lo, hi) with tables, byte by byte where nothing matches. Without bounds: every table
+        zone of the layout."""
+        if lo is None:
+            out = []
+            for z_lo, z_hi in self.zones():
+                out += self.tile(z_lo, z_hi)
+            return out
         out, a = [], lo
         while a < hi - 8:
             t = self.try_table(a)
@@ -168,19 +203,22 @@ class FW:
 
     # --- shift matrices -----------------------------------------------------
     def ratios(self):
-        """Gear ratios 1st..5th: from the image (0x12F9C) when it holds the program code,
-        otherwise the 19C0/19D0 values."""
-        if self.valid(RATIOS_AT) and self.valid(RATIOS_AT + 9):
-            r = tuple(self.u16(RATIOS_AT + 2 * g) / 1000 for g in range(5))
-            if all(0.5 < x < 5 for x in r) and list(r) == sorted(r, reverse=True):
-                return r
+        """Gear ratios 1st..5th x1000 from the image when it holds the program code (19x0: 0x12F9C,
+        index gear - 1; 20C0: 0x0E0D2, index = gear code, read by 0x41648), otherwise the 19C0/19D0
+        values (20C0 holds the same five numbers)."""
+        if self.L["ratios"]:
+            at, first = self.L["ratios"]
+            if self.valid(at) and self.valid(at + 2 * (first + 5)):
+                r = tuple(self.u16(at + 2 * (first + g)) / 1000 for g in range(5))
+                if all(0.5 < x < 5 for x in r) and list(r) == sorted(r, reverse=True):
+                    return r
         return RATIOS_19x0
 
     def shift_matrices(self):
         """16 matrices 8x11: X = 1..8 (transition), Y = pedal 0..255, values = output shaft rpm / 32."""
         res = []
         for k in range(16):
-            a = SHIFT_BASE + k * SHIFT_STRIDE
+            a = self.L["shift"] + k * SHIFT_STRIDE
             if not self.valid(a + 0x6F):
                 break
             t = self.try_table(a)
@@ -218,17 +256,19 @@ def classify_programs(fw):
 
 
 def cmd_scan(fw, out_csv=None, out_md=None):
-    lo = max(CAL_LO, fw.off); hi = min(CAL_HI, fw.off + fw.N)
-    tabs = fw.tile(lo, hi)
+    zones = fw.zones()
+    tabs = fw.tile()
     cov = sum(t["end"] - t["addr"] for t in tabs)
     gaps = []
-    a = lo
-    for t in tabs:
-        if t["addr"] > a:
-            gaps.append((a, t["addr"]))
-        a = t["end"]
-    print(f"file: {os.path.basename(fw.path)} ({fw.N} bytes, offset 0x{fw.off:X})")
-    print(f"zone: {lo:05X}-{hi:05X}  tables: {len(tabs)}  covered: {cov} bytes  gaps: {len(gaps)}")
+    for lo, hi in zones:
+        a = lo
+        for t in tabs:
+            if lo <= t["addr"] < hi:
+                if t["addr"] > a:
+                    gaps.append((a, t["addr"]))
+                a = t["end"]
+    print(f"file: {os.path.basename(fw.path)} ({fw.N} bytes, {fw.L['name']}, offset 0x{fw.off:X})")
+    print(f"zones: {', '.join(f'{lo:05X}-{hi:05X}' for lo, hi in zones)}  tables: {len(tabs)}  covered: {cov} bytes  gaps: {len(gaps)}")
     for g in gaps[:10]:
         print(f"  gap {g[0]:05X}-{g[1]:05X}")
     rows = []
@@ -244,7 +284,8 @@ def cmd_scan(fw, out_csv=None, out_md=None):
         print("csv:", out_csv)
     if out_md:
         with open(out_md, "w", encoding="utf-8") as f:
-            f.write(f"# Table catalog: {os.path.basename(fw.path)}\n\n{len(tabs)} tables, {cov} bytes, zone {lo:05X}-{hi:05X}\n\n")
+            f.write(f"# Table catalog: {os.path.basename(fw.path)}\n\n{len(tabs)} tables, {cov} bytes, zones "
+                    + ", ".join(f"{lo:05X}-{hi:05X}" for lo, hi in zones) + "\n\n")
             f.write("| addr | kind | size | X | Y | values |\n|---|---|---|---|---|---|\n")
             for r in rows:
                 f.write(f"| `{r['addr']}` | {r['kind']} | {r['nx']}x{r['ny']} | {r['xmin']}-{r['xmax']} | {r['ymin']}-{r['ymax']} | {r['vmin']}-{r['vmax']} |\n")
@@ -263,8 +304,11 @@ def turbine_rpm(value, col, ratios):
 
 def cmd_shift(fw, turbine=False, rpm_per_kmh=None):
     R = fw.ratios()
-    print("values: output shaft rpm / 32 (compared with 0xFFFF918F); turbine rpm per unit: "
-          + ", ".join(f"{ORD[g]} {UNIT_RPM * r:.1f}" for g, r in enumerate(R)))
+    print(f"{fw.L['name']}: values = output shaft rpm / 32 (compared with {'0xFFFF9138 at 0x20688 / 0x206E4' if fw.is_20c0 else '0xFFFF918F at 0x24AC8 / 0x24B20'}); "
+          "turbine rpm per unit: " + ", ".join(f"{ORD[g]} {UNIT_RPM * r:.1f}" for g, r in enumerate(R)))
+    if fw.is_20c0:
+        print("20C0: the upshift threshold gets [0xFFFF9143] added (byte 0x70B98[gear - 1] when [0xFFFF91B3] = 2, "
+              "function 0x20D8E), and matrix roles S / M / D are not proven (docs 11)")
     if rpm_per_kmh:
         print(f"with {rpm_per_kmh} output rpm per km/h one unit is {UNIT_RPM / rpm_per_kmh:.3f} km/h")
     if turbine:
@@ -273,7 +317,7 @@ def cmd_shift(fw, turbine=False, rpm_per_kmh=None):
     hdr = "  pedal |  1>2  2>3  3>4  4>5 |  2>1  3>2  4>3  5>4"
     for k, t in enumerate(fw.shift_matrices()):
         if t is None:
-            print(f"\n=== program {k:02d} @ {SHIFT_BASE + k * SHIFT_STRIDE:05X}: not a valid 8x11 matrix"); continue
+            print(f"\n=== program {k:02d} @ {fw.L['shift'] + k * SHIFT_STRIDE:05X}: not a valid 8x11 matrix"); continue
         xs, ys, data, da, _ = fw.read_table(t)
         print(f"\n=== program {k:02d} @ {t['addr']:05X} (data at {da:05X}) ===")
         print(hdr if not turbine else hdr.replace("  1>2  2>3  3>4  4>5", "   1>2   2>3   3>4   4>5")
@@ -294,9 +338,11 @@ def cmd_programs(fw):
 
 
 def cmd_diff(a, b, show_all=False):
-    lo = max(CAL_LO, a.off, b.off); hi = min(CAL_HI, a.off + a.N, b.off + b.N)
-    ta = {t["addr"]: t for t in a.tile(lo, hi)}
-    tb = {t["addr"]: t for t in b.tile(lo, hi)}
+    if a.L["zones"] != b.L["zones"]:
+        print(f"{a.L['name']} against {b.L['name']}: different software, the tables cannot be compared by address"); return
+    zones = [(max(lo, a.off, b.off), min(hi, a.off + a.N, b.off + b.N)) for lo, hi in a.L["zones"]]
+    ta = {t["addr"]: t for lo, hi in zones for t in a.tile(lo, hi)}
+    tb = {t["addr"]: t for lo, hi in zones for t in b.tile(lo, hi)}
     common = sorted(set(ta) & set(tb))
     print(f"tables in A: {len(ta)}  in B: {len(tb)}  common addresses: {len(common)}")
     for ad in sorted(set(ta) ^ set(tb)):
@@ -316,15 +362,16 @@ def cmd_diff(a, b, show_all=False):
                         if da_[r][c] != db_[r][c]:
                             print(f"      [{ya[r] if ta[ad]['ny'] > 1 else '-'} , {xa[c]}] {da_[r][c]} -> {db_[r][c]}")
     # bytes outside tables
-    other = [i for i in range(lo, hi) if a.u8(i) != b.u8(i)]
+    other = [i for lo, hi in zones for i in range(lo, hi) if a.u8(i) != b.u8(i)]
     covered = set()
     for t in ta.values():
         covered.update(range(t["addr"], t["end"]))
     other = [i for i in other if i not in covered]
     print(f"changed tables: {n};  changed bytes outside tables in zone: {len(other)}"
           + (":  " + " ".join(f"{i:05X}" for i in other[:40]) if other else ""))
-    wlo = max(WIN_LO, a.off, b.off); whi = min(WIN_HI, a.off + a.N, b.off + b.N)
-    scal = [i for i in range(wlo, whi) if (i < lo or i >= hi) and a.u8(i) != b.u8(i)]
+    wlo = max(a.L["win"][0], a.off, b.off); whi = min(a.L["win"][1], a.off + a.N, b.off + b.N)
+    inzone = lambda i: any(lo <= i < hi for lo, hi in zones)
+    scal = [i for i in range(wlo, whi) if not inzone(i) and a.u8(i) != b.u8(i)]
     if scal:
         print(f"changed bytes in window outside table zone: {len(scal)}:  " + " ".join(f"{i:05X}" for i in scal[:40]))
 
@@ -337,17 +384,26 @@ def cmd_ids(fw):
 
 
 def cmd_info(fw):
+    L = fw.L
     print(f"file   : {fw.path}")
-    print(f"size   : {fw.N} bytes ({'full 256K' if fw.N == 0x40000 else 'partial 32K, addresses = offset + 0x8000'})")
+    print(f"size   : {fw.N} bytes ({L['name']}{', addresses = offset + 0x8000' if fw.N == 0x8000 else ''})")
     print(f"sha256 : {fw.sha256()}")
-    if fw.N == 0x40000:
-        cs = fw.sha256(CODE_LO, CODE_HI)
-        print(f"code 0x10000-0x40000 sha256: {cs}  {'== 19C0/19D0 reference' if cs == CODE_SHA256_19x0 else '!= reference (different software)'}")
-        print(f"program label @0x4322: {bytes(fw.d[0x4322:0x4322 + 12]).decode('latin1')}")
-    print(f"calibration window sha256: {fw.sha256(max(WIN_LO, fw.off), min(WIN_HI, fw.off + fw.N))}")
-    print(f"calibration label @0xFFCE: {bytes(fw.d[0xFFCE - fw.off:0xFFDE - fw.off]).decode('latin1')}")
-    tabs = fw.tile(max(CAL_LO, fw.off), CAL_HI)
-    print(f"tables in 0x080D0-0x0E4A2: {len(tabs)} {'(expected 536)' if len(tabs) != 536 else '(ok)'}")
+    if L["code"]:
+        lo, hi = L["code"]
+        cs = fw.sha256(lo, hi)
+        ref = "19C0/19D0" if fw.N == 0x40000 else "20C0"
+        print(f"code 0x{lo:05X}-0x{hi:05X} sha256: {cs}  {'== ' + ref + ' reference' if cs == L['code_sha'] else '!= ' + ref + ' reference (different software)'}")
+        lp = L["labels"][0]
+        print(f"program label @0x{lp:X}: {bytes(fw.d[lp:lp + 12]).decode('latin1')}")
+    wlo, whi = fw.window()
+    print(f"calibration window 0x{wlo:05X}-0x{whi:05X} sha256: {fw.sha256(wlo, whi)}")
+    lc = L["labels"][1]
+    print(f"calibration label @0x{lc:X}: {bytes(fw.d[lc - fw.off:lc + 16 - fw.off]).decode('latin1')}")
+    tabs = fw.tile()
+    print(f"tables in {', '.join(f'0x{lo:05X}-0x{hi:05X}' for lo, hi in fw.zones())}: {len(tabs)} "
+          f"{'(ok)' if len(tabs) == L['tables'] else '(expected ' + str(L['tables']) + ')'}")
+    if fw.is_20c0:
+        print("GS8.60.4 20C0: catalog/gs8604_20c0.json and docs 11 apply; the recipes of this repository do not")
     try:
         import gs860_crc
         rows = gs860_crc.sums(bytes(fw.d))
@@ -370,10 +426,11 @@ MANUAL_19x0 = (8, 9, 10)                   # manual (M) matrices of 19C0/19D0: s
 def roles_for(fw, stock=None):
     """Role of each matrix for the rules: by shape of the stock image when given, otherwise by shape of
     the image itself, except that 08/09/10 of 19C0/19D0 stay "manual" even when a tune made their
-    upshift columns 255 (by shape that would look like a hold program)."""
+    upshift columns 255 (by shape that would look like a hold program). For 20C0 the roles are by
+    shape only: which matrix is the manual program is not proven there (docs 11 §5)."""
     roles = {p["index"]: p["role"] for p in classify_programs(stock if stock else fw)}
-    if stock is None and (fw.N == 0x8000 or fw.sha256(CODE_LO, CODE_HI) == CODE_SHA256_19x0):
-        for k in MANUAL_19x0:
+    if stock is None and fw.L["manual"] and (fw.L["code"] is None or fw.sha256(*fw.L["code"]) == fw.L["code_sha"]):
+        for k in fw.L["manual"]:
             roles[k] = "manual"
     return roles
 
@@ -507,9 +564,13 @@ def cmd_verify_shift(fw, spark, cut=None, margin=DEFAULT_MARGIN, down_margin=DEF
                      stock=None, fix_out=None):
     R = fw.ratios()
     cap_up, cap_down = shift_limits(R, spark, margin, down_margin)
-    print(f"file: {fw.path}")
+    print(f"file: {fw.path} ({fw.L['name']})")
     print(f"spark cut {spark}" + (f", fuel cut {cut}" if cut else "") + f"; ratios {'/'.join(f'{r:.3f}' for r in R)}; "
           f"margins up {'/'.join(map(str, margin))}, down {down_margin}")
+    if fw.is_20c0:
+        print("20C0: matrix roles are by shape only (manual / hold / winter / drive); which matrix the manual program "
+              "really uses is a hypothesis (docs 11 §5). The upshift threshold is matrix value + [0xFFFF9143] "
+              "(0x70B98, function 0x20D8E), so the real command comes a few units later than the value checked here.")
     print(f"limits (matrix units): up 1>2..4>5 {cap_up}, down landing 2>1..5>4 {cap_down}"
           + (f", manual overrun guard {overrun_guard(R, cut)}" if cut else ""))
     if fix_out:

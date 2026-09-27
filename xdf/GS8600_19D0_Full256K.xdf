@@ -2,8 +2,8 @@
 <XDFFORMAT version="1.60">
   <XDFHEADER>
     <flags>0x1</flags>
-    <deftitle>GS8600 19D0 Full 256K - WOLF4X v3 (2026-09-25)</deftitle>
-    <description>Bosch GS8.60.0 (ZF 5HP19, ПО 19C0/19D0, 256 КБ), Motorola 68k CPU32. Таблицы: [u16 nx][u16 ny][X][Y][данные], big-endian. Файл сгенерирован из catalog/gs8600_19d0.json скриптом tools/make_xdf.py, руками не правится. v3 25.09.2026: исправлены роли по разбору кода 23-25.09: таблицы 0x888C, 0x88B0, 0x901E-0x915E и функция 0x1DEBC это AGS (адаптивный выбор программы), а не блокировка ГДТ. Настоящая блокировка: функция 0x29056, пороги 0x993A, группы 0x897E, нижний уровень 0xB0D4-0xB140. Карты 0xAB0C-0xAE40 это опорное скольжение регулятора ГДТ, а не снятие момента. Номера матриц это индекс k, программа выбирает матрицу через 0x24BA4. Добавлены порог монитора турбины 0x8B44, таблица минимальной передачи 0x8AE2, поля f24 и f27 повышений под нагрузкой, маски реакции на ошибки 0x8366. Категории в TunerPro больше не съезжают на одну (в v2.1 номера шли с 0). Значения матриц и порогов ГДТ: обороты выходного вала / 32. После правки в TunerPro пересчитать суммы: python3 tools/gs860_crc.py fix edited.bin fixed.bin. EN: v3: roles corrected from code (AGS vs torque-converter lockup, reference slip maps, program to matrix mapping), turbine monitor threshold 0x8B44, minimum-gear table 0x8AE2, shift-record fields f24 and f27, error reaction masks. Categories fixed (1-based). After editing, recompute the checksums with tools/gs860_crc.py fix.</description>
+    <deftitle>GS8600 19D0 Full 256K - WOLF4X v3.1 (2026-09-27)</deftitle>
+    <description>Bosch GS8.60.0 (ZF 5HP19, ПО 19C0/19D0, 256 КБ), Motorola 68k CPU32. Таблицы: [u16 nx][u16 ny][X][Y][данные], big-endian. Файл сгенерирован из catalog/gs8600_19d0.json скриптом tools/make_xdf.py, руками не правится. v3 25.09.2026: исправлены роли по разбору кода 23-25.09: таблицы 0x888C, 0x88B0, 0x901E-0x915E и функция 0x1DEBC это AGS (адаптивный выбор программы), а не блокировка ГДТ. Настоящая блокировка: функция 0x29056, пороги 0x993A, группы 0x897E, нижний уровень 0xB0D4-0xB140. Карты 0xAB0C-0xAE40 это опорное скольжение регулятора ГДТ, а не снятие момента. Номера матриц это индекс k, программа выбирает матрицу через 0x24BA4. Добавлены порог монитора турбины 0x8B44, таблица минимальной передачи 0x8AE2, поля f24 и f27 повышений под нагрузкой, маски реакции на ошибки 0x8366. Категории в TunerPro больше не съезжают на одну (в v2.1 номера шли с 0). Значения матриц и порогов ГДТ: обороты выходного вала / 32. После правки в TunerPro пересчитать суммы: python3 tools/gs860_crc.py fix edited.bin fixed.bin. EN: v3: roles corrected from code (AGS vs torque-converter lockup, reference slip maps, program to matrix mapping), turbine monitor threshold 0x8B44, minimum-gear table 0x8AE2, shift-record fields f24 and f27, error reaction masks. Categories fixed (1-based). After editing, recompute the checksums with tools/gs860_crc.py fix. v3.1 27.09.2026: поля f21 записей переключения это слова u16, а не таблицы (пересечения убраны), три ложные таблицы сканера 0xDA8A / 0xDADE / 0xDB16 внутри объектов f06 удалены, единицы констант проставлены (мВ у блока напряжений, остальное «сырое», где не доказано).</description>
     <author>rudywolf (WOLF4X)</author>
     <baseoffset>0</baseoffset>
     <REGION type="0xFFFFFFFF" startaddress="0x0" size="0x40000" regionflags="0x0" name="Binary File" desc="" />
@@ -400,7 +400,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -2294,7 +2294,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -9784,7 +9784,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -9821,7 +9821,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -11475,7 +11475,7 @@
     <CATEGORYMEM index="0" category="4" />
     <XDFAXIS id="x" uniqueid="0x0">
       <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0xC3EA" mmedelementsizebits="16" mmedcolcount="6" mmedmajorstridebits="0" mmedminorstridebits="0" />
-      <units></units>
+      <units>X</units>
       <indexcount>6</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -11486,7 +11486,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="16" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -11512,7 +11512,7 @@
     <CATEGORYMEM index="0" category="4" />
     <XDFAXIS id="x" uniqueid="0x0">
       <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0xC404" mmedelementsizebits="16" mmedcolcount="6" mmedmajorstridebits="0" mmedminorstridebits="0" />
-      <units></units>
+      <units>X</units>
       <indexcount>6</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -11523,7 +11523,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="16" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -11549,7 +11549,7 @@
     <CATEGORYMEM index="0" category="4" />
     <XDFAXIS id="x" uniqueid="0x0">
       <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0xC41E" mmedelementsizebits="16" mmedcolcount="6" mmedmajorstridebits="0" mmedminorstridebits="0" />
-      <units></units>
+      <units>X</units>
       <indexcount>6</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -11560,7 +11560,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="16" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -11586,7 +11586,7 @@
     <CATEGORYMEM index="0" category="4" />
     <XDFAXIS id="x" uniqueid="0x0">
       <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0xC438" mmedelementsizebits="16" mmedcolcount="6" mmedmajorstridebits="0" mmedminorstridebits="0" />
-      <units></units>
+      <units>X</units>
       <indexcount>6</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -11597,7 +11597,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="16" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -11623,7 +11623,7 @@
     <CATEGORYMEM index="0" category="4" />
     <XDFAXIS id="x" uniqueid="0x0">
       <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0xC452" mmedelementsizebits="16" mmedcolcount="6" mmedmajorstridebits="0" mmedminorstridebits="0" />
-      <units></units>
+      <units>X</units>
       <indexcount>6</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -11634,7 +11634,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="16" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -12411,7 +12411,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="16" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -12448,7 +12448,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="16" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -13114,7 +13114,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -13151,7 +13151,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -13188,7 +13188,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -13225,7 +13225,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -13262,7 +13262,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -13299,7 +13299,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -13336,7 +13336,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -13373,7 +13373,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -13410,7 +13410,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -13447,7 +13447,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -13484,7 +13484,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -13521,7 +13521,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -13558,7 +13558,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -13595,7 +13595,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -13632,7 +13632,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -13669,7 +13669,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -13706,7 +13706,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -13743,7 +13743,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -13780,7 +13780,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -13817,7 +13817,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -13854,7 +13854,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -13891,7 +13891,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -13928,7 +13928,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -13965,7 +13965,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -14002,7 +14002,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -14742,7 +14742,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -14779,7 +14779,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -14816,7 +14816,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -14853,7 +14853,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -14890,7 +14890,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -14927,7 +14927,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -14964,7 +14964,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -15001,7 +15001,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -15038,7 +15038,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -15149,7 +15149,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -15186,7 +15186,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -15260,7 +15260,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -15334,7 +15334,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -15371,7 +15371,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -15445,7 +15445,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -15519,7 +15519,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -15556,7 +15556,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -15630,7 +15630,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -15815,7 +15815,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -15852,7 +15852,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -15889,7 +15889,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -15926,7 +15926,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -15963,7 +15963,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -16000,7 +16000,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -16037,7 +16037,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -16074,7 +16074,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -16111,7 +16111,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -16148,7 +16148,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -16185,7 +16185,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -16222,7 +16222,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -16259,7 +16259,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -16296,7 +16296,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -16333,7 +16333,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -16370,7 +16370,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -16407,7 +16407,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -16444,7 +16444,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -16481,7 +16481,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -16518,7 +16518,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -16555,7 +16555,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -16592,7 +16592,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -16629,7 +16629,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -16666,7 +16666,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -16703,7 +16703,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -16777,7 +16777,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -16814,7 +16814,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -16851,7 +16851,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -16888,7 +16888,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -16925,7 +16925,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -16962,7 +16962,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -16999,7 +16999,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -17036,7 +17036,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -17073,7 +17073,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -17110,7 +17110,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -17147,7 +17147,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -17184,7 +17184,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -17221,7 +17221,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -17258,7 +17258,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -17295,7 +17295,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -17332,7 +17332,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -17369,7 +17369,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -17406,7 +17406,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -17691,7 +17691,7 @@
     <CATEGORYMEM index="0" category="4" />
     <XDFAXIS id="x" uniqueid="0x0">
       <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0xCDC0" mmedelementsizebits="8" mmedcolcount="3" mmedmajorstridebits="0" mmedminorstridebits="0" />
-      <units></units>
+      <units>X</units>
       <indexcount>3</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -17702,7 +17702,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -17728,7 +17728,7 @@
     <CATEGORYMEM index="0" category="4" />
     <XDFAXIS id="x" uniqueid="0x0">
       <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0xCDC8" mmedelementsizebits="8" mmedcolcount="3" mmedmajorstridebits="0" mmedminorstridebits="0" />
-      <units></units>
+      <units>X</units>
       <indexcount>3</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -17739,7 +17739,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -18172,7 +18172,7 @@
     <CATEGORYMEM index="0" category="4" />
     <XDFAXIS id="x" uniqueid="0x0">
       <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0xCE62" mmedelementsizebits="8" mmedcolcount="2" mmedmajorstridebits="0" mmedminorstridebits="0" />
-      <units></units>
+      <units>X</units>
       <indexcount>2</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -18183,7 +18183,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -18246,7 +18246,7 @@
     <CATEGORYMEM index="0" category="4" />
     <XDFAXIS id="x" uniqueid="0x0">
       <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0xCE6E" mmedelementsizebits="8" mmedcolcount="2" mmedmajorstridebits="0" mmedminorstridebits="0" />
-      <units></units>
+      <units>X</units>
       <indexcount>2</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -18257,7 +18257,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -18283,7 +18283,7 @@
     <CATEGORYMEM index="0" category="4" />
     <XDFAXIS id="x" uniqueid="0x0">
       <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0xCE74" mmedelementsizebits="8" mmedcolcount="2" mmedmajorstridebits="0" mmedminorstridebits="0" />
-      <units></units>
+      <units>X</units>
       <indexcount>2</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -18294,7 +18294,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -18368,7 +18368,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -18405,7 +18405,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -18442,7 +18442,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -18479,7 +18479,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -18590,7 +18590,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -18627,7 +18627,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -18701,7 +18701,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -18775,7 +18775,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -18812,7 +18812,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -18886,7 +18886,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -18960,7 +18960,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -18997,7 +18997,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -19071,7 +19071,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -19330,7 +19330,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -19367,7 +19367,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -19404,7 +19404,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -19441,7 +19441,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -19478,7 +19478,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -19515,7 +19515,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -19552,7 +19552,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -19589,7 +19589,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -19626,7 +19626,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -19663,7 +19663,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -19700,7 +19700,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -19737,7 +19737,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -19774,7 +19774,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -19811,7 +19811,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -19848,7 +19848,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -19885,7 +19885,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -19922,7 +19922,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -19959,7 +19959,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -19996,7 +19996,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -20033,7 +20033,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -20070,7 +20070,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -20107,7 +20107,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -20144,7 +20144,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -20181,7 +20181,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -20218,7 +20218,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -20255,7 +20255,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -20292,7 +20292,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -20329,7 +20329,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -20366,7 +20366,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -20403,7 +20403,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -20440,7 +20440,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -20477,7 +20477,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -20514,7 +20514,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -20551,7 +20551,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -20588,7 +20588,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -20625,7 +20625,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -20662,7 +20662,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -20699,7 +20699,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -20736,7 +20736,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -20773,7 +20773,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -20810,7 +20810,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -20847,7 +20847,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -20884,7 +20884,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -20958,7 +20958,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -20995,7 +20995,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -21032,7 +21032,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -21069,7 +21069,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -21106,7 +21106,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -21143,7 +21143,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -21180,7 +21180,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -21217,7 +21217,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -21254,7 +21254,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -21291,7 +21291,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -21328,7 +21328,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -21365,7 +21365,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -21402,7 +21402,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -21439,7 +21439,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -21476,7 +21476,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -21513,7 +21513,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -21550,7 +21550,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -21587,7 +21587,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -21624,7 +21624,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -21661,7 +21661,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -21698,7 +21698,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -21735,7 +21735,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -21772,7 +21772,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -21809,7 +21809,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -21846,7 +21846,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -21883,7 +21883,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -21920,7 +21920,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -22438,7 +22438,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -22475,7 +22475,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -22512,7 +22512,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -22549,7 +22549,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -22586,7 +22586,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -22623,7 +22623,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -22660,7 +22660,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -22697,7 +22697,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -22734,7 +22734,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -22771,7 +22771,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -22808,7 +22808,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -22845,7 +22845,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -22882,7 +22882,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -22919,7 +22919,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -22956,7 +22956,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -22993,7 +22993,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -23030,7 +23030,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -23067,7 +23067,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -23104,7 +23104,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -23141,7 +23141,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -23178,7 +23178,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -23215,7 +23215,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -23252,7 +23252,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -23289,7 +23289,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -23326,7 +23326,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -23363,7 +23363,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -23400,7 +23400,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -23437,7 +23437,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -23474,7 +23474,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -23548,7 +23548,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -23585,7 +23585,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -23622,7 +23622,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -23659,7 +23659,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -23696,7 +23696,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="16" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -23733,7 +23733,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="16" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -23770,7 +23770,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="16" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -23807,7 +23807,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="16" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -23844,7 +23844,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="16" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -23881,7 +23881,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="16" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -23918,7 +23918,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="16" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -23955,7 +23955,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="16" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -24843,7 +24843,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -24880,7 +24880,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -24917,7 +24917,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -24954,7 +24954,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -24991,7 +24991,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -25028,7 +25028,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -25065,7 +25065,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -25102,7 +25102,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -25139,7 +25139,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -25176,7 +25176,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -25213,7 +25213,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -25250,7 +25250,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -25287,7 +25287,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -25324,7 +25324,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -25361,7 +25361,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -25398,7 +25398,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -25435,7 +25435,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -25472,7 +25472,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -25509,7 +25509,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -25546,7 +25546,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -25583,7 +25583,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -25620,7 +25620,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -25657,7 +25657,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -25694,7 +25694,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -25731,7 +25731,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -25768,7 +25768,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -25805,7 +25805,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -25842,7 +25842,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -25879,7 +25879,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -25916,7 +25916,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -25990,7 +25990,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -26027,7 +26027,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -26064,7 +26064,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -26101,7 +26101,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -26138,7 +26138,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -26175,7 +26175,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -26212,7 +26212,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -26249,7 +26249,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -26286,7 +26286,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -26323,7 +26323,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -26360,7 +26360,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -26397,7 +26397,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -26434,7 +26434,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -26471,7 +26471,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -26508,7 +26508,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -26545,7 +26545,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -26582,7 +26582,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -26619,7 +26619,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -26656,7 +26656,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -26693,7 +26693,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -26730,7 +26730,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -26767,7 +26767,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -26804,7 +26804,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -26841,7 +26841,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -26878,7 +26878,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -26915,7 +26915,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -26952,7 +26952,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -26989,7 +26989,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -27026,7 +27026,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -27063,7 +27063,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -27100,7 +27100,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -27137,7 +27137,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -27174,7 +27174,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -27211,7 +27211,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -27248,7 +27248,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -27285,7 +27285,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -27322,7 +27322,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -27359,7 +27359,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -27396,7 +27396,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -27433,7 +27433,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -27470,7 +27470,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -27507,7 +27507,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -27521,43 +27521,6 @@
       <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0xDA85" mmedelementsizebits="8" mmedrowcount="1" mmedcolcount="3" mmedmajorstridebits="0" mmedminorstridebits="0" />
       <decimalpl>1</decimalpl>
       <units>×10 мс</units>
-      <outputtype>1</outputtype>
-      <MATH equation="X">
-        <VAR id="X" />
-      </MATH>
-    </XDFAXIS>
-  </XDFTABLE>
-  <XDFTABLE uniqueid="0x12E2" flags="0x0">
-    <title>Не расшифровано 0DA8A (1D16 5×1)</title>
-    <description>Таблица из нарезки: 1D16, 5×1, 22 байт. Диапазон X 0..140, Y 0..0, Z 3..300.</description>
-    <CATEGORYMEM index="0" category="11" />
-    <XDFAXIS id="x" uniqueid="0x0">
-      <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0xDA8C" mmedelementsizebits="16" mmedcolcount="5" mmedmajorstridebits="0" mmedminorstridebits="0" />
-      <units>X</units>
-      <indexcount>5</indexcount>
-      <datatype>0</datatype>
-      <unittype>0</unittype>
-      <DALINK index="0" />
-      <MATH equation="X">
-        <VAR id="X" />
-      </MATH>
-    </XDFAXIS>
-    <XDFAXIS id="y" uniqueid="0x0">
-      <EMBEDDEDDATA mmedelementsizebits="16" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units>Y</units>
-      <indexcount>1</indexcount>
-      <datatype>0</datatype>
-      <unittype>0</unittype>
-      <DALINK index="0" />
-      <LABEL index="0" value="0" />
-      <MATH equation="X">
-        <VAR id="X" />
-      </MATH>
-    </XDFAXIS>
-    <XDFAXIS id="z">
-      <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0xDA96" mmedelementsizebits="16" mmedrowcount="1" mmedcolcount="5" mmedmajorstridebits="0" mmedminorstridebits="0" />
-      <decimalpl>1</decimalpl>
-      <units>сырое</units>
       <outputtype>1</outputtype>
       <MATH equation="X">
         <VAR id="X" />
@@ -27581,7 +27544,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -27618,7 +27581,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -27655,7 +27618,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -27692,7 +27655,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -27729,7 +27692,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -27766,7 +27729,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -27780,43 +27743,6 @@
       <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0xDAD9" mmedelementsizebits="8" mmedrowcount="1" mmedcolcount="3" mmedmajorstridebits="0" mmedminorstridebits="0" />
       <decimalpl>1</decimalpl>
       <units>×10 мс</units>
-      <outputtype>1</outputtype>
-      <MATH equation="X">
-        <VAR id="X" />
-      </MATH>
-    </XDFAXIS>
-  </XDFTABLE>
-  <XDFTABLE uniqueid="0x12E9" flags="0x0">
-    <title>Не расшифровано 0DADE (1D16 5×1)</title>
-    <description>Таблица из нарезки: 1D16, 5×1, 22 байт. Диапазон X 0..90, Y 0..0, Z 0..400.</description>
-    <CATEGORYMEM index="0" category="11" />
-    <XDFAXIS id="x" uniqueid="0x0">
-      <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0xDAE0" mmedelementsizebits="16" mmedcolcount="5" mmedmajorstridebits="0" mmedminorstridebits="0" />
-      <units>X</units>
-      <indexcount>5</indexcount>
-      <datatype>0</datatype>
-      <unittype>0</unittype>
-      <DALINK index="0" />
-      <MATH equation="X">
-        <VAR id="X" />
-      </MATH>
-    </XDFAXIS>
-    <XDFAXIS id="y" uniqueid="0x0">
-      <EMBEDDEDDATA mmedelementsizebits="16" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units>Y</units>
-      <indexcount>1</indexcount>
-      <datatype>0</datatype>
-      <unittype>0</unittype>
-      <DALINK index="0" />
-      <LABEL index="0" value="0" />
-      <MATH equation="X">
-        <VAR id="X" />
-      </MATH>
-    </XDFAXIS>
-    <XDFAXIS id="z">
-      <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0xDAEA" mmedelementsizebits="16" mmedrowcount="1" mmedcolcount="5" mmedmajorstridebits="0" mmedminorstridebits="0" />
-      <decimalpl>1</decimalpl>
-      <units>сырое</units>
       <outputtype>1</outputtype>
       <MATH equation="X">
         <VAR id="X" />
@@ -27840,7 +27766,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -27877,7 +27803,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -27914,7 +27840,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -27951,7 +27877,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -27965,43 +27891,6 @@
       <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0xDB11" mmedelementsizebits="8" mmedrowcount="1" mmedcolcount="3" mmedmajorstridebits="0" mmedminorstridebits="0" />
       <decimalpl>1</decimalpl>
       <units>×10 мс</units>
-      <outputtype>1</outputtype>
-      <MATH equation="X">
-        <VAR id="X" />
-      </MATH>
-    </XDFAXIS>
-  </XDFTABLE>
-  <XDFTABLE uniqueid="0x12EE" flags="0x0">
-    <title>Не расшифровано 0DB16 (1D16 5×1)</title>
-    <description>Таблица из нарезки: 1D16, 5×1, 22 байт. Диапазон X 0..90, Y 0..0, Z 0..170.</description>
-    <CATEGORYMEM index="0" category="11" />
-    <XDFAXIS id="x" uniqueid="0x0">
-      <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0xDB18" mmedelementsizebits="16" mmedcolcount="5" mmedmajorstridebits="0" mmedminorstridebits="0" />
-      <units>X</units>
-      <indexcount>5</indexcount>
-      <datatype>0</datatype>
-      <unittype>0</unittype>
-      <DALINK index="0" />
-      <MATH equation="X">
-        <VAR id="X" />
-      </MATH>
-    </XDFAXIS>
-    <XDFAXIS id="y" uniqueid="0x0">
-      <EMBEDDEDDATA mmedelementsizebits="16" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units>Y</units>
-      <indexcount>1</indexcount>
-      <datatype>0</datatype>
-      <unittype>0</unittype>
-      <DALINK index="0" />
-      <LABEL index="0" value="0" />
-      <MATH equation="X">
-        <VAR id="X" />
-      </MATH>
-    </XDFAXIS>
-    <XDFAXIS id="z">
-      <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0xDB22" mmedelementsizebits="16" mmedrowcount="1" mmedcolcount="5" mmedmajorstridebits="0" mmedminorstridebits="0" />
-      <decimalpl>1</decimalpl>
-      <units>сырое</units>
       <outputtype>1</outputtype>
       <MATH equation="X">
         <VAR id="X" />
@@ -28025,7 +27914,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -28062,7 +27951,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -28284,7 +28173,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -28321,7 +28210,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -28358,7 +28247,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -28395,7 +28284,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -28432,7 +28321,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -28469,7 +28358,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -28506,7 +28395,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -28543,7 +28432,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -28580,7 +28469,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -28617,7 +28506,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -28654,7 +28543,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -28691,7 +28580,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -28728,7 +28617,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -28765,7 +28654,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -28802,7 +28691,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -28839,7 +28728,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -28876,7 +28765,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -28913,7 +28802,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -28950,7 +28839,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -28987,7 +28876,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -29024,7 +28913,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -29061,7 +28950,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -29098,7 +28987,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -29135,7 +29024,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -29172,7 +29061,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -29209,7 +29098,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -29246,7 +29135,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -29283,7 +29172,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -29320,7 +29209,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -29357,7 +29246,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -29394,7 +29283,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -29431,7 +29320,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -29468,7 +29357,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -29505,7 +29394,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -29542,7 +29431,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -29562,339 +29451,114 @@
       </MATH>
     </XDFAXIS>
   </XDFTABLE>
-  <XDFTABLE uniqueid="0x1319" flags="0x0">
-    <title>[k1 f21] поле без расшифровки: 1↔2 (0xDD44)</title>
-    <description>Поле записи автомата переключения, назначение по коду не установлено. Набор 1 «Zug-Hoch (повышение под нагрузкой)», поле f21 (смещение 0x054), переходы: 1↔2.</description>
+  <XDFCONSTANT uniqueid="0x1319" flags="0x0">
+    <title>[k1 f21] поле без расшифровки, одно слово u16: 1↔2 (0xDD44)</title>
+    <description>Поле f21 записи автомата переключения — одно 16-битное слово по указателю (0xDD44), а не таблица из 3 точек: в v2.1 и v3 за заголовок таблицы принималось слово 0x0003 соседнего поля, и записи f21 накладывались друг на друга (исправлено 27.09.2026). Роль не установлена.</description>
     <CATEGORYMEM index="0" category="6" />
-    <XDFAXIS id="x" uniqueid="0x0">
-      <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0xDD46" mmedelementsizebits="8" mmedcolcount="3" mmedmajorstridebits="0" mmedminorstridebits="0" />
-      <units>X</units>
-      <indexcount>3</indexcount>
-      <datatype>0</datatype>
-      <unittype>0</unittype>
-      <DALINK index="0" />
-      <MATH equation="X">
+    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0xDD44" mmedelementsizebits="16" mmedmajorstridebits="0" mmedminorstridebits="0" />
+    <units>сырое</units>
+    <decimalpl>0</decimalpl>
+    <outputtype>1</outputtype>
+    <MATH equation="X">
         <VAR id="X" />
       </MATH>
-    </XDFAXIS>
-    <XDFAXIS id="y" uniqueid="0x0">
-      <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units>Y</units>
-      <indexcount>1</indexcount>
-      <datatype>0</datatype>
-      <unittype>0</unittype>
-      <DALINK index="0" />
-      <LABEL index="0" value="0" />
-      <MATH equation="X">
-        <VAR id="X" />
-      </MATH>
-    </XDFAXIS>
-    <XDFAXIS id="z">
-      <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0xDD49" mmedelementsizebits="8" mmedrowcount="1" mmedcolcount="3" mmedmajorstridebits="0" mmedminorstridebits="0" />
-      <decimalpl>1</decimalpl>
-      <units>сырое</units>
-      <outputtype>1</outputtype>
-      <MATH equation="X">
-        <VAR id="X" />
-      </MATH>
-    </XDFAXIS>
-  </XDFTABLE>
-  <XDFTABLE uniqueid="0x131A" flags="0x0">
-    <title>[k1 f21] поле без расшифровки: тип 0 (нет/резерв), N↔2 (0xDD46)</title>
-    <description>Поле записи автомата переключения, назначение по коду не установлено. Набор 1 «Zug-Hoch (повышение под нагрузкой)», поле f21 (смещение 0x054), переходы: тип 0 (нет/резерв), N↔2.</description>
+  </XDFCONSTANT>
+  <XDFCONSTANT uniqueid="0x131A" flags="0x0">
+    <title>[k1 f21] поле без расшифровки, одно слово u16: тип 0 (1↔6), тип 1 (2↔6) (0xDD46)</title>
+    <description>Поле f21 записи автомата переключения — одно 16-битное слово по указателю (0xDD46), а не таблица из 3 точек: в v2.1 и v3 за заголовок таблицы принималось слово 0x0003 соседнего поля, и записи f21 накладывались друг на друга (исправлено 27.09.2026). Роль не установлена.</description>
     <CATEGORYMEM index="0" category="6" />
-    <XDFAXIS id="x" uniqueid="0x0">
-      <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0xDD48" mmedelementsizebits="8" mmedcolcount="3" mmedmajorstridebits="0" mmedminorstridebits="0" />
-      <units>X</units>
-      <indexcount>3</indexcount>
-      <datatype>0</datatype>
-      <unittype>0</unittype>
-      <DALINK index="0" />
-      <MATH equation="X">
+    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0xDD46" mmedelementsizebits="16" mmedmajorstridebits="0" mmedminorstridebits="0" />
+    <units>сырое</units>
+    <decimalpl>0</decimalpl>
+    <outputtype>1</outputtype>
+    <MATH equation="X">
         <VAR id="X" />
       </MATH>
-    </XDFAXIS>
-    <XDFAXIS id="y" uniqueid="0x0">
-      <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units>Y</units>
-      <indexcount>1</indexcount>
-      <datatype>0</datatype>
-      <unittype>0</unittype>
-      <DALINK index="0" />
-      <LABEL index="0" value="0" />
-      <MATH equation="X">
-        <VAR id="X" />
-      </MATH>
-    </XDFAXIS>
-    <XDFAXIS id="z">
-      <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0xDD4B" mmedelementsizebits="8" mmedrowcount="1" mmedcolcount="3" mmedmajorstridebits="0" mmedminorstridebits="0" />
-      <decimalpl>1</decimalpl>
-      <units>сырое</units>
-      <outputtype>1</outputtype>
-      <MATH equation="X">
-        <VAR id="X" />
-      </MATH>
-    </XDFAXIS>
-  </XDFTABLE>
-  <XDFTABLE uniqueid="0x131B" flags="0x0">
-    <title>[k2 f21] поле без расшифровки: N↔2 (0xDD48)</title>
-    <description>Поле записи автомата переключения, назначение по коду не установлено. Набор 2 «Schub-Rück (понижение без нагрузки)», поле f21 (смещение 0x054), переходы: N↔2.</description>
+  </XDFCONSTANT>
+  <XDFCONSTANT uniqueid="0x131B" flags="0x0">
+    <title>[k2 f21] поле без расшифровки, одно слово u16: 2↔6 (0xDD48)</title>
+    <description>Поле f21 записи автомата переключения — одно 16-битное слово по указателю (0xDD48), а не таблица из 3 точек: в v2.1 и v3 за заголовок таблицы принималось слово 0x0003 соседнего поля, и записи f21 накладывались друг на друга (исправлено 27.09.2026). Роль не установлена.</description>
     <CATEGORYMEM index="0" category="6" />
-    <XDFAXIS id="x" uniqueid="0x0">
-      <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0xDD4A" mmedelementsizebits="8" mmedcolcount="3" mmedmajorstridebits="0" mmedminorstridebits="0" />
-      <units>X</units>
-      <indexcount>3</indexcount>
-      <datatype>0</datatype>
-      <unittype>0</unittype>
-      <DALINK index="0" />
-      <MATH equation="X">
+    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0xDD48" mmedelementsizebits="16" mmedmajorstridebits="0" mmedminorstridebits="0" />
+    <units>сырое</units>
+    <decimalpl>0</decimalpl>
+    <outputtype>1</outputtype>
+    <MATH equation="X">
         <VAR id="X" />
       </MATH>
-    </XDFAXIS>
-    <XDFAXIS id="y" uniqueid="0x0">
-      <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units>Y</units>
-      <indexcount>1</indexcount>
-      <datatype>0</datatype>
-      <unittype>0</unittype>
-      <DALINK index="0" />
-      <LABEL index="0" value="0" />
-      <MATH equation="X">
-        <VAR id="X" />
-      </MATH>
-    </XDFAXIS>
-    <XDFAXIS id="z">
-      <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0xDD4D" mmedelementsizebits="8" mmedrowcount="1" mmedcolcount="3" mmedmajorstridebits="0" mmedminorstridebits="0" />
-      <decimalpl>1</decimalpl>
-      <units>сырое</units>
-      <outputtype>1</outputtype>
-      <MATH equation="X">
-        <VAR id="X" />
-      </MATH>
-    </XDFAXIS>
-  </XDFTABLE>
-  <XDFTABLE uniqueid="0x131C" flags="0x0">
-    <title>[k1 f21] поле без расшифровки: 2↔3 (0xDD4E)</title>
-    <description>Поле записи автомата переключения, назначение по коду не установлено. Набор 1 «Zug-Hoch (повышение под нагрузкой)», поле f21 (смещение 0x054), переходы: 2↔3.</description>
+  </XDFCONSTANT>
+  <XDFCONSTANT uniqueid="0x131C" flags="0x0">
+    <title>[k1 f21] поле без расшифровки, одно слово u16: 2↔3 (0xDD4E)</title>
+    <description>Поле f21 записи автомата переключения — одно 16-битное слово по указателю (0xDD4E), а не таблица из 3 точек: в v2.1 и v3 за заголовок таблицы принималось слово 0x0003 соседнего поля, и записи f21 накладывались друг на друга (исправлено 27.09.2026). Роль не установлена.</description>
     <CATEGORYMEM index="0" category="6" />
-    <XDFAXIS id="x" uniqueid="0x0">
-      <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0xDD50" mmedelementsizebits="8" mmedcolcount="3" mmedmajorstridebits="0" mmedminorstridebits="0" />
-      <units>X</units>
-      <indexcount>3</indexcount>
-      <datatype>0</datatype>
-      <unittype>0</unittype>
-      <DALINK index="0" />
-      <MATH equation="X">
+    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0xDD4E" mmedelementsizebits="16" mmedmajorstridebits="0" mmedminorstridebits="0" />
+    <units>сырое</units>
+    <decimalpl>0</decimalpl>
+    <outputtype>1</outputtype>
+    <MATH equation="X">
         <VAR id="X" />
       </MATH>
-    </XDFAXIS>
-    <XDFAXIS id="y" uniqueid="0x0">
-      <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units>Y</units>
-      <indexcount>1</indexcount>
-      <datatype>0</datatype>
-      <unittype>0</unittype>
-      <DALINK index="0" />
-      <LABEL index="0" value="0" />
-      <MATH equation="X">
-        <VAR id="X" />
-      </MATH>
-    </XDFAXIS>
-    <XDFAXIS id="z">
-      <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0xDD53" mmedelementsizebits="8" mmedrowcount="1" mmedcolcount="3" mmedmajorstridebits="0" mmedminorstridebits="0" />
-      <decimalpl>1</decimalpl>
-      <units>сырое</units>
-      <outputtype>1</outputtype>
-      <MATH equation="X">
-        <VAR id="X" />
-      </MATH>
-    </XDFAXIS>
-  </XDFTABLE>
-  <XDFTABLE uniqueid="0x131D" flags="0x0">
-    <title>[k3 f21] поле без расшифровки: 3-1 (0xDD52)</title>
-    <description>Поле записи автомата переключения, назначение по коду не установлено. Набор 3 «Zug-Rück (понижение под нагрузкой)», поле f21 (смещение 0x054), переходы: 3-1.</description>
+  </XDFCONSTANT>
+  <XDFCONSTANT uniqueid="0x131D" flags="0x0">
+    <title>[k3 f21] поле без расшифровки, одно слово u16: 3-1 (0xDD52)</title>
+    <description>Поле f21 записи автомата переключения — одно 16-битное слово по указателю (0xDD52), а не таблица из 3 точек: в v2.1 и v3 за заголовок таблицы принималось слово 0x0003 соседнего поля, и записи f21 накладывались друг на друга (исправлено 27.09.2026). Роль не установлена.</description>
     <CATEGORYMEM index="0" category="6" />
-    <XDFAXIS id="x" uniqueid="0x0">
-      <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0xDD54" mmedelementsizebits="8" mmedcolcount="3" mmedmajorstridebits="0" mmedminorstridebits="0" />
-      <units>X</units>
-      <indexcount>3</indexcount>
-      <datatype>0</datatype>
-      <unittype>0</unittype>
-      <DALINK index="0" />
-      <MATH equation="X">
+    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0xDD52" mmedelementsizebits="16" mmedmajorstridebits="0" mmedminorstridebits="0" />
+    <units>сырое</units>
+    <decimalpl>0</decimalpl>
+    <outputtype>1</outputtype>
+    <MATH equation="X">
         <VAR id="X" />
       </MATH>
-    </XDFAXIS>
-    <XDFAXIS id="y" uniqueid="0x0">
-      <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units>Y</units>
-      <indexcount>1</indexcount>
-      <datatype>0</datatype>
-      <unittype>0</unittype>
-      <DALINK index="0" />
-      <LABEL index="0" value="0" />
-      <MATH equation="X">
-        <VAR id="X" />
-      </MATH>
-    </XDFAXIS>
-    <XDFAXIS id="z">
-      <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0xDD57" mmedelementsizebits="8" mmedrowcount="1" mmedcolcount="3" mmedmajorstridebits="0" mmedminorstridebits="0" />
-      <decimalpl>1</decimalpl>
-      <units>сырое</units>
-      <outputtype>1</outputtype>
-      <MATH equation="X">
-        <VAR id="X" />
-      </MATH>
-    </XDFAXIS>
-  </XDFTABLE>
-  <XDFTABLE uniqueid="0x131E" flags="0x0">
-    <title>[k2 f21] поле без расшифровки: 1↔2, 2↔3 (0xDD54)</title>
-    <description>Поле записи автомата переключения, назначение по коду не установлено. Набор 2 «Schub-Rück (понижение без нагрузки)», поле f21 (смещение 0x054), переходы: 1↔2, 2↔3.</description>
+  </XDFCONSTANT>
+  <XDFCONSTANT uniqueid="0x131E" flags="0x0">
+    <title>[k2 f21] поле без расшифровки, одно слово u16: 1↔2, 2↔3 (0xDD54)</title>
+    <description>Поле f21 записи автомата переключения — одно 16-битное слово по указателю (0xDD54), а не таблица из 3 точек: в v2.1 и v3 за заголовок таблицы принималось слово 0x0003 соседнего поля, и записи f21 накладывались друг на друга (исправлено 27.09.2026). Роль не установлена.</description>
     <CATEGORYMEM index="0" category="6" />
-    <XDFAXIS id="x" uniqueid="0x0">
-      <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0xDD56" mmedelementsizebits="8" mmedcolcount="2" mmedmajorstridebits="0" mmedminorstridebits="0" />
-      <units>X</units>
-      <indexcount>2</indexcount>
-      <datatype>0</datatype>
-      <unittype>0</unittype>
-      <DALINK index="0" />
-      <MATH equation="X">
+    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0xDD54" mmedelementsizebits="16" mmedmajorstridebits="0" mmedminorstridebits="0" />
+    <units>сырое</units>
+    <decimalpl>0</decimalpl>
+    <outputtype>1</outputtype>
+    <MATH equation="X">
         <VAR id="X" />
       </MATH>
-    </XDFAXIS>
-    <XDFAXIS id="y" uniqueid="0x0">
-      <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units>Y</units>
-      <indexcount>1</indexcount>
-      <datatype>0</datatype>
-      <unittype>0</unittype>
-      <DALINK index="0" />
-      <LABEL index="0" value="0" />
-      <MATH equation="X">
-        <VAR id="X" />
-      </MATH>
-    </XDFAXIS>
-    <XDFAXIS id="z">
-      <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0xDD58" mmedelementsizebits="8" mmedrowcount="1" mmedcolcount="2" mmedmajorstridebits="0" mmedminorstridebits="0" />
-      <decimalpl>1</decimalpl>
-      <units>сырое</units>
-      <outputtype>1</outputtype>
-      <MATH equation="X">
-        <VAR id="X" />
-      </MATH>
-    </XDFAXIS>
-  </XDFTABLE>
-  <XDFTABLE uniqueid="0x131F" flags="0x0">
-    <title>[k1 f21] поле без расшифровки: 3↔4 (0xDD58)</title>
-    <description>Поле записи автомата переключения, назначение по коду не установлено. Набор 1 «Zug-Hoch (повышение под нагрузкой)», поле f21 (смещение 0x054), переходы: 3↔4.</description>
+  </XDFCONSTANT>
+  <XDFCONSTANT uniqueid="0x131F" flags="0x0">
+    <title>[k1 f21] поле без расшифровки, одно слово u16: 3↔4 (0xDD58)</title>
+    <description>Поле f21 записи автомата переключения — одно 16-битное слово по указателю (0xDD58), а не таблица из 3 точек: в v2.1 и v3 за заголовок таблицы принималось слово 0x0003 соседнего поля, и записи f21 накладывались друг на друга (исправлено 27.09.2026). Роль не установлена.</description>
     <CATEGORYMEM index="0" category="6" />
-    <XDFAXIS id="x" uniqueid="0x0">
-      <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0xDD5A" mmedelementsizebits="8" mmedcolcount="3" mmedmajorstridebits="0" mmedminorstridebits="0" />
-      <units>X</units>
-      <indexcount>3</indexcount>
-      <datatype>0</datatype>
-      <unittype>0</unittype>
-      <DALINK index="0" />
-      <MATH equation="X">
+    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0xDD58" mmedelementsizebits="16" mmedmajorstridebits="0" mmedminorstridebits="0" />
+    <units>сырое</units>
+    <decimalpl>0</decimalpl>
+    <outputtype>1</outputtype>
+    <MATH equation="X">
         <VAR id="X" />
       </MATH>
-    </XDFAXIS>
-    <XDFAXIS id="y" uniqueid="0x0">
-      <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units>Y</units>
-      <indexcount>1</indexcount>
-      <datatype>0</datatype>
-      <unittype>0</unittype>
-      <DALINK index="0" />
-      <LABEL index="0" value="0" />
-      <MATH equation="X">
-        <VAR id="X" />
-      </MATH>
-    </XDFAXIS>
-    <XDFAXIS id="z">
-      <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0xDD5D" mmedelementsizebits="8" mmedrowcount="1" mmedcolcount="3" mmedmajorstridebits="0" mmedminorstridebits="0" />
-      <decimalpl>1</decimalpl>
-      <units>сырое</units>
-      <outputtype>1</outputtype>
-      <MATH equation="X">
-        <VAR id="X" />
-      </MATH>
-    </XDFAXIS>
-  </XDFTABLE>
-  <XDFTABLE uniqueid="0x1320" flags="0x0">
-    <title>[k1 f21] поле без расшифровки: 4↔5 (0xDD62)</title>
-    <description>Поле записи автомата переключения, назначение по коду не установлено. Набор 1 «Zug-Hoch (повышение под нагрузкой)», поле f21 (смещение 0x054), переходы: 4↔5.</description>
+  </XDFCONSTANT>
+  <XDFCONSTANT uniqueid="0x1320" flags="0x0">
+    <title>[k1 f21] поле без расшифровки, одно слово u16: 4↔5 (0xDD62)</title>
+    <description>Поле f21 записи автомата переключения — одно 16-битное слово по указателю (0xDD62), а не таблица из 3 точек: в v2.1 и v3 за заголовок таблицы принималось слово 0x0003 соседнего поля, и записи f21 накладывались друг на друга (исправлено 27.09.2026). Роль не установлена.</description>
     <CATEGORYMEM index="0" category="6" />
-    <XDFAXIS id="x" uniqueid="0x0">
-      <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0xDD64" mmedelementsizebits="8" mmedcolcount="3" mmedmajorstridebits="0" mmedminorstridebits="0" />
-      <units>X</units>
-      <indexcount>3</indexcount>
-      <datatype>0</datatype>
-      <unittype>0</unittype>
-      <DALINK index="0" />
-      <MATH equation="X">
+    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0xDD62" mmedelementsizebits="16" mmedmajorstridebits="0" mmedminorstridebits="0" />
+    <units>сырое</units>
+    <decimalpl>0</decimalpl>
+    <outputtype>1</outputtype>
+    <MATH equation="X">
         <VAR id="X" />
       </MATH>
-    </XDFAXIS>
-    <XDFAXIS id="y" uniqueid="0x0">
-      <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units>Y</units>
-      <indexcount>1</indexcount>
-      <datatype>0</datatype>
-      <unittype>0</unittype>
-      <DALINK index="0" />
-      <LABEL index="0" value="0" />
-      <MATH equation="X">
-        <VAR id="X" />
-      </MATH>
-    </XDFAXIS>
-    <XDFAXIS id="z">
-      <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0xDD67" mmedelementsizebits="8" mmedrowcount="1" mmedcolcount="3" mmedmajorstridebits="0" mmedminorstridebits="0" />
-      <decimalpl>1</decimalpl>
-      <units>сырое</units>
-      <outputtype>1</outputtype>
-      <MATH equation="X">
-        <VAR id="X" />
-      </MATH>
-    </XDFAXIS>
-  </XDFTABLE>
-  <XDFTABLE uniqueid="0x1321" flags="0x0">
-    <title>[k2 f21] поле без расшифровки: 5-3 (0xDD64)</title>
-    <description>Поле записи автомата переключения, назначение по коду не установлено. Набор 2 «Schub-Rück (понижение без нагрузки)», поле f21 (смещение 0x054), переходы: 5-3.</description>
+  </XDFCONSTANT>
+  <XDFCONSTANT uniqueid="0x1321" flags="0x0">
+    <title>[k2 f21] поле без расшифровки, одно слово u16: 5-3 (0xDD64)</title>
+    <description>Поле f21 записи автомата переключения — одно 16-битное слово по указателю (0xDD64), а не таблица из 3 точек: в v2.1 и v3 за заголовок таблицы принималось слово 0x0003 соседнего поля, и записи f21 накладывались друг на друга (исправлено 27.09.2026). Роль не установлена.</description>
     <CATEGORYMEM index="0" category="6" />
-    <XDFAXIS id="x" uniqueid="0x0">
-      <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0xDD66" mmedelementsizebits="8" mmedcolcount="2" mmedmajorstridebits="0" mmedminorstridebits="0" />
-      <units>X</units>
-      <indexcount>2</indexcount>
-      <datatype>0</datatype>
-      <unittype>0</unittype>
-      <DALINK index="0" />
-      <MATH equation="X">
+    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0xDD64" mmedelementsizebits="16" mmedmajorstridebits="0" mmedminorstridebits="0" />
+    <units>сырое</units>
+    <decimalpl>0</decimalpl>
+    <outputtype>1</outputtype>
+    <MATH equation="X">
         <VAR id="X" />
       </MATH>
-    </XDFAXIS>
-    <XDFAXIS id="y" uniqueid="0x0">
-      <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units>Y</units>
-      <indexcount>1</indexcount>
-      <datatype>0</datatype>
-      <unittype>0</unittype>
-      <DALINK index="0" />
-      <LABEL index="0" value="0" />
-      <MATH equation="X">
-        <VAR id="X" />
-      </MATH>
-    </XDFAXIS>
-    <XDFAXIS id="z">
-      <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0xDD68" mmedelementsizebits="8" mmedrowcount="1" mmedcolcount="2" mmedmajorstridebits="0" mmedminorstridebits="0" />
-      <decimalpl>1</decimalpl>
-      <units>сырое</units>
-      <outputtype>1</outputtype>
-      <MATH equation="X">
-        <VAR id="X" />
-      </MATH>
-    </XDFAXIS>
-  </XDFTABLE>
+  </XDFCONSTANT>
   <XDFTABLE uniqueid="0x1322" flags="0x0">
     <title>[k2 f01] поле без расшифровки: тип 0 (нет/резерв) (0xDFB8)</title>
     <description>Поле записи автомата переключения, назначение по коду не установлено. Набор 2 «Schub-Rück (понижение без нагрузки)», поле f01 (смещение 0x004), переходы: тип 0 (нет/резерв).</description>
@@ -31688,9 +31352,10 @@
   </XDFTABLE>
   <XDFCONSTANT uniqueid="0x1352" flags="0x0">
     <title>AGS: число уровней, завод 4, НЕ МЕНЯТЬ (0x8214)</title>
-    <description>Размер цикла уровней в функции AGS 0x1DEBC.</description>
+    <description>Размер цикла уровней в функции AGS 0x1DEBC. Единица: docs/ru/03 §7.</description>
     <CATEGORYMEM index="0" category="2" />
     <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x8214" mmedelementsizebits="8" mmedmajorstridebits="0" mmedminorstridebits="0" />
+    <units>уровни</units>
     <decimalpl>2</decimalpl>
     <outputtype>1</outputtype>
     <MATH equation="X">
@@ -31702,6 +31367,7 @@
     <description>Скорость роста очков AGS к «домашним». К ГДТ не относится.</description>
     <CATEGORYMEM index="0" category="2" />
     <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x88C0" mmedelementsizebits="8" mmedmajorstridebits="0" mmedminorstridebits="0" />
+    <units>сырое</units>
     <decimalpl>2</decimalpl>
     <outputtype>1</outputtype>
     <MATH equation="X">
@@ -31713,6 +31379,7 @@
     <description>Лежит в блоке параметров AGS 0x888C-0x88C1. Роль отдельно не разобрана, к ГДТ не относится.</description>
     <CATEGORYMEM index="0" category="2" />
     <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x88C1" mmedelementsizebits="8" mmedmajorstridebits="0" mmedminorstridebits="0" />
+    <units>сырое</units>
     <decimalpl>2</decimalpl>
     <outputtype>1</outputtype>
     <MATH equation="X">
@@ -31721,9 +31388,10 @@
   </XDFCONSTANT>
   <XDFCONSTANT uniqueid="0x1355" flags="0x0">
     <title>AGS: пауза после смены уровня, завод 5 (0x8E88)</title>
-    <description>Гипотеза, не доказано: пауза в цикле 0x1DEBC после смены уровня AGS. Не ГДТ.</description>
+    <description>Гипотеза, не доказано: пауза в цикле 0x1DEBC после смены уровня AGS. Не ГДТ. Единица: docs/ru/03 §7.</description>
     <CATEGORYMEM index="0" category="2" />
     <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x8E88" mmedelementsizebits="8" mmedmajorstridebits="0" mmedminorstridebits="0" />
+    <units>циклы</units>
     <decimalpl>2</decimalpl>
     <outputtype>1</outputtype>
     <MATH equation="X">
@@ -31732,9 +31400,10 @@
   </XDFCONSTANT>
   <XDFCONSTANT uniqueid="0x1356" flags="0x0">
     <title>AGS: порог педали ветки D, завод 3 (0x819C)</title>
-    <description>Ниже порога функция AGS выходит через 0x1E220, уровень замораживается (не сбрасывается). Не число циклов и не ГДТ.</description>
+    <description>Ниже порога функция AGS выходит через 0x1E220, уровень замораживается (не сбрасывается). Не число циклов и не ГДТ. Единица: docs/ru/03 §7.</description>
     <CATEGORYMEM index="0" category="2" />
     <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x819C" mmedelementsizebits="8" mmedmajorstridebits="0" mmedminorstridebits="0" />
+    <units>педаль</units>
     <decimalpl>2</decimalpl>
     <outputtype>1</outputtype>
     <MATH equation="X">
@@ -31743,9 +31412,10 @@
   </XDFCONSTANT>
   <XDFCONSTANT uniqueid="0x1357" flags="0x0">
     <title>AGS: порог педали ветки S и M, завод 8 (0x819D)</title>
-    <description>Ниже порога функция AGS выходит через 0x1E220, уровень замораживается (не сбрасывается). Не число циклов и не ГДТ.</description>
+    <description>Ниже порога функция AGS выходит через 0x1E220, уровень замораживается (не сбрасывается). Не число циклов и не ГДТ. Единица: docs/ru/03 §7.</description>
     <CATEGORYMEM index="0" category="2" />
     <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x819D" mmedelementsizebits="8" mmedmajorstridebits="0" mmedminorstridebits="0" />
+    <units>педаль</units>
     <decimalpl>2</decimalpl>
     <outputtype>1</outputtype>
     <MATH equation="X">
@@ -31757,6 +31427,7 @@
     <description>Педаль коробки 0xFFFF9182 = min(254, байт CAN 0xFFFF8439 × 100 / [0x82B0]), код 0x215DE-0x2163C.</description>
     <CATEGORYMEM index="0" category="9" />
     <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x82B0" mmedelementsizebits="8" mmedmajorstridebits="0" mmedminorstridebits="0" />
+    <units>сырое</units>
     <decimalpl>2</decimalpl>
     <outputtype>1</outputtype>
     <MATH equation="X">
@@ -31767,6 +31438,7 @@
     <title>Флаг 0x82B1 (сток 1) (0x82B1)</title>
     <CATEGORYMEM index="0" category="2" />
     <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x82B1" mmedelementsizebits="8" mmedmajorstridebits="0" mmedminorstridebits="0" />
+    <units>сырое</units>
     <decimalpl>2</decimalpl>
     <outputtype>1</outputtype>
     <MATH equation="X">
@@ -31778,6 +31450,7 @@
     <description>0xFE при 0xFFFF916C (кулиса до нажатия +/-) даёт 0xFFFF91CB = 1, то есть S. Ветку D/S читают функции AGS.</description>
     <CATEGORYMEM index="0" category="2" />
     <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x8975" mmedelementsizebits="8" mmedmajorstridebits="0" mmedminorstridebits="0" />
+    <units>код</units>
     <decimalpl>2</decimalpl>
     <outputtype>1</outputtype>
     <MATH equation="X">
@@ -31786,8 +31459,10 @@
   </XDFCONSTANT>
   <XDFCONSTANT uniqueid="0x135B" flags="0x0">
     <title>Монитор напряжения 0x265F4: [0xFFFF906E] ≥ X в флаг «канал B ≥ 9.0 В» (сток 9000 мВ). 906C/906E пишет 0x20D78 как АЦП×25250/1024. НЕ обороты турбины. Не менять, см. docs 05 (0x8EE8)</title>
+    <description>Единица: docs/ru/05 §1.</description>
     <CATEGORYMEM index="0" category="7" />
     <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x8EE8" mmedelementsizebits="16" mmedmajorstridebits="0" mmedminorstridebits="0" />
+    <units>мВ</units>
     <decimalpl>2</decimalpl>
     <outputtype>1</outputtype>
     <MATH equation="X">
@@ -31796,8 +31471,10 @@
   </XDFCONSTANT>
   <XDFCONSTANT uniqueid="0x135C" flags="0x0">
     <title>Монитор напряжения 0x265F4: [0xFFFF906E] ≥ X в флаг «канал B ≥ 7.0 В» (сток 7000 мВ). Ранее ошибочно «защита турбины 7000 об/мин» (v17 ставил 7300, в v18 возвращён сток). Не менять, см. docs 05 (0x8EEA)</title>
+    <description>Единица: docs/ru/05 §1.</description>
     <CATEGORYMEM index="0" category="7" />
     <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x8EEA" mmedelementsizebits="16" mmedmajorstridebits="0" mmedminorstridebits="0" />
+    <units>мВ</units>
     <decimalpl>2</decimalpl>
     <outputtype>1</outputtype>
     <MATH equation="X">
@@ -31806,8 +31483,10 @@
   </XDFCONSTANT>
   <XDFCONSTANT uniqueid="0x135D" flags="0x0">
     <title>Монитор напряжения 0x265F4: допуск |[906C]−[906E]| между каналами питания, мВ (сток 1500 = 1.5 В). Не менять: см. docs 05 (0x8EF0)</title>
+    <description>Единица: docs/ru/05 §1.</description>
     <CATEGORYMEM index="0" category="7" />
     <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x8EF0" mmedelementsizebits="16" mmedmajorstridebits="0" mmedminorstridebits="0" />
+    <units>мВ</units>
     <decimalpl>2</decimalpl>
     <outputtype>1</outputtype>
     <MATH equation="X">
@@ -31816,8 +31495,10 @@
   </XDFCONSTANT>
   <XDFCONSTANT uniqueid="0x135E" flags="0x0">
     <title>Допуск разницы двух линий питания, мВ (0x8EFA)</title>
+    <description>Единица: docs/ru/05 §1, 03 §5.</description>
     <CATEGORYMEM index="0" category="8" />
     <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x8EFA" mmedelementsizebits="16" mmedmajorstridebits="0" mmedminorstridebits="0" />
+    <units>мВ</units>
     <decimalpl>2</decimalpl>
     <outputtype>1</outputtype>
     <MATH equation="X">
@@ -31826,8 +31507,10 @@
   </XDFCONSTANT>
   <XDFCONSTANT uniqueid="0x135F" flags="0x0">
     <title>Верх окна напряжения питания, В (сток 16.0): НЕ температура (0x8EFC)</title>
+    <description>Единица: docs/ru/05 §1, 03 §5.</description>
     <CATEGORYMEM index="0" category="8" />
     <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x8EFC" mmedelementsizebits="16" mmedmajorstridebits="0" mmedminorstridebits="0" />
+    <units>мВ</units>
     <decimalpl>2</decimalpl>
     <outputtype>1</outputtype>
     <MATH equation="X/1000">
@@ -31836,8 +31519,10 @@
   </XDFCONSTANT>
   <XDFCONSTANT uniqueid="0x1360" flags="0x0">
     <title>Порог 2.5 В канала 906E (0x8EFE)</title>
+    <description>Единица: docs/ru/05 §1.</description>
     <CATEGORYMEM index="0" category="8" />
     <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x8EFE" mmedelementsizebits="16" mmedmajorstridebits="0" mmedminorstridebits="0" />
+    <units>мВ</units>
     <decimalpl>2</decimalpl>
     <outputtype>1</outputtype>
     <MATH equation="X/1000">
@@ -31846,8 +31531,10 @@
   </XDFCONSTANT>
   <XDFCONSTANT uniqueid="0x1361" flags="0x0">
     <title>Низ окна напряжения питания, В (сток 9.0): НЕ «90 °C» (0x8F00)</title>
+    <description>Единица: docs/ru/05 §1.</description>
     <CATEGORYMEM index="0" category="8" />
     <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x8F00" mmedelementsizebits="16" mmedmajorstridebits="0" mmedminorstridebits="0" />
+    <units>мВ</units>
     <decimalpl>2</decimalpl>
     <outputtype>1</outputtype>
     <MATH equation="X/1000">
@@ -31856,8 +31543,10 @@
   </XDFCONSTANT>
   <XDFCONSTANT uniqueid="0x1362" flags="0x0">
     <title>Плаузибилити датчика: верх, В (сток 2.7): НЕ «27 °C» (0x8F08)</title>
+    <description>Единица: docs/ru/03 §5.</description>
     <CATEGORYMEM index="0" category="8" />
     <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x8F08" mmedelementsizebits="16" mmedmajorstridebits="0" mmedminorstridebits="0" />
+    <units>мВ</units>
     <decimalpl>2</decimalpl>
     <outputtype>1</outputtype>
     <MATH equation="X/1000">
@@ -31866,8 +31555,10 @@
   </XDFCONSTANT>
   <XDFCONSTANT uniqueid="0x1363" flags="0x0">
     <title>Плаузибилити датчика: низ, В (сток 2.3): НЕ «23 °C» (0x8F0A)</title>
+    <description>Единица: docs/ru/03 §5.</description>
     <CATEGORYMEM index="0" category="8" />
     <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x8F0A" mmedelementsizebits="16" mmedmajorstridebits="0" mmedminorstridebits="0" />
+    <units>мВ</units>
     <decimalpl>2</decimalpl>
     <outputtype>1</outputtype>
     <MATH equation="X/1000">
@@ -31876,8 +31567,10 @@
   </XDFCONSTANT>
   <XDFCONSTANT uniqueid="0x1364" flags="0x0">
     <title>Порог 2.504 В (0x8F0C)</title>
+    <description>Единица: docs/ru/05 §1 (блок 0x8EE0-0x8F0E).</description>
     <CATEGORYMEM index="0" category="8" />
     <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x8F0C" mmedelementsizebits="16" mmedmajorstridebits="0" mmedminorstridebits="0" />
+    <units>мВ</units>
     <decimalpl>2</decimalpl>
     <outputtype>1</outputtype>
     <MATH equation="X/1000">
@@ -31886,8 +31579,10 @@
   </XDFCONSTANT>
   <XDFCONSTANT uniqueid="0x1365" flags="0x0">
     <title>Порог 4.5 В (0x8F0E)</title>
+    <description>Единица: docs/ru/05 §1 (блок 0x8EE0-0x8F0E).</description>
     <CATEGORYMEM index="0" category="8" />
     <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x8F0E" mmedelementsizebits="16" mmedmajorstridebits="0" mmedminorstridebits="0" />
+    <units>мВ</units>
     <decimalpl>2</decimalpl>
     <outputtype>1</outputtype>
     <MATH equation="X/1000">
@@ -32065,7 +31760,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -32402,7 +32097,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units></units>
+      <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -32427,6 +32122,7 @@
     <description>Ошибка 0x21: выходной вал 0 при скорости по CAN выше [0x8B32] (0x26AD6), маска 0x800, без аварийного режима.</description>
     <CATEGORYMEM index="0" category="7" />
     <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x8B32" mmedelementsizebits="16" mmedmajorstridebits="0" mmedminorstridebits="0" />
+    <units>сырое</units>
     <decimalpl>0</decimalpl>
     <outputtype>1</outputtype>
     <MATH equation="X">
@@ -32447,9 +32143,10 @@
   </XDFCONSTANT>
   <XDFCONSTANT uniqueid="0x1384" flags="0x0">
     <title>Скорость: вес прошлого значения фильтра выходного вала, завод 9 (0x8F72)</title>
-    <description>0xFFFF8DA4 = (9 × прошлое + новое) / 10 раз в такт (0x24F1E), 0xFFFF918F = 8DA4 &gt;&gt; 5.</description>
+    <description>0xFFFF8DA4 = (9 × прошлое + новое) / 10 раз в такт (0x24F1E), 0xFFFF918F = 8DA4 &gt;&gt; 5. Единица: docs/ru/02 §3.</description>
     <CATEGORYMEM index="0" category="9" />
     <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x8F72" mmedelementsizebits="8" mmedmajorstridebits="0" mmedminorstridebits="0" />
+    <units>вес</units>
     <decimalpl>0</decimalpl>
     <outputtype>1</outputtype>
     <MATH equation="X">
@@ -32458,9 +32155,10 @@
   </XDFCONSTANT>
   <XDFCONSTANT uniqueid="0x1385" flags="0x0">
     <title>Скорость: вес нового значения фильтра выходного вала, завод 1 (0x8F73)</title>
-    <description>См. 0x8F72.</description>
+    <description>См. 0x8F72. Единица: docs/ru/02 §3.</description>
     <CATEGORYMEM index="0" category="9" />
     <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x8F73" mmedelementsizebits="8" mmedmajorstridebits="0" mmedminorstridebits="0" />
+    <units>вес</units>
     <decimalpl>0</decimalpl>
     <outputtype>1</outputtype>
     <MATH equation="X">

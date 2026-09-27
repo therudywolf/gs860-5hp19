@@ -5,40 +5,48 @@ make_xdf.py - TunerPro XDF files of this repository are generated from a catalog
 
 Usage:
   make_xdf.py build <catalog.json> <out_full.xdf> [--partial <out_partial.xdf>]
-  make_xdf.py import <in.xdf> <out_catalog.json>     one-time import of an existing XDF into a catalog
-  make_xdf.py check <catalog.json>                   bounds, overlaps of data blocks, categories
+  make_xdf.py import <in.xdf> <out_catalog.json> [--zero-based]   one-time import of an existing XDF
+  make_xdf.py check <catalog.json>          bounds, overlaps, duplicate uids, categories, units
+
+Catalogs: catalog/gs8600_19d0.json (GS8.60.0, 256 KB image, calibration window 0x8000-0xFFFF) and
+catalog/gs8604_20c0.json (GS8.60.4, 512 KB image, calibration window 0x70000-0x7FFFF). The generator
+takes the image size and the window from the catalog; nothing about the software is hard-coded here.
 
 Catalog (JSON, UTF-8):
   {"format": 1, "title": ..., "description": ..., "author": ..., "image_size": 262144,
    "partial": {"start": 32768, "size": 32768, "title": ..., "description": ...}   (optional),
    "categories": ["1 ...", "2 ...", ...],
    "entries": [ {"kind": "table" | "constant", "uid": 4096, "title": ..., "description": ...,
-                 "categories": [0], "confidence": "proven" | "hypothesis" | "unknown", "proof": ...,
-                 "x": axis, "y": axis, "z": data} ... ]}
+                 "categories": [0], "confidence": "proven" | "structure" | "hypothesis" | "unknown" | "carried",
+                 "proof": ..., "x": axis, "y": axis, "z": data} ... ]}
   axis: {"addr": int or null, "bits": 8|16, "count": n, "labels": [...], "units": ..., "math": "X",
          "signed": false, "lsb_first": false, "major": 0, "minor": 0}
-  data: {"addr": int, "bits": 8|16, "rows": r, "cols": c, "signed": false, "lsb_first": false,
+  data: {"addr": int, "bits": 8|16|32, "rows": r, "cols": c, "signed": false, "lsb_first": false,
          "math": "X", "units": ..., "decimals": 1, "major": 0, "minor": 0}
+
+check() refuses a catalog with: a byte span outside the image, two entries reading the same byte
+(data or axes), a repeated uid, a missing or unknown category, an empty units string on a constant,
+on table data or on an axis. "build" runs check() first and writes nothing when it fails.
 
 Notes (found while importing the 2026 v2.1 file):
   - CATEGORYMEM category is 1-based in TunerPro (category="1" is the first CATEGORY, "0" is none).
     The v2.1 file wrote 0-based numbers, so in TunerPro every table sat one category off and the 16
-    shift matrices had none. The generator always writes index + 1.
-  - The partial XDF (32 KB calibration window) only gets entries whose data and axes lie inside the
-    window; the v2.1 partial carried all 850 entries with out-of-window addresses.
+    shift matrices had none. The generator always writes index + 1. "import --zero-based" corrects
+    such a file, plain "import" keeps the numbers as written.
+  - The partial XDF only gets entries whose data and axes lie inside the window; the v2.1 partial
+    carried all 850 entries with out-of-window addresses.
   - GS8.60 is big-endian: mmedtypeflags bit 0 = signed, bit 1 = LSB first (not used here).
 
-RU. XDF собираются из каталога этим скриптом, руками не правятся. Категории в CATEGORYMEM нумеруются
-с 1 (в v2.1 были с 0, и в TunerPro всё съезжало на одну категорию). Частичный XDF получает только
-записи, целиком лежащие в окне 32 КБ.
+RU. XDF собираются из каталога этим скриптом, руками не правятся. Размер образа и окно калибровки
+берутся из каталога (19D0: 256 КБ и 0x8000, 20C0: 512 КБ и 0x70000). check: границы, пересечения
+байт между записями, повторы uid, категории, пустые единицы. Категории в CATEGORYMEM нумеруются с 1.
+Частичный XDF получает только записи, целиком лежащие в окне.
 """
 import html
 import json
 import re
 import sys
 import xml.etree.ElementTree as ET
-
-ESC = {'"': "&quot;"}
 
 
 def _e(s):
@@ -75,7 +83,7 @@ def _axis_xml(name, ax):
     out.append('      <datatype>0</datatype>\n      <unittype>0</unittype>\n      <DALINK index="0" />\n')
     for i, lab in enumerate(ax.get("labels") or []):
         out.append(f'      <LABEL index="{i}" value="{_ea(lab)}" />\n')
-    out.append(_math(ax.get("math", "X")).replace("      <MATH", "      <MATH"))
+    out.append(_math(ax.get("math", "X")))
     out.append('    </XDFAXIS>\n')
     return "".join(out)
 
@@ -166,7 +174,9 @@ def _num(v, default=0):
     return int(v, 16) if isinstance(v, str) and v.lower().startswith("0x") else int(v) if v not in (None, "") else default
 
 
-def import_xdf(text):
+def import_xdf(text, zero_based=False):
+    """Catalog dict from an XDF. With zero_based=True the CATEGORYMEM numbers of the file are taken
+    as 0-based (the v2.1 files) and stored as "categories"; otherwise 1-based numbers are converted."""
     root = ET.fromstring(re.sub(r"<!DOCTYPE[^>]*>", "", text))
     hdr = root.find("XDFHEADER")
     region = hdr.find("REGION")
@@ -179,8 +189,7 @@ def import_xdf(text):
             continue
         e = {"kind": "table" if el.tag == "XDFTABLE" else "constant", "uid": _num(el.get("uniqueid")),
              "title": el.findtext("title", ""), "description": el.findtext("description", "") or "",
-             # как записано в файле (в v2.1 номера шли с 0); исправляет import-правка ниже
-             "categories_raw": [int(c.get("category")) for c in el.findall("CATEGORYMEM")]}
+             "categories": [int(c.get("category")) - (0 if zero_based else 1) for c in el.findall("CATEGORYMEM")]}
         if e["kind"] == "constant":
             d = el.find("EMBEDDEDDATA")
             tf = _num(d.get("mmedtypeflags", "0"))
@@ -209,9 +218,10 @@ def import_xdf(text):
 
 
 def check(cat):
-    """Problems as a list of strings (empty = fine)."""
+    """Problems as a list of strings (empty = fine): bounds, overlaps, uids, categories, units."""
     probs, size = [], cat["image_size"]
     seen_uid = set()
+    ivs = []
     for e in cat["entries"]:
         if e["uid"] in seen_uid:
             probs.append(f"uid 0x{e['uid']:X} repeated")
@@ -219,11 +229,26 @@ def check(cat):
         for s, t in spans(e):
             if not (0 <= s < t <= size):
                 probs.append(f"0x{e['uid']:X} {e['title'][:40]}: bytes 0x{s:X}-0x{t:X} outside the image")
+            ivs.append((s, t, e["uid"], e["title"][:40]))
         for c in e.get("categories", []):
             if not 0 <= c < len(cat["categories"]):
                 probs.append(f"0x{e['uid']:X}: category {c} does not exist")
         if not e.get("categories"):
             probs.append(f"0x{e['uid']:X} {e['title'][:40]}: no category")
+        units = [("z", e["z"].get("units"))]
+        if e["kind"] == "table":
+            units += [("x", e["x"].get("units")), ("y", e["y"].get("units"))]
+        for name, u in units:
+            if not u:
+                probs.append(f"0x{e['uid']:X} {e['title'][:40]}: no units on {name}")
+    ivs.sort()
+    for i in range(len(ivs)):
+        for j in range(i + 1, len(ivs)):
+            if ivs[j][0] >= ivs[i][1]:
+                break
+            if ivs[i][2] != ivs[j][2]:
+                probs.append(f"overlap: 0x{ivs[i][2]:X} {ivs[i][3]} (0x{ivs[i][0]:X}-0x{ivs[i][1]:X}) and "
+                             f"0x{ivs[j][2]:X} {ivs[j][3]} (0x{ivs[j][0]:X}-0x{ivs[j][1]:X})")
     return probs
 
 
@@ -243,8 +268,8 @@ def main(argv):
             open(out, "w", encoding="utf-8", newline="\n").write(txt)
             print(f"{out}: {n} entries")
         return 0
-    if len(argv) == 3 and argv[0] == "import":
-        cat = import_xdf(open(argv[1], encoding="utf-8").read())
+    if len(argv) >= 3 and argv[0] == "import":
+        cat = import_xdf(open(argv[1], encoding="utf-8").read(), "--zero-based" in argv)
         json.dump(cat, open(argv[2], "w", encoding="utf-8"), ensure_ascii=False, indent=1)
         print(f"{argv[2]}: {len(cat['entries'])} entries")
         return 0

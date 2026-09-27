@@ -5,17 +5,18 @@
   </picture>
 </p>
 
-<h1 align="center">GS8.60.0 · ZF 5HP19</h1>
+<h1 align="center">GS8.60.0 / GS8.60.4 · ZF 5HP19</h1>
 
 <p align="center">
-  <b>Reverse-engineering notes, TunerPro definitions and reproducible presets<br>for the Bosch GS8.60.0 transmission control unit</b><br>
-  <i>Реверс, XDF и воспроизводимые пресеты для блока АКПП Bosch GS8.60.0 (ZF 5HP19)</i>
+  <b>Reverse-engineering notes, TunerPro definitions and reproducible presets<br>for the Bosch GS8.60.0 transmission control unit (and, partially, the GS8.60.4)</b><br>
+  <i>Реверс, XDF и воспроизводимые пресеты для блока АКПП Bosch GS8.60.0 (ZF 5HP19), частично — GS8.60.4</i>
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/ECU-Bosch%20GS8.60.0-0066B1" alt="ECU">
+  <img src="https://img.shields.io/badge/ECU-Bosch%20GS8.60.0%20%2F%20GS8.60.4-0066B1" alt="ECU">
   <img src="https://img.shields.io/badge/gearbox-ZF%205HP19%20%2F%20A5S%20325Z-1f6feb" alt="Gearbox">
-  <img src="https://img.shields.io/badge/XDF-850%20tables-2ea44f" alt="XDF">
+  <img src="https://img.shields.io/badge/XDF%2019D0-842%20tables%20%2B%2057%20constants-2ea44f" alt="XDF 19D0">
+  <img src="https://img.shields.io/badge/XDF%2020C0-946%20tables%20%2B%2035%20constants-2ea44f" alt="XDF 20C0">
   <img src="https://img.shields.io/badge/docs-EN%20%7C%20RU-brightgreen" alt="Docs">
   <img src="https://img.shields.io/badge/docs%20%26%20XDF-CC%20BY--SA%204.0-blue" alt="Licence docs">
   <img src="https://img.shields.io/badge/tools-MIT-blue" alt="Licence code">
@@ -53,7 +54,8 @@ Everything here comes from disassembling the firmware (capstone m68k), diffing a
 | | |
 |---|---|
 | **Covered** | GS8.60.0, 256 KB image, program 19x0. Verified against two factory dumps: a stock 2.5 calibration (`19C0 KA20`) and the Alpina B3 3.3 calibration (`19D0 620P`). The program code `0x10000–0x40000` is byte-identical in both, so **one XDF fits both**; the calibrations differ in 2547 bytes. |
-| **Not covered** | **GS8.60.4** — the 512 KB image (for example `20C0`). Different memory layout: the XDF, the addresses and the recipes here **do not apply to it**. The engine ECU (MS42 / MS43) is out of scope too — for that, see the [MS4X wiki](https://www.ms4x.net). |
+| **Partially covered** | **GS8.60.4**, the 512 KB image, program `20C0` (since 27.09.2026): [document 11](docs/en/11-gs8604-20c0.md), `catalog/gs8604_20c0.json` and `xdf/GS8604_20C0_Full512K.xdf` (946 tables + 35 constants, each with a confidence level), `egs_tables.py` and `gs860_crc.py` understand the image. Proven from the code: the image map and the three checksums, the 16 shift matrices with their unit and program mapping, the TCC lockup upper level, the turbine monitor (7232 rpm), the voltage monitor, AGS and gate constants, the `0B 03` frame. **Not proven**: which matrix is the manual program (a road log contradicts the naive reading), the roles of most hydraulics tables (named by record set and field only), the lower TCC level. The 19D0 addresses, recipes and RAM cells **do not apply to it**, and the other way round. |
+| **Not covered** | The engine ECU (MS42 / MS43) — for that, see the [MS4X wiki](https://www.ms4x.net). |
 
 ### Quick start
 
@@ -68,7 +70,7 @@ python3 tools/egs_tables.py verify-shift build.bin --spark 6656 --cut 6784 --sto
 
 `apply_recipe.py` recomputes the calibration checksum. After editing an image in TunerPro run `gs860_crc.py fix edited.bin fixed.bin`.
 
-Open `xdf/GS8600_19D0_Full256K.xdf` in TunerPro with a 256 KB dump, or `xdf/GS8600_19x0_Partial32K.xdf` with a 32 KB partial. **Read `docs/en/07-reading-and-flashing.md` before you flash anything.**
+Open `xdf/GS8600_19D0_Full256K.xdf` in TunerPro with a 256 KB dump, or `xdf/GS8600_19x0_Partial32K.xdf` with a 32 KB partial; `xdf/GS8604_20C0_Full512K.xdf` is for a 512 KB GS8.60.4 dump (document 11). The XDF files are generated from `catalog/*.json` by `tools/make_xdf.py` and are not edited by hand. **Read `docs/en/07-reading-and-flashing.md` before you flash anything.**
 
 ### Documentation
 
@@ -84,6 +86,7 @@ Open `xdf/GS8600_19D0_Full256K.xdf` in TunerPro with a 256 KB dump, or `xdf/GS86
 | [08 · Recipes and presets](docs/en/08-recipes-and-presets.md) | the recipe format and every preset change justified table by table |
 | [09 · What not to touch](docs/en/09-what-not-to-touch.md) | the prohibitions, each with the reason |
 | [10 · Methodology](docs/en/10-methodology.md) | how the reverse was done, what counts as proven, refuted readings, open questions |
+| [11 · GS8.60.4 (20C0)](docs/en/11-gs8604-20c0.md) | the 512 KB image: map, checksums, catalog of 43 slots, the 16 matrices and their unit, TCC lockup with two checks, AGS and gate, protections and the voltage block (`0x70F40` is 7.0 V, not a turbine limit), record sets, the 33-byte `0B 03` frame, what is proven and what is not |
 | [Glossary](docs/en/glossary.md) | terms |
 
 Every document also exists in Russian under `docs/ru/`.
@@ -104,10 +107,11 @@ All three are built for a 2.5 M52TU with the spark cut from about 6656 rpm and t
 
 ```
 docs/en, docs/ru     documentation, identical set of files
-xdf/                 TunerPro definitions: full 256K and partial 32K
-tools/               egs_tables.py, make_recipe.py, apply_recipe.py, gs860_crc.py — Python 3, no dependencies
-recipes/             presets as JSON diffs, with annotations
-tests/               self-tests: python3 -m unittest discover -s tests (GS860_STOCK=stock.bin for the full set)
+catalog/             the source of the XDF files: gs8600_19d0.json (19x0, 256K) and gs8604_20c0.json (20C0, 512K), every entry with a confidence level
+xdf/                 TunerPro definitions generated from the catalogs: 19D0 full 256K, 19x0 partial 32K, 20C0 full 512K
+tools/               egs_tables.py, make_recipe.py, apply_recipe.py, gs860_crc.py, make_xdf.py — Python 3, no dependencies
+recipes/             presets as JSON diffs, with annotations (19x0 only)
+tests/               self-tests: python3 tests/test_tools.py (GS860_STOCK=stock.bin and GS8604_STOCK=stock20c0.bin for the full set)
 ```
 
 ### Disclaimer
@@ -151,7 +155,8 @@ Unpaid hobby research: dumps read by hand, code disassembled instruction by inst
 | | |
 |---|---|
 | **Покрыто** | GS8.60.0, образ 256 КБ, программа 19x0. Проверено на двух заводских дампах: стоковая калибровка 2.5 (`19C0 KA20`) и калибровка Alpina B3 3.3 (`19D0 620P`). Код программы `0x10000–0x40000` у обоих совпадает байт в байт, поэтому **один XDF подходит обоим**; калибровки различаются в 2547 байтах. |
-| **Не покрыто** | **GS8.60.4** — образ 512 КБ (например `20C0`). Другая раскладка памяти: XDF, адреса и рецепты отсюда **к нему не подходят**. Блок двигателя (MS42 / MS43) тоже вне темы — по нему смотрите [wiki MS4X](https://www.ms4x.net). |
+| **Покрыто частично** | **GS8.60.4**, образ 512 КБ, программа `20C0` (с 27.09.2026): [документ 11](docs/ru/11-gs8604-20c0.md), `catalog/gs8604_20c0.json` и `xdf/GS8604_20C0_Full512K.xdf` (946 таблиц + 35 констант, у каждой уровень уверенности), `egs_tables.py` и `gs860_crc.py` понимают образ. Доказано кодом: карта образа и три контрольные суммы, 16 матриц точек с единицей и привязкой к программам, верхний уровень блокировки ГДТ, монитор турбины (7232 об/мин), монитор напряжения, константы AGS и кулисы, кадр `0B 03`. **Не доказано**: какая матрица у ручного режима (лог заезда противоречит наивному прочтению), роли большинства таблиц гидравлики (названы только по набору и полю записи), нижний уровень ГДТ. Адреса, рецепты и RAM 19D0 **к нему не подходят**, и наоборот. |
+| **Не покрыто** | Блок двигателя (MS42 / MS43) — по нему смотрите [wiki MS4X](https://www.ms4x.net). |
 
 ### Быстрый старт
 
@@ -166,7 +171,7 @@ python3 tools/egs_tables.py verify-shift build.bin --spark 6656 --cut 6784 --sto
 
 `apply_recipe.py` сам пересчитывает контрольную сумму калибровки. После правки образа в TunerPro запустите `gs860_crc.py fix edited.bin fixed.bin`.
 
-XDF открывается в TunerPro: `xdf/GS8600_19D0_Full256K.xdf` — для дампа 256 КБ, `xdf/GS8600_19x0_Partial32K.xdf` — для партиала 32 КБ. **Перед любой прошивкой прочитайте `docs/ru/07-reading-and-flashing.md`.**
+XDF открывается в TunerPro: `xdf/GS8600_19D0_Full256K.xdf` — для дампа 256 КБ, `xdf/GS8600_19x0_Partial32K.xdf` — для партиала 32 КБ, `xdf/GS8604_20C0_Full512K.xdf` — для дампа GS8.60.4 на 512 КБ (документ 11). Файлы XDF генерируются из `catalog/*.json` скриптом `tools/make_xdf.py` и руками не правятся. **Перед любой прошивкой прочитайте `docs/ru/07-reading-and-flashing.md`.**
 
 ### Документация
 
@@ -182,6 +187,7 @@ XDF открывается в TunerPro: `xdf/GS8600_19D0_Full256K.xdf` — дл�
 | [08 · Рецепты и пресеты](docs/ru/08-recipes-and-presets.md) | формат рецепта и обоснование каждой правки пресета, таблица за таблицей |
 | [09 · Что не трогать](docs/ru/09-what-not-to-touch.md) | запреты, у каждого — причина |
 | [10 · Методика](docs/ru/10-methodology.md) | как делался реверс, что считается доказанным, опровергнутые трактовки, открытые вопросы |
+| [11 · GS8.60.4 (20C0)](docs/ru/11-gs8604-20c0.md) | образ 512 КБ: карта, суммы, каталог из 43 слотов, 16 матриц и их единица, блокировка ГДТ с двумя проверками, AGS и кулиса, защиты и блок напряжений (`0x70F40` — это 7.0 В, а не порог турбины), наборы записей, кадр `0B 03` из 33 байт, что доказано и что нет |
 | [Глоссарий](docs/ru/glossary.md) | термины |
 
 Английские версии всех документов — в `docs/en/`.
@@ -202,10 +208,11 @@ XDF открывается в TunerPro: `xdf/GS8600_19D0_Full256K.xdf` — дл�
 
 ```
 docs/en, docs/ru     документация, одинаковый набор файлов
-xdf/                 определения TunerPro: полный 256K и партиал 32K
-tools/               egs_tables.py, make_recipe.py, apply_recipe.py, gs860_crc.py — Python 3, без зависимостей
-recipes/             пресеты как JSON-diff, с аннотациями
-tests/               самопроверка: python3 -m unittest discover -s tests (GS860_STOCK=stock.bin для полного набора)
+catalog/             источник XDF: gs8600_19d0.json (19x0, 256K) и gs8604_20c0.json (20C0, 512K), у каждой записи уровень уверенности
+xdf/                 определения TunerPro, собранные из каталогов: 19D0 полный 256K, 19x0 партиал 32K, 20C0 полный 512K
+tools/               egs_tables.py, make_recipe.py, apply_recipe.py, gs860_crc.py, make_xdf.py — Python 3, без зависимостей
+recipes/             пресеты как JSON-diff, с аннотациями (только 19x0)
+tests/               самопроверка: python3 tests/test_tools.py (GS860_STOCK=stock.bin и GS8604_STOCK=stock20c0.bin для полного набора)
 ```
 
 ### Ответственность
