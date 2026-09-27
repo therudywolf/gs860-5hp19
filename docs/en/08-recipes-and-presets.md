@@ -2,7 +2,9 @@
 
 > **Revised 23.09.2026.** The shift matrices hold output shaft rpm / 32, not km/h (doc 02 §3). The shift points of all three presets were brought within doc 02 §4 by `egs_tables.py verify-shift --spark 6656 --cut 6784 --fix`, and the recipes moved to schema `gs860-recipe/2`: the calibration checksum at `0xFFFE` is recomputed by `apply_recipe.py` (doc 07 §6). The 16.09 result hashes are kept in each recipe under `history`.
 
-> **Correction 25.09.2026.** Some preset edits were made on readings that turned out wrong on 23.09.2026: the "TCC" groups change AGS (the adaptive program selection), not the lockup, the "sport" matrices 01 / 02 are the `0xFFFF90CD` steps that also act in D, and the manual thresholds 58 / 106 / 151 / 212 are unsafe with a locked converter. The table in §3 is corrected, see §6 for each preset. The preset files (`recipes/*.json`) are unchanged and will be revised separately.
+> **Correction 25.09.2026.** Some preset edits were made on readings that turned out wrong on 23.09.2026: the "TCC" groups change AGS (the adaptive program selection), not the lockup, the "sport" matrices 01 / 02 are the `0xFFFF90CD` steps that also act in D, and the manual thresholds 58 / 106 / 151 / 212 are unsafe with a locked converter. The table in §3 is corrected, see §6 for each preset. The preset data (`recipes/*.json`) is unchanged and will be revised separately.
+
+> **Status 27.09.2026.** The presets are not road-tested in their 23.09.2026 form (CHANGELOG, 23.09.2026). Every recipe and its annotations carry a `status` field with the short form of §6: the "TCC" groups change AGS, not the lockup, `torque_reduction` changes the reference slip of the TCC regulator, the manual upshift thresholds are unsafe, in v20 the f24 edit acts in every mode. `apply_recipe.py` prints it.
 
 ## 1. What a recipe is
 
@@ -79,7 +81,7 @@ If your calibration is not `19C0KA20` but, say, `19D0620P` (Alpina), the tool st
 
 ## 6. Correction 25.09.2026: what the presets really change
 
-The preset files `recipes/wolf4x_v18_sport_daily.json`, `wolf4x_v19_street_hard.json`, `wolf4x_v20_track_hard.json` are unchanged. Some of their edits were made on readings that turned out wrong on 23.09.2026. The presets will be revised separately, until then read them with the corrections below.
+The data of the preset files `recipes/wolf4x_v18_sport_daily.json`, `wolf4x_v19_street_hard.json`, `wolf4x_v20_track_hard.json` is unchanged (on 27.09.2026 each got the `status` field, see the note at the top). They are not road-tested in their 23.09.2026 form. Some of their edits were made on readings that turned out wrong on 23.09.2026. The presets will be revised separately, until then read them with the corrections below.
 
 **Which matrices are really used** (doc 01 §5). D runs on matrices 14 (P0) and 06 (P1), the D replacements are 04 (PE), 03 (PF) and 07 (PC with overheated ATF). S runs on 11 (P2) and 15 (P3). M runs on 10 (PB), with overheated ATF on 08 (PD). 09 is P8 (gate without Steptronic logic). 00 / 01 / 02 are the `0xFFFF90CD` steps (P4 / P5 / P6), they override D and S.
 

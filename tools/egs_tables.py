@@ -34,6 +34,11 @@ Usage:
                          [--down-margin RPM] [--stock stock.bin] [--fix out.bin]
                                                                  shift points against the rules of doc 02 §4
 
+Examples:
+  python3 tools/egs_tables.py info my_dump.bin
+  python3 tools/egs_tables.py shift my_dump.bin --turbine
+  python3 tools/egs_tables.py verify-shift build.bin --spark 6656 --cut 6784 --stock my_dump.bin
+
 Units of the shift matrices (proven 23.09.2026, doc 02 §3): the ECU compares the value
 with [0xFFFF918F] = filtered output shaft rpm >> 5, so one unit is 32 rpm of the output
 shaft, not km/h. Turbine rpm at a threshold = value * 32 * gear ratio. On an E39 2.5
@@ -604,6 +609,8 @@ def cmd_verify_shift(fw, spark, cut=None, margin=DEFAULT_MARGIN, down_margin=DEF
 
 
 def main(argv):
+    if len(argv) > 1 and argv[1] in ("-h", "--help"):
+        print(__doc__); return 0
     if len(argv) < 3:
         print(__doc__); return 1
     c = argv[1]

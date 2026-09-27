@@ -1,6 +1,8 @@
 # 01 · Firmware layout of GS8.60.0 (19C0 / 19D0)
 
-Everything below applies to the Bosch GS8.60.0 with a **256 KB** image and program **19x0** (label `B22K4_04 19D0` at 0x4322). Verified on two dumps: a stock E39 2.5 (calibration `19C0 KA20`) and an Alpina B3 3.3 E46 (calibration `19D0 620P`). GS8.60.4 dumps (512 KB, e.g. 20C0 from an E46 330i) have a **different layout** — nothing in this document applies to them.
+Everything below applies to the Bosch GS8.60.0 with a **256 KB** image and program **19x0** (label `B22K4_04 19D0` at 0x4322). Verified on two dumps: a stock E39 2.5 (calibration `19C0 KA20`) and an Alpina B3 3.3 E46 (calibration `19D0 620P`). GS8.60.4 dumps (512 KB, e.g. 20C0 from an E46 330i) have a **different layout**, nothing in this document applies to them: see document 11.
+
+Coverage of 19x0: addresses fully, roles partially. `catalog/gs8600_19d0.json` and the XDF generated from it hold 899 entries, 842 tables + 57 constants, and every one of the 536 tables of §2. Roles: 76 entries proven by code (instruction address in `proof`), 637 carried over from XDF v2.1 without a re-check, 184 shape only, 2 hypotheses.
 
 ## 1. Hardware and image
 

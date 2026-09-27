@@ -92,6 +92,26 @@ class TestCRC(unittest.TestCase):
                 self.assertFalse(a < 0x10000 and end > 0xFFFE, f"{p}: {e['addr']} covers 0xFFFE")
 
 
+class TestRepository(unittest.TestCase):
+    def test_every_tool_has_help(self):
+        for n in sorted(os.listdir(TOOLS)):
+            if n.endswith(".py"):
+                with self.subTest(tool=n):
+                    r = run(os.path.join(TOOLS, n), "--help")
+                    self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
+                    self.assertIn("Example", r.stdout)
+
+    def test_recipes_carry_status(self):
+        # doc 08 §6: every preset says what it really changes and that it is not road-tested
+        for p in recipes():
+            with self.subTest(recipe=os.path.basename(p)):
+                st = load(p).get("status", {})
+                self.assertTrue(st.get("en") and st.get("ru"), p)
+                self.assertIn("not road-tested", st["en"])
+                self.assertIn("AGS", st["en"])
+                self.assertEqual(load(p[:-5] + ".annotations.json")["meta"].get("status"), st)
+
+
 class TestShiftUnits(unittest.TestCase):
     def test_limits(self):
         up, down = egs_tables.shift_limits(egs_tables.RATIOS_19x0, PRESET_SPARK)
