@@ -2,6 +2,32 @@
 
 Newest first. Each entry: date and title, then **EN** and **RU** with the same facts. Older entries are not rewritten: what turned out wrong is corrected in a newer entry.
 
+## 2026-09-30: GS8.60.4 (20C0): record field roles proven by the 20C0 code, all 20 record roots, English XDF
+
+**EN**
+
+- **Record field roles by the 20C0 code.** An own data-flow analyser of the 20C0 code (capstone m68k, abstract interpretation with call summaries, checked on 19D0 against document 04) finds the read of every record field, the RAM of its axes with the writes of those variables and the path of the result to an output: the on-coming, off-going and third element pressure channels (`0x47E38`, `0x47E50`, `0x47E62`), EDS 1, the engine torque reduction up to the CAN frame builder `0x1B8B6`, and the drive engagement channel (`0x47EB8`). A role is written only when all three links are found; nothing is carried over from 19D0. Document 11 §9 lists the outputs, the sets and the roots; the seven roles carried from 19D0 on 27.09 were confirmed (one refinement: `9828` kind 3 g01 axis X is the turbine / 32 at shift start).
+- **All 20 record roots** set by `0x52BCA` (`0xFFFF9800–0xFFFF984C`), not only the eight shift sets: 2137 objects of the zone `0x78000–0x7D858`. The root `0xFFFF9804` (drive engagement on a selector change, records by gear with 7 = R) is analysed in full: five-state pressure automaton, turbine-derivative controller, adaptation with the write back to the checksummed block, torque reduction request.
+- **`catalog/gs8604_20c0.json` v2** (generated): 1772 entries, 1067 tables + 705 constants; 1551 proven, 19 structure, 201 shape only, 1 hypothesis (was 981: 78 / 70 / 832 / 1). In the zone `0x78000–0x7D858` 1464 of 1644 entries are proven; of the former 864 zone entries 756 (87.5 %). The scalar record fields with a role are constants now. New categories 04–10 (record sets and the root `9804` with roles) and 11 (records and roots without a role).
+- **Shape corrections:** 21 record objects typed as 1D16 with an unsigned axis are 2D16 with signed axes (`0x78A34` …, `0x7B43E` …), four more scanner tables of the roots `9808` / `9840` too (two of them started 2 and 16 bytes earlier than the scanner found).
+- **New entries read by code:** AGS pedal-rate levels `0x708D8`, `0x708E8`, `0x708EA`, pedal-rate peak thresholds `0x7029E`, `0x702A0`, `0x702A2–0x702A5`, selector arrays `0x70DBC`, `0x7100A`; slot 1 `0x71064` = pedal characteristic for the pedal rate.
+- **`0x70196 / 0x701A8` are pedal-rate thresholds** (compared with `[0xFFFF911E]` = `|Δ pedal| × 30 / Δt`), not a gear-selection threshold by engine speed; they do not explain the 11 upshifts below k10 of the 23.09 run (document 11 §5).
+- **RAM of the execution module** (document 11 §10): where each variable of the axes, phases, timers and pressure outputs is written.
+- **English XDF** `xdf/GS8604_20C0_Full512K_EN.xdf` from the new catalog fields `title_en`, `description_en`, `units_en`, `categories_en`; `tools/make_xdf.py build … --en <file>`.
+- **Tests:** English fields, the EN XDF equals what the catalog renders, record roles (categories 04–10 proven with a 20C0 instruction, ≥ 80 % of the zone), the signed table `0x78A34`, signed axes read as signed against the image.
+
+**RU**
+
+- **Роли полей записей кодом 20C0.** Собственный анализатор потока данных по коду 20C0 (capstone m68k, абстрактная интерпретация со сводками вызовов, проверен на 19D0 по документу 04) находит чтение каждого поля записи, RAM его осей с записью этих переменных и путь результата до выхода: каналы давления включаемого, выключаемого и третьего элементов (`0x47E38`, `0x47E50`, `0x47E62`), EDS 1, снижение момента мотора до сборки кадра CAN `0x1B8B6` и канал включения привода (`0x47EB8`). Роль пишется только при найденных трёх звеньях, из 19D0 ничего не переносится. Документ 11 §9 перечисляет выходы, наборы и корни; семь ролей, перенесённых из 19D0 27.09, подтвердились (уточнение: у `9828` вид 3 g01 ось X — турбина / 32 при старте переключения).
+- **Все 20 корней записей**, которые ставит `0x52BCA` (`0xFFFF9800–0xFFFF984C`), а не только восемь наборов автомата: 2137 объектов зоны `0x78000–0x7D858`. Корень `0xFFFF9804` (включение привода при смене селектора, записи по передаче, 7 = R) разобран целиком: автомат давления из пяти состояний, регулятор по производной турбины, адаптация с записью в блок с контрольной суммой, запрос снижения момента.
+- **`catalog/gs8604_20c0.json` v2** (генерируется): 1772 записи, 1067 таблиц + 705 констант; 1551 доказано, 19 по структуре, 201 только форма, 1 гипотеза (было 981: 78 / 70 / 832 / 1). В зоне `0x78000–0x7D858` доказаны 1464 записи из 1644; из прежних 864 записей зоны — 756 (87,5 %). Скалярные поля записей с ролью теперь константы. Новые категории 04–10 (наборы записей и корень `9804` с ролями) и 11 (записи и корни без роли).
+- **Поправки формы:** 21 объект записей, записанный как 1D16 с беззнаковой осью, — это 2D16 со знаковыми осями (`0x78A34` …, `0x7B43E` …), ещё четыре таблицы сканера у корней `9808` / `9840` тоже (две из них начинаются на 2 и 16 байт раньше, чем нашёл сканер).
+- **Новые записи, которые читает код:** уровни скорости педали AGS `0x708D8`, `0x708E8`, `0x708EA`, пороги пика скорости педали `0x7029E`, `0x702A0`, `0x702A2–0x702A5`, массивы селектора `0x70DBC`, `0x7100A`; слот 1 `0x71064` — характеристика педали для скорости педали.
+- **`0x70196 / 0x701A8` — пороги скорости педали** (сравнение с `[0xFFFF911E]` = `|Δ педали| × 30 / Δt`), а не порог выбора передачи по оборотам ДВС; 11 повышений ниже k10 заезда 23.09 они не объясняют (документ 11 §5).
+- **RAM модуля исполнения** (документ 11 §10): где пишется каждая переменная осей, фаз, таймеров и выходов давления.
+- **Английский XDF** `xdf/GS8604_20C0_Full512K_EN.xdf` из новых полей каталога `title_en`, `description_en`, `units_en`, `categories_en`; `tools/make_xdf.py build … --en <файл>`.
+- **Тесты:** английские поля, EN XDF равен тому, что рендерит каталог, роли записей (категории 04–10 доказаны инструкцией 20C0, не меньше 80 % зоны), знаковая таблица `0x78A34`, знаковые оси сверяются с образом как знаковые.
+
 ## 2026-09-27: GS8.60.4 (20C0, 512 KB) partially covered (catalog, XDF, tools, document 11), 19D0 catalog corrections
 
 **EN**

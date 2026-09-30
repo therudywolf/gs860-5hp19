@@ -4,14 +4,14 @@
 make_xdf.py - TunerPro XDF files of this repository are generated from a catalog, never edited by hand.
 
 Usage:
-  make_xdf.py build <catalog.json> <out_full.xdf> [--partial <out_partial.xdf>]
+  make_xdf.py build <catalog.json> <out_full.xdf> [--partial <out_partial.xdf>] [--en <out_full_en.xdf>]
   make_xdf.py import <in.xdf> <out_catalog.json> [--zero-based]   one-time import of an existing XDF
   make_xdf.py check <catalog.json>          bounds, overlaps, duplicate uids, categories, units
 
 Examples:
   python3 tools/make_xdf.py check catalog/gs8600_19d0.json
   python3 tools/make_xdf.py build catalog/gs8600_19d0.json xdf/GS8600_19D0_Full256K.xdf --partial xdf/GS8600_19x0_Partial32K.xdf
-  python3 tools/make_xdf.py build catalog/gs8604_20c0.json xdf/GS8604_20C0_Full512K.xdf
+  python3 tools/make_xdf.py build catalog/gs8604_20c0.json xdf/GS8604_20C0_Full512K.xdf --en xdf/GS8604_20C0_Full512K_EN.xdf
 
 Catalogs: catalog/gs8600_19d0.json (GS8.60.0, 256 KB image, calibration window 0x8000-0xFFFF) and
 catalog/gs8604_20c0.json (GS8.60.4, 512 KB image, calibration window 0x70000-0x7FFFF). The generator
@@ -28,6 +28,9 @@ Catalog (JSON, UTF-8):
          "signed": false, "lsb_first": false, "major": 0, "minor": 0}
   data: {"addr": int, "bits": 8|16|32, "rows": r, "cols": c, "signed": false, "lsb_first": false,
          "math": "X", "units": ..., "decimals": 1, "major": 0, "minor": 0}
+
+English: an entry may carry title_en, description_en and units_en on x / y / z, the catalog title_en,
+description_en and categories_en; "--en" writes a second XDF from them (RU text where EN is missing).
 
 check() refuses a catalog with: a byte span outside the image, two entries reading the same byte
 (data or axes), a repeated uid, a missing or unknown category, an empty units string on a constant,
@@ -72,7 +75,7 @@ def _math(eq):
     return f'      <MATH equation="{_ea(eq)}">\n{inner}      </MATH>\n'
 
 
-def _axis_xml(name, ax):
+def _axis_xml(name, ax, en=False):
     """X or Y axis of a table."""
     out = [f'    <XDFAXIS id="{name}" uniqueid="0x0">\n']
     if ax.get("addr") is not None:
@@ -83,7 +86,8 @@ def _axis_xml(name, ax):
     else:
         out.append(f'      <EMBEDDEDDATA mmedelementsizebits="{ax.get("bits", 8)}" '
                    f'mmedmajorstridebits="{ax.get("major", -32)}" mmedminorstridebits="0" />\n')
-    out.append(f'      <units>{_e(ax.get("units", name.upper()))}</units>\n')
+    units = (ax.get("units_en") if en else None) or ax.get("units", name.upper())
+    out.append(f'      <units>{_e(units)}</units>\n')
     out.append(f'      <indexcount>{ax["count"]}</indexcount>\n')
     out.append('      <datatype>0</datatype>\n      <unittype>0</unittype>\n      <DALINK index="0" />\n')
     for i, lab in enumerate(ax.get("labels") or []):
@@ -97,9 +101,9 @@ def _cats_xml(cats):
     return "".join(f'    <CATEGORYMEM index="{i}" category="{c + 1}" />\n' for i, c in enumerate(cats))
 
 
-def _entry_xml(e, shift):
-    title = e["title"]
-    desc = e.get("description", "")
+def _entry_xml(e, shift, en=False):
+    title = (e.get("title_en") if en else None) or e["title"]
+    desc = (e.get("description_en") if en else None) or e.get("description", "")
     if e["kind"] == "constant":
         d = e["z"]
         out = [f'  <XDFCONSTANT uniqueid="0x{e["uid"]:X}" flags="0x0">\n',
@@ -110,8 +114,9 @@ def _entry_xml(e, shift):
         out.append(f'    <EMBEDDEDDATA mmedtypeflags="0x{_flags(d.get("signed"), d.get("lsb_first")):02X}" '
                    f'mmedaddress="0x{d["addr"] - shift:X}" mmedelementsizebits="{d.get("bits", 8)}" '
                    f'mmedmajorstridebits="0" mmedminorstridebits="0" />\n')
-        if d.get("units"):
-            out.append(f'    <units>{_e(d["units"])}</units>\n')
+        units = (d.get("units_en") if en else None) or d.get("units")
+        if units:
+            out.append(f'    <units>{_e(units)}</units>\n')
         out.append(f'    <decimalpl>{d.get("decimals", 0)}</decimalpl>\n    <outputtype>1</outputtype>\n')
         out.append(_math(d.get("math", "X")).replace("      ", "    ", 1))
         out.append('  </XDFCONSTANT>\n')
@@ -125,14 +130,14 @@ def _entry_xml(e, shift):
         ax = dict(e[name])
         if ax.get("addr") is not None:
             ax["addr"] -= shift
-        out.append(_axis_xml(name, ax))
+        out.append(_axis_xml(name, ax, en))
     out.append('    <XDFAXIS id="z">\n')
     out.append(f'      <EMBEDDEDDATA mmedtypeflags="0x{_flags(z.get("signed"), z.get("lsb_first")):02X}" '
                f'mmedaddress="0x{z["addr"] - shift:X}" mmedelementsizebits="{z.get("bits", 8)}" '
                f'mmedrowcount="{z["rows"]}" mmedcolcount="{z["cols"]}" '
                f'mmedmajorstridebits="{z.get("major", 0)}" mmedminorstridebits="{z.get("minor", 0)}" />\n')
     out.append(f'      <decimalpl>{z.get("decimals", 1)}</decimalpl>\n')
-    out.append(f'      <units>{_e(z.get("units", ""))}</units>\n')
+    out.append(f'      <units>{_e((z.get("units_en") if en else None) or z.get("units", ""))}</units>\n')
     out.append('      <outputtype>1</outputtype>\n')
     out.append(_math(z.get("math", "X")))
     out.append('    </XDFAXIS>\n  </XDFTABLE>\n')
@@ -152,8 +157,8 @@ def spans(e):
     return out
 
 
-def render(cat, partial=False):
-    """XDF text for the full image, or for the partial calibration window."""
+def render(cat, partial=False, en=False):
+    """XDF text for the full image, or for the partial calibration window; en=True takes the English fields."""
     if partial:
         p = cat["partial"]
         start, size = p["start"], p["size"]
@@ -162,15 +167,17 @@ def render(cat, partial=False):
     else:
         size, entries = cat["image_size"], cat["entries"]
         title, desc, shift = cat["title"], cat["description"], 0
+        if en:
+            title, desc = cat.get("title_en") or title, cat.get("description_en") or desc
     head = ['<!DOCTYPE xdf>\n<XDFFORMAT version="1.60">\n  <XDFHEADER>\n    <flags>0x1</flags>\n',
             f'    <deftitle>{_e(title)}</deftitle>\n', f'    <description>{_e(desc)}</description>\n',
             f'    <author>{_e(cat.get("author", ""))}</author>\n    <baseoffset>0</baseoffset>\n',
             f'    <REGION type="0xFFFFFFFF" startaddress="0x0" size="0x{size:X}" regionflags="0x0" '
             f'name="Binary File" desc="" />\n']
-    for i, name in enumerate(cat["categories"]):
+    for i, name in enumerate((cat.get("categories_en") if en else None) or cat["categories"]):
         head.append(f'    <CATEGORY index="0x{i:X}" name="{_ea(name)}" />\n')
     head.append('  </XDFHEADER>\n')
-    body = [_entry_xml(e, shift) for e in entries]
+    body = [_entry_xml(e, shift, en) for e in entries]
     return "".join(head) + "".join(body) + "</XDFFORMAT>\n", len(entries)
 
 
@@ -275,6 +282,11 @@ def main(argv):
             txt, n = render(cat, partial=True)
             open(out, "w", encoding="utf-8", newline="\n").write(txt)
             print(f"{out}: {n} entries")
+        if "--en" in argv:
+            out = argv[argv.index("--en") + 1]
+            txt, n = render(cat, en=True)
+            open(out, "w", encoding="utf-8", newline="\n").write(txt)
+            print(f"{out}: {n} entries (EN)")
         return 0
     if len(argv) >= 3 and argv[0] == "import":
         cat = import_xdf(open(argv[1], encoding="utf-8").read(), "--zero-based" in argv)
