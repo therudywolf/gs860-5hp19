@@ -142,6 +142,7 @@ class CatalogChecks:
     path = None
     full_xdf = None
     partial_xdf = None
+    en_xdf = None
     window = None
 
     def setUp(self):
@@ -182,6 +183,10 @@ class CatalogChecks:
             p = self.cat["partial"]
             self.assertEqual(n, sum(1 for e in self.cat["entries"]
                                     if all(p["start"] <= s and t <= p["start"] + p["size"] for s, t in make_xdf.spans(e))))
+        if self.en_xdf:
+            txt, n = make_xdf.render(self.cat, en=True)
+            with open(self.en_xdf, encoding="utf-8", newline="") as f:
+                self.assertEqual(f.read(), txt, f"{self.en_xdf} is not what the catalog renders: rebuild it with make_xdf.py --en")
 
     def test_categories_one_based_in_xdf(self):
         txt, _ = make_xdf.render(self.cat)
@@ -192,7 +197,7 @@ class CatalogChecks:
         self.assertEqual(txt.count("<XDFTABLE") + txt.count("<XDFCONSTANT"), len(self.cat["entries"]))
 
     def test_no_vin_or_serial(self):
-        for p in (self.path, self.full_xdf, self.partial_xdf):
+        for p in (self.path, self.full_xdf, self.partial_xdf, self.en_xdf):
             if p:
                 with open(p, encoding="utf-8") as f:
                     self.assertIsNone(VIN_LIKE.search(f.read()), p)
@@ -222,7 +227,49 @@ class TestCatalog20C0(CatalogChecks, unittest.TestCase):
     path = CATALOG_20C0
     full_xdf = os.path.join(XDF, "GS8604_20C0_Full512K.xdf")
     partial_xdf = None                                    # not published until the flasher's partial is checked
+    en_xdf = os.path.join(XDF, "GS8604_20C0_Full512K_EN.xdf")
     window = (0x70000, 0x80000)
+
+    def test_english_fields(self):
+        cyr = re.compile("[а-яА-ЯёЁ]")
+        self.assertEqual(len(self.cat["categories_en"]), len(self.cat["categories"]))
+        self.assertIsNone(cyr.search(self.cat["title_en"] + self.cat["description_en"] + "".join(self.cat["categories_en"])))
+        for e in self.cat["entries"]:
+            for k in ("title_en", "description_en"):
+                self.assertTrue(e.get(k), f"0x{e['uid']:X} {e['title'][:40]}: no {k}")
+                self.assertIsNone(cyr.search(e[k]), f"0x{e['uid']:X}: {e[k][:60]}")
+            for ax in ("x", "y", "z"):
+                if ax in e:
+                    self.assertTrue(e[ax].get("units_en"), f"0x{e['uid']:X} {ax}")
+                    self.assertIsNone(cyr.search(e[ax]["units_en"]), e[ax]["units_en"])
+
+    def test_record_roles_by_code(self):
+        # docs 11 §9: record fields of the 8 shift sets and of the root 0xFFFF9804 carry roles read by 20C0 code
+        cats = self.cat["categories"]
+        per = {}
+        for e in self.cat["entries"]:
+            c = cats[e["categories"][0]]
+            per.setdefault(c[:2], []).append(e)
+        for code in ("04", "05", "06", "07", "08", "09", "10"):
+            self.assertTrue(per.get(code), code)
+            for e in per[code]:
+                self.assertEqual(e["confidence"], "proven", e["title"])
+                self.assertRegex(e["proof"], r"код: 0x4[0-9A-F]{4}", e["title"])
+        self.assertEqual(len(per["10"]), 216)                                   # root 0xFFFF9804, every object one role
+        zone2 = [e for e in self.cat["entries"] if 0x78000 <= e["z"]["addr"] < 0x7D858]
+        roles = sum(1 for e in zone2 if e["confidence"] == "proven")
+        self.assertGreaterEqual(roles / len(zone2), 0.80)
+
+    def test_signed_tables(self):
+        # 0x78A34: 2D16 4x4 with signed axes (slip to synchronism), was typed as 1D16 4x1 before 30.09.2026
+        by = {}
+        for e in self.cat["entries"]:
+            if e["kind"] == "table" and e["x"].get("addr") is not None:
+                by[e["x"]["addr"] - (4 if e["y"].get("addr") is not None else 2)] = e
+        e = by[0x78A34]
+        self.assertEqual((e["x"]["count"], e["y"]["count"]), (4, 4))
+        self.assertTrue(e["x"]["signed"] and e["y"]["signed"] and e["z"]["signed"])
+        self.assertIn("0x43A7A", e["proof"])                                  # phase 6 reads it with X = [0x93B5], Y = [0x9338]
 
     def test_image_size_and_meta(self):
         self.assertEqual(self.cat["image_size"], 0x80000)
@@ -298,6 +345,9 @@ class TestWithStock(unittest.TestCase):
                     continue
                 rd = fw.u8 if a["bits"] == 8 else fw.u16
                 vals = [rd(a["addr"] + a["bits"] // 8 * i) for i in range(a["count"])]
+                if a.get("signed"):
+                    top = 1 << a["bits"]
+                    vals = [v - top if v >= top // 2 else v for v in vals]
                 self.assertEqual(vals, sorted(set(vals)), f"0x{e['uid']:X} {e['title'][:40]} axis {ax}")
 
     def test_recipes(self):
@@ -404,6 +454,9 @@ class TestWithStock20C0(unittest.TestCase):
                     continue
                 rd = fw.u8 if a["bits"] == 8 else fw.u16
                 vals = [rd(a["addr"] + a["bits"] // 8 * i) for i in range(a["count"])]
+                if a.get("signed"):
+                    top = 1 << a["bits"]
+                    vals = [v - top if v >= top // 2 else v for v in vals]
                 self.assertEqual(vals, sorted(set(vals)), f"0x{e['uid']:X} {e['title'][:40]} axis {ax}")
             if e["x"].get("addr") is not None:
                 hdr = e["x"]["addr"] - (4 if e["y"].get("addr") is not None else 2)

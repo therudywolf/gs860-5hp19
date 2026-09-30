@@ -14,5 +14,5 @@ Documents 01–10 are about the GS8.60.0 (program 19C0 / 19D0, 256 KB image), do
 | [08 · Recipes and presets](08-recipes-and-presets.md) | recipe format, the v18 changes table by table, what the presets really change (§6) |
 | [09 · What not to touch](09-what-not-to-touch.md) | the prohibitions, each with the reason |
 | [10 · Methodology](10-methodology.md) | tools, what counts as proven, confidence scale, refuted readings, open questions |
-| [11 · GS8.60.4 (20C0)](11-gs8604-20c0.md) | the 512 KB image: map, checksums, matrices, lockup, AGS, protections, records, `0B 03` frame, what is proven and what is not |
+| [11 · GS8.60.4 (20C0)](11-gs8604-20c0.md) | the 512 KB image: map, checksums, matrices, lockup, AGS, protections, the 20 record roots and the field roles proven by code, execution-module RAM, `0B 03` frame, what is proven and what is not |
 | [Glossary](glossary.md) | terms and abbreviations |
