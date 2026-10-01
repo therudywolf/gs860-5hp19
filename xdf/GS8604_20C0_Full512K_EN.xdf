@@ -729,7 +729,7 @@
     </XDFAXIS>
   </XDFTABLE>
   <XDFTABLE uniqueid="0x2010" flags="0x0">
-    <title>Gear records of program P0: 6 gears x [down to, up to, down column, up column, down program, up program] (0x70FA0)</title>
+    <title>Gear records of program P0: 6 records (gear codes 1-6) x [down to, up to, down column, up column, down program, up program] (0x70FA0)</title>
     <description>RAM 0xFFFF8A2C + 4 x program is filled from the init list 0x08744 (bank 7 = 0x70000); read at 0x205B4-0x205CE.</description>
     <CATEGORYMEM index="0" category="15" />
     <XDFAXIS id="x" uniqueid="0x0">
@@ -777,7 +777,7 @@
     </XDFAXIS>
   </XDFTABLE>
   <XDFTABLE uniqueid="0x2011" flags="0x0">
-    <title>Gear records of program P1: 6 gears x [down to, up to, down column, up column, down program, up program] (0x701CE)</title>
+    <title>Gear records of program P1: 6 records (gear codes 1-6) x [down to, up to, down column, up column, down program, up program] (0x701CE)</title>
     <description>RAM 0xFFFF8A2C + 4 x program is filled from the init list 0x08744 (bank 7 = 0x70000); read at 0x205B4-0x205CE.</description>
     <CATEGORYMEM index="0" category="15" />
     <XDFAXIS id="x" uniqueid="0x0">
@@ -825,7 +825,7 @@
     </XDFAXIS>
   </XDFTABLE>
   <XDFTABLE uniqueid="0x2012" flags="0x0">
-    <title>Gear records of program P2: 6 gears x [down to, up to, down column, up column, down program, up program] (0x70E72)</title>
+    <title>Gear records of program P2: 6 records (gear codes 1-6) x [down to, up to, down column, up column, down program, up program] (0x70E72)</title>
     <description>RAM 0xFFFF8A2C + 4 x program is filled from the init list 0x08744 (bank 7 = 0x70000); read at 0x205B4-0x205CE.</description>
     <CATEGORYMEM index="0" category="15" />
     <XDFAXIS id="x" uniqueid="0x0">
@@ -873,7 +873,7 @@
     </XDFAXIS>
   </XDFTABLE>
   <XDFTABLE uniqueid="0x2013" flags="0x0">
-    <title>Gear records of program P3: 6 gears x [down to, up to, down column, up column, down program, up program] (0x70FE4)</title>
+    <title>Gear records of program P3: 6 records (gear codes 1-6) x [down to, up to, down column, up column, down program, up program] (0x70FE4)</title>
     <description>RAM 0xFFFF8A2C + 4 x program is filled from the init list 0x08744 (bank 7 = 0x70000); read at 0x205B4-0x205CE.</description>
     <CATEGORYMEM index="0" category="15" />
     <XDFAXIS id="x" uniqueid="0x0">
@@ -921,7 +921,7 @@
     </XDFAXIS>
   </XDFTABLE>
   <XDFTABLE uniqueid="0x2014" flags="0x0">
-    <title>Gear records of program P4: 6 gears x [down to, up to, down column, up column, down program, up program] (0x70000)</title>
+    <title>Gear records of program P4: 6 records (gear codes 1-6) x [down to, up to, down column, up column, down program, up program] (0x70000)</title>
     <description>RAM 0xFFFF8A2C + 4 x program is filled from the init list 0x08744 (bank 7 = 0x70000); read at 0x205B4-0x205CE.</description>
     <CATEGORYMEM index="0" category="15" />
     <XDFAXIS id="x" uniqueid="0x0">
@@ -969,7 +969,7 @@
     </XDFAXIS>
   </XDFTABLE>
   <XDFTABLE uniqueid="0x2015" flags="0x0">
-    <title>Gear records of program P5: 6 gears x [down to, up to, down column, up column, down program, up program] (0x70024)</title>
+    <title>Gear records of program P5: 6 records (gear codes 1-6) x [down to, up to, down column, up column, down program, up program] (0x70024)</title>
     <description>RAM 0xFFFF8A2C + 4 x program is filled from the init list 0x08744 (bank 7 = 0x70000); read at 0x205B4-0x205CE.</description>
     <CATEGORYMEM index="0" category="15" />
     <XDFAXIS id="x" uniqueid="0x0">
@@ -1017,7 +1017,7 @@
     </XDFAXIS>
   </XDFTABLE>
   <XDFTABLE uniqueid="0x2016" flags="0x0">
-    <title>Gear records of program P6: 6 gears x [down to, up to, down column, up column, down program, up program] (0x70048)</title>
+    <title>Gear records of program P6: 6 records (gear codes 1-6) x [down to, up to, down column, up column, down program, up program] (0x70048)</title>
     <description>RAM 0xFFFF8A2C + 4 x program is filled from the init list 0x08744 (bank 7 = 0x70000); read at 0x205B4-0x205CE.</description>
     <CATEGORYMEM index="0" category="15" />
     <XDFAXIS id="x" uniqueid="0x0">
@@ -1065,7 +1065,7 @@
     </XDFAXIS>
   </XDFTABLE>
   <XDFTABLE uniqueid="0x2017" flags="0x0">
-    <title>Gear records of program P7: 6 gears x [down to, up to, down column, up column, down program, up program] (0x70F7C)</title>
+    <title>Gear records of program P7: 6 records (gear codes 1-6) x [down to, up to, down column, up column, down program, up program] (0x70F7C)</title>
     <description>RAM 0xFFFF8A2C + 4 x program is filled from the init list 0x08744 (bank 7 = 0x70000); read at 0x205B4-0x205CE.</description>
     <CATEGORYMEM index="0" category="15" />
     <XDFAXIS id="x" uniqueid="0x0">
@@ -1113,7 +1113,7 @@
     </XDFAXIS>
   </XDFTABLE>
   <XDFTABLE uniqueid="0x2018" flags="0x0">
-    <title>Gear records of program P8: 6 gears x [down to, up to, down column, up column, down program, up program] (0x70A68)</title>
+    <title>Gear records of program P8: 6 records (gear codes 1-6) x [down to, up to, down column, up column, down program, up program] (0x70A68)</title>
     <description>RAM 0xFFFF8A2C + 4 x program is filled from the init list 0x08744 (bank 7 = 0x70000); read at 0x205B4-0x205CE.</description>
     <CATEGORYMEM index="0" category="15" />
     <XDFAXIS id="x" uniqueid="0x0">
@@ -1161,7 +1161,7 @@
     </XDFAXIS>
   </XDFTABLE>
   <XDFTABLE uniqueid="0x2019" flags="0x0">
-    <title>Gear records of program P9: 6 gears x [down to, up to, down column, up column, down program, up program] (0x70D96)</title>
+    <title>Gear records of program P9: 6 records (gear codes 1-6) x [down to, up to, down column, up column, down program, up program] (0x70D96)</title>
     <description>RAM 0xFFFF8A2C + 4 x program is filled from the init list 0x08744 (bank 7 = 0x70000); read at 0x205B4-0x205CE.</description>
     <CATEGORYMEM index="0" category="15" />
     <XDFAXIS id="x" uniqueid="0x0">
@@ -1209,7 +1209,7 @@
     </XDFAXIS>
   </XDFTABLE>
   <XDFTABLE uniqueid="0x201A" flags="0x0">
-    <title>Gear records of program PA: 6 gears x [down to, up to, down column, up column, down program, up program] (0x700F2)</title>
+    <title>Gear records of program PA: 6 records (gear codes 1-6) x [down to, up to, down column, up column, down program, up program] (0x700F2)</title>
     <description>RAM 0xFFFF8A2C + 4 x program is filled from the init list 0x08744 (bank 7 = 0x70000); read at 0x205B4-0x205CE.</description>
     <CATEGORYMEM index="0" category="15" />
     <XDFAXIS id="x" uniqueid="0x0">
@@ -1257,7 +1257,7 @@
     </XDFAXIS>
   </XDFTABLE>
   <XDFTABLE uniqueid="0x201B" flags="0x0">
-    <title>Gear records of program PB: 6 gears x [down to, up to, down column, up column, down program, up program] (0x70A32)</title>
+    <title>Gear records of program PB: 6 records (gear codes 1-6) x [down to, up to, down column, up column, down program, up program] (0x70A32)</title>
     <description>RAM 0xFFFF8A2C + 4 x program is filled from the init list 0x08744 (bank 7 = 0x70000); read at 0x205B4-0x205CE.</description>
     <CATEGORYMEM index="0" category="15" />
     <XDFAXIS id="x" uniqueid="0x0">
@@ -1305,7 +1305,7 @@
     </XDFAXIS>
   </XDFTABLE>
   <XDFTABLE uniqueid="0x201C" flags="0x0">
-    <title>Gear records of program PC: 6 gears x [down to, up to, down column, up column, down program, up program] (0x702CC)</title>
+    <title>Gear records of program PC: 6 records (gear codes 1-6) x [down to, up to, down column, up column, down program, up program] (0x702CC)</title>
     <description>RAM 0xFFFF8A2C + 4 x program is filled from the init list 0x08744 (bank 7 = 0x70000); read at 0x205B4-0x205CE.</description>
     <CATEGORYMEM index="0" category="15" />
     <XDFAXIS id="x" uniqueid="0x0">
@@ -1353,7 +1353,7 @@
     </XDFAXIS>
   </XDFTABLE>
   <XDFTABLE uniqueid="0x201D" flags="0x0">
-    <title>Gear records of program PD: 6 gears x [down to, up to, down column, up column, down program, up program] (0x702A8)</title>
+    <title>Gear records of program PD: 6 records (gear codes 1-6) x [down to, up to, down column, up column, down program, up program] (0x702A8)</title>
     <description>RAM 0xFFFF8A2C + 4 x program is filled from the init list 0x08744 (bank 7 = 0x70000); read at 0x205B4-0x205CE.</description>
     <CATEGORYMEM index="0" category="15" />
     <XDFAXIS id="x" uniqueid="0x0">
@@ -1401,7 +1401,7 @@
     </XDFAXIS>
   </XDFTABLE>
   <XDFTABLE uniqueid="0x201E" flags="0x0">
-    <title>Gear records of program PE: 6 gears x [down to, up to, down column, up column, down program, up program] (0x700A0)</title>
+    <title>Gear records of program PE: 6 records (gear codes 1-6) x [down to, up to, down column, up column, down program, up program] (0x700A0)</title>
     <description>RAM 0xFFFF8A2C + 4 x program is filled from the init list 0x08744 (bank 7 = 0x70000); read at 0x205B4-0x205CE.</description>
     <CATEGORYMEM index="0" category="15" />
     <XDFAXIS id="x" uniqueid="0x0">
@@ -1449,7 +1449,7 @@
     </XDFAXIS>
   </XDFTABLE>
   <XDFTABLE uniqueid="0x201F" flags="0x0">
-    <title>Gear records of program PF: 6 gears x [down to, up to, down column, up column, down program, up program] (0x7007C)</title>
+    <title>Gear records of program PF: 6 records (gear codes 1-6) x [down to, up to, down column, up column, down program, up program] (0x7007C)</title>
     <description>RAM 0xFFFF8A2C + 4 x program is filled from the init list 0x08744 (bank 7 = 0x70000); read at 0x205B4-0x205CE.</description>
     <CATEGORYMEM index="0" category="15" />
     <XDFAXIS id="x" uniqueid="0x0">

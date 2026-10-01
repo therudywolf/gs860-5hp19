@@ -1038,7 +1038,7 @@
   },
   {
    "kind": "table",
-   "title": "Записи передач программы P0: 6 передач × [вниз в, вверх в, столбец вниз, столбец вверх, программа вниз, программа вверх] (0x70FA0)",
+   "title": "Записи передач программы P0: 6 записей (коды передач 1-6) × [вниз в, вверх в, столбец вниз, столбец вверх, программа вниз, программа вверх] (0x70FA0)",
    "description": "Массив RAM 0xFFFF8A2C + 4 × программа заполняется из списка начальных значений 0x08744 (запись «00 42 FF FF 8A 2A», банк 7 = 0x70000). 0x2059E берёт запись = [0xFFFF8A2C + 4 × [0xFFFF914C]] + 6 × (передача - 1), 0x206A2 читает байты 0 и 2 (понижение), 0x2061E байты 1 и 3 (повышение), байты 4 и 5 — номер программы для выбора матрицы 0x20768. В 20C0 у каждой программы есть запись 6-й передачи (код 6, см. 0x0E092).",
    "categories": [
     14
@@ -1100,12 +1100,12 @@
     "units_en": "code / number"
    },
    "uid": 8208,
-   "title_en": "Gear records of program P0: 6 gears x [down to, up to, down column, up column, down program, up program] (0x70FA0)",
+   "title_en": "Gear records of program P0: 6 records (gear codes 1-6) x [down to, up to, down column, up column, down program, up program] (0x70FA0)",
    "description_en": "RAM 0xFFFF8A2C + 4 x program is filled from the init list 0x08744 (bank 7 = 0x70000); read at 0x205B4-0x205CE."
   },
   {
    "kind": "table",
-   "title": "Записи передач программы P1: 6 передач × [вниз в, вверх в, столбец вниз, столбец вверх, программа вниз, программа вверх] (0x701CE)",
+   "title": "Записи передач программы P1: 6 записей (коды передач 1-6) × [вниз в, вверх в, столбец вниз, столбец вверх, программа вниз, программа вверх] (0x701CE)",
    "description": "Массив RAM 0xFFFF8A2C + 4 × программа заполняется из списка начальных значений 0x08744 (запись «00 42 FF FF 8A 2A», банк 7 = 0x70000). 0x2059E берёт запись = [0xFFFF8A2C + 4 × [0xFFFF914C]] + 6 × (передача - 1), 0x206A2 читает байты 0 и 2 (понижение), 0x2061E байты 1 и 3 (повышение), байты 4 и 5 — номер программы для выбора матрицы 0x20768. В 20C0 у каждой программы есть запись 6-й передачи (код 6, см. 0x0E092).",
    "categories": [
     14
@@ -1167,12 +1167,12 @@
     "units_en": "code / number"
    },
    "uid": 8209,
-   "title_en": "Gear records of program P1: 6 gears x [down to, up to, down column, up column, down program, up program] (0x701CE)",
+   "title_en": "Gear records of program P1: 6 records (gear codes 1-6) x [down to, up to, down column, up column, down program, up program] (0x701CE)",
    "description_en": "RAM 0xFFFF8A2C + 4 x program is filled from the init list 0x08744 (bank 7 = 0x70000); read at 0x205B4-0x205CE."
   },
   {
    "kind": "table",
-   "title": "Записи передач программы P2: 6 передач × [вниз в, вверх в, столбец вниз, столбец вверх, программа вниз, программа вверх] (0x70E72)",
+   "title": "Записи передач программы P2: 6 записей (коды передач 1-6) × [вниз в, вверх в, столбец вниз, столбец вверх, программа вниз, программа вверх] (0x70E72)",
    "description": "Массив RAM 0xFFFF8A2C + 4 × программа заполняется из списка начальных значений 0x08744 (запись «00 42 FF FF 8A 2A», банк 7 = 0x70000). 0x2059E берёт запись = [0xFFFF8A2C + 4 × [0xFFFF914C]] + 6 × (передача - 1), 0x206A2 читает байты 0 и 2 (понижение), 0x2061E байты 1 и 3 (повышение), байты 4 и 5 — номер программы для выбора матрицы 0x20768. В 20C0 у каждой программы есть запись 6-й передачи (код 6, см. 0x0E092).",
    "categories": [
     14
@@ -1234,12 +1234,12 @@
     "units_en": "code / number"
    },
    "uid": 8210,
-   "title_en": "Gear records of program P2: 6 gears x [down to, up to, down column, up column, down program, up program] (0x70E72)",
+   "title_en": "Gear records of program P2: 6 records (gear codes 1-6) x [down to, up to, down column, up column, down program, up program] (0x70E72)",
    "description_en": "RAM 0xFFFF8A2C + 4 x program is filled from the init list 0x08744 (bank 7 = 0x70000); read at 0x205B4-0x205CE."
   },
   {
    "kind": "table",
-   "title": "Записи передач программы P3: 6 передач × [вниз в, вверх в, столбец вниз, столбец вверх, программа вниз, программа вверх] (0x70FE4)",
+   "title": "Записи передач программы P3: 6 записей (коды передач 1-6) × [вниз в, вверх в, столбец вниз, столбец вверх, программа вниз, программа вверх] (0x70FE4)",
    "description": "Массив RAM 0xFFFF8A2C + 4 × программа заполняется из списка начальных значений 0x08744 (запись «00 42 FF FF 8A 2A», банк 7 = 0x70000). 0x2059E берёт запись = [0xFFFF8A2C + 4 × [0xFFFF914C]] + 6 × (передача - 1), 0x206A2 читает байты 0 и 2 (понижение), 0x2061E байты 1 и 3 (повышение), байты 4 и 5 — номер программы для выбора матрицы 0x20768. В 20C0 у каждой программы есть запись 6-й передачи (код 6, см. 0x0E092).",
    "categories": [
     14
@@ -1301,12 +1301,12 @@
     "units_en": "code / number"
    },
    "uid": 8211,
-   "title_en": "Gear records of program P3: 6 gears x [down to, up to, down column, up column, down program, up program] (0x70FE4)",
+   "title_en": "Gear records of program P3: 6 records (gear codes 1-6) x [down to, up to, down column, up column, down program, up program] (0x70FE4)",
    "description_en": "RAM 0xFFFF8A2C + 4 x program is filled from the init list 0x08744 (bank 7 = 0x70000); read at 0x205B4-0x205CE."
   },
   {
    "kind": "table",
-   "title": "Записи передач программы P4: 6 передач × [вниз в, вверх в, столбец вниз, столбец вверх, программа вниз, программа вверх] (0x70000)",
+   "title": "Записи передач программы P4: 6 записей (коды передач 1-6) × [вниз в, вверх в, столбец вниз, столбец вверх, программа вниз, программа вверх] (0x70000)",
    "description": "Массив RAM 0xFFFF8A2C + 4 × программа заполняется из списка начальных значений 0x08744 (запись «00 42 FF FF 8A 2A», банк 7 = 0x70000). 0x2059E берёт запись = [0xFFFF8A2C + 4 × [0xFFFF914C]] + 6 × (передача - 1), 0x206A2 читает байты 0 и 2 (понижение), 0x2061E байты 1 и 3 (повышение), байты 4 и 5 — номер программы для выбора матрицы 0x20768. В 20C0 у каждой программы есть запись 6-й передачи (код 6, см. 0x0E092).",
    "categories": [
     14
@@ -1368,12 +1368,12 @@
     "units_en": "code / number"
    },
    "uid": 8212,
-   "title_en": "Gear records of program P4: 6 gears x [down to, up to, down column, up column, down program, up program] (0x70000)",
+   "title_en": "Gear records of program P4: 6 records (gear codes 1-6) x [down to, up to, down column, up column, down program, up program] (0x70000)",
    "description_en": "RAM 0xFFFF8A2C + 4 x program is filled from the init list 0x08744 (bank 7 = 0x70000); read at 0x205B4-0x205CE."
   },
   {
    "kind": "table",
-   "title": "Записи передач программы P5: 6 передач × [вниз в, вверх в, столбец вниз, столбец вверх, программа вниз, программа вверх] (0x70024)",
+   "title": "Записи передач программы P5: 6 записей (коды передач 1-6) × [вниз в, вверх в, столбец вниз, столбец вверх, программа вниз, программа вверх] (0x70024)",
    "description": "Массив RAM 0xFFFF8A2C + 4 × программа заполняется из списка начальных значений 0x08744 (запись «00 42 FF FF 8A 2A», банк 7 = 0x70000). 0x2059E берёт запись = [0xFFFF8A2C + 4 × [0xFFFF914C]] + 6 × (передача - 1), 0x206A2 читает байты 0 и 2 (понижение), 0x2061E байты 1 и 3 (повышение), байты 4 и 5 — номер программы для выбора матрицы 0x20768. В 20C0 у каждой программы есть запись 6-й передачи (код 6, см. 0x0E092).",
    "categories": [
     14
@@ -1435,12 +1435,12 @@
     "units_en": "code / number"
    },
    "uid": 8213,
-   "title_en": "Gear records of program P5: 6 gears x [down to, up to, down column, up column, down program, up program] (0x70024)",
+   "title_en": "Gear records of program P5: 6 records (gear codes 1-6) x [down to, up to, down column, up column, down program, up program] (0x70024)",
    "description_en": "RAM 0xFFFF8A2C + 4 x program is filled from the init list 0x08744 (bank 7 = 0x70000); read at 0x205B4-0x205CE."
   },
   {
    "kind": "table",
-   "title": "Записи передач программы P6: 6 передач × [вниз в, вверх в, столбец вниз, столбец вверх, программа вниз, программа вверх] (0x70048)",
+   "title": "Записи передач программы P6: 6 записей (коды передач 1-6) × [вниз в, вверх в, столбец вниз, столбец вверх, программа вниз, программа вверх] (0x70048)",
    "description": "Массив RAM 0xFFFF8A2C + 4 × программа заполняется из списка начальных значений 0x08744 (запись «00 42 FF FF 8A 2A», банк 7 = 0x70000). 0x2059E берёт запись = [0xFFFF8A2C + 4 × [0xFFFF914C]] + 6 × (передача - 1), 0x206A2 читает байты 0 и 2 (понижение), 0x2061E байты 1 и 3 (повышение), байты 4 и 5 — номер программы для выбора матрицы 0x20768. В 20C0 у каждой программы есть запись 6-й передачи (код 6, см. 0x0E092).",
    "categories": [
     14
@@ -1502,12 +1502,12 @@
     "units_en": "code / number"
    },
    "uid": 8214,
-   "title_en": "Gear records of program P6: 6 gears x [down to, up to, down column, up column, down program, up program] (0x70048)",
+   "title_en": "Gear records of program P6: 6 records (gear codes 1-6) x [down to, up to, down column, up column, down program, up program] (0x70048)",
    "description_en": "RAM 0xFFFF8A2C + 4 x program is filled from the init list 0x08744 (bank 7 = 0x70000); read at 0x205B4-0x205CE."
   },
   {
    "kind": "table",
-   "title": "Записи передач программы P7: 6 передач × [вниз в, вверх в, столбец вниз, столбец вверх, программа вниз, программа вверх] (0x70F7C)",
+   "title": "Записи передач программы P7: 6 записей (коды передач 1-6) × [вниз в, вверх в, столбец вниз, столбец вверх, программа вниз, программа вверх] (0x70F7C)",
    "description": "Массив RAM 0xFFFF8A2C + 4 × программа заполняется из списка начальных значений 0x08744 (запись «00 42 FF FF 8A 2A», банк 7 = 0x70000). 0x2059E берёт запись = [0xFFFF8A2C + 4 × [0xFFFF914C]] + 6 × (передача - 1), 0x206A2 читает байты 0 и 2 (понижение), 0x2061E байты 1 и 3 (повышение), байты 4 и 5 — номер программы для выбора матрицы 0x20768. В 20C0 у каждой программы есть запись 6-й передачи (код 6, см. 0x0E092).",
    "categories": [
     14
@@ -1569,12 +1569,12 @@
     "units_en": "code / number"
    },
    "uid": 8215,
-   "title_en": "Gear records of program P7: 6 gears x [down to, up to, down column, up column, down program, up program] (0x70F7C)",
+   "title_en": "Gear records of program P7: 6 records (gear codes 1-6) x [down to, up to, down column, up column, down program, up program] (0x70F7C)",
    "description_en": "RAM 0xFFFF8A2C + 4 x program is filled from the init list 0x08744 (bank 7 = 0x70000); read at 0x205B4-0x205CE."
   },
   {
    "kind": "table",
-   "title": "Записи передач программы P8: 6 передач × [вниз в, вверх в, столбец вниз, столбец вверх, программа вниз, программа вверх] (0x70A68)",
+   "title": "Записи передач программы P8: 6 записей (коды передач 1-6) × [вниз в, вверх в, столбец вниз, столбец вверх, программа вниз, программа вверх] (0x70A68)",
    "description": "Массив RAM 0xFFFF8A2C + 4 × программа заполняется из списка начальных значений 0x08744 (запись «00 42 FF FF 8A 2A», банк 7 = 0x70000). 0x2059E берёт запись = [0xFFFF8A2C + 4 × [0xFFFF914C]] + 6 × (передача - 1), 0x206A2 читает байты 0 и 2 (понижение), 0x2061E байты 1 и 3 (повышение), байты 4 и 5 — номер программы для выбора матрицы 0x20768. В 20C0 у каждой программы есть запись 6-й передачи (код 6, см. 0x0E092).",
    "categories": [
     14
@@ -1636,12 +1636,12 @@
     "units_en": "code / number"
    },
    "uid": 8216,
-   "title_en": "Gear records of program P8: 6 gears x [down to, up to, down column, up column, down program, up program] (0x70A68)",
+   "title_en": "Gear records of program P8: 6 records (gear codes 1-6) x [down to, up to, down column, up column, down program, up program] (0x70A68)",
    "description_en": "RAM 0xFFFF8A2C + 4 x program is filled from the init list 0x08744 (bank 7 = 0x70000); read at 0x205B4-0x205CE."
   },
   {
    "kind": "table",
-   "title": "Записи передач программы P9: 6 передач × [вниз в, вверх в, столбец вниз, столбец вверх, программа вниз, программа вверх] (0x70D96)",
+   "title": "Записи передач программы P9: 6 записей (коды передач 1-6) × [вниз в, вверх в, столбец вниз, столбец вверх, программа вниз, программа вверх] (0x70D96)",
    "description": "Массив RAM 0xFFFF8A2C + 4 × программа заполняется из списка начальных значений 0x08744 (запись «00 42 FF FF 8A 2A», банк 7 = 0x70000). 0x2059E берёт запись = [0xFFFF8A2C + 4 × [0xFFFF914C]] + 6 × (передача - 1), 0x206A2 читает байты 0 и 2 (понижение), 0x2061E байты 1 и 3 (повышение), байты 4 и 5 — номер программы для выбора матрицы 0x20768. В 20C0 у каждой программы есть запись 6-й передачи (код 6, см. 0x0E092).",
    "categories": [
     14
@@ -1703,12 +1703,12 @@
     "units_en": "code / number"
    },
    "uid": 8217,
-   "title_en": "Gear records of program P9: 6 gears x [down to, up to, down column, up column, down program, up program] (0x70D96)",
+   "title_en": "Gear records of program P9: 6 records (gear codes 1-6) x [down to, up to, down column, up column, down program, up program] (0x70D96)",
    "description_en": "RAM 0xFFFF8A2C + 4 x program is filled from the init list 0x08744 (bank 7 = 0x70000); read at 0x205B4-0x205CE."
   },
   {
    "kind": "table",
-   "title": "Записи передач программы PA: 6 передач × [вниз в, вверх в, столбец вниз, столбец вверх, программа вниз, программа вверх] (0x700F2)",
+   "title": "Записи передач программы PA: 6 записей (коды передач 1-6) × [вниз в, вверх в, столбец вниз, столбец вверх, программа вниз, программа вверх] (0x700F2)",
    "description": "Массив RAM 0xFFFF8A2C + 4 × программа заполняется из списка начальных значений 0x08744 (запись «00 42 FF FF 8A 2A», банк 7 = 0x70000). 0x2059E берёт запись = [0xFFFF8A2C + 4 × [0xFFFF914C]] + 6 × (передача - 1), 0x206A2 читает байты 0 и 2 (понижение), 0x2061E байты 1 и 3 (повышение), байты 4 и 5 — номер программы для выбора матрицы 0x20768. В 20C0 у каждой программы есть запись 6-й передачи (код 6, см. 0x0E092).",
    "categories": [
     14
@@ -1770,12 +1770,12 @@
     "units_en": "code / number"
    },
    "uid": 8218,
-   "title_en": "Gear records of program PA: 6 gears x [down to, up to, down column, up column, down program, up program] (0x700F2)",
+   "title_en": "Gear records of program PA: 6 records (gear codes 1-6) x [down to, up to, down column, up column, down program, up program] (0x700F2)",
    "description_en": "RAM 0xFFFF8A2C + 4 x program is filled from the init list 0x08744 (bank 7 = 0x70000); read at 0x205B4-0x205CE."
   },
   {
    "kind": "table",
-   "title": "Записи передач программы PB: 6 передач × [вниз в, вверх в, столбец вниз, столбец вверх, программа вниз, программа вверх] (0x70A32)",
+   "title": "Записи передач программы PB: 6 записей (коды передач 1-6) × [вниз в, вверх в, столбец вниз, столбец вверх, программа вниз, программа вверх] (0x70A32)",
    "description": "Массив RAM 0xFFFF8A2C + 4 × программа заполняется из списка начальных значений 0x08744 (запись «00 42 FF FF 8A 2A», банк 7 = 0x70000). 0x2059E берёт запись = [0xFFFF8A2C + 4 × [0xFFFF914C]] + 6 × (передача - 1), 0x206A2 читает байты 0 и 2 (понижение), 0x2061E байты 1 и 3 (повышение), байты 4 и 5 — номер программы для выбора матрицы 0x20768. В 20C0 у каждой программы есть запись 6-й передачи (код 6, см. 0x0E092).",
    "categories": [
     14
@@ -1837,12 +1837,12 @@
     "units_en": "code / number"
    },
    "uid": 8219,
-   "title_en": "Gear records of program PB: 6 gears x [down to, up to, down column, up column, down program, up program] (0x70A32)",
+   "title_en": "Gear records of program PB: 6 records (gear codes 1-6) x [down to, up to, down column, up column, down program, up program] (0x70A32)",
    "description_en": "RAM 0xFFFF8A2C + 4 x program is filled from the init list 0x08744 (bank 7 = 0x70000); read at 0x205B4-0x205CE."
   },
   {
    "kind": "table",
-   "title": "Записи передач программы PC: 6 передач × [вниз в, вверх в, столбец вниз, столбец вверх, программа вниз, программа вверх] (0x702CC)",
+   "title": "Записи передач программы PC: 6 записей (коды передач 1-6) × [вниз в, вверх в, столбец вниз, столбец вверх, программа вниз, программа вверх] (0x702CC)",
    "description": "Массив RAM 0xFFFF8A2C + 4 × программа заполняется из списка начальных значений 0x08744 (запись «00 42 FF FF 8A 2A», банк 7 = 0x70000). 0x2059E берёт запись = [0xFFFF8A2C + 4 × [0xFFFF914C]] + 6 × (передача - 1), 0x206A2 читает байты 0 и 2 (понижение), 0x2061E байты 1 и 3 (повышение), байты 4 и 5 — номер программы для выбора матрицы 0x20768. В 20C0 у каждой программы есть запись 6-й передачи (код 6, см. 0x0E092).",
    "categories": [
     14
@@ -1904,12 +1904,12 @@
     "units_en": "code / number"
    },
    "uid": 8220,
-   "title_en": "Gear records of program PC: 6 gears x [down to, up to, down column, up column, down program, up program] (0x702CC)",
+   "title_en": "Gear records of program PC: 6 records (gear codes 1-6) x [down to, up to, down column, up column, down program, up program] (0x702CC)",
    "description_en": "RAM 0xFFFF8A2C + 4 x program is filled from the init list 0x08744 (bank 7 = 0x70000); read at 0x205B4-0x205CE."
   },
   {
    "kind": "table",
-   "title": "Записи передач программы PD: 6 передач × [вниз в, вверх в, столбец вниз, столбец вверх, программа вниз, программа вверх] (0x702A8)",
+   "title": "Записи передач программы PD: 6 записей (коды передач 1-6) × [вниз в, вверх в, столбец вниз, столбец вверх, программа вниз, программа вверх] (0x702A8)",
    "description": "Массив RAM 0xFFFF8A2C + 4 × программа заполняется из списка начальных значений 0x08744 (запись «00 42 FF FF 8A 2A», банк 7 = 0x70000). 0x2059E берёт запись = [0xFFFF8A2C + 4 × [0xFFFF914C]] + 6 × (передача - 1), 0x206A2 читает байты 0 и 2 (понижение), 0x2061E байты 1 и 3 (повышение), байты 4 и 5 — номер программы для выбора матрицы 0x20768. В 20C0 у каждой программы есть запись 6-й передачи (код 6, см. 0x0E092).",
    "categories": [
     14
@@ -1971,12 +1971,12 @@
     "units_en": "code / number"
    },
    "uid": 8221,
-   "title_en": "Gear records of program PD: 6 gears x [down to, up to, down column, up column, down program, up program] (0x702A8)",
+   "title_en": "Gear records of program PD: 6 records (gear codes 1-6) x [down to, up to, down column, up column, down program, up program] (0x702A8)",
    "description_en": "RAM 0xFFFF8A2C + 4 x program is filled from the init list 0x08744 (bank 7 = 0x70000); read at 0x205B4-0x205CE."
   },
   {
    "kind": "table",
-   "title": "Записи передач программы PE: 6 передач × [вниз в, вверх в, столбец вниз, столбец вверх, программа вниз, программа вверх] (0x700A0)",
+   "title": "Записи передач программы PE: 6 записей (коды передач 1-6) × [вниз в, вверх в, столбец вниз, столбец вверх, программа вниз, программа вверх] (0x700A0)",
    "description": "Массив RAM 0xFFFF8A2C + 4 × программа заполняется из списка начальных значений 0x08744 (запись «00 42 FF FF 8A 2A», банк 7 = 0x70000). 0x2059E берёт запись = [0xFFFF8A2C + 4 × [0xFFFF914C]] + 6 × (передача - 1), 0x206A2 читает байты 0 и 2 (понижение), 0x2061E байты 1 и 3 (повышение), байты 4 и 5 — номер программы для выбора матрицы 0x20768. В 20C0 у каждой программы есть запись 6-й передачи (код 6, см. 0x0E092).",
    "categories": [
     14
@@ -2038,12 +2038,12 @@
     "units_en": "code / number"
    },
    "uid": 8222,
-   "title_en": "Gear records of program PE: 6 gears x [down to, up to, down column, up column, down program, up program] (0x700A0)",
+   "title_en": "Gear records of program PE: 6 records (gear codes 1-6) x [down to, up to, down column, up column, down program, up program] (0x700A0)",
    "description_en": "RAM 0xFFFF8A2C + 4 x program is filled from the init list 0x08744 (bank 7 = 0x70000); read at 0x205B4-0x205CE."
   },
   {
    "kind": "table",
-   "title": "Записи передач программы PF: 6 передач × [вниз в, вверх в, столбец вниз, столбец вверх, программа вниз, программа вверх] (0x7007C)",
+   "title": "Записи передач программы PF: 6 записей (коды передач 1-6) × [вниз в, вверх в, столбец вниз, столбец вверх, программа вниз, программа вверх] (0x7007C)",
    "description": "Массив RAM 0xFFFF8A2C + 4 × программа заполняется из списка начальных значений 0x08744 (запись «00 42 FF FF 8A 2A», банк 7 = 0x70000). 0x2059E берёт запись = [0xFFFF8A2C + 4 × [0xFFFF914C]] + 6 × (передача - 1), 0x206A2 читает байты 0 и 2 (понижение), 0x2061E байты 1 и 3 (повышение), байты 4 и 5 — номер программы для выбора матрицы 0x20768. В 20C0 у каждой программы есть запись 6-й передачи (код 6, см. 0x0E092).",
    "categories": [
     14
@@ -2105,7 +2105,7 @@
     "units_en": "code / number"
    },
    "uid": 8223,
-   "title_en": "Gear records of program PF: 6 gears x [down to, up to, down column, up column, down program, up program] (0x7007C)",
+   "title_en": "Gear records of program PF: 6 records (gear codes 1-6) x [down to, up to, down column, up column, down program, up program] (0x7007C)",
    "description_en": "RAM 0xFFFF8A2C + 4 x program is filled from the init list 0x08744 (bank 7 = 0x70000); read at 0x205B4-0x205CE."
   },
   {
@@ -2217,7 +2217,7 @@
   {
    "kind": "constant",
    "title": "ГДТ: маска передач, где блокировка разрешена, завод 0x007E = 1-6 (0x7096E)",
-   "description": "0x25494 and.w $7096e: биты 1-6 = передачи 1-6. В 19D0 маска 0x8978 = 0x003C (2-5).",
+   "description": "0x25494 and.w $7096e: биты 1-6 = коды передач 1-6 (код 6 не шестая передача, документ 11 §4). В 19D0 маска 0x8978 = 0x003C (2-5).",
    "categories": [
     2
    ],

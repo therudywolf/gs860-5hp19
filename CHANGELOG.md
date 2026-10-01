@@ -2,6 +2,22 @@
 
 Newest first. Each entry: date and title, then **EN** and **RU** with the same facts. Older entries are not rewritten: what turned out wrong is corrected in a newer entry.
 
+## 2026-10-01: GS8.60.4 (20C0): document 12 (differences from 19D0), document 11 cleaned up
+
+**EN**
+
+- **Document 12** `docs/en/12-gs8600-vs-gs8604.md` (and RU): how the GS8.60.0 (19D0) and GS8.60.4 (20C0) programs differ, side by side with addresses in both images: image and checksums, catalog, matrices and gears, lockup, AGS and gate, protections, record sets, DS2 and CAN. Only facts already proven in documents 01–11, plus two checks against the images made for it: in 19D0 the transition type 1 (`0x12FDC`) is 2 and 6 both ways, in 20C0 record 6 equals record 1 in programs P0, P1, P2, PB, PC.
+- **Document 11 §5** no longer carries data from the recording of a third party's car (per-shift table, frame timing, byte values, counts). What the code proves stays: PB at once in the gate, the threshold addition `0xFFFF9143`, the condition of `0x105DE`, the arbiter records of `0x2042A`, the candidate `0x1AAFC`. The recording is not published (repository rule).
+- **Gear code 6 instead of "sixth gear"** (document 11 §4, §6, §9, §12, catalog titles and both 20C0 XDF files): it is not a forward gear. Record 6 equals record 1, no record shifts up into code 6, records 1 and 2 of PB and PC shift down into it, the ratio table `0x0E0D2` holds 742 for it (as for code 5), its purpose is not established.
+- **`xdf/GS8604_20C0_Full512K.xdf` and `_EN.xdf`** regenerated from the catalog: titles only, addresses and shapes unchanged.
+
+**RU**
+
+- **Документ 12** `docs/ru/12-gs8600-vs-gs8604.md` (и EN): чем отличаются программы GS8.60.0 (19D0) и GS8.60.4 (20C0), рядом с адресами обоих образов: образ и суммы, каталог, матрицы и передачи, блокировка, AGS и кулиса, защиты, наборы записей, DS2 и CAN. Только факты, уже доказанные в документах 01–11, и две сверки с образами, сделанные для него: в 19D0 тип перехода 1 (`0x12FDC`) это 2 и 6 в обе стороны, в 20C0 запись 6 равна записи 1 у программ P0, P1, P2, PB, PC.
+- **Документ 11 §5** больше не несёт данных записи заезда чужой машины (таблица по переключениям, период кадров, значения байт, подсчёты). Осталось то, что доказано кодом: PB сразу в кулисе, прибавка `0xFFFF9143`, условие `0x105DE`, записи арбитра `0x2042A`, кандидат `0x1AAFC`. Сама запись не публикуется (правило репозитория).
+- **Код передачи 6 вместо «шестой передачи»** (документ 11 §4, §6, §9, §12, названия каталога и оба XDF 20C0): передачей вперёд он не является. Запись 6 равна записи 1, вверх в код 6 не переключает ни одна запись, вниз в него переключают записи 1 и 2 у PB и PC, в таблице передаточных `0x0E0D2` у него 742 (как у кода 5), назначение не установлено.
+- **`xdf/GS8604_20C0_Full512K.xdf` и `_EN.xdf`** пересобраны из каталога: изменились только названия, адреса и формы те же.
+
 ## 2026-09-30: GS8.60.4 (20C0): record field roles proven by the 20C0 code, all 20 record roots, English XDF
 
 **EN**
