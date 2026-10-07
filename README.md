@@ -13,6 +13,7 @@
 </p>
 
 <p align="center">
+  <a href="https://github.com/therudywolf/gs860-5hp19/releases/latest"><img src="https://img.shields.io/github/v/release/therudywolf/gs860-5hp19?label=release&color=0066B1" alt="Latest release"></a>
   <img src="https://img.shields.io/badge/ECU-Bosch%20GS8.60.0%20%2F%20GS8.60.4-0066B1" alt="ECU">
   <img src="https://img.shields.io/badge/gearbox-ZF%205HP19%20%2F%20A5S%20325Z-1f6feb" alt="Gearbox">
   <img src="https://img.shields.io/badge/XDF%2019D0-843%20tables%20%2B%2061%20constants-2ea44f" alt="XDF 19D0">
@@ -70,6 +71,8 @@ python3 tools/gs860_crc.py  check build.bin                # checksums (egs_patc
 ```
 
 The XDF files open in TunerPro: `xdf/GS8600_19D0_Full256K.xdf` for a 256 KB dump, `xdf/GS8600_19x0_Partial32K.xdf` for a 32 KB partial, `xdf/GS8604_20C0_Full512K.xdf` (Russian) and `xdf/GS8604_20C0_Full512K_EN.xdf` (English) for a 512 KB GS8.60.4 dump. After editing in TunerPro run `gs860_crc.py fix edited.bin fixed.bin`. **Read [document 07](docs/en/07-reading-and-flashing.md) before you flash anything.**
+
+**Download:** the [latest release](https://github.com/therudywolf/gs860-5hp19/releases/latest): the XDF files, the tools, the recipes and the documents in one archive.
 
 ### Patches
 
@@ -162,7 +165,7 @@ AI tools were used for parts of the disassembly, cross-checking and writing. Eve
 
 ### Support the work
 
-Unpaid hobby research: dumps read by hand, code disassembled instruction by instruction, every finding checked on a real car, including the mistakes, which are documented too. Everything here stays free and open. If it saved you time, money or a gearbox, support it on **[Boosty: boosty.to/therudywolf](https://boosty.to/therudywolf)**.
+Unpaid hobby research: dumps read by hand, code disassembled instruction by instruction, every finding checked against the code and, wherever possible, on a real car, including the mistakes, which are documented too. Everything here stays free and open. If it saved you time, money or a gearbox, support it on **[Boosty: boosty.to/therudywolf](https://boosty.to/therudywolf)**.
 
 ---
 
@@ -202,6 +205,8 @@ python3 tools/gs860_crc.py  check build.bin                # суммы (egs_pat
 ```
 
 XDF открывается в TunerPro: `xdf/GS8600_19D0_Full256K.xdf` для дампа 256 КБ, `xdf/GS8600_19x0_Partial32K.xdf` для партиала 32 КБ, `xdf/GS8604_20C0_Full512K.xdf` (русский) и `xdf/GS8604_20C0_Full512K_EN.xdf` (английский) для дампа GS8.60.4 на 512 КБ. После правки в TunerPro запустите `gs860_crc.py fix edited.bin fixed.bin`. **Перед любой прошивкой прочитайте [документ 07](docs/ru/07-reading-and-flashing.md).**
+
+**Скачать:** [последний релиз](https://github.com/therudywolf/gs860-5hp19/releases/latest): XDF, инструменты, рецепты и документы одним архивом.
 
 ### Патчи
 
@@ -294,4 +299,4 @@ assets/              логотип
 
 ### Поддержать
 
-Это хобби-исследование без бюджета: дампы читаются руками, код разбирается инструкция за инструкцией, каждая находка проверяется на живой машине, включая ошибки, которые тоже документируются. Всё здесь остаётся бесплатным и открытым. Если это сэкономило вам время, деньги или коробку, поддержите на **[Boosty: boosty.to/therudywolf](https://boosty.to/therudywolf)**.
+Это хобби-исследование без бюджета: дампы читаются руками, код разбирается инструкция за инструкцией, каждая находка проверяется по коду и, где можно, на живой машине, включая ошибки, которые тоже документируются. Всё здесь остаётся бесплатным и открытым. Если это сэкономило вам время, деньги или коробку, поддержите на **[Boosty: boosty.to/therudywolf](https://boosty.to/therudywolf)**.
