@@ -8,23 +8,24 @@
 <h1 align="center">GS8.60.0 / GS8.60.4 · ZF 5HP19</h1>
 
 <p align="center">
-  <b>Reverse-engineering notes, TunerPro definitions and reproducible presets<br>for the Bosch GS8.60.0 transmission control unit (and, partially, the GS8.60.4)</b><br>
-  <i>Реверс, XDF и воспроизводимые пресеты для блока АКПП Bosch GS8.60.0 (ZF 5HP19), частично для GS8.60.4</i>
+  <b>Reverse engineering, TunerPro definitions, ready-made patches and presets<br>for the Bosch GS8.60.0 and GS8.60.4 transmission control units</b><br>
+  <i>Реверс, XDF, готовые патчи и пресеты для блоков АКПП Bosch GS8.60.0 и GS8.60.4 (ZF 5HP19)</i>
 </p>
 
 <p align="center">
   <img src="https://img.shields.io/badge/ECU-Bosch%20GS8.60.0%20%2F%20GS8.60.4-0066B1" alt="ECU">
   <img src="https://img.shields.io/badge/gearbox-ZF%205HP19%20%2F%20A5S%20325Z-1f6feb" alt="Gearbox">
-  <img src="https://img.shields.io/badge/XDF%2019D0-842%20tables%20%2B%2057%20constants-2ea44f" alt="XDF 19D0">
-  <img src="https://img.shields.io/badge/XDF%2020C0-1067%20tables%20%2B%20705%20constants-2ea44f" alt="XDF 20C0">
+  <img src="https://img.shields.io/badge/XDF%2019D0-843%20tables%20%2B%2061%20constants-2ea44f" alt="XDF 19D0">
+  <img src="https://img.shields.io/badge/XDF%2020C0-1069%20tables%20%2B%20710%20constants-2ea44f" alt="XDF 20C0">
+  <img src="https://img.shields.io/badge/patches-8%20for%20both%20units-8957e5" alt="Patches">
   <img src="https://img.shields.io/badge/docs-EN%20%7C%20RU-brightgreen" alt="Docs">
   <img src="https://img.shields.io/badge/docs%20%26%20XDF-CC%20BY--SA%204.0-blue" alt="Licence docs">
   <img src="https://img.shields.io/badge/tools-MIT-blue" alt="Licence code">
-  <a href="https://boosty.to/therudywolf"><img src="https://img.shields.io/badge/support-Boosty-f15f2c" alt="Support"></a>
+  <a href="https://boosty.to/therudywolf"><img src="https://img.shields.io/badge/support-Boosty-f15f2c" alt="Support on Boosty"></a>
 </p>
 
 <p align="center">
-  by <b><a href="https://rudywolf.ru">rudywolf</a></b> | <a href="https://github.com/therudywolf">github.com/therudywolf</a>
+  by <b><a href="https://rudywolf.ru">rudywolf</a></b> | <a href="https://github.com/therudywolf">github.com/therudywolf</a> | <a href="https://boosty.to/therudywolf"><b>support on Boosty</b></a>
 </p>
 
 <p align="center">
@@ -37,40 +38,63 @@
 
 ## English
 
-The **Bosch GS8.60.0** (ZF 5HP19 / A5S 325Z) is the transmission control unit behind a lot of BMW E39, E46, E38, E53, Z3 and Z4 cars, and until now there was no public description of what is actually inside it. People tune this gearbox by copying factory Alpina files into their own dump and hoping. That works until it doesn't.
+The **Bosch GS8.60.0** and **GS8.60.4** (ZF 5HP19 / A5S 325Z) are the transmission control units of many BMW E39, E46, E38, E53, Z3 and Z4. There was no public description of what is inside them, and people tuned the gearbox by pouring factory Alpina files into their own dump and hoping. That works until it doesn't.
 
-This repository is the missing description: what each table does **in code**, which ones are safe, which ones are not, and how to apply a change to your own dump in a way you can repeat and undo.
+This repository is the missing description: what each table does **in code**, which ones are safe, which ones are not, ready-made patches for the most wanted changes, and a way to apply them to your own dump that you can repeat and undo. Everything comes from disassembling the firmware (capstone m68k), diffing factory calibrations of BMW and Alpina, and DS2 logs from running cars. No Bosch or ZF documentation was used.
 
-Everything here comes from disassembling the firmware (capstone m68k), diffing a stock calibration against a factory Alpina calibration on the same software, and DS2 logs from a running car. There is no Bosch or ZF documentation in the public domain, and none was used.
+### What's new (07.10.2026)
 
-### Who this is for
-
-- You tune or diagnose a 5HP19 with the GS8.60.0 and want to know **what a table does**, not what it might do.
-- You want to apply a ready preset to your own dump reproducibly, or build your own preset.
-- You log the gearbox and need the RAM addresses that actually mean something.
+- **Ready-made patches for both units** ([document 13](docs/en/13-patches.md)): converter lock-up in 1st gear, early lock-up with any pedal, no warm-up program, S without 5th, full-throttle shift rpm by your engine limiter, no kick-down, manual mode that holds the gear, gate S or M. One tool, `tools/egs_patch.py`, checks the image, writes, recomputes the checksums and logs every byte.
+- **Presets for GS8.60.4 as well as GS8.60.0** ([document 14](docs/en/14-presets.md)): `sport-daily`, `street-hard`, `track-hard`, built from the patches for your engine, or as ready recipes.
+- **Why GS8.60.4 feels faster in stock form** ([document 12 §10](docs/en/12-gs8600-vs-gs8604.md)): four factory calibrations side by side. It is the Alpina calibration, not the unit: BMW's own GS8.60.4 is as calm as the GS8.60.0.
+- **20C0 reverse completed where it matters**: D / S / M matrix roles, warm-up program, kick-down source, the lower TCC level gate, all proven by code ([document 11](docs/en/11-gs8604-20c0.md)).
+- Corrections: the "ATF thermal derate" was the warm-up program; frame byte 5 is the engine temperature, byte 6 the raw ATF ([document 03 §6](docs/en/03-torque-converter-lockup.md)).
 
 ### What is covered
 
 | | |
 |---|---|
-| **GS8.60.0, program 19x0: addresses fully, roles partially** | 256 KB image. Verified against two factory dumps: a stock 2.5 calibration (`19C0 KA20`) and the Alpina B3 3.3 calibration (`19D0 620P`). The program code `0x10000–0x40000` is byte-identical in both, so **one XDF fits both**. The calibrations differ in 2547 bytes. `catalog/gs8600_19d0.json` and the XDF generated from it hold 899 entries, 842 tables + 57 constants, and every one of the 536 tables the scanner finds in the table zone. Roles: 76 entries proven by code (instruction address in `proof`), 637 carried over from XDF v2.1 without a re-check, 184 shape only, 2 hypotheses. The shapes of some carried record fields are still open (CHANGELOG, 27.09.2026). |
-| **GS8.60.4, program 20C0: partially** | 512 KB image, since 27.09.2026: [document 11](docs/en/11-gs8604-20c0.md), [document 12](docs/en/12-gs8600-vs-gs8604.md) (how it differs from 19D0), `catalog/gs8604_20c0.json`, `xdf/GS8604_20C0_Full512K.xdf` and the English `xdf/GS8604_20C0_Full512K_EN.xdf` (since 30.09.2026: 1772 entries, 1067 tables + 705 constants: 1551 proven by code, 19 by structure, 201 shape only, 1 hypothesis). `egs_tables.py` and `gs860_crc.py` understand the image. Proven from the code: the image map and the three checksums, the 16 shift matrices with their unit and program mapping, the TCC lockup upper level, the turbine monitor (7232 rpm), the voltage monitor, AGS and gate constants, the `0B 03` frame, and since 30.09.2026 the roles of the shift-automaton record fields (on-coming and off-going element phases and pressures, slip controller, torque reduction, drive engagement on a selector change) traced to the pressure channels and the CAN frame. **Not proven**: which matrix is the manual program (a road log contradicts the naive reading), the roles of 180 tables of the other record roots, the lower TCC level. The 19D0 addresses, recipes and RAM cells **do not apply to it**, and the other way round. |
-| **Not covered** | The engine ECU (MS42 / MS43). For that, see the [MS4X wiki](https://www.ms4x.net). |
+| **GS8.60.0, program 19x0** (256 KB) | Addresses fully, roles partially. Verified on two factory dumps, BMW `19C0 KA20` (E39 2.5) and Alpina B3 3.3 `19D0 620P`, with byte-identical code: **one XDF fits both**. `catalog/gs8600_19d0.json`: 904 entries, 843 tables + 61 constants, every table the scanner finds; 84 roles proven by code, 636 carried over from XDF v2.1, 182 shape only, 2 hypotheses. |
+| **GS8.60.4, program 20C0** (512 KB) | `catalog/gs8604_20c0.json`: 1779 entries, 1069 tables + 710 constants, **1565 roles proven by the 20C0 code**, 18 by structure, 195 shape only, 1 hypothesis. Image map and checksums, the 16 shift matrices with their roles, TCC lock-up (upper level, 1st gear, lower-level gate), AGS and gate, warm-up and kick-down, protections, the record fields of the shift automaton traced to the pressure channels and the CAN frame. Russian and English XDF. |
+| **Not covered** | Other GS8.60.4 software builds (BMW `15C0` is mapped for comparison only), the engine ECU (see the [MS4X wiki](https://www.ms4x.net)). |
 
 ### Quick start
 
 ```bash
-python3 tools/egs_tables.py info  my_dump.bin          # size, SHA-256, code hash, table count, checksums
-python3 tools/egs_tables.py shift my_dump.bin --turbine    # the 16 shift-point matrices in turbine rpm
-python3 tools/egs_tables.py dump  my_dump.bin 0xBF9C   # any table by address
-python3 tools/apply_recipe.py recipes/wolf4x_v20_track_hard.json my_dump.bin -o build.bin
-python3 tools/gs860_crc.py check build.bin             # the three CRC-16 checksums
-python3 tools/egs_tables.py verify-shift build.bin --spark 6656 --cut 6784 --stock my_dump.bin
+python3 tools/egs_tables.py info my_dump.bin               # software, code hash, labels, the three checksums
+python3 tools/egs_patch.py  show my_dump.bin               # gate, warm-up, kick-down, TCC per program, full-throttle points
+python3 tools/egs_patch.py  apply my_dump.bin -o build.bin no-warmup tcc-lock s-no5 --spark 6528
+python3 tools/egs_patch.py  preset sport-daily my_dump.bin -o build.bin --spark 6528 --cut 6720
+python3 tools/egs_tables.py verify-shift build.bin --spark 6528 --cut 6720 --stock my_dump.bin
+python3 tools/gs860_crc.py  check build.bin                # checksums (egs_patch already recomputed them)
 ```
 
-`apply_recipe.py` recomputes the calibration checksum. After editing an image in TunerPro run `gs860_crc.py fix edited.bin fixed.bin`.
+The XDF files open in TunerPro: `xdf/GS8600_19D0_Full256K.xdf` for a 256 KB dump, `xdf/GS8600_19x0_Partial32K.xdf` for a 32 KB partial, `xdf/GS8604_20C0_Full512K.xdf` (Russian) and `xdf/GS8604_20C0_Full512K_EN.xdf` (English) for a 512 KB GS8.60.4 dump. After editing in TunerPro run `gs860_crc.py fix edited.bin fixed.bin`. **Read [document 07](docs/en/07-reading-and-flashing.md) before you flash anything.**
 
-Open `xdf/GS8600_19D0_Full256K.xdf` in TunerPro with a 256 KB dump, or `xdf/GS8600_19x0_Partial32K.xdf` with a 32 KB partial. `xdf/GS8604_20C0_Full512K.xdf` (Russian) and `xdf/GS8604_20C0_Full512K_EN.xdf` (English) are for a 512 KB GS8.60.4 dump (document 11). The XDF files are generated from `catalog/*.json` by `tools/make_xdf.py` and are not edited by hand. **Read `docs/en/07-reading-and-flashing.md` before you flash anything.**
+### Patches
+
+`python3 tools/egs_patch.py list` prints them all. Details, addresses and the code behind each: [document 13](docs/en/13-patches.md).
+
+| Patch | What it does | 19x0 | 20C0 |
+|---|---|---|---|
+| `tcc-first` | converter locked in 1st gear under throttle (S and M, optionally D) | adds 52 bytes of code, full flash only | calibration only |
+| `tcc-lock` | converter locked from 1600 turbine rpm in 2nd-5th, with any pedal | groups 6-9 | groups 5, 8, 9, 10 |
+| `no-warmup` | no warm-up program after a cold start | `0x8B48` = 0 | `0x70BAC` = 0 |
+| `s-no5` | S never shifts into 5th, AGS held on level 4 | k11, k15 | k11, k15 |
+| `shift-wot` | full-throttle upshifts right under your engine limiter | k11, k15 (+ k14, k6) | the same, minus the lock-up addition |
+| `no-kickdown` | kick-down off (or only in M) | `0x8D1A`, `0x8246` | `0x70D6A`, `0x70232` |
+| `manual-hold` | M holds the gear on the limiter, upshifts only on the overrun | k10, k8, monitor | k10, k8 |
+| `gate` | left gate: S first (BMW) or M at once (Alpina) | `0x8975` | `0x70966` |
+
+### Presets
+
+| Preset | Character | 19x0 | 20C0 |
+|---|---|---|---|
+| `sport-daily` | factory D; S without 5th, full-throttle shifts at the limiter, converter locked from 1600; M holds the gear | recipe + `preset` | recipe + `preset` |
+| `street-hard` | sport-daily + converter in 1st, no kick-down, no warm-up | `preset` (code change) | recipe + `preset` |
+| `track-hard` | street-hard + the same for D | `preset` (code change) | recipe + `preset` |
+
+Build a preset for your own engine: `egs_patch.py preset NAME dump.bin -o out.bin --spark RPM --cut RPM`. The recipes in `recipes/` are built for the reference engines (M52TUB25 and M54B30 with factory limiters). None of the presets is road-tested as a whole yet; their parts ran on the reference E39 (document 14 §5). The older v18-v20 presets stay in `recipes/` for the record and are not recommended (document 08).
 
 ### Tools
 
@@ -78,66 +102,53 @@ Python 3, standard library only. Every script prints its usage with `--help`.
 
 | Script | Commands | What it does |
 |---|---|---|
-| `tools/egs_tables.py` | `info`, `scan`, `dump`, `cell`, `shift`, `programs`, `diff`, `ids`, `verify-shift` | table scanner and dumper for 256 KB and 32 KB images of 19x0 and 512 KB images of 20C0 (the layout is chosen by the file size) |
+| `tools/egs_patch.py` | `list`, `show`, `apply`, `preset`, `recipe` | the patches and presets of documents 13 and 14 for 256 KB 19x0 and 512 KB 20C0 images |
+| `tools/egs_tables.py` | `info`, `scan`, `dump`, `cell`, `shift`, `programs`, `diff`, `ids`, `verify-shift` | table scanner and dumper; `verify-shift` checks the shift points against your engine limiter by the matrix roles from code |
 | `tools/gs860_crc.py` | `check`, `fix` | the three CRC-16 checksums: check, or write a new file with them recomputed |
-| `tools/apply_recipe.py` | `recipe.json stock.bin -o out.bin [--force] [--dry-run]` | applies a recipe to your 256 KB 19x0 dump, recomputes the calibration checksum |
-| `tools/make_recipe.py` | `stock.bin tuned.bin -o recipe.json [-a annotations.json]` | builds a recipe from two 256 KB 19x0 images |
+| `tools/apply_recipe.py` | `recipe.json stock.bin -o out.bin` | applies a recipe (JSON diff) to your 256 KB or 512 KB dump, writes only the calibration window |
+| `tools/make_recipe.py` | `stock.bin tuned.bin -o recipe.json` | builds a recipe from two images |
 | `tools/make_xdf.py` | `check`, `build`, `import` | checks a catalog and generates the XDF from it |
 
 How to rebuild the XDF and run the tests: [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ### Documentation
 
-One line per document: [docs/en/README.md](docs/en/README.md).
-
 | | |
 |---|---|
 | [01 · Firmware layout](docs/en/01-firmware-layout.md) | memory map, table format, the 536 tables, pointer catalogue, the two calibration branches, the 16 programs, DS2 dispatcher |
-| [02 · Shift points](docs/en/02-shift-points.md) | the 16 matrices, pedal rows, the unit (output shaft rpm / 32), how to check a point against your engine's limiter |
-| [03 · Torque converter lockup](docs/en/03-torque-converter-lockup.md) | the real lockup (request 0/1/2, thresholds `0x993A`, state machine 0-8), AGS (the old "4-stage ladder" reading), the "temperature window" myth, where ATF temperature really is |
-| [04 · Shift execution and hydraulics](docs/en/04-shift-execution-hydraulics.md) | the shift automaton: record sets, transition types, phases, the slip-time controller, clutch pressures, table families, stock vs Alpina, and why copying Alpina data blindly destroys a shift |
-| [05 · Protections](docs/en/05-protections.md) | function `0x265F4` is a supply-voltage monitor (and how the "turbine 7000 rpm" reading was disproved), thermal derate, limp mode |
-| [06 · Logging over DS2](docs/en/06-logging-ds2.md) | 9600 baud, reading RAM, status-frame bytes, the addresses worth logging for A/B |
-| [07 · Reading and flashing](docs/en/07-reading-and-flashing.md) | full 256K vs partial 32K, order of operations, Reset Adaptation, what a dump contains, the three checksums |
-| [08 · Recipes and presets](docs/en/08-recipes-and-presets.md) | the recipe format, every preset change justified table by table, what the presets really change (§6) |
+| [02 · Shift points](docs/en/02-shift-points.md) | the 16 matrices, their unit (output shaft rpm / 32), how to check a point against your engine limiter |
+| [03 · Torque converter lockup](docs/en/03-torque-converter-lockup.md) | the real lockup (request 0/1/2, thresholds, clutch automaton), AGS, where the temperatures really are |
+| [04 · Shift execution and hydraulics](docs/en/04-shift-execution-hydraulics.md) | record sets, phases, the slip-time controller, clutch pressures, stock vs Alpina |
+| [05 · Protections](docs/en/05-protections.md) | voltage monitor `0x265F4`, warm-up program (not a thermal derate), limp mode, turbine monitor `0x26C84` |
+| [06 · Logging over DS2](docs/en/06-logging-ds2.md) | 9600 baud, reading RAM, status-frame bytes, addresses worth logging |
+| [07 · Reading and flashing](docs/en/07-reading-and-flashing.md) | full vs partial, order of operations, Reset Adaptation, the three checksums |
+| [08 · Recipes and presets](docs/en/08-recipes-and-presets.md) | the recipe format and the legacy v18-v20 presets, what they really change |
 | [09 · What not to touch](docs/en/09-what-not-to-touch.md) | the prohibitions, each with the reason |
-| [10 · Methodology](docs/en/10-methodology.md) | how the reverse was done, what counts as proven, refuted readings, open questions |
-| [11 · GS8.60.4 (20C0)](docs/en/11-gs8604-20c0.md) | the 512 KB image: map, checksums, catalog of 43 slots, the 16 matrices and their unit, TCC lockup with two checks, AGS and gate, protections and the voltage block (`0x70F40` is 7.0 V, not a turbine limit), record sets, the 33-byte `0B 03` frame, what is proven and what is not |
-| [12 · GS8.60.0 and GS8.60.4](docs/en/12-gs8600-vs-gs8604.md) | how 19D0 and 20C0 differ, side by side with addresses in both images: image and checksums, catalog, matrices and gears, lockup, AGS and gate, protections, record sets, DS2 and CAN |
+| [10 · Methodology](docs/en/10-methodology.md) | how the reverse was done, what counts as proven, refuted readings |
+| [11 · GS8.60.4 (20C0)](docs/en/11-gs8604-20c0.md) | the 512 KB image: map, checksums, matrices and roles, lockup, AGS, warm-up, kick-down, record roots, the `0B 03` frame |
+| [12 · GS8.60.0 and GS8.60.4](docs/en/12-gs8600-vs-gs8604.md) | the two programs side by side, and stock against stock: why GS8.60.4 feels faster (§10) |
+| [13 · Patches](docs/en/13-patches.md) | TCC in 1st, early lockup, warm-up, no 5th in S, shift rpm, kick-down, manual mode, gate |
+| [14 · Presets](docs/en/14-presets.md) | sport-daily, street-hard, track-hard for both units |
 | [Glossary](docs/en/glossary.md) | terms |
 
 Every document also exists in Russian under `docs/ru/`, with the same structure and facts.
-
-### Presets
-
-A preset here is a **recipe**, a JSON diff against the stock calibration, not a firmware file. `apply_recipe.py` applies it to *your* dump and refuses to run if the software differs, if any table axis differs, or if the old values don't match.
-
-| Preset | Character |
-|---|---|
-| `wolf4x_v18_sport_daily` | conservative: uniform correction on top of stock |
-| `wolf4x_v19_street_hard` | factory Alpina B3 level where the axes match |
-| `wolf4x_v20_track_hard` | short slip time, raised pressure ceiling, and AGS edits that were meant as early lockup in Sport/Manual (doc 08 §6) |
-
-All three are built for a 2.5 M52TU with the spark cut from about 6656 rpm and the fuel cut at 6784. Their shift points were recomputed on 23.09.2026 after the matrix unit was proven to be output shaft rpm / 32, not km/h (CHANGELOG). Shift points depend only on the engine limiter, not on the final drive or tyres: check them against yours with `egs_tables.py verify-shift` (`docs/en/08` §4).
-
-**Status.** The presets are not road-tested in their 23.09.2026 form. Their "TCC" groups change AGS, the adaptive program selection, not the converter lockup, and the manual upshift thresholds are unsafe with a locked converter (doc 08 §6). The presets will be revised separately. Each recipe file carries this note in its `status` field.
 
 ### Repository layout
 
 ```
 docs/en, docs/ru     documentation, identical set of files, index in README.md of each folder
-catalog/             the source of the XDF files: gs8600_19d0.json (19x0, 256K) and gs8604_20c0.json (20C0, 512K), every entry with a confidence level
+catalog/             the source of the XDF files: gs8600_19d0.json (19x0, 256K) and gs8604_20c0.json (20C0, 512K)
 xdf/                 TunerPro definitions generated from the catalogs: 19D0 full 256K, 19x0 partial 32K, 20C0 full 512K (RU and EN)
-tools/               egs_tables.py, make_recipe.py, apply_recipe.py, gs860_crc.py, make_xdf.py (Python 3, no dependencies)
-recipes/             presets as JSON diffs, with annotations (19x0 only)
-tests/               self-tests: python3 tests/test_tools.py (GS860_STOCK=stock.bin and GS8604_STOCK=stock20c0.bin for the full set)
+tools/               egs_patch.py, egs_tables.py, apply_recipe.py, make_recipe.py, gs860_crc.py, make_xdf.py
+recipes/             presets as JSON diffs: gs8600_19x0_*, gs8604_20c0_* (and the legacy wolf4x_v18-v20)
+tests/               python3 tests/test_tools.py (GS860_STOCK=stock19x0.bin GS8604_STOCK=stock20c0.bin for the full set)
 assets/              logo
 .github/             issue and pull request templates, funding link
 ```
 
 ### Disclaimer
 
-This is hobby reverse-engineering of a safety-relevant control unit. It may be incomplete or wrong: several earlier readings **were** wrong and are listed as refuted in `docs/en/10-methodology.md`. A bad calibration can damage the gearbox, drop the unit into limp mode or leave the car immobile. You flash at your own risk, only with your own full dump saved first, and you are responsible for compliance with the law where you live.
+This is hobby reverse engineering of a safety-relevant control unit. It may be incomplete or wrong: several earlier readings **were** wrong and are listed as refuted in [document 10](docs/en/10-methodology.md) and in the corrections inside the documents. A bad calibration can damage the gearbox, drop the unit into limp mode or leave the car immobile. You flash at your own risk, only with your own full dump saved first, and you are responsible for compliance with the law where you live.
 
 ### Licence
 
@@ -145,13 +156,13 @@ Documentation and XDF: **CC BY-SA 4.0** (`LICENSE-docs`). Scripts in `tools/`: *
 
 ### Credits
 
-The [MS4X wiki](https://www.ms4x.net): the reference for the engine side and the source of the factory reference files. [TunerPro RT](https://www.tunerpro.net): the calibration editor and the XDF format. Everyone who asked awkward questions: the "114 km/h" and "minimum temperature" arguments are what forced the lockup module to be read to the end.
+The [MS4X wiki](https://www.ms4x.net): the reference for the engine side and the source of the factory reference files. [TunerPro RT](https://www.tunerpro.net): the calibration editor and the XDF format. Everyone who asked awkward questions and shared dumps: they forced the lockup module, the gate and the warm-up program to be read to the end.
 
 AI tools were used for parts of the disassembly, cross-checking and writing. Every number in these documents was verified against the binaries.
 
 ### Support the work
 
-Unpaid hobby research: dumps read by hand, code disassembled instruction by instruction, every finding checked on a real car, including the mistakes, which are documented too. Everything here stays free and open. If it saved you time, money or a gearbox: **[boosty.to/therudywolf](https://boosty.to/therudywolf)**.
+Unpaid hobby research: dumps read by hand, code disassembled instruction by instruction, every finding checked on a real car, including the mistakes, which are documented too. Everything here stays free and open. If it saved you time, money or a gearbox, support it on **[Boosty: boosty.to/therudywolf](https://boosty.to/therudywolf)**.
 
 ---
 
@@ -159,40 +170,63 @@ Unpaid hobby research: dumps read by hand, code disassembled instruction by inst
 
 ## Русский
 
-**Bosch GS8.60.0** (ZF 5HP19 / A5S 325Z) это блок управления АКПП, который стоит на множестве BMW E39, E46, E38, E53, Z3 и Z4. Публичного описания того, что у него внутри, до сих пор не было. Эту коробку настраивают, заливая в свой дамп заводские файлы Alpina и надеясь на лучшее. Работает до первого раза, когда не сработало.
+**Bosch GS8.60.0** и **GS8.60.4** (ZF 5HP19 / A5S 325Z) это блоки управления АКПП множества BMW E39, E46, E38, E53, Z3 и Z4. Публичного описания того, что у них внутри, не было, и коробку настраивали, заливая в свой дамп заводские файлы Alpina и надеясь на лучшее. Работает до первого раза, когда не сработало.
 
-Здесь то самое описание: что каждая таблица делает **в коде**, какие трогать можно, какие нельзя, и как внести правку в свой дамп так, чтобы её можно было повторить и откатить.
+Здесь то самое описание: что каждая таблица делает **в коде**, какие трогать можно, какие нельзя, готовые патчи для самых нужных правок и способ внести их в свой дамп так, чтобы это можно было повторить и откатить. Всё получено дизассемблированием прошивки (capstone m68k), сравнением заводских калибровок BMW и Alpina и логами DS2 с живых машин. Документация Bosch и ZF не использовалась.
 
-Всё получено дизассемблированием прошивки (capstone m68k), сравнением стоковой калибровки с заводской калибровкой Alpina на том же ПО и логами DS2 с живой машины. Документации Bosch и ZF в открытом доступе нет, и ничего из неё не использовано.
+### Что нового (07.10.2026)
 
-### Для кого
-
-- Вы настраиваете или диагностируете 5HP19 с GS8.60.0 и хотите знать, **что таблица делает**, а не чем она могла бы быть.
-- Вы хотите воспроизводимо применить готовый пресет к своему дампу или собрать свой.
-- Вы логируете коробку и вам нужны адреса RAM, которые действительно что-то значат.
+- **Готовые патчи для обоих блоков** ([документ 13](docs/ru/13-patches.md)): ГДТ на 1-й передаче, ранняя блокировка ГДТ при любой педали, без режима прогрева, S без 5-й, обороты переключения в пол под ограничитель вашего мотора, без кикдауна, ручной режим, который держит передачу, кулиса S или сразу M. Один инструмент `tools/egs_patch.py` проверяет образ, пишет, пересчитывает суммы и записывает в журнал каждый байт.
+- **Пресеты для GS8.60.4, как и для GS8.60.0** ([документ 14](docs/ru/14-presets.md)): `sport-daily`, `street-hard`, `track-hard`, собранные из патчей под ваш мотор или готовыми рецептами.
+- **Почему GS8.60.4 в стоке кажется быстрее** ([документ 12 §10](docs/ru/12-gs8600-vs-gs8604.md)): четыре заводских калибровки рядом. Дело в калибровке Alpina, а не в блоке: собственная GS8.60.4 от BMW такая же спокойная, как GS8.60.0.
+- **Реверс 20C0 доведён там, где это важно**: роли матриц D / S / M, программа прогрева, источник кикдауна, ворота нижнего уровня ГДТ, всё доказано кодом ([документ 11](docs/ru/11-gs8604-20c0.md)).
+- Поправки: «термодерейт по ATF» оказался программой прогрева; байт 5 кадра это температура мотора, байт 6 сырая ATF ([документ 03 §6](docs/ru/03-torque-converter-lockup.md)).
 
 ### Что покрыто
 
 | | |
 |---|---|
-| **GS8.60.0, программа 19x0: адреса полностью, роли частично** | Образ 256 КБ. Проверено на двух заводских дампах: стоковая калибровка 2.5 (`19C0 KA20`) и калибровка Alpina B3 3.3 (`19D0 620P`). Код программы `0x10000–0x40000` у обоих совпадает байт в байт, поэтому **один XDF подходит обоим**. Калибровки различаются в 2547 байтах. В `catalog/gs8600_19d0.json` и собранном из него XDF 899 записей, 842 таблицы + 57 констант, в том числе все 536 таблиц, которые сканер находит в зоне таблиц. Роли: 76 записей доказаны кодом (адрес инструкции в `proof`), 637 перенесены из XDF v2.1 без перепроверки, 184 только форма, 2 гипотезы. Форма части перенесённых полей записей ещё не выяснена (CHANGELOG, 27.09.2026). |
-| **GS8.60.4, программа 20C0: частично** | Образ 512 КБ, с 27.09.2026: [документ 11](docs/ru/11-gs8604-20c0.md), [документ 12](docs/ru/12-gs8600-vs-gs8604.md) (чем отличается от 19D0), `catalog/gs8604_20c0.json`, `xdf/GS8604_20C0_Full512K.xdf` и английский `xdf/GS8604_20C0_Full512K_EN.xdf` (с 30.09.2026: 1772 записи, 1067 таблиц + 705 констант: 1551 доказаны кодом, 19 по структуре, 201 только форма, 1 гипотеза). `egs_tables.py` и `gs860_crc.py` понимают образ. Доказано кодом: карта образа и три контрольные суммы, 16 матриц точек с единицей и привязкой к программам, верхний уровень блокировки ГДТ, монитор турбины (7232 об/мин), монитор напряжения, константы AGS и кулисы, кадр `0B 03`, а с 30.09.2026 роли полей записей автомата переключения (фазы и давления включаемого и выключаемого элементов, регулятор скольжения, снижение момента, включение привода при смене селектора) с путём до каналов давления и кадра CAN. **Не доказано**: какая матрица у ручного режима (лог заезда противоречит наивному прочтению), роли 180 таблиц остальных корней записей, нижний уровень ГДТ. Адреса, рецепты и RAM 19D0 **к нему не подходят**, и наоборот. |
-| **Не покрыто** | Блок двигателя (MS42 / MS43). По нему смотрите [wiki MS4X](https://www.ms4x.net). |
+| **GS8.60.0, программа 19x0** (256 КБ) | Адреса полностью, роли частично. Проверено на двух заводских дампах, BMW `19C0 KA20` (E39 2.5) и Alpina B3 3.3 `19D0 620P`, код байт в байт одинаковый: **один XDF подходит обоим**. `catalog/gs8600_19d0.json`: 904 записи, 843 таблицы + 61 константа, все таблицы, которые находит сканер; 84 роли доказаны кодом, 636 перенесены из XDF v2.1, 182 только форма, 2 гипотезы. |
+| **GS8.60.4, программа 20C0** (512 КБ) | `catalog/gs8604_20c0.json`: 1779 записей, 1069 таблиц + 710 констант, **1565 ролей доказаны кодом 20C0**, 18 по структуре, 195 только форма, 1 гипотеза. Карта образа и суммы, 16 матриц с ролями, блокировка ГДТ (верхний уровень, 1-я передача, ворота нижнего уровня), AGS и кулиса, прогрев и кикдаун, защиты, поля записей автомата переключения с путём до каналов давления и кадра CAN. XDF на русском и английском. |
+| **Не покрыто** | Другие сборки ПО GS8.60.4 (BMW `15C0` сопоставлен только для сравнения), блок двигателя (смотрите [wiki MS4X](https://www.ms4x.net)). |
 
 ### Быстрый старт
 
 ```bash
-python3 tools/egs_tables.py info  my_dump.bin          # размер, SHA-256, хэш кода, число таблиц, контрольные суммы
-python3 tools/egs_tables.py shift my_dump.bin --turbine    # 16 матриц точек переключения в оборотах турбины
-python3 tools/egs_tables.py dump  my_dump.bin 0xBF9C   # любая таблица по адресу
-python3 tools/apply_recipe.py recipes/wolf4x_v20_track_hard.json my_dump.bin -o build.bin
-python3 tools/gs860_crc.py check build.bin             # три контрольные суммы CRC-16
-python3 tools/egs_tables.py verify-shift build.bin --spark 6656 --cut 6784 --stock my_dump.bin
+python3 tools/egs_tables.py info my_dump.bin               # ПО, хэш кода, метки, три контрольные суммы
+python3 tools/egs_patch.py  show my_dump.bin               # кулиса, прогрев, кикдаун, ГДТ по программам, точки в пол
+python3 tools/egs_patch.py  apply my_dump.bin -o build.bin no-warmup tcc-lock s-no5 --spark 6528
+python3 tools/egs_patch.py  preset sport-daily my_dump.bin -o build.bin --spark 6528 --cut 6720
+python3 tools/egs_tables.py verify-shift build.bin --spark 6528 --cut 6720 --stock my_dump.bin
+python3 tools/gs860_crc.py  check build.bin                # суммы (egs_patch их уже пересчитал)
 ```
 
-`apply_recipe.py` сам пересчитывает контрольную сумму калибровки. После правки образа в TunerPro запустите `gs860_crc.py fix edited.bin fixed.bin`.
+XDF открывается в TunerPro: `xdf/GS8600_19D0_Full256K.xdf` для дампа 256 КБ, `xdf/GS8600_19x0_Partial32K.xdf` для партиала 32 КБ, `xdf/GS8604_20C0_Full512K.xdf` (русский) и `xdf/GS8604_20C0_Full512K_EN.xdf` (английский) для дампа GS8.60.4 на 512 КБ. После правки в TunerPro запустите `gs860_crc.py fix edited.bin fixed.bin`. **Перед любой прошивкой прочитайте [документ 07](docs/ru/07-reading-and-flashing.md).**
 
-XDF открывается в TunerPro: `xdf/GS8600_19D0_Full256K.xdf` для дампа 256 КБ, `xdf/GS8600_19x0_Partial32K.xdf` для партиала 32 КБ, `xdf/GS8604_20C0_Full512K.xdf` (русский) и `xdf/GS8604_20C0_Full512K_EN.xdf` (английский) для дампа GS8.60.4 на 512 КБ (документ 11). Файлы XDF генерируются из `catalog/*.json` скриптом `tools/make_xdf.py` и руками не правятся. **Перед любой прошивкой прочитайте `docs/ru/07-reading-and-flashing.md`.**
+### Патчи
+
+`python3 tools/egs_patch.py list` печатает все. Подробности, адреса и код за каждым: [документ 13](docs/ru/13-patches.md).
+
+| Патч | Что делает | 19x0 | 20C0 |
+|---|---|---|---|
+| `tcc-first` | ГДТ замкнута на 1-й под газом (S и M, по желанию D) | добавляет 52 байта кода, только полная прошивка | только калибровка |
+| `tcc-lock` | ГДТ замкнута с 1600 об/мин турбины во 2-5-й при любой педали | группы 6-9 | группы 5, 8, 9, 10 |
+| `no-warmup` | без режима прогрева после холодного пуска | `0x8B48` = 0 | `0x70BAC` = 0 |
+| `s-no5` | S никогда не включает 5-ю, AGS держит уровень 4 | k11, k15 | k11, k15 |
+| `shift-wot` | повышения в пол сразу под ограничитель вашего мотора | k11, k15 (+ k14, k6) | то же, с вычетом прибавки при замкнутой ГДТ |
+| `no-kickdown` | кикдаун выключен (или только в M) | `0x8D1A`, `0x8246` | `0x70D6A`, `0x70232` |
+| `manual-hold` | M держит передачу на отсечке, повышает только на накате | k10, k8, монитор | k10, k8 |
+| `gate` | левая кулиса: сначала S (BMW) или сразу M (Alpina) | `0x8975` | `0x70966` |
+
+### Пресеты
+
+| Пресет | Характер | 19x0 | 20C0 |
+|---|---|---|---|
+| `sport-daily` | D заводской; S без 5-й, повышения в пол у ограничителя, ГДТ замкнута с 1600; M держит передачу | рецепт + `preset` | рецепт + `preset` |
+| `street-hard` | sport-daily + ГДТ на 1-й, без кикдауна, без прогрева | `preset` (правка кода) | рецепт + `preset` |
+| `track-hard` | street-hard + то же для D | `preset` (правка кода) | рецепт + `preset` |
+
+Собрать пресет под свой мотор: `egs_patch.py preset ИМЯ dump.bin -o out.bin --spark ОБ/МИН --cut ОБ/МИН`. Рецепты в `recipes/` собраны под эталонные моторы (M52TUB25 и M54B30 с заводскими ограничителями). Целиком ни один пресет на машине пока не проверен, их части ездят на референсной E39 (документ 14 §5). Прежние пресеты v18-v20 лежат в `recipes/` для истории и не рекомендуются (документ 08).
 
 ### Инструменты
 
@@ -200,66 +234,53 @@ Python 3, только стандартная библиотека. Каждый
 
 | Скрипт | Команды | Что делает |
 |---|---|---|
-| `tools/egs_tables.py` | `info`, `scan`, `dump`, `cell`, `shift`, `programs`, `diff`, `ids`, `verify-shift` | сканер и распечатка таблиц для образов 19x0 на 256 КБ и 32 КБ и образов 20C0 на 512 КБ (раскладка выбирается по размеру файла) |
+| `tools/egs_patch.py` | `list`, `show`, `apply`, `preset`, `recipe` | патчи и пресеты документов 13 и 14 для образов 19x0 на 256 КБ и 20C0 на 512 КБ |
+| `tools/egs_tables.py` | `info`, `scan`, `dump`, `cell`, `shift`, `programs`, `diff`, `ids`, `verify-shift` | сканер и распечатка таблиц; `verify-shift` проверяет точки под ограничитель мотора по ролям матриц из кода |
 | `tools/gs860_crc.py` | `check`, `fix` | три контрольные суммы CRC-16: проверить или записать новый файл с пересчитанными суммами |
-| `tools/apply_recipe.py` | `recipe.json stock.bin -o out.bin [--force] [--dry-run]` | применяет рецепт к вашему дампу 19x0 на 256 КБ, пересчитывает сумму калибровки |
-| `tools/make_recipe.py` | `stock.bin tuned.bin -o recipe.json [-a annotations.json]` | собирает рецепт из двух образов 19x0 на 256 КБ |
+| `tools/apply_recipe.py` | `recipe.json stock.bin -o out.bin` | применяет рецепт (JSON-diff) к вашему дампу на 256 или 512 КБ, пишет только окно калибровки |
+| `tools/make_recipe.py` | `stock.bin tuned.bin -o recipe.json` | собирает рецепт из двух образов |
 | `tools/make_xdf.py` | `check`, `build`, `import` | проверяет каталог и собирает из него XDF |
 
 Как пересобрать XDF и запустить тесты: [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ### Документация
 
-По одной строке на документ: [docs/ru/README.md](docs/ru/README.md).
-
 | | |
 |---|---|
 | [01 · Устройство прошивки](docs/ru/01-firmware-layout.md) | карта памяти, формат таблиц, 536 таблиц, каталог указателей, две ветки калибровки, 16 программ, диспетчер DS2 |
-| [02 · Точки переключения](docs/ru/02-shift-points.md) | 16 матриц, строки педали, единица (обороты выходного вала / 32), как проверить точку под ограничитель своего мотора |
-| [03 · Блокировка гидротрансформатора](docs/ru/03-torque-converter-lockup.md) | настоящая блокировка (запрос 0/1/2, пороги `0x993A`, автомат состояний 0-8), AGS (прежнее прочтение «лесенка из 4 ступеней»), миф о «температурном окне», где на самом деле температура ATF |
-| [04 · Исполнение переключения и гидравлика](docs/ru/04-shift-execution-hydraulics.md) | автомат переключения: наборы записей, типы переходов, фазы, регулятор времени скольжения, давления сцеплений, семейства таблиц, сток против Alpina, и почему слепое копирование данных Alpina убивает переключение |
-| [05 · Защиты](docs/ru/05-protections.md) | функция `0x265F4` это монитор напряжения бортсети (и как была опровергнута трактовка «турбина 7000»), термодерейт, аварийный режим |
-| [06 · Логирование по DS2](docs/ru/06-logging-ds2.md) | 9600 бод, чтение RAM, байты статусного кадра, адреса, которые стоит писать для сравнения «до/после» |
-| [07 · Чтение и прошивка](docs/ru/07-reading-and-flashing.md) | полный 256K против партиала 32K, порядок действий, сброс адаптаций, что содержит дамп, три контрольные суммы |
-| [08 · Рецепты и пресеты](docs/ru/08-recipes-and-presets.md) | формат рецепта, обоснование каждой правки пресета таблица за таблицей, что пресеты меняют на деле (§6) |
+| [02 · Точки переключения](docs/ru/02-shift-points.md) | 16 матриц, их единица (обороты выходного вала / 32), как проверить точку под ограничитель мотора |
+| [03 · Блокировка гидротрансформатора](docs/ru/03-torque-converter-lockup.md) | настоящая блокировка (запрос 0/1/2, пороги, автомат муфты), AGS, где на самом деле температуры |
+| [04 · Исполнение переключения и гидравлика](docs/ru/04-shift-execution-hydraulics.md) | наборы записей, фазы, регулятор времени скольжения, давления сцеплений, сток против Alpina |
+| [05 · Защиты](docs/ru/05-protections.md) | монитор напряжения `0x265F4`, программа прогрева (не термодерейт), аварийный режим, монитор турбины `0x26C84` |
+| [06 · Логирование по DS2](docs/ru/06-logging-ds2.md) | 9600 бод, чтение RAM, байты статусного кадра, адреса, которые стоит писать |
+| [07 · Чтение и прошивка](docs/ru/07-reading-and-flashing.md) | полный образ против партиала, порядок действий, сброс адаптаций, три суммы |
+| [08 · Рецепты и пресеты](docs/ru/08-recipes-and-presets.md) | формат рецепта и прежние пресеты v18-v20, что они меняют на деле |
 | [09 · Что не трогать](docs/ru/09-what-not-to-touch.md) | запреты, у каждого своя причина |
-| [10 · Методика](docs/ru/10-methodology.md) | как делался реверс, что считается доказанным, опровергнутые трактовки, открытые вопросы |
-| [11 · GS8.60.4 (20C0)](docs/ru/11-gs8604-20c0.md) | образ 512 КБ: карта, суммы, каталог из 43 слотов, 16 матриц и их единица, блокировка ГДТ с двумя проверками, AGS и кулиса, защиты и блок напряжений (`0x70F40` это 7.0 В, а не порог турбины), наборы записей, кадр `0B 03` из 33 байт, что доказано и что нет |
-| [12 · GS8.60.0 и GS8.60.4](docs/ru/12-gs8600-vs-gs8604.md) | чем отличаются 19D0 и 20C0, рядом с адресами обоих образов: образ и суммы, каталог, матрицы и передачи, блокировка, AGS и кулиса, защиты, наборы записей, DS2 и CAN |
+| [10 · Методика](docs/ru/10-methodology.md) | как делался реверс, что считается доказанным, опровергнутые трактовки |
+| [11 · GS8.60.4 (20C0)](docs/ru/11-gs8604-20c0.md) | образ 512 КБ: карта, суммы, матрицы и роли, блокировка, AGS, прогрев, кикдаун, корни записей, кадр `0B 03` |
+| [12 · GS8.60.0 и GS8.60.4](docs/ru/12-gs8600-vs-gs8604.md) | две программы рядом и сток против стока: почему GS8.60.4 кажется быстрее (§10) |
+| [13 · Патчи](docs/ru/13-patches.md) | ГДТ на 1-й, ранняя блокировка, прогрев, S без 5-й, обороты, кикдаун, ручной режим, кулиса |
+| [14 · Пресеты](docs/ru/14-presets.md) | sport-daily, street-hard, track-hard для обоих блоков |
 | [Глоссарий](docs/ru/glossary.md) | термины |
 
 Английские версии всех документов лежат в `docs/en/`, структура и факты те же.
-
-### Пресеты
-
-Пресет здесь это **рецепт**, то есть JSON-diff относительно стоковой калибровки, а не файл прошивки. `apply_recipe.py` применяет его к *вашему* дампу и отказывается работать, если ПО другое, если хоть одна ось таблицы отличается или если не совпали старые значения.
-
-| Пресет | Характер |
-|---|---|
-| `wolf4x_v18_sport_daily` | осторожный: равномерная поправка поверх стока |
-| `wolf4x_v19_street_hard` | уровень заводской Alpina B3 там, где совпадают оси |
-| `wolf4x_v20_track_hard` | короткое время скольжения, поднятый потолок давления и правки AGS, задуманные как ранняя блокировка в Sport/Manual (документ 08 §6) |
-
-Все три собраны под мотор 2.5 M52TU с искрой примерно с 6656 и топливной отсечкой 6784. Точки переключения пересчитаны 23.09.2026, когда доказано, что единица матриц это обороты выходного вала / 32, а не км/ч (CHANGELOG). Точки зависят только от ограничителя мотора, не от главной пары и колёс: проверьте их под свой командой `egs_tables.py verify-shift` (`docs/ru/08` §4).
-
-**Статус.** В виде от 23.09.2026 пресеты на машине не проверены. Их группы «ГДТ» меняют AGS, адаптивный выбор программы, а не блокировку гидротрансформатора, а ручные пороги вверх небезопасны при замкнутой ГДТ (документ 08 §6). Пресеты будут пересмотрены отдельно. Эта пометка есть в каждом файле рецепта, в поле `status`.
 
 ### Структура репозитория
 
 ```
 docs/en, docs/ru     документация, одинаковый набор файлов, оглавление в README.md каждой папки
-catalog/             источник XDF: gs8600_19d0.json (19x0, 256K) и gs8604_20c0.json (20C0, 512K), у каждой записи уровень уверенности
+catalog/             источник XDF: gs8600_19d0.json (19x0, 256K) и gs8604_20c0.json (20C0, 512K)
 xdf/                 определения TunerPro, собранные из каталогов: 19D0 полный 256K, 19x0 партиал 32K, 20C0 полный 512K (RU и EN)
-tools/               egs_tables.py, make_recipe.py, apply_recipe.py, gs860_crc.py, make_xdf.py (Python 3, без зависимостей)
-recipes/             пресеты как JSON-diff, с аннотациями (только 19x0)
-tests/               самопроверка: python3 tests/test_tools.py (GS860_STOCK=stock.bin и GS8604_STOCK=stock20c0.bin для полного набора)
+tools/               egs_patch.py, egs_tables.py, apply_recipe.py, make_recipe.py, gs860_crc.py, make_xdf.py
+recipes/             пресеты как JSON-diff: gs8600_19x0_*, gs8604_20c0_* (и прежние wolf4x_v18-v20)
+tests/               python3 tests/test_tools.py (GS860_STOCK=stock19x0.bin GS8604_STOCK=stock20c0.bin для полного набора)
 assets/              логотип
 .github/             шаблоны issue и pull request, ссылка на поддержку
 ```
 
 ### Ответственность
 
-Это любительский реверс блока, отвечающего за безопасность. Он может быть неполным или ошибочным: несколько прежних трактовок **оказались неверными** и перечислены как опровергнутые в `docs/ru/10-methodology.md`. Неудачная калибровка может повредить коробку, отправить блок в аварийный режим или оставить машину без хода. Вы прошиваете на свой риск, только сохранив собственный полный дамп, и сами отвечаете за соблюдение законов своей страны.
+Это любительский реверс блока, отвечающего за безопасность. Он может быть неполным или ошибочным: несколько прежних трактовок **оказались неверными** и перечислены как опровергнутые в [документе 10](docs/ru/10-methodology.md) и в поправках внутри документов. Неудачная калибровка может повредить коробку, отправить блок в аварийный режим или оставить машину без хода. Вы прошиваете на свой риск, только сохранив собственный полный дамп, и сами отвечаете за соблюдение законов своей страны.
 
 ### Лицензия
 
@@ -267,10 +288,10 @@ assets/              логотип
 
 ### Благодарности
 
-[Wiki MS4X](https://www.ms4x.net): источник по моторной части и заводским эталонным файлам. [TunerPro RT](https://www.tunerpro.net): редактор калибровок и формат XDF. И все, кто задавал неудобные вопросы: споры про «114 км/ч» и «минимальную температуру» заставили дочитать модуль блокировки до конца.
+[Wiki MS4X](https://www.ms4x.net): источник по моторной части и заводским эталонным файлам. [TunerPro RT](https://www.tunerpro.net): редактор калибровок и формат XDF. Все, кто задавал неудобные вопросы и делился дампами: они заставили дочитать до конца модуль блокировки, кулису и программу прогрева.
 
 Часть дизассемблирования, перекрёстных проверок и текста сделана с помощью ИИ-инструментов. Каждое число в этих документах проверено по бинарникам.
 
 ### Поддержать
 
-Это хобби-исследование без бюджета: дампы читаются руками, код разбирается инструкция за инструкцией, каждая находка проверяется на живой машине, включая ошибки, которые тоже документируются. Всё здесь остаётся бесплатным и открытым. Если это сэкономило вам время, деньги или коробку: **[boosty.to/therudywolf](https://boosty.to/therudywolf)**.
+Это хобби-исследование без бюджета: дампы читаются руками, код разбирается инструкция за инструкцией, каждая находка проверяется на живой машине, включая ошибки, которые тоже документируются. Всё здесь остаётся бесплатным и открытым. Если это сэкономило вам время, деньги или коробку, поддержите на **[Boosty: boosty.to/therudywolf](https://boosty.to/therudywolf)**.

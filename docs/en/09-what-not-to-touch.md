@@ -7,10 +7,10 @@ The list of prohibitions. Every item has cost someone an undriveable box, a limp
 | What | Why |
 |---|---|
 | `0x0000–0x8000` | boot loader, identification, DS2 driver. Without it the ECU cannot be re-flashed |
-| `0x10000–0x40000` | code and record descriptors. Any edit = a code patch; this repository contains no such patches and publishes no hooks |
+| `0x10000–0x40000` | code and record descriptors. Any edit = a code patch. The only code patch in this repository: `tcc-first` on 19x0 (52 bytes in the free area `0x3E3A0`, table `0x3E380`, call from `0x290A0`, byte for byte as the WOLF4X v41-v44 builds, doc 13 §1); after it flash the full image only. No other hooks |
 | tail `0x0FFCE–0x10000` | calibration label (leave it) and the calibration checksum at `0xFFFE`: not edited by hand, recomputed by `apply_recipe.py` or `gs860_crc.py fix` (doc 07 §6) |
 
-`apply_recipe.py` physically cannot write outside `0x8000–0x10000`.
+`apply_recipe.py` physically cannot write outside the calibration window (19x0 `0x8000–0x10000`, 20C0 `0x70000–0x80000`). `egs_patch.py` writes the calibration and, only for `tcc-first` on 19x0, the declared 52 bytes of code, and checks every other byte (doc 13 §0).
 
 ## 2. Table axes — never
 

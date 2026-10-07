@@ -3856,7 +3856,7 @@
   {
    "kind": "constant",
    "title": "Запрос повышения по оборотам мотора: верхний предел [0xFFFF9066] (сырая ATF), завод 40 (0x7011B)",
-   "description": "0x105EA cmp.b $7011b: 0x105DE работает только при [0xFFFF9066] не больше 40. [0xFFFF9066] = младший байт [0xFFFF8C8C] из таблицы датчика ATF 0x71B66 (по 19D0 сырая температура со смещением 50, 40 ≈ -10 °C).",
+   "description": "0x105EA cmp.b $7011b: 0x105DE работает только при [0xFFFF9066] не больше 40. [0xFFFF9066] = младший байт [0xFFFF8C8C] из таблицы датчика ATF 0x71B66 (перевод сырой ATF в °C кодом не установлен, документ 03 §6).",
    "categories": [
     0
    ],
@@ -3874,7 +3874,7 @@
    },
    "uid": 8258,
    "title_en": "Upshift request by engine speed: upper limit of [0xFFFF9066] (raw ATF), factory 40 (0x7011B)",
-   "description_en": "0x105DE works only with raw ATF not above 40 (about -10 °C per 19D0)."
+   "description_en": "0x105DE works only with raw ATF not above 40 (the °C scale of raw ATF is not established by code, document 03 section 6)."
   },
   {
    "kind": "constant",
@@ -4652,7 +4652,7 @@
   {
    "kind": "table",
    "title": "Датчик ATF: мВ → сырая температура (0x71B66, слот 41)",
-   "description": "Слот 41 каталога (0x71C66), читает 0x1C5AC-0x1C5C2 → [0xFFFF8C8C], младший байт → [0xFFFF9066] (0x1C610). Совпадает с 19D0 0x9A82 (X 1014…2673 мВ, значения 0…215, по 19D0 смещение 50).",
+   "description": "Слот 41 каталога (0x71C66), читает 0x1C5AC-0x1C5C2 → [0xFFFF8C8C], младший байт → [0xFFFF9066] (0x1C610). Совпадает с 19D0 0x9A82 (X 1014…2673 мВ, значения 0…215). В кадр 0B 03 идёт байтом 6 как [0xFFFF8C8C] + 15. Перевод сырой ATF в °C кодом не установлен (документ 03 §6).",
    "categories": [
     11
    ],
@@ -4694,15 +4694,15 @@
     "signed": false,
     "lsb_first": false,
     "math": "X",
-    "units": "сырое (°C + 50 по 19D0)",
+    "units": "сырое ATF",
     "decimals": 0,
     "major": 0,
     "minor": 0,
-    "units_en": "raw (°C + 50 per 19D0)"
+    "units_en": "raw ATF"
    },
    "uid": 8276,
    "title_en": "ATF sensor: mV -> raw temperature (0x71B66, slot 41)",
-   "description_en": "Raw ATF = °C + 50 per 19D0."
+   "description_en": "Equal to 19D0 0x9A82. Frame 0B 03 byte 6 = [0xFFFF8C8C] + 15. The conversion of raw ATF to °C is not established by code (document 03 section 6)."
   },
   {
    "kind": "constant",

@@ -2665,7 +2665,7 @@
   </XDFTABLE>
   <XDFCONSTANT uniqueid="0x2042" flags="0x0">
     <title>Запрос повышения по оборотам мотора: верхний предел [0xFFFF9066] (сырая ATF), завод 40 (0x7011B)</title>
-    <description>0x105EA cmp.b $7011b: 0x105DE работает только при [0xFFFF9066] не больше 40. [0xFFFF9066] = младший байт [0xFFFF8C8C] из таблицы датчика ATF 0x71B66 (по 19D0 сырая температура со смещением 50, 40 ≈ -10 °C).</description>
+    <description>0x105EA cmp.b $7011b: 0x105DE работает только при [0xFFFF9066] не больше 40. [0xFFFF9066] = младший байт [0xFFFF8C8C] из таблицы датчика ATF 0x71B66 (перевод сырой ATF в °C кодом не установлен, документ 03 §6).</description>
     <CATEGORYMEM index="0" category="1" />
     <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x7011B" mmedelementsizebits="8" mmedmajorstridebits="0" mmedminorstridebits="0" />
     <units>сырое ATF</units>
@@ -3199,7 +3199,7 @@
   </XDFTABLE>
   <XDFTABLE uniqueid="0x2054" flags="0x0">
     <title>Датчик ATF: мВ → сырая температура (0x71B66, слот 41)</title>
-    <description>Слот 41 каталога (0x71C66), читает 0x1C5AC-0x1C5C2 → [0xFFFF8C8C], младший байт → [0xFFFF9066] (0x1C610). Совпадает с 19D0 0x9A82 (X 1014…2673 мВ, значения 0…215, по 19D0 смещение 50).</description>
+    <description>Слот 41 каталога (0x71C66), читает 0x1C5AC-0x1C5C2 → [0xFFFF8C8C], младший байт → [0xFFFF9066] (0x1C610). Совпадает с 19D0 0x9A82 (X 1014…2673 мВ, значения 0…215). В кадр 0B 03 идёт байтом 6 как [0xFFFF8C8C] + 15. Перевод сырой ATF в °C кодом не установлен (документ 03 §6).</description>
     <CATEGORYMEM index="0" category="12" />
     <XDFAXIS id="x" uniqueid="0x0">
       <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x71B68" mmedelementsizebits="16" mmedcolcount="9" mmedmajorstridebits="0" mmedminorstridebits="0" />
@@ -3227,7 +3227,7 @@
     <XDFAXIS id="z">
       <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x71B7A" mmedelementsizebits="16" mmedrowcount="1" mmedcolcount="9" mmedmajorstridebits="0" mmedminorstridebits="0" />
       <decimalpl>0</decimalpl>
-      <units>сырое (°C + 50 по 19D0)</units>
+      <units>сырое ATF</units>
       <outputtype>1</outputtype>
       <MATH equation="X">
         <VAR id="X" />

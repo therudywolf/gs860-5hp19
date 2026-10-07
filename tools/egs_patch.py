@@ -460,7 +460,8 @@ def p_tcc_first(img, prm, ctx):
     rpm = turbine rpm of the lock request on light pedal (default 1760 S/M, rpm_d 2110 D), later with more pedal;
     coast=0 (default): no lock with the pedal released, so braking in 1st opens the converter at once.
     20C0: calibration only (the program allows 1st gear: mask 0x7E, group 11 locks at 230+ pedal from the factory).
-    19x0: the mask excludes 1st and the group index of 1st points into the next program, so 52 bytes of code at
+    19x0: the mask excludes 1st, and the group byte [0x897E + 4 * program + gear - 2] (0x29088-0x290A8) of gear 1 is
+    the 5th-gear byte of the previous program (code 6: the 2nd-gear byte of the next one), so 52 bytes of code at
     0x3E3A0 and a group table per program at 0x3E380 are added (the WOLF4X v41 hook): full flash only. Docs 13 §1."""
     modes = parse_modes(prm.get("modes", "S+M"))
     rpm = int(prm.get("rpm", 1760)); rpm_d = int(prm.get("rpm_d", rpm + 350))

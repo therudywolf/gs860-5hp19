@@ -2352,8 +2352,8 @@
     </XDFAXIS>
   </XDFTABLE>
   <XDFTABLE uniqueid="0x1037" flags="0x0">
-    <title>Датчик ATF: таблица пересчёта (0x9A82)</title>
-    <description>Таблица датчика температуры ATF (смещение 50). Порог около 120 °C программ PC и PD оценён по ней, это оценка.</description>
+    <title>Датчик ATF: мВ → сырая ATF (0x9A82)</title>
+    <description>Слот 0x9B94, 0x20EEE-0x20F02: мВ [0xFFFF9080] (АЦП x 5000 / 1024) → [0xFFFF8D1A], младший байт → сырая ATF модуля переключения [0xFFFF90D0] (0x20F50). В кадр 0B 03 идёт байтом 6 как [0xFFFF8D1A] + 15 (0x19B88-0x19B92). Перевод сырой ATF в °C кодом не установлен (документ 03 §6); прежняя пометка «смещение 50» и оценка «около 120 °C» для программ перегрева PC / PD (сырое 170) не доказаны.</description>
     <CATEGORYMEM index="0" category="7" />
     <XDFAXIS id="x" uniqueid="0x0">
       <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x1A84" mmedelementsizebits="16" mmedcolcount="9" mmedmajorstridebits="0" mmedminorstridebits="0" />
@@ -2381,7 +2381,7 @@
     <XDFAXIS id="z">
       <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x1A96" mmedelementsizebits="16" mmedrowcount="1" mmedcolcount="9" mmedmajorstridebits="0" mmedminorstridebits="0" />
       <decimalpl>1</decimalpl>
-      <units>сырое</units>
+      <units>сырое ATF</units>
       <outputtype>1</outputtype>
       <MATH equation="X">
         <VAR id="X" />

@@ -2665,7 +2665,7 @@
   </XDFTABLE>
   <XDFCONSTANT uniqueid="0x2042" flags="0x0">
     <title>Upshift request by engine speed: upper limit of [0xFFFF9066] (raw ATF), factory 40 (0x7011B)</title>
-    <description>0x105DE works only with raw ATF not above 40 (about -10 °C per 19D0).</description>
+    <description>0x105DE works only with raw ATF not above 40 (the °C scale of raw ATF is not established by code, document 03 section 6).</description>
     <CATEGORYMEM index="0" category="1" />
     <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x7011B" mmedelementsizebits="8" mmedmajorstridebits="0" mmedminorstridebits="0" />
     <units>raw ATF</units>
@@ -3199,7 +3199,7 @@
   </XDFTABLE>
   <XDFTABLE uniqueid="0x2054" flags="0x0">
     <title>ATF sensor: mV -&gt; raw temperature (0x71B66, slot 41)</title>
-    <description>Raw ATF = °C + 50 per 19D0.</description>
+    <description>Equal to 19D0 0x9A82. Frame 0B 03 byte 6 = [0xFFFF8C8C] + 15. The conversion of raw ATF to °C is not established by code (document 03 section 6).</description>
     <CATEGORYMEM index="0" category="12" />
     <XDFAXIS id="x" uniqueid="0x0">
       <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x71B68" mmedelementsizebits="16" mmedcolcount="9" mmedmajorstridebits="0" mmedminorstridebits="0" />
@@ -3227,7 +3227,7 @@
     <XDFAXIS id="z">
       <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x71B7A" mmedelementsizebits="16" mmedrowcount="1" mmedcolcount="9" mmedmajorstridebits="0" mmedminorstridebits="0" />
       <decimalpl>0</decimalpl>
-      <units>raw (°C + 50 per 19D0)</units>
+      <units>raw ATF</units>
       <outputtype>1</outputtype>
       <MATH equation="X">
         <VAR id="X" />
