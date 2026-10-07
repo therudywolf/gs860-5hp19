@@ -2,14 +2,14 @@
  "schema": "gs860-recipe/2",
  "name": "WOLF4X GS8.60.4 20C0 street-hard",
  "author": "rudywolf (WOLF4X)",
- "date": "2026-10-06",
+ "date": "2026-10-07",
  "description": {
   "en": "sport-daily plus the converter locked in 1st gear in S and M under throttle, no warm-up program, no kickdown at all. Built by tools/egs_patch.py from the patches of docs 13 on the calibration B223K_0520C06440, for M54B30 with the factory MS43 limiter (soft 6528-6624, hard 6624-6720 by gear) (spark 6528, hard cut 6720 rpm). Chain: gate:mode=S s-no5 shift-wot:modes=S tcc-lock:modes=S+M tcc-first:modes=S+M manual-hold:monitor=auto no-kickdown no-warmup. For another engine rebuild it: egs_patch.py preset street-hard your.bin -o out.bin --spark RPM --cut RPM.",
   "ru": "sport-daily плюс ГДТ на 1-й в S и M под газом, без режима прогрева, без кикдауна вообще. Собран tools/egs_patch.py из патчей документа 13 на калибровке B223K_0520C06440, под эталонный мотор платформы (искра 6528, отсечка 6720 об/мин). Цепочка: gate:mode=S s-no5 shift-wot:modes=S tcc-lock:modes=S+M tcc-first:modes=S+M manual-hold:monitor=auto no-kickdown no-warmup. Под другой мотор пересобрать: egs_patch.py preset street-hard your.bin -o out.bin --spark RPM --cut RPM."
  },
  "status": {
-  "en": "Not road-tested on this platform as a whole preset. Every patch in it is proven by code (docs 13); the 19x0 counterparts of tcc-lock, tcc-first, s-no5 and manual-hold ran on the reference car (WOLF4X v24-v42). Check with a log before trusting it.",
-  "ru": "Целиком на этой платформе на машине не проверен. Каждый патч доказан кодом (документ 13); аналоги tcc-lock, tcc-first, s-no5 и manual-hold на 19x0 ездили на референсной машине (WOLF4X v24-v42). Проверить логом, прежде чем доверять."
+  "en": "Not road-tested on this platform as a whole preset. Every patch in it is proven by code (docs 13); the 19x0 counterparts of tcc-lock, tcc-first, s-no5 and manual-hold are flashed on the reference car (WOLF4X v24-v44), the converter lock-up in 1st is not confirmed by a log yet. Check with a log before trusting it.",
+  "ru": "Целиком на этой платформе на машине не проверен. Каждый патч доказан кодом (документ 13); аналоги tcc-lock, tcc-first, s-no5 и manual-hold на 19x0 стоят на референсной машине (WOLF4X v24-v44), замыкание ГДТ на 1-й логом пока не подтверждено. Проверить логом, прежде чем доверять."
  },
  "base": {
   "software": "Bosch GS8.60.4 (ZF 5HP19), 512K, program 20C0",

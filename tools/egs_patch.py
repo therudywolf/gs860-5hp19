@@ -807,11 +807,13 @@ def cmd_recipe(a):
                   "your.bin -o out.bin --spark RPM --cut RPM."},
         "status": {
             "en": "Not road-tested on this platform as a whole preset. Every patch in it is proven by code (docs 13); "
-                  "the 19x0 counterparts of tcc-lock, tcc-first, s-no5 and manual-hold ran on the reference car "
-                  "(WOLF4X v24-v42). Check with a log before trusting it.",
+                  "the 19x0 counterparts of tcc-lock, tcc-first, s-no5 and manual-hold are flashed on the reference car "
+                  "(WOLF4X v24-v44), the converter lock-up in 1st is not confirmed by a log yet. Check with a log before "
+                  "trusting it.",
             "ru": "Целиком на этой платформе на машине не проверен. Каждый патч доказан кодом (документ 13); "
-                  "аналоги tcc-lock, tcc-first, s-no5 и manual-hold на 19x0 ездили на референсной машине "
-                  "(WOLF4X v24-v42). Проверить логом, прежде чем доверять."},
+                  "аналоги tcc-lock, tcc-first, s-no5 и manual-hold на 19x0 стоят на референсной машине "
+                  "(WOLF4X v24-v44), замыкание ГДТ на 1-й логом пока не подтверждено. Проверить логом, прежде чем "
+                  "доверять."},
     }
     ann = {"meta": meta, "groups": groups, "by_addr": by_addr, "ranges": ranges}
     try:

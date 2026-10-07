@@ -18,7 +18,7 @@ Built by `tools/egs_patch.py recipe` from the patches of document 13 for the ref
 | `gs8604_20c0_street_hard.json` | the same | the same | full `73039a98…`, 332 bytes |
 | `gs8604_20c0_track_hard.json` | the same | the same | full `166de54b…`, 382 bytes |
 
-`street-hard` and `track-hard` for 19x0 change program code (`tcc-first`, `docs/en/13` §1) and therefore exist only as `egs_patch.py preset`, not as recipes. Status: not road-tested as whole presets; the 19x0 counterparts of their patches run on the reference E39 (`docs/en/14` §5).
+`street-hard` and `track-hard` for 19x0 change program code (`tcc-first`, `docs/en/13` §1) and therefore exist only as `egs_patch.py preset`, not as recipes. Status: not road-tested as whole presets; the 19x0 counterparts of their patches are flashed on the reference E39, the converter lock-up in 1st is not confirmed by a log yet (`docs/en/14` §5).
 
 ```
 python3 tools/apply_recipe.py recipes/gs8604_20c0_sport_daily.json my_20c0.bin -o build.bin
@@ -98,7 +98,7 @@ python3 tools/make_recipe.py stock.bin tuned.bin -o recipes/my_recipe.json -a my
 | `gs8604_20c0_street_hard.json` | та же | тот же | full `73039a98…`, 332 байта |
 | `gs8604_20c0_track_hard.json` | та же | тот же | full `166de54b…`, 382 байта |
 
-`street-hard` и `track-hard` для 19x0 меняют код программы (`tcc-first`, `docs/ru/13` §1), поэтому есть только как `egs_patch.py preset`, рецептами их нет. Статус: целиком на машине не проверены; аналоги их патчей на 19x0 ездят на референсной E39 (`docs/ru/14` §5).
+`street-hard` и `track-hard` для 19x0 меняют код программы (`tcc-first`, `docs/ru/13` §1), поэтому есть только как `egs_patch.py preset`, рецептами их нет. Статус: целиком на машине не проверены; аналоги их патчей на 19x0 стоят на референсной E39, замыкание ГДТ на 1-й логом пока не подтверждено (`docs/ru/14` §5).
 
 ```
 python3 tools/apply_recipe.py recipes/gs8604_20c0_sport_daily.json my_20c0.bin -o build.bin

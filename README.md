@@ -94,7 +94,7 @@ The XDF files open in TunerPro: `xdf/GS8600_19D0_Full256K.xdf` for a 256 KB dump
 | `street-hard` | sport-daily + converter in 1st, no kick-down, no warm-up | `preset` (code change) | recipe + `preset` |
 | `track-hard` | street-hard + the same for D | `preset` (code change) | recipe + `preset` |
 
-Build a preset for your own engine: `egs_patch.py preset NAME dump.bin -o out.bin --spark RPM --cut RPM`. The recipes in `recipes/` are built for the reference engines (M52TUB25 and M54B30 with factory limiters). None of the presets is road-tested as a whole yet; their parts ran on the reference E39 (document 14 §5). The older v18-v20 presets stay in `recipes/` for the record and are not recommended (document 08).
+Build a preset for your own engine: `egs_patch.py preset NAME dump.bin -o out.bin --spark RPM --cut RPM`. The recipes in `recipes/` are built for the reference engines (M52TUB25 and M54B30 with factory limiters). None of the presets is road-tested as a whole yet; their 19x0 counterparts are flashed on the reference E39, the converter lock-up in 1st is not confirmed by a log yet (document 14 §5). The older v18-v20 presets stay in `recipes/` for the record and are not recommended (document 08).
 
 ### Tools
 
@@ -226,7 +226,7 @@ XDF открывается в TunerPro: `xdf/GS8600_19D0_Full256K.xdf` для д
 | `street-hard` | sport-daily + ГДТ на 1-й, без кикдауна, без прогрева | `preset` (правка кода) | рецепт + `preset` |
 | `track-hard` | street-hard + то же для D | `preset` (правка кода) | рецепт + `preset` |
 
-Собрать пресет под свой мотор: `egs_patch.py preset ИМЯ dump.bin -o out.bin --spark ОБ/МИН --cut ОБ/МИН`. Рецепты в `recipes/` собраны под эталонные моторы (M52TUB25 и M54B30 с заводскими ограничителями). Целиком ни один пресет на машине пока не проверен, их части ездят на референсной E39 (документ 14 §5). Прежние пресеты v18-v20 лежат в `recipes/` для истории и не рекомендуются (документ 08).
+Собрать пресет под свой мотор: `egs_patch.py preset ИМЯ dump.bin -o out.bin --spark ОБ/МИН --cut ОБ/МИН`. Рецепты в `recipes/` собраны под эталонные моторы (M52TUB25 и M54B30 с заводскими ограничителями). Целиком ни один пресет на машине пока не проверен; их аналоги для 19x0 стоят на референсной E39, замыкание ГДТ на 1-й логом пока не подтверждено (документ 14 §5). Прежние пресеты v18-v20 лежат в `recipes/` для истории и не рекомендуются (документ 08).
 
 ### Инструменты
 

@@ -191,4 +191,4 @@ The program byte of the left gate before the first +/- tap: 19x0 `0x8975` (`0x23
 - They do not touch the hydraulics, table axes, the loader or the identification. The list of don'ts is document 09.
 - They do not raise the turbine monitor above 7232 and do not touch the voltage monitor (`0x8EE8…`, `0x70F32…`: those are millivolts, document 05 §1).
 - They do not work on other software (15C0 and the rest): other addresses, the tool refuses.
-- The presets as a whole are not road-tested (document 14). On 19x0 the counterparts of `tcc-lock`, `tcc-first`, `s-no5` and `manual-hold` ran on the reference E39 (WOLF4X builds v24-v44). Check with a log (document 06).
+- The presets as a whole are not road-tested (document 14). On 19x0 the counterparts of `tcc-lock`, `tcc-first`, `s-no5` and `manual-hold` are flashed on the reference E39 (WOLF4X builds v24-v44), the converter lock-up in 1st is not confirmed by a log yet. Check with a log (document 06).

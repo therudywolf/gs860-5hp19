@@ -65,7 +65,7 @@ Flash the full 512 KB image on 20C0. On 19x0 sport-daily may go as the 32K parti
 
 ## 5. Status
 
-No preset as a whole has been road-tested. Every patch in them is proven by code (document 13). On 19x0 the counterparts of `tcc-lock`, `tcc-first`, `s-no5` and `manual-hold` run on the reference E39 (WOLF4X builds v24-v44, `tcc-first` byte for byte as v41-v44). No 20C0 build has been tested on a car. Before trusting one, take a log (document 06): program, gear, turbine and engine rpm, TCC clutch state.
+No preset as a whole has been road-tested. Every patch in them is proven by code (document 13). On 19x0 the counterparts of `tcc-lock`, `tcc-first`, `s-no5` and `manual-hold` are flashed on the reference E39 (WOLF4X builds v24-v44, `tcc-first` byte for byte as v41-v44), but the converter lock-up in 1st is not confirmed by a log yet, only by code analysis and emulation. No 20C0 build has been tested on a car. Before trusting one, take a log (document 06): program, gear, turbine and engine rpm, TCC clutch state.
 
 ## 6. What the presets are not
 
