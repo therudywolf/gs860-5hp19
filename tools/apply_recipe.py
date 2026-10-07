@@ -1,22 +1,23 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-apply_recipe.py - apply a recipe (JSON diff) to a stock GS8.60.0 256K image.
-Part of the GS8.60.0 community repository. License: MIT.
+apply_recipe.py - apply a recipe (JSON diff) to a stock GS8.60.0 256K or GS8.60.4 20C0 512K image.
+Part of the GS8.60 community repository. License: MIT.
 
 Checks before writing anything:
-  1. the input is a full 256K image;
-  2. program code 0x10000-0x40000 hashes to the SHA-256 the recipe was built for
-     (19C0 and 19D0 share it; a mismatch means different software - hard stop);
+  1. the input is a full image of the size the recipe was built for (256K 19x0 or 512K 20C0);
+  2. the program code (19x0: 0x10000-0x40000, 20C0: 0x08000-0x70000) hashes to the SHA-256 the
+     recipe was built for (19C0 and 19D0 share it; a mismatch means different software - hard stop);
   3. the loader and program checksums of the input match (tools/gs860_crc.py; a
      mismatch means a damaged read or a modified program - hard stop);
   4. every table in the recipe is found at its address with the same format and
      the SAME axes (hard stop otherwise - axes are never touched);
   5. every old value matches the input (warning; hard stop unless --force).
-Only bytes inside 0x8000-0x10000 are ever written; this is asserted at the end.
-After the recipe is written the calibration checksum (CRC-16 over 0x8000-0xFFCD,
-stored at 0xFFFE) is recomputed, so the output passes `gs860_crc.py check`.
-A recipe never carries 0xFFFE-0xFFFF itself: the tool computes those two bytes.
+Only bytes inside the calibration window are ever written (19x0: 0x8000-0x10000, 20C0:
+0x70000-0x80000); this is asserted at the end. After the recipe is written the calibration
+checksum (19x0: CRC-16 over 0x8000-0xFFCD at 0xFFFE; 20C0: over 0x70000-0x7FFCD at 0x7FFFE)
+is recomputed, so the output passes `gs860_crc.py check`. A recipe never carries the
+checksum bytes itself: the tool computes them.
 
 Recipe schemas: gs860-recipe/2 (result hashes of the output with the checksum
 recomputed) and gs860-recipe/1 (older; its result hashes were taken with the stale
@@ -24,26 +25,33 @@ checksum, so they no longer match the output - the log says so).
 
 Usage:
   apply_recipe.py recipe.json stock.bin -o out.bin [--force] [--dry-run]
-Outputs: out.bin (256K), out_partial32k.bin (0x8000-0x10000), out.log
+Outputs: out.bin (full image), out.log, and for 19x0 out_partial32k.bin (0x8000-0x10000).
+For 20C0 no partial is written: what the flasher reads as a partial of GS8.60.4 is not known
+(docs 11 §13).
 The "status" note of the recipe, if any, is printed and logged: read it before flashing.
 
-Example:
+Examples:
   python3 tools/apply_recipe.py recipes/wolf4x_v18_sport_daily.json my_dump.bin -o build.bin
+  python3 tools/apply_recipe.py recipes/gs8604_20c0_sport_daily.json my_20c0.bin -o build.bin
 """
 import sys, json, hashlib, argparse, os, datetime
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from egs_tables import FW, WIN_LO, WIN_HI, CODE_LO, CODE_HI
+from egs_tables import FW
 import gs860_crc
 
 SCHEMAS = ("gs860-recipe/1", "gs860-recipe/2")
-CRC_AT = 0xFFFE                              # calibration checksum, 2 bytes, computed by this tool
+# per image size: calibration window, program code range, calibration checksum address, partial written
+PLATFORMS = {
+    0x40000: dict(win=(0x08000, 0x10000), code=(0x10000, 0x40000), crc=0x0FFFE, partial=True),
+    0x80000: dict(win=(0x70000, 0x80000), code=(0x08000, 0x70000), crc=0x7FFFE, partial=False),
+}
 
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("recipe", help="recipe JSON (recipes/*.json)")
-    ap.add_argument("stock", help="your full 256K GS8.60.0 image")
-    ap.add_argument("-o", "--out", required=True, help="output image; out_partial32k.bin and out.log are written next to it")
+    ap.add_argument("stock", help="your full image (256K GS8.60.0 or 512K GS8.60.4 20C0)")
+    ap.add_argument("-o", "--out", required=True, help="output image; out.log (and for 19x0 out_partial32k.bin) next to it")
     ap.add_argument("--force", action="store_true", help="write even where old values do not match")
     ap.add_argument("--dry-run", action="store_true", help="check everything, write nothing")
     args = ap.parse_args()
@@ -60,11 +68,18 @@ def main():
         log.append(f"status : {rec['status']['en']}")
 
     # 1-2. size and code
-    if fw.N != 0x40000:
-        sys.exit("input must be a full 256K image (apply to the full dump, flash the partial if you like)")
+    if fw.N not in PLATFORMS:
+        sys.exit("input must be a full image: 256K (GS8.60.0) or 512K (GS8.60.4 20C0); apply to the full dump")
+    PL = PLATFORMS[fw.N]
+    WIN_LO, WIN_HI = PL["win"]
+    CODE_LO, CODE_HI = PL["code"]
+    CRC_AT = PL["crc"]
+    want = rec["base"].get("image_size", 0x40000)
+    if fw.N != want:
+        sys.exit(f"the recipe is for a {want // 1024}K image, the input is {fw.N // 1024}K - another program. Stop.")
     code_sha = fw.sha256(CODE_LO, CODE_HI)
     if code_sha != rec["base"]["code_sha256"]:
-        sys.exit(f"program code 0x10000-0x40000 sha256 {code_sha} != recipe base {rec['base']['code_sha256']}\n"
+        sys.exit(f"program code 0x{CODE_LO:05X}-0x{CODE_HI:05X} sha256 {code_sha} != recipe base {rec['base']['code_sha256']}\n"
                  "This is a different software - the recipe addresses do not apply. Stop.")
     log.append(f"code sha256 ok: {code_sha}")
     # 3. checksums of the input: loader and program must match, the calibration one may be stale
@@ -145,7 +160,7 @@ def main():
     # calibration checksum (inside the window, so the guard below still holds)
     out = bytearray(gs860_crc.fixed(bytes(out)))
     new_sum = int.from_bytes(out[CRC_AT:CRC_AT + 2], "big")
-    log.append(f"calibration checksum at 0x0FFFE: was 0x{stored:04X}, now 0x{new_sum:04X}"
+    log.append(f"calibration checksum at 0x{CRC_AT:05X}: was 0x{stored:04X}, now 0x{new_sum:04X}"
                + ("" if new_sum == stored else " (recomputed)"))
     assert gs860_crc.sums(bytes(out)) and all(s == c for *_, s, c in gs860_crc.sums(bytes(out)))
 
@@ -154,7 +169,8 @@ def main():
     full_sha = hashlib.sha256(bytes(out)).hexdigest(); part_sha = hashlib.sha256(bytes(out[WIN_LO:WIN_HI])).hexdigest()
     log.append(f"bytes changed by the recipe: {nbytes}   old-value mismatches: {mismatches}{' (forced)' if mismatches else ''}")
     log.append(f"output sha256 full   : {full_sha}")
-    log.append(f"output sha256 partial: {part_sha}")
+    log.append(f"output sha256 {'partial' if PL['partial'] else 'cal win'}: {part_sha}"
+               + ("" if PL["partial"] else f"  (calibration window 0x{WIN_LO:05X}-0x{WIN_HI - 1:05X})"))
     exp = rec.get("result", {})
     if exp.get("full_sha256"):
         if full_sha == exp["full_sha256"]:
@@ -169,12 +185,13 @@ def main():
     base = os.path.splitext(args.out)[0]
     with open(args.out, "wb") as f:
         f.write(bytes(out))
-    with open(base + "_partial32k.bin", "wb") as f:
-        f.write(bytes(out[WIN_LO:WIN_HI]))
+    if PL["partial"]:
+        with open(base + "_partial32k.bin", "wb") as f:
+            f.write(bytes(out[WIN_LO:WIN_HI]))
     with open(base + ".log", "w", encoding="utf-8") as f:
         f.write("\n".join(log) + "\n")
     print("\n".join(log))
-    print(f"written: {args.out}, {base}_partial32k.bin, {base}.log")
+    print(f"written: {args.out}, " + (f"{base}_partial32k.bin, " if PL["partial"] else "") + f"{base}.log")
 
 
 if __name__ == "__main__":
