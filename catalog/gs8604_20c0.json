@@ -1,9 +1,9 @@
 {
  "format": 1,
- "title": "GS8604 20C0 Full 512K - WOLF4X v2 (2026-09-30)",
- "description": "Bosch GS8.60.4 (ZF 5HP19, ПО 20C0, 512 КБ, метка программы B223K_0520C0 в 0x6FF7C), Motorola 68k CPU32. Калибровка 0x70000-0x71BC0 и 0x78000-0x7D858, каталог указателей 0x71BC2 (43 слота), три контрольные суммы CRC-16 (загрузчик 0x0-0x43FF → 0x5FFE, программа 0x8000-0x6FF7B → 0x6FFFE, калибровка 0x70000-0x7FFCD → 0x7FFFE), после правки в TunerPro обязательно tools/gs860_crc.py fix. Файл сгенерирован из catalog/gs8604_20c0.json скриптом tools/make_xdf.py, руками не правится. Уровни уверенности в каталоге: proven = ссылка из кода 20C0 с адресом инструкции, structure = положение в структуре (слот каталога, столбец записи, блок), совпадающее с 19D0 и роль доказанная там, unknown = форма доказана (сканер или упаковка указателей), роль не установлена, hypothesis = не доказано. Роли полей записей автомата переключения (наборы 9820-983C) и корня 0xFFFF9804 (включение привода) доказаны кодом 20C0: у каждой записи в описании место чтения, оси с записью переменной RAM и путь до канала давления или кадра CAN. Роли матриц S/M/D для 20C0 не доказаны (документ 11). EN: GS8.60.4 20C0 512K, generated from the catalog; confidence per entry; see docs/en/11-gs8604-20c0.md.",
- "title_en": "GS8604 20C0 Full 512K - WOLF4X v2 (2026-09-30), English",
- "description_en": "Bosch GS8.60.4 (ZF 5HP19, software 20C0, 512 KB, program label B223K_0520C0 at 0x6FF7C), Motorola 68k CPU32. Calibration 0x70000-0x71BC0 and 0x78000-0x7D858, pointer catalog 0x71BC2 (43 slots), three CRC-16 sums (loader 0x0-0x43FF -> 0x5FFE, program 0x8000-0x6FF7B -> 0x6FFFE, calibration 0x70000-0x7FFCD -> 0x7FFFE): after editing in TunerPro run tools/gs860_crc.py fix. Generated from catalog/gs8604_20c0.json by tools/make_xdf.py, never edited by hand. Confidence: proven = read by 20C0 code (instruction address in the proof), structure = same place in a structure as in 19D0 with the role proven there, unknown = shape proven, role not established, hypothesis = not proven. Roles of the shift-automaton record fields (sets 9820-983C) and of the root 0xFFFF9804 (drive engagement) are proven by 20C0 code. Roles of the S/M/D matrices on 20C0 are not proven (document 11). RU text is the reference (catalog field description).",
+ "title": "GS8604 20C0 Full 512K - WOLF4X v3 (2026-10-07)",
+ "description": "Bosch GS8.60.4 (ZF 5HP19, ПО 20C0, 512 КБ, метка программы B223K_0520C0 в 0x6FF7C), Motorola 68k CPU32. Калибровка 0x70000-0x71BC0 и 0x78000-0x7D858, каталог указателей 0x71BC2 (43 слота), три контрольные суммы CRC-16 (загрузчик 0x0-0x43FF → 0x5FFE, программа 0x8000-0x6FF7B → 0x6FFFE, калибровка 0x70000-0x7FFCD → 0x7FFFE), после правки в TunerPro обязательно tools/gs860_crc.py fix. Файл сгенерирован из catalog/gs8604_20c0.json скриптом tools/make_xdf.py, руками не правится. Уровни уверенности в каталоге: proven = ссылка из кода 20C0 с адресом инструкции, structure = положение в структуре (слот каталога, столбец записи, блок), совпадающее с 19D0 и роль доказанная там, unknown = форма доказана (сканер или упаковка указателей), роль не установлена, hypothesis = не доказано. Роли полей записей автомата переключения (наборы 9820-983C) и корня 0xFFFF9804 (включение привода) доказаны кодом 20C0: у каждой записи в описании место чтения, оси с записью переменной RAM и путь до канала давления или кадра CAN. Роли матриц D / S / M доказаны кодом 20C0 и логом (D = k14 и k6, S = k11 и k15, M = k10, при перегреве k8; документ 11 §5), прогрев (0x25182), кикдаун (0x1BC9C) и нижний уровень ГДТ (корень 0xFFFF9808) тоже. EN: GS8.60.4 20C0 512K, generated from the catalog; confidence per entry; see docs/en/11-gs8604-20c0.md.",
+ "title_en": "GS8604 20C0 Full 512K - WOLF4X v3 (2026-10-07), English",
+ "description_en": "Bosch GS8.60.4 (ZF 5HP19, software 20C0, 512 KB, program label B223K_0520C0 at 0x6FF7C), Motorola 68k CPU32. Calibration 0x70000-0x71BC0 and 0x78000-0x7D858, pointer catalog 0x71BC2 (43 slots), three CRC-16 sums (loader 0x0-0x43FF -> 0x5FFE, program 0x8000-0x6FF7B -> 0x6FFFE, calibration 0x70000-0x7FFCD -> 0x7FFFE): after editing in TunerPro run tools/gs860_crc.py fix. Generated from catalog/gs8604_20c0.json by tools/make_xdf.py, never edited by hand. Confidence: proven = read by 20C0 code (instruction address in the proof), structure = same place in a structure as in 19D0 with the role proven there, unknown = shape proven, role not established, hypothesis = not proven. Roles of the shift-automaton record fields (sets 9820-983C) and of the root 0xFFFF9804 (drive engagement) are proven by 20C0 code. Roles of the D / S / M matrices are proven by 20C0 code and a log (D = k14 and k6, S = k11 and k15, M = k10, k8 at overheat; document 11 section 5), so are the warm-up program (0x25182), kick-down (0x1BC9C) and the lower TCC level (root 0xFFFF9808). RU text is the reference (catalog field description).",
  "author": "rudywolf (WOLF4X)",
  "image_size": 524288,
  "software": "20C0",
@@ -22,7 +22,7 @@
  "partial": {
   "start": 458752,
   "size": 65536,
-  "title": "GS8604 20C0 Partial 64K - WOLF4X v2 (2026-09-30)",
+  "title": "GS8604 20C0 Partial 64K - WOLF4X v3 (2026-10-07)",
   "description": "Окно калибровки 0x70000-0x7FFFF (64 КБ) того же каталога, адрес в файле = адрес ЭБУ - 0x70000. Что именно читает и пишет флешер как Partial у GS8.60.4, не проверено: файл не публикуется, пока это не проверено."
  },
  "categories": [
@@ -47,7 +47,7 @@
   {
    "kind": "table",
    "title": "Точки переключения: матрица k00, программа P4 (0x7120E)",
-   "description": "Значения = обороты выходного вала / 32 (сравнение с [0xFFFF9138] в 0x20688-0x20692 вверх и 0x206E4 вниз, [0xFFFF9138] пишется в 0x20D38 как отфильтрованный выходной вал >> 5). Столбцы 1-4 повышение 1-2, 2-3, 3-4, 4-5, столбцы 5-8 понижение 2-1, 3-2, 4-3, 5-4 (записи передач 0x2059E). Строка Y = педаль коробки, 255 = кикдаун. К порогу вверх прибавляется [0xFFFF9143] = байт 0x70B98[передача - 1] при [0xFFFF91B3] = 2 (0x20D8E). Матрицу выбирает 0x20768 по номеру программы: P4 → k00. Программы, чьи записи передач ссылаются на P4: P4.",
+   "description": "Значения = обороты выходного вала / 32 (сравнение с [0xFFFF9138] в 0x20688-0x20692 вверх и 0x206E4 вниз, [0xFFFF9138] пишется в 0x20D38 как отфильтрованный выходной вал >> 5). Столбцы 1-4 повышение 1-2, 2-3, 3-4, 4-5, столбцы 5-8 понижение 2-1, 3-2, 4-3, 5-4 (записи передач 0x2059E). Строка Y = педаль коробки, 255 = кикдаун. К порогу вверх прибавляется [0xFFFF9143] = байт 0x70B98[передача - 1] при замкнутой ГДТ ([0xFFFF91B3] = 2, 0x20D8E). Матрицу выбирает 0x20768 по номеру программы: P4 → k00. Программы, чьи записи передач ссылаются на P4: P4.",
    "categories": [
     0
    ],
@@ -104,12 +104,12 @@
    },
    "uid": 8192,
    "title_en": "Shift points: matrix k00, program P4 (0x7120E)",
-   "description_en": "Values = output shaft rpm / 32 (compared with [0xFFFF9138] at 0x20688 up and 0x206E4 down). Columns 1-4 upshifts 1-2 ... 4-5, columns 5-8 downshifts 2-1 ... 5-4. Row Y = gearbox pedal, 255 = kick-down. The matrix is selected by 0x20768 by program number."
+   "description_en": "Values = output shaft rpm / 32 (compared with [0xFFFF9138] at 0x20688 up and 0x206E4 down). Columns 1-4 upshifts 1-2 ... 4-5, columns 5-8 downshifts 2-1 ... 5-4. Row Y = gearbox pedal, 255 = kick-down. The matrix is selected by 0x20768 by program number. With the converter locked the upshift threshold gets the offset 0x70B98 (0x20D8E)."
   },
   {
    "kind": "table",
    "title": "Точки переключения: матрица k01, программа P5 (0x7127E)",
-   "description": "Значения = обороты выходного вала / 32 (сравнение с [0xFFFF9138] в 0x20688-0x20692 вверх и 0x206E4 вниз, [0xFFFF9138] пишется в 0x20D38 как отфильтрованный выходной вал >> 5). Столбцы 1-4 повышение 1-2, 2-3, 3-4, 4-5, столбцы 5-8 понижение 2-1, 3-2, 4-3, 5-4 (записи передач 0x2059E). Строка Y = педаль коробки, 255 = кикдаун. К порогу вверх прибавляется [0xFFFF9143] = байт 0x70B98[передача - 1] при [0xFFFF91B3] = 2 (0x20D8E). Матрицу выбирает 0x20768 по номеру программы: P5 → k01. Программы, чьи записи передач ссылаются на P5: P5.",
+   "description": "Значения = обороты выходного вала / 32 (сравнение с [0xFFFF9138] в 0x20688-0x20692 вверх и 0x206E4 вниз, [0xFFFF9138] пишется в 0x20D38 как отфильтрованный выходной вал >> 5). Столбцы 1-4 повышение 1-2, 2-3, 3-4, 4-5, столбцы 5-8 понижение 2-1, 3-2, 4-3, 5-4 (записи передач 0x2059E). Строка Y = педаль коробки, 255 = кикдаун. К порогу вверх прибавляется [0xFFFF9143] = байт 0x70B98[передача - 1] при замкнутой ГДТ ([0xFFFF91B3] = 2, 0x20D8E). Матрицу выбирает 0x20768 по номеру программы: P5 → k01. Программы, чьи записи передач ссылаются на P5: P5.",
    "categories": [
     0
    ],
@@ -166,12 +166,12 @@
    },
    "uid": 8193,
    "title_en": "Shift points: matrix k01, program P5 (0x7127E)",
-   "description_en": "Values = output shaft rpm / 32 (compared with [0xFFFF9138] at 0x20688 up and 0x206E4 down). Columns 1-4 upshifts 1-2 ... 4-5, columns 5-8 downshifts 2-1 ... 5-4. Row Y = gearbox pedal, 255 = kick-down. The matrix is selected by 0x20768 by program number."
+   "description_en": "Values = output shaft rpm / 32 (compared with [0xFFFF9138] at 0x20688 up and 0x206E4 down). Columns 1-4 upshifts 1-2 ... 4-5, columns 5-8 downshifts 2-1 ... 5-4. Row Y = gearbox pedal, 255 = kick-down. The matrix is selected by 0x20768 by program number. With the converter locked the upshift threshold gets the offset 0x70B98 (0x20D8E)."
   },
   {
    "kind": "table",
    "title": "Точки переключения: матрица k02, программа P6 (0x712EE)",
-   "description": "Значения = обороты выходного вала / 32 (сравнение с [0xFFFF9138] в 0x20688-0x20692 вверх и 0x206E4 вниз, [0xFFFF9138] пишется в 0x20D38 как отфильтрованный выходной вал >> 5). Столбцы 1-4 повышение 1-2, 2-3, 3-4, 4-5, столбцы 5-8 понижение 2-1, 3-2, 4-3, 5-4 (записи передач 0x2059E). Строка Y = педаль коробки, 255 = кикдаун. К порогу вверх прибавляется [0xFFFF9143] = байт 0x70B98[передача - 1] при [0xFFFF91B3] = 2 (0x20D8E). Матрицу выбирает 0x20768 по номеру программы: P6 → k02. Программы, чьи записи передач ссылаются на P6: P6, PC.",
+   "description": "Значения = обороты выходного вала / 32 (сравнение с [0xFFFF9138] в 0x20688-0x20692 вверх и 0x206E4 вниз, [0xFFFF9138] пишется в 0x20D38 как отфильтрованный выходной вал >> 5). Столбцы 1-4 повышение 1-2, 2-3, 3-4, 4-5, столбцы 5-8 понижение 2-1, 3-2, 4-3, 5-4 (записи передач 0x2059E). Строка Y = педаль коробки, 255 = кикдаун. К порогу вверх прибавляется [0xFFFF9143] = байт 0x70B98[передача - 1] при замкнутой ГДТ ([0xFFFF91B3] = 2, 0x20D8E). Матрицу выбирает 0x20768 по номеру программы: P6 → k02. Программы, чьи записи передач ссылаются на P6: P6, PC.",
    "categories": [
     0
    ],
@@ -228,12 +228,12 @@
    },
    "uid": 8194,
    "title_en": "Shift points: matrix k02, program P6 (0x712EE)",
-   "description_en": "Values = output shaft rpm / 32 (compared with [0xFFFF9138] at 0x20688 up and 0x206E4 down). Columns 1-4 upshifts 1-2 ... 4-5, columns 5-8 downshifts 2-1 ... 5-4. Row Y = gearbox pedal, 255 = kick-down. The matrix is selected by 0x20768 by program number."
+   "description_en": "Values = output shaft rpm / 32 (compared with [0xFFFF9138] at 0x20688 up and 0x206E4 down). Columns 1-4 upshifts 1-2 ... 4-5, columns 5-8 downshifts 2-1 ... 5-4. Row Y = gearbox pedal, 255 = kick-down. The matrix is selected by 0x20768 by program number. With the converter locked the upshift threshold gets the offset 0x70B98 (0x20D8E)."
   },
   {
    "kind": "table",
    "title": "Точки переключения: матрица k03, программа PF (0x7135E)",
-   "description": "Значения = обороты выходного вала / 32 (сравнение с [0xFFFF9138] в 0x20688-0x20692 вверх и 0x206E4 вниз, [0xFFFF9138] пишется в 0x20D38 как отфильтрованный выходной вал >> 5). Столбцы 1-4 повышение 1-2, 2-3, 3-4, 4-5, столбцы 5-8 понижение 2-1, 3-2, 4-3, 5-4 (записи передач 0x2059E). Строка Y = педаль коробки, 255 = кикдаун. К порогу вверх прибавляется [0xFFFF9143] = байт 0x70B98[передача - 1] при [0xFFFF91B3] = 2 (0x20D8E). Матрицу выбирает 0x20768 по номеру программы: PF → k03. Программы, чьи записи передач ссылаются на PF: PF.",
+   "description": "Значения = обороты выходного вала / 32 (сравнение с [0xFFFF9138] в 0x20688-0x20692 вверх и 0x206E4 вниз, [0xFFFF9138] пишется в 0x20D38 как отфильтрованный выходной вал >> 5). Столбцы 1-4 повышение 1-2, 2-3, 3-4, 4-5, столбцы 5-8 понижение 2-1, 3-2, 4-3, 5-4 (записи передач 0x2059E). Строка Y = педаль коробки, 255 = кикдаун. К порогу вверх прибавляется [0xFFFF9143] = байт 0x70B98[передача - 1] при замкнутой ГДТ ([0xFFFF91B3] = 2, 0x20D8E). Матрицу выбирает 0x20768 по номеру программы: PF → k03. Программы, чьи записи передач ссылаются на PF: PF.",
    "categories": [
     0
    ],
@@ -290,12 +290,12 @@
    },
    "uid": 8195,
    "title_en": "Shift points: matrix k03, program PF (0x7135E)",
-   "description_en": "Values = output shaft rpm / 32 (compared with [0xFFFF9138] at 0x20688 up and 0x206E4 down). Columns 1-4 upshifts 1-2 ... 4-5, columns 5-8 downshifts 2-1 ... 5-4. Row Y = gearbox pedal, 255 = kick-down. The matrix is selected by 0x20768 by program number."
+   "description_en": "Values = output shaft rpm / 32 (compared with [0xFFFF9138] at 0x20688 up and 0x206E4 down). Columns 1-4 upshifts 1-2 ... 4-5, columns 5-8 downshifts 2-1 ... 5-4. Row Y = gearbox pedal, 255 = kick-down. The matrix is selected by 0x20768 by program number. With the converter locked the upshift threshold gets the offset 0x70B98 (0x20D8E)."
   },
   {
    "kind": "table",
    "title": "Точки переключения: матрица k04, программа PE (0x713CE)",
-   "description": "Значения = обороты выходного вала / 32 (сравнение с [0xFFFF9138] в 0x20688-0x20692 вверх и 0x206E4 вниз, [0xFFFF9138] пишется в 0x20D38 как отфильтрованный выходной вал >> 5). Столбцы 1-4 повышение 1-2, 2-3, 3-4, 4-5, столбцы 5-8 понижение 2-1, 3-2, 4-3, 5-4 (записи передач 0x2059E). Строка Y = педаль коробки, 255 = кикдаун. К порогу вверх прибавляется [0xFFFF9143] = байт 0x70B98[передача - 1] при [0xFFFF91B3] = 2 (0x20D8E). Матрицу выбирает 0x20768 по номеру программы: PE → k04. Программы, чьи записи передач ссылаются на PE: PE.",
+   "description": "Значения = обороты выходного вала / 32 (сравнение с [0xFFFF9138] в 0x20688-0x20692 вверх и 0x206E4 вниз, [0xFFFF9138] пишется в 0x20D38 как отфильтрованный выходной вал >> 5). Столбцы 1-4 повышение 1-2, 2-3, 3-4, 4-5, столбцы 5-8 понижение 2-1, 3-2, 4-3, 5-4 (записи передач 0x2059E). Строка Y = педаль коробки, 255 = кикдаун. К порогу вверх прибавляется [0xFFFF9143] = байт 0x70B98[передача - 1] при замкнутой ГДТ ([0xFFFF91B3] = 2, 0x20D8E). Матрицу выбирает 0x20768 по номеру программы: PE → k04. Программы, чьи записи передач ссылаются на PE: PE.",
    "categories": [
     0
    ],
@@ -352,12 +352,12 @@
    },
    "uid": 8196,
    "title_en": "Shift points: matrix k04, program PE (0x713CE)",
-   "description_en": "Values = output shaft rpm / 32 (compared with [0xFFFF9138] at 0x20688 up and 0x206E4 down). Columns 1-4 upshifts 1-2 ... 4-5, columns 5-8 downshifts 2-1 ... 5-4. Row Y = gearbox pedal, 255 = kick-down. The matrix is selected by 0x20768 by program number."
+   "description_en": "Values = output shaft rpm / 32 (compared with [0xFFFF9138] at 0x20688 up and 0x206E4 down). Columns 1-4 upshifts 1-2 ... 4-5, columns 5-8 downshifts 2-1 ... 5-4. Row Y = gearbox pedal, 255 = kick-down. The matrix is selected by 0x20768 by program number. With the converter locked the upshift threshold gets the offset 0x70B98 (0x20D8E)."
   },
   {
    "kind": "table",
    "title": "Точки переключения: матрица k05, программа PA (0x7143E)",
-   "description": "Значения = обороты выходного вала / 32 (сравнение с [0xFFFF9138] в 0x20688-0x20692 вверх и 0x206E4 вниз, [0xFFFF9138] пишется в 0x20D38 как отфильтрованный выходной вал >> 5). Столбцы 1-4 повышение 1-2, 2-3, 3-4, 4-5, столбцы 5-8 понижение 2-1, 3-2, 4-3, 5-4 (записи передач 0x2059E). Строка Y = педаль коробки, 255 = кикдаун. К порогу вверх прибавляется [0xFFFF9143] = байт 0x70B98[передача - 1] при [0xFFFF91B3] = 2 (0x20D8E). Матрицу выбирает 0x20768 по номеру программы: PA → k05. Программы, чьи записи передач ссылаются на PA: PA.",
+   "description": "Значения = обороты выходного вала / 32 (сравнение с [0xFFFF9138] в 0x20688-0x20692 вверх и 0x206E4 вниз, [0xFFFF9138] пишется в 0x20D38 как отфильтрованный выходной вал >> 5). Столбцы 1-4 повышение 1-2, 2-3, 3-4, 4-5, столбцы 5-8 понижение 2-1, 3-2, 4-3, 5-4 (записи передач 0x2059E). Строка Y = педаль коробки, 255 = кикдаун. К порогу вверх прибавляется [0xFFFF9143] = байт 0x70B98[передача - 1] при замкнутой ГДТ ([0xFFFF91B3] = 2, 0x20D8E). Матрицу выбирает 0x20768 по номеру программы: PA → k05. Программы, чьи записи передач ссылаются на PA: PA.",
    "categories": [
     0
    ],
@@ -414,12 +414,12 @@
    },
    "uid": 8197,
    "title_en": "Shift points: matrix k05, program PA (0x7143E)",
-   "description_en": "Values = output shaft rpm / 32 (compared with [0xFFFF9138] at 0x20688 up and 0x206E4 down). Columns 1-4 upshifts 1-2 ... 4-5, columns 5-8 downshifts 2-1 ... 5-4. Row Y = gearbox pedal, 255 = kick-down. The matrix is selected by 0x20768 by program number."
+   "description_en": "Values = output shaft rpm / 32 (compared with [0xFFFF9138] at 0x20688 up and 0x206E4 down). Columns 1-4 upshifts 1-2 ... 4-5, columns 5-8 downshifts 2-1 ... 5-4. Row Y = gearbox pedal, 255 = kick-down. The matrix is selected by 0x20768 by program number. With the converter locked the upshift threshold gets the offset 0x70B98 (0x20D8E)."
   },
   {
    "kind": "table",
-   "title": "Точки переключения: матрица k06, программа P1 (0x714AE)",
-   "description": "Значения = обороты выходного вала / 32 (сравнение с [0xFFFF9138] в 0x20688-0x20692 вверх и 0x206E4 вниз, [0xFFFF9138] пишется в 0x20D38 как отфильтрованный выходной вал >> 5). Столбцы 1-4 повышение 1-2, 2-3, 3-4, 4-5, столбцы 5-8 понижение 2-1, 3-2, 4-3, 5-4 (записи передач 0x2059E). Строка Y = педаль коробки, 255 = кикдаун. К порогу вверх прибавляется [0xFFFF9143] = байт 0x70B98[передача - 1] при [0xFFFF91B3] = 2 (0x20D8E). Матрицу выбирает 0x20768 по номеру программы: P1 → k06. Программы, чьи записи передач ссылаются на P1: P1.",
+   "title": "Точки переключения: матрица k06, программа P1 = D, уровень AGS 2 (0x714AE)",
+   "description": "Значения = обороты выходного вала / 32 (сравнение с [0xFFFF9138] в 0x20688-0x20692 вверх и 0x206E4 вниз, [0xFFFF9138] пишется в 0x20D38 как отфильтрованный выходной вал >> 5). Столбцы 1-4 повышение 1-2, 2-3, 3-4, 4-5, столбцы 5-8 понижение 2-1, 3-2, 4-3, 5-4 (записи передач 0x2059E). Строка Y = педаль коробки, 255 = кикдаун. К порогу вверх прибавляется [0xFFFF9143] = байт 0x70B98[передача - 1] при замкнутой ГДТ ([0xFFFF91B3] = 2, 0x20D8E). Матрицу выбирает 0x20768 по номеру программы: P1 → k06. Программы, чьи записи передач ссылаются на P1: P1. Роль: D, уровень AGS 2. Выбор программы кодом 20C0 (разбор 06.10.2026): кулиса 0x1EAEE (пара 19D0 0x2300C), арбитраж 0x1EC1C / 0x1ED3C (пары 0x23110 / 0x23230), таблица пар «код, приоритет» 0x09A46, уровень AGS -> программа 0x09A42 = 0, 1, 2, 3 (как 19D0 0x11864, документ 01 §5). Очки AGS: в D от [0x70890] = 32 до [0x7088E] = 90 (уровни 1-2 по лестнице 0x70898 = 0 / 65 / 129 / 193), в S от [0x70891] = 129 до [0x7088F] = 255 (уровни 3-4). Лог заезда 23.09.2026: в D программа 0, в кулисе байт 22 кадра = 0xB2 (программа B).",
    "categories": [
     0
    ],
@@ -475,13 +475,13 @@
     "units_en": "output shaft rpm / 32"
    },
    "uid": 8198,
-   "title_en": "Shift points: matrix k06, program P1 (0x714AE)",
-   "description_en": "Values = output shaft rpm / 32 (compared with [0xFFFF9138] at 0x20688 up and 0x206E4 down). Columns 1-4 upshifts 1-2 ... 4-5, columns 5-8 downshifts 2-1 ... 5-4. Row Y = gearbox pedal, 255 = kick-down. The matrix is selected by 0x20768 by program number."
+   "title_en": "Shift points: matrix k06, program P1 = D, AGS level 2 (0x714AE)",
+   "description_en": "Values = output shaft rpm / 32 (compared with [0xFFFF9138] at 0x20688 up and 0x206E4 down). Columns 1-4 upshifts 1-2 ... 4-5, columns 5-8 downshifts 2-1 ... 5-4. Row Y = gearbox pedal, 255 = kick-down. The matrix is selected by 0x20768 by program number. With the converter locked the upshift threshold gets the offset 0x70B98 (0x20D8E). Role: D, AGS level 2, proven by 20C0 code (selector 0x1EAEE, arbitration 0x1EC1C / 0x1ED3C, AGS level -> program 0x09A42) and the log of 23.09.2026; document 11 section 5."
   },
   {
    "kind": "table",
    "title": "Точки переключения: матрица k07, программа PC (0x7151E)",
-   "description": "Значения = обороты выходного вала / 32 (сравнение с [0xFFFF9138] в 0x20688-0x20692 вверх и 0x206E4 вниз, [0xFFFF9138] пишется в 0x20D38 как отфильтрованный выходной вал >> 5). Столбцы 1-4 повышение 1-2, 2-3, 3-4, 4-5, столбцы 5-8 понижение 2-1, 3-2, 4-3, 5-4 (записи передач 0x2059E). Строка Y = педаль коробки, 255 = кикдаун. К порогу вверх прибавляется [0xFFFF9143] = байт 0x70B98[передача - 1] при [0xFFFF91B3] = 2 (0x20D8E). Матрицу выбирает 0x20768 по номеру программы: PC → k07. Программы, чьи записи передач ссылаются на PC: нет. Ни одна запись передач 20C0 не ссылается на программу PC, поэтому кодом переключения эта матрица не выбирается.",
+   "description": "Значения = обороты выходного вала / 32 (сравнение с [0xFFFF9138] в 0x20688-0x20692 вверх и 0x206E4 вниз, [0xFFFF9138] пишется в 0x20D38 как отфильтрованный выходной вал >> 5). Столбцы 1-4 повышение 1-2, 2-3, 3-4, 4-5, столбцы 5-8 понижение 2-1, 3-2, 4-3, 5-4 (записи передач 0x2059E). Строка Y = педаль коробки, 255 = кикдаун. К порогу вверх прибавляется [0xFFFF9143] = байт 0x70B98[передача - 1] при замкнутой ГДТ ([0xFFFF91B3] = 2, 0x20D8E). Матрицу выбирает 0x20768 по номеру программы: PC → k07. Программы, чьи записи передач ссылаются на PC: нет. Ни одна запись передач 20C0 не ссылается на программу PC, поэтому кодом переключения эта матрица не выбирается.",
    "categories": [
     0
    ],
@@ -538,12 +538,12 @@
    },
    "uid": 8199,
    "title_en": "Shift points: matrix k07, program PC (0x7151E)",
-   "description_en": "Values = output shaft rpm / 32 (compared with [0xFFFF9138] at 0x20688 up and 0x206E4 down). Columns 1-4 upshifts 1-2 ... 4-5, columns 5-8 downshifts 2-1 ... 5-4. Row Y = gearbox pedal, 255 = kick-down. The matrix is selected by 0x20768 by program number."
+   "description_en": "Values = output shaft rpm / 32 (compared with [0xFFFF9138] at 0x20688 up and 0x206E4 down). Columns 1-4 upshifts 1-2 ... 4-5, columns 5-8 downshifts 2-1 ... 5-4. Row Y = gearbox pedal, 255 = kick-down. The matrix is selected by 0x20768 by program number. With the converter locked the upshift threshold gets the offset 0x70B98 (0x20D8E)."
   },
   {
    "kind": "table",
-   "title": "Точки переключения: матрица k08, программа PD (0x7158E)",
-   "description": "Значения = обороты выходного вала / 32 (сравнение с [0xFFFF9138] в 0x20688-0x20692 вверх и 0x206E4 вниз, [0xFFFF9138] пишется в 0x20D38 как отфильтрованный выходной вал >> 5). Столбцы 1-4 повышение 1-2, 2-3, 3-4, 4-5, столбцы 5-8 понижение 2-1, 3-2, 4-3, 5-4 (записи передач 0x2059E). Строка Y = педаль коробки, 255 = кикдаун. К порогу вверх прибавляется [0xFFFF9143] = байт 0x70B98[передача - 1] при [0xFFFF91B3] = 2 (0x20D8E). Матрицу выбирает 0x20768 по номеру программы: PD → k08. Программы, чьи записи передач ссылаются на PD: PD.",
+   "title": "Точки переключения: матрица k08, программа PD = M при перегреве (0x7158E)",
+   "description": "Значения = обороты выходного вала / 32 (сравнение с [0xFFFF9138] в 0x20688-0x20692 вверх и 0x206E4 вниз, [0xFFFF9138] пишется в 0x20D38 как отфильтрованный выходной вал >> 5). Столбцы 1-4 повышение 1-2, 2-3, 3-4, 4-5, столбцы 5-8 понижение 2-1, 3-2, 4-3, 5-4 (записи передач 0x2059E). Строка Y = педаль коробки, 255 = кикдаун. К порогу вверх прибавляется [0xFFFF9143] = байт 0x70B98[передача - 1] при замкнутой ГДТ ([0xFFFF91B3] = 2, 0x20D8E). Матрицу выбирает 0x20768 по номеру программы: PD → k08. Программы, чьи записи передач ссылаются на PD: PD. Роль: M при перегреве. Выбор программы кодом 20C0 (разбор 06.10.2026): кулиса 0x1EAEE (пара 19D0 0x2300C), арбитраж 0x1EC1C / 0x1ED3C (пары 0x23110 / 0x23230), таблица пар «код, приоритет» 0x09A46, уровень AGS -> программа 0x09A42 = 0, 1, 2, 3 (как 19D0 0x11864, документ 01 §5). Очки AGS: в D от [0x70890] = 32 до [0x7088E] = 90 (уровни 1-2 по лестнице 0x70898 = 0 / 65 / 129 / 193), в S от [0x70891] = 129 до [0x7088F] = 255 (уровни 3-4). Лог заезда 23.09.2026: в D программа 0, в кулисе байт 22 кадра = 0xB2 (программа B). Код 0x0D вместо 0x0B при перегреве ([0xFFFF907D], бит 7 байта 0x70D3A).",
    "categories": [
     0
    ],
@@ -599,13 +599,13 @@
     "units_en": "output shaft rpm / 32"
    },
    "uid": 8200,
-   "title_en": "Shift points: matrix k08, program PD (0x7158E)",
-   "description_en": "Values = output shaft rpm / 32 (compared with [0xFFFF9138] at 0x20688 up and 0x206E4 down). Columns 1-4 upshifts 1-2 ... 4-5, columns 5-8 downshifts 2-1 ... 5-4. Row Y = gearbox pedal, 255 = kick-down. The matrix is selected by 0x20768 by program number."
+   "title_en": "Shift points: matrix k08, program PD = M at overheat (0x7158E)",
+   "description_en": "Values = output shaft rpm / 32 (compared with [0xFFFF9138] at 0x20688 up and 0x206E4 down). Columns 1-4 upshifts 1-2 ... 4-5, columns 5-8 downshifts 2-1 ... 5-4. Row Y = gearbox pedal, 255 = kick-down. The matrix is selected by 0x20768 by program number. With the converter locked the upshift threshold gets the offset 0x70B98 (0x20D8E). Role: M at overheat, proven by 20C0 code (selector 0x1EAEE, arbitration 0x1EC1C / 0x1ED3C, AGS level -> program 0x09A42) and the log of 23.09.2026; document 11 section 5."
   },
   {
    "kind": "table",
    "title": "Точки переключения: матрица k09, программа P8 (0x715FE)",
-   "description": "Значения = обороты выходного вала / 32 (сравнение с [0xFFFF9138] в 0x20688-0x20692 вверх и 0x206E4 вниз, [0xFFFF9138] пишется в 0x20D38 как отфильтрованный выходной вал >> 5). Столбцы 1-4 повышение 1-2, 2-3, 3-4, 4-5, столбцы 5-8 понижение 2-1, 3-2, 4-3, 5-4 (записи передач 0x2059E). Строка Y = педаль коробки, 255 = кикдаун. К порогу вверх прибавляется [0xFFFF9143] = байт 0x70B98[передача - 1] при [0xFFFF91B3] = 2 (0x20D8E). Матрицу выбирает 0x20768 по номеру программы: P8 → k09. Программы, чьи записи передач ссылаются на P8: P8.",
+   "description": "Значения = обороты выходного вала / 32 (сравнение с [0xFFFF9138] в 0x20688-0x20692 вверх и 0x206E4 вниз, [0xFFFF9138] пишется в 0x20D38 как отфильтрованный выходной вал >> 5). Столбцы 1-4 повышение 1-2, 2-3, 3-4, 4-5, столбцы 5-8 понижение 2-1, 3-2, 4-3, 5-4 (записи передач 0x2059E). Строка Y = педаль коробки, 255 = кикдаун. К порогу вверх прибавляется [0xFFFF9143] = байт 0x70B98[передача - 1] при замкнутой ГДТ ([0xFFFF91B3] = 2, 0x20D8E). Матрицу выбирает 0x20768 по номеру программы: P8 → k09. Программы, чьи записи передач ссылаются на P8: P8.",
    "categories": [
     0
    ],
@@ -662,12 +662,12 @@
    },
    "uid": 8201,
    "title_en": "Shift points: matrix k09, program P8 (0x715FE)",
-   "description_en": "Values = output shaft rpm / 32 (compared with [0xFFFF9138] at 0x20688 up and 0x206E4 down). Columns 1-4 upshifts 1-2 ... 4-5, columns 5-8 downshifts 2-1 ... 5-4. Row Y = gearbox pedal, 255 = kick-down. The matrix is selected by 0x20768 by program number."
+   "description_en": "Values = output shaft rpm / 32 (compared with [0xFFFF9138] at 0x20688 up and 0x206E4 down). Columns 1-4 upshifts 1-2 ... 4-5, columns 5-8 downshifts 2-1 ... 5-4. Row Y = gearbox pedal, 255 = kick-down. The matrix is selected by 0x20768 by program number. With the converter locked the upshift threshold gets the offset 0x70B98 (0x20D8E)."
   },
   {
    "kind": "table",
-   "title": "Точки переключения: матрица k10, программа PB (0x7166E)",
-   "description": "Значения = обороты выходного вала / 32 (сравнение с [0xFFFF9138] в 0x20688-0x20692 вверх и 0x206E4 вниз, [0xFFFF9138] пишется в 0x20D38 как отфильтрованный выходной вал >> 5). Столбцы 1-4 повышение 1-2, 2-3, 3-4, 4-5, столбцы 5-8 понижение 2-1, 3-2, 4-3, 5-4 (записи передач 0x2059E). Строка Y = педаль коробки, 255 = кикдаун. К порогу вверх прибавляется [0xFFFF9143] = байт 0x70B98[передача - 1] при [0xFFFF91B3] = 2 (0x20D8E). Матрицу выбирает 0x20768 по номеру программы: PB → k10. Программы, чьи записи передач ссылаются на PB: PB. Программа PB: код 0x0B ставится сразу при рычаге в левой кулисе ([0x70966] = 0x0B, 0x1EB88-0x1EBAE), в логе заезда 23.09.2026 все переключения в кулисе шли по PB. Роль «ручной режим» для 20C0 — гипотеза: 11 повышений в пол шли ниже порогов этой матрицы, не объяснено (документ 11 §5).",
+   "title": "Точки переключения: матрица k10, программа PB = M (ручной) (0x7166E)",
+   "description": "Значения = обороты выходного вала / 32 (сравнение с [0xFFFF9138] в 0x20688-0x20692 вверх и 0x206E4 вниз, [0xFFFF9138] пишется в 0x20D38 как отфильтрованный выходной вал >> 5). Столбцы 1-4 повышение 1-2, 2-3, 3-4, 4-5, столбцы 5-8 понижение 2-1, 3-2, 4-3, 5-4 (записи передач 0x2059E). Строка Y = педаль коробки, 255 = кикдаун. К порогу вверх прибавляется [0xFFFF9143] = байт 0x70B98[передача - 1] при замкнутой ГДТ ([0xFFFF91B3] = 2, 0x20D8E). Матрицу выбирает 0x20768 по номеру программы: PB → k10. Программы, чьи записи передач ссылаются на PB: PB. Роль: M (ручной). Выбор программы кодом 20C0 (разбор 06.10.2026): кулиса 0x1EAEE (пара 19D0 0x2300C), арбитраж 0x1EC1C / 0x1ED3C (пары 0x23110 / 0x23230), таблица пар «код, приоритет» 0x09A46, уровень AGS -> программа 0x09A42 = 0, 1, 2, 3 (как 19D0 0x11864, документ 01 §5). Очки AGS: в D от [0x70890] = 32 до [0x7088E] = 90 (уровни 1-2 по лестнице 0x70898 = 0 / 65 / 129 / 193), в S от [0x70891] = 129 до [0x7088F] = 255 (уровни 3-4). Лог заезда 23.09.2026: в D программа 0, в кулисе байт 22 кадра = 0xB2 (программа B). Код 0x0B ставится сразу при рычаге в левой кулисе ([0x70966] = 0x0B, 0x1EB88-0x1EBAE), без нажатия +/-. В M матрица даёт автоповышение у отсечки и автопонижения, остальное водитель кнопками; повышения ниже порогов k10 в заезде 23.09.2026 это нажатия «+» (документ 11 §5).",
    "categories": [
     0
    ],
@@ -723,13 +723,13 @@
     "units_en": "output shaft rpm / 32"
    },
    "uid": 8202,
-   "title_en": "Shift points: matrix k10, program PB (0x7166E)",
-   "description_en": "Values = output shaft rpm / 32 (compared with [0xFFFF9138] at 0x20688 up and 0x206E4 down). Columns 1-4 upshifts 1-2 ... 4-5, columns 5-8 downshifts 2-1 ... 5-4. Row Y = gearbox pedal, 255 = kick-down. The matrix is selected by 0x20768 by program number."
+   "title_en": "Shift points: matrix k10, program PB = M (manual) (0x7166E)",
+   "description_en": "Values = output shaft rpm / 32 (compared with [0xFFFF9138] at 0x20688 up and 0x206E4 down). Columns 1-4 upshifts 1-2 ... 4-5, columns 5-8 downshifts 2-1 ... 5-4. Row Y = gearbox pedal, 255 = kick-down. The matrix is selected by 0x20768 by program number. With the converter locked the upshift threshold gets the offset 0x70B98 (0x20D8E). Role: M (manual), proven by 20C0 code (selector 0x1EAEE, arbitration 0x1EC1C / 0x1ED3C, AGS level -> program 0x09A42) and the log of 23.09.2026; document 11 section 5."
   },
   {
    "kind": "table",
-   "title": "Точки переключения: матрица k11, программа P2 (0x716DE)",
-   "description": "Значения = обороты выходного вала / 32 (сравнение с [0xFFFF9138] в 0x20688-0x20692 вверх и 0x206E4 вниз, [0xFFFF9138] пишется в 0x20D38 как отфильтрованный выходной вал >> 5). Столбцы 1-4 повышение 1-2, 2-3, 3-4, 4-5, столбцы 5-8 понижение 2-1, 3-2, 4-3, 5-4 (записи передач 0x2059E). Строка Y = педаль коробки, 255 = кикдаун. К порогу вверх прибавляется [0xFFFF9143] = байт 0x70B98[передача - 1] при [0xFFFF91B3] = 2 (0x20D8E). Матрицу выбирает 0x20768 по номеру программы: P2 → k11. Программы, чьи записи передач ссылаются на P2: P2.",
+   "title": "Точки переключения: матрица k11, программа P2 = S, уровень AGS 3 (0x716DE)",
+   "description": "Значения = обороты выходного вала / 32 (сравнение с [0xFFFF9138] в 0x20688-0x20692 вверх и 0x206E4 вниз, [0xFFFF9138] пишется в 0x20D38 как отфильтрованный выходной вал >> 5). Столбцы 1-4 повышение 1-2, 2-3, 3-4, 4-5, столбцы 5-8 понижение 2-1, 3-2, 4-3, 5-4 (записи передач 0x2059E). Строка Y = педаль коробки, 255 = кикдаун. К порогу вверх прибавляется [0xFFFF9143] = байт 0x70B98[передача - 1] при замкнутой ГДТ ([0xFFFF91B3] = 2, 0x20D8E). Матрицу выбирает 0x20768 по номеру программы: P2 → k11. Программы, чьи записи передач ссылаются на P2: P2. Роль: S, уровень AGS 3. Выбор программы кодом 20C0 (разбор 06.10.2026): кулиса 0x1EAEE (пара 19D0 0x2300C), арбитраж 0x1EC1C / 0x1ED3C (пары 0x23110 / 0x23230), таблица пар «код, приоритет» 0x09A46, уровень AGS -> программа 0x09A42 = 0, 1, 2, 3 (как 19D0 0x11864, документ 01 §5). Очки AGS: в D от [0x70890] = 32 до [0x7088E] = 90 (уровни 1-2 по лестнице 0x70898 = 0 / 65 / 129 / 193), в S от [0x70891] = 129 до [0x7088F] = 255 (уровни 3-4). Лог заезда 23.09.2026: в D программа 0, в кулисе байт 22 кадра = 0xB2 (программа B).",
    "categories": [
     0
    ],
@@ -785,13 +785,13 @@
     "units_en": "output shaft rpm / 32"
    },
    "uid": 8203,
-   "title_en": "Shift points: matrix k11, program P2 (0x716DE)",
-   "description_en": "Values = output shaft rpm / 32 (compared with [0xFFFF9138] at 0x20688 up and 0x206E4 down). Columns 1-4 upshifts 1-2 ... 4-5, columns 5-8 downshifts 2-1 ... 5-4. Row Y = gearbox pedal, 255 = kick-down. The matrix is selected by 0x20768 by program number."
+   "title_en": "Shift points: matrix k11, program P2 = S, AGS level 3 (0x716DE)",
+   "description_en": "Values = output shaft rpm / 32 (compared with [0xFFFF9138] at 0x20688 up and 0x206E4 down). Columns 1-4 upshifts 1-2 ... 4-5, columns 5-8 downshifts 2-1 ... 5-4. Row Y = gearbox pedal, 255 = kick-down. The matrix is selected by 0x20768 by program number. With the converter locked the upshift threshold gets the offset 0x70B98 (0x20D8E). Role: S, AGS level 3, proven by 20C0 code (selector 0x1EAEE, arbitration 0x1EC1C / 0x1ED3C, AGS level -> program 0x09A42) and the log of 23.09.2026; document 11 section 5."
   },
   {
    "kind": "table",
    "title": "Точки переключения: матрица k12, программа P9 (0x7174E)",
-   "description": "Значения = обороты выходного вала / 32 (сравнение с [0xFFFF9138] в 0x20688-0x20692 вверх и 0x206E4 вниз, [0xFFFF9138] пишется в 0x20D38 как отфильтрованный выходной вал >> 5). Столбцы 1-4 повышение 1-2, 2-3, 3-4, 4-5, столбцы 5-8 понижение 2-1, 3-2, 4-3, 5-4 (записи передач 0x2059E). Строка Y = педаль коробки, 255 = кикдаун. К порогу вверх прибавляется [0xFFFF9143] = байт 0x70B98[передача - 1] при [0xFFFF91B3] = 2 (0x20D8E). Матрицу выбирает 0x20768 по номеру программы: P9 → k12. Программы, чьи записи передач ссылаются на P9: P9.",
+   "description": "Значения = обороты выходного вала / 32 (сравнение с [0xFFFF9138] в 0x20688-0x20692 вверх и 0x206E4 вниз, [0xFFFF9138] пишется в 0x20D38 как отфильтрованный выходной вал >> 5). Столбцы 1-4 повышение 1-2, 2-3, 3-4, 4-5, столбцы 5-8 понижение 2-1, 3-2, 4-3, 5-4 (записи передач 0x2059E). Строка Y = педаль коробки, 255 = кикдаун. К порогу вверх прибавляется [0xFFFF9143] = байт 0x70B98[передача - 1] при замкнутой ГДТ ([0xFFFF91B3] = 2, 0x20D8E). Матрицу выбирает 0x20768 по номеру программы: P9 → k12. Программы, чьи записи передач ссылаются на P9: P9.",
    "categories": [
     0
    ],
@@ -848,12 +848,12 @@
    },
    "uid": 8204,
    "title_en": "Shift points: matrix k12, program P9 (0x7174E)",
-   "description_en": "Values = output shaft rpm / 32 (compared with [0xFFFF9138] at 0x20688 up and 0x206E4 down). Columns 1-4 upshifts 1-2 ... 4-5, columns 5-8 downshifts 2-1 ... 5-4. Row Y = gearbox pedal, 255 = kick-down. The matrix is selected by 0x20768 by program number."
+   "description_en": "Values = output shaft rpm / 32 (compared with [0xFFFF9138] at 0x20688 up and 0x206E4 down). Columns 1-4 upshifts 1-2 ... 4-5, columns 5-8 downshifts 2-1 ... 5-4. Row Y = gearbox pedal, 255 = kick-down. The matrix is selected by 0x20768 by program number. With the converter locked the upshift threshold gets the offset 0x70B98 (0x20D8E)."
   },
   {
    "kind": "table",
    "title": "Точки переключения: матрица k13, программа P7 (0x717BE)",
-   "description": "Значения = обороты выходного вала / 32 (сравнение с [0xFFFF9138] в 0x20688-0x20692 вверх и 0x206E4 вниз, [0xFFFF9138] пишется в 0x20D38 как отфильтрованный выходной вал >> 5). Столбцы 1-4 повышение 1-2, 2-3, 3-4, 4-5, столбцы 5-8 понижение 2-1, 3-2, 4-3, 5-4 (записи передач 0x2059E). Строка Y = педаль коробки, 255 = кикдаун. К порогу вверх прибавляется [0xFFFF9143] = байт 0x70B98[передача - 1] при [0xFFFF91B3] = 2 (0x20D8E). Матрицу выбирает 0x20768 по номеру программы: P7 → k13. Программы, чьи записи передач ссылаются на P7: P7.",
+   "description": "Значения = обороты выходного вала / 32 (сравнение с [0xFFFF9138] в 0x20688-0x20692 вверх и 0x206E4 вниз, [0xFFFF9138] пишется в 0x20D38 как отфильтрованный выходной вал >> 5). Столбцы 1-4 повышение 1-2, 2-3, 3-4, 4-5, столбцы 5-8 понижение 2-1, 3-2, 4-3, 5-4 (записи передач 0x2059E). Строка Y = педаль коробки, 255 = кикдаун. К порогу вверх прибавляется [0xFFFF9143] = байт 0x70B98[передача - 1] при замкнутой ГДТ ([0xFFFF91B3] = 2, 0x20D8E). Матрицу выбирает 0x20768 по номеру программы: P7 → k13. Программы, чьи записи передач ссылаются на P7: P7.",
    "categories": [
     0
    ],
@@ -910,12 +910,12 @@
    },
    "uid": 8205,
    "title_en": "Shift points: matrix k13, program P7 (0x717BE)",
-   "description_en": "Values = output shaft rpm / 32 (compared with [0xFFFF9138] at 0x20688 up and 0x206E4 down). Columns 1-4 upshifts 1-2 ... 4-5, columns 5-8 downshifts 2-1 ... 5-4. Row Y = gearbox pedal, 255 = kick-down. The matrix is selected by 0x20768 by program number."
+   "description_en": "Values = output shaft rpm / 32 (compared with [0xFFFF9138] at 0x20688 up and 0x206E4 down). Columns 1-4 upshifts 1-2 ... 4-5, columns 5-8 downshifts 2-1 ... 5-4. Row Y = gearbox pedal, 255 = kick-down. The matrix is selected by 0x20768 by program number. With the converter locked the upshift threshold gets the offset 0x70B98 (0x20D8E)."
   },
   {
    "kind": "table",
-   "title": "Точки переключения: матрица k14, программа P0 (0x7182E)",
-   "description": "Значения = обороты выходного вала / 32 (сравнение с [0xFFFF9138] в 0x20688-0x20692 вверх и 0x206E4 вниз, [0xFFFF9138] пишется в 0x20D38 как отфильтрованный выходной вал >> 5). Столбцы 1-4 повышение 1-2, 2-3, 3-4, 4-5, столбцы 5-8 понижение 2-1, 3-2, 4-3, 5-4 (записи передач 0x2059E). Строка Y = педаль коробки, 255 = кикдаун. К порогу вверх прибавляется [0xFFFF9143] = байт 0x70B98[передача - 1] при [0xFFFF91B3] = 2 (0x20D8E). Матрицу выбирает 0x20768 по номеру программы: P0 → k14. Программы, чьи записи передач ссылаются на P0: P0, PA.",
+   "title": "Точки переключения: матрица k14, программа P0 = D, уровень AGS 1 (0x7182E)",
+   "description": "Значения = обороты выходного вала / 32 (сравнение с [0xFFFF9138] в 0x20688-0x20692 вверх и 0x206E4 вниз, [0xFFFF9138] пишется в 0x20D38 как отфильтрованный выходной вал >> 5). Столбцы 1-4 повышение 1-2, 2-3, 3-4, 4-5, столбцы 5-8 понижение 2-1, 3-2, 4-3, 5-4 (записи передач 0x2059E). Строка Y = педаль коробки, 255 = кикдаун. К порогу вверх прибавляется [0xFFFF9143] = байт 0x70B98[передача - 1] при замкнутой ГДТ ([0xFFFF91B3] = 2, 0x20D8E). Матрицу выбирает 0x20768 по номеру программы: P0 → k14. Программы, чьи записи передач ссылаются на P0: P0, PA. Роль: D, уровень AGS 1. Выбор программы кодом 20C0 (разбор 06.10.2026): кулиса 0x1EAEE (пара 19D0 0x2300C), арбитраж 0x1EC1C / 0x1ED3C (пары 0x23110 / 0x23230), таблица пар «код, приоритет» 0x09A46, уровень AGS -> программа 0x09A42 = 0, 1, 2, 3 (как 19D0 0x11864, документ 01 §5). Очки AGS: в D от [0x70890] = 32 до [0x7088E] = 90 (уровни 1-2 по лестнице 0x70898 = 0 / 65 / 129 / 193), в S от [0x70891] = 129 до [0x7088F] = 255 (уровни 3-4). Лог заезда 23.09.2026: в D программа 0, в кулисе байт 22 кадра = 0xB2 (программа B).",
    "categories": [
     0
    ],
@@ -971,13 +971,13 @@
     "units_en": "output shaft rpm / 32"
    },
    "uid": 8206,
-   "title_en": "Shift points: matrix k14, program P0 (0x7182E)",
-   "description_en": "Values = output shaft rpm / 32 (compared with [0xFFFF9138] at 0x20688 up and 0x206E4 down). Columns 1-4 upshifts 1-2 ... 4-5, columns 5-8 downshifts 2-1 ... 5-4. Row Y = gearbox pedal, 255 = kick-down. The matrix is selected by 0x20768 by program number."
+   "title_en": "Shift points: matrix k14, program P0 = D, AGS level 1 (0x7182E)",
+   "description_en": "Values = output shaft rpm / 32 (compared with [0xFFFF9138] at 0x20688 up and 0x206E4 down). Columns 1-4 upshifts 1-2 ... 4-5, columns 5-8 downshifts 2-1 ... 5-4. Row Y = gearbox pedal, 255 = kick-down. The matrix is selected by 0x20768 by program number. With the converter locked the upshift threshold gets the offset 0x70B98 (0x20D8E). Role: D, AGS level 1, proven by 20C0 code (selector 0x1EAEE, arbitration 0x1EC1C / 0x1ED3C, AGS level -> program 0x09A42) and the log of 23.09.2026; document 11 section 5."
   },
   {
    "kind": "table",
-   "title": "Точки переключения: матрица k15, программа P3 (0x7189E)",
-   "description": "Значения = обороты выходного вала / 32 (сравнение с [0xFFFF9138] в 0x20688-0x20692 вверх и 0x206E4 вниз, [0xFFFF9138] пишется в 0x20D38 как отфильтрованный выходной вал >> 5). Столбцы 1-4 повышение 1-2, 2-3, 3-4, 4-5, столбцы 5-8 понижение 2-1, 3-2, 4-3, 5-4 (записи передач 0x2059E). Строка Y = педаль коробки, 255 = кикдаун. К порогу вверх прибавляется [0xFFFF9143] = байт 0x70B98[передача - 1] при [0xFFFF91B3] = 2 (0x20D8E). Матрицу выбирает 0x20768 по номеру программы: P3 → k15. Программы, чьи записи передач ссылаются на P3: P3.",
+   "title": "Точки переключения: матрица k15, программа P3 = S, уровень AGS 4 (0x7189E)",
+   "description": "Значения = обороты выходного вала / 32 (сравнение с [0xFFFF9138] в 0x20688-0x20692 вверх и 0x206E4 вниз, [0xFFFF9138] пишется в 0x20D38 как отфильтрованный выходной вал >> 5). Столбцы 1-4 повышение 1-2, 2-3, 3-4, 4-5, столбцы 5-8 понижение 2-1, 3-2, 4-3, 5-4 (записи передач 0x2059E). Строка Y = педаль коробки, 255 = кикдаун. К порогу вверх прибавляется [0xFFFF9143] = байт 0x70B98[передача - 1] при замкнутой ГДТ ([0xFFFF91B3] = 2, 0x20D8E). Матрицу выбирает 0x20768 по номеру программы: P3 → k15. Программы, чьи записи передач ссылаются на P3: P3. Роль: S, уровень AGS 4. Выбор программы кодом 20C0 (разбор 06.10.2026): кулиса 0x1EAEE (пара 19D0 0x2300C), арбитраж 0x1EC1C / 0x1ED3C (пары 0x23110 / 0x23230), таблица пар «код, приоритет» 0x09A46, уровень AGS -> программа 0x09A42 = 0, 1, 2, 3 (как 19D0 0x11864, документ 01 §5). Очки AGS: в D от [0x70890] = 32 до [0x7088E] = 90 (уровни 1-2 по лестнице 0x70898 = 0 / 65 / 129 / 193), в S от [0x70891] = 129 до [0x7088F] = 255 (уровни 3-4). Лог заезда 23.09.2026: в D программа 0, в кулисе байт 22 кадра = 0xB2 (программа B). Код 3 (P3) ставит и кулиса при [0xFFFF918C] = 2: [0x70967] = 3, очки AGS не ниже [0x70892] = 193 (0x18E20-0x18E34), до первого нажатия +/-.",
    "categories": [
     0
    ],
@@ -1033,8 +1033,8 @@
     "units_en": "output shaft rpm / 32"
    },
    "uid": 8207,
-   "title_en": "Shift points: matrix k15, program P3 (0x7189E)",
-   "description_en": "Values = output shaft rpm / 32 (compared with [0xFFFF9138] at 0x20688 up and 0x206E4 down). Columns 1-4 upshifts 1-2 ... 4-5, columns 5-8 downshifts 2-1 ... 5-4. Row Y = gearbox pedal, 255 = kick-down. The matrix is selected by 0x20768 by program number."
+   "title_en": "Shift points: matrix k15, program P3 = S, AGS level 4 (0x7189E)",
+   "description_en": "Values = output shaft rpm / 32 (compared with [0xFFFF9138] at 0x20688 up and 0x206E4 down). Columns 1-4 upshifts 1-2 ... 4-5, columns 5-8 downshifts 2-1 ... 5-4. Row Y = gearbox pedal, 255 = kick-down. The matrix is selected by 0x20768 by program number. With the converter locked the upshift threshold gets the offset 0x70B98 (0x20D8E). Role: S, AGS level 4, proven by 20C0 code (selector 0x1EAEE, arbitration 0x1EC1C / 0x1ED3C, AGS level -> program 0x09A42) and the log of 23.09.2026; document 11 section 5."
   },
   {
    "kind": "table",
@@ -2164,7 +2164,7 @@
   {
    "kind": "table",
    "title": "ГДТ: пороги блокировки, столбцы 30-35 = группы 11-12 (0x71AD0, только 20C0)",
-   "description": "Слот 36 каталога (0x71C52), новый относительно 19D0. Читает 0x255F2 через 0x25682, 0x256C0, 0x25704, 0x25742, 0x25782, когда (группа - 1) × 3 выходит за 29. Группу 11 берут 1-я передача P0-P3 и 6-я PB (0x70970). Единица та же: обороты выходного вала / 32.",
+   "description": "Слот 36 каталога (0x71C52), новый относительно 19D0. Читает 0x255F2 через 0x25682, 0x256C0, 0x25704, 0x25742, 0x25782, когда (группа - 1) × 3 выходит за 29. Группу 11 берут 1-я передача P0-P3 и код передачи 6 у PB (0x70970), группу 12 заводом не берёт ни одна программа. Группа 11 на педали 0-224 = 202 / 202 / 202 (никогда), на 230 / 240 / 255 = 10 / 11 / 12: в D и S в пол муфта на 1-й замыкается с n_вых/32 выше 12 (турбина около 1410 об/мин), BMW 15C0 с 17 (около 1990), в 19D0 на 1-й блокировки нет (маска 0x8978). Единица та же: обороты выходного вала / 32.",
    "categories": [
     2
    ],
@@ -2212,7 +2212,7 @@
    },
    "uid": 8225,
    "title_en": "TCC: lock-up thresholds, columns 30-35 = groups 11-12 (0x71AD0, 20C0 only)",
-   "description_en": "Groups 11 and 12 of the lock-up thresholds, 20C0 only (slot 36 of the pointer catalog)."
+   "description_en": "Groups 11 and 12 of the lock-up thresholds, 20C0 only (slot 36 of the pointer catalog). Group 11 = 1st gear of P0-P3 (D and S): 202 (never) at pedal 0-224, 10 / 11 / 12 at 230 / 240 / 255, so with the pedal floored the converter locks in 1st above n_out/32 = 12 (turbine about 1410 rpm); BMW 15C0 from 17, 19D0 has no lock-up in 1st. Group 12 is used by no program."
   },
   {
    "kind": "constant",
@@ -2240,7 +2240,7 @@
   {
    "kind": "table",
    "title": "ГДТ: группа порогов первой проверки по программе и передаче 1-6 (0x70970)",
-   "description": "Байт [0x70970 + 6 × [0xFFFF914C] + [0xFFFF9160] - 1] (0x255F6-0x2561A). 0 = решения нет. Группы 1-10 в 0x71996, 11-12 в 0x71AD0. Завод P0-P3: 11, 4, 1, 2, 3, 0, PB: 0, 5, 8, 9, 10, 11.",
+   "description": "Байт [0x70970 + 6 × [0xFFFF914C] + [0xFFFF9160] - 1] (0x255F6-0x2561A). 0 = решения нет. Группы 1-10 в 0x71996, 11-12 в 0x71AD0. Завод P0-P3: 11, 4, 1, 2, 3, 0, PB: 0, 5, 8, 9, 10, 11 (D и S одни группы, M свои). Группа 11 = 1-я передача в пол (0x71AD0).",
    "categories": [
     2
    ],
@@ -2312,7 +2312,7 @@
    },
    "uid": 8227,
    "title_en": "TCC: threshold group of the first check by program and gear 1-6 (0x70970)",
-   "description_en": "Group index into 0x71996 for the first check, per program and gear."
+   "description_en": "Group index into 0x71996 for the first check, per program and gear. Factory P0-P3: 11, 4, 1, 2, 3, 0 (D and S share the groups), PB: 0, 5, 8, 9, 10, 11. Group 11 = 1st gear with the pedal floored (0x71AD0)."
   },
   {
    "kind": "table",
@@ -3146,8 +3146,89 @@
   },
   {
    "kind": "table",
+   "title": "AGS: верхняя граница очков, ветки D / S, завод 90 / 255 (0x7088E)",
+   "description": "0x18E66 movea.l #$7088e: очки AGS [ветка] не выше байта (0x18E6C-0x18E7A). Пара 19D0 0x8878/0x8879 = 128 / 255, BMW 15C0 128 / 255. D с 90 не выходит из уровня 2 (лестница 0x70898), S от 129 до 255 = уровни 3-4.",
+   "categories": [
+    1
+   ],
+   "confidence": "proven",
+   "proof": "код: 0x18E66",
+   "x": {
+    "addr": null,
+    "bits": 8,
+    "count": 2,
+    "labels": [
+     "D",
+     "S"
+    ],
+    "units": "ветка",
+    "math": "X",
+    "signed": false,
+    "lsb_first": false,
+    "major": -32,
+    "minor": 0,
+    "units_en": "branch"
+   },
+   "y": {
+    "addr": null,
+    "bits": 8,
+    "count": 1,
+    "labels": [
+     "очки"
+    ],
+    "units": "строка",
+    "math": "X",
+    "signed": false,
+    "lsb_first": false,
+    "major": -32,
+    "minor": 0,
+    "units_en": "row"
+   },
+   "z": {
+    "addr": 460942,
+    "bits": 8,
+    "rows": 1,
+    "cols": 2,
+    "signed": false,
+    "lsb_first": false,
+    "math": "X",
+    "units": "очки",
+    "decimals": 0,
+    "major": 0,
+    "minor": 0,
+    "units_en": "points"
+   },
+   "uid": 9964,
+   "title_en": "AGS: upper points limit, branches D / S, factory 90 / 255 (0x7088E)",
+   "description_en": "0x18E66: AGS points per branch not above the byte. 19D0 pair 0x8878/0x8879 = 128 / 255, BMW 15C0 128 / 255. D stays within level 2 (ladder 0x70898), S runs 129-255 = levels 3-4."
+  },
+  {
+   "kind": "constant",
+   "title": "AGS: очки не ниже байта при [0xFFFF918C] = 2, завод 193 = уровень 4 (0x70892, только 20C0)",
+   "description": "0x18E20-0x18E34 и 0x18E80-0x18E8A: при [0xFFFF918C] = 2 (биты 0-1 байта 2 сообщения CAN 0x338, 0x1CF20-0x1CF2C) очки AGS не ниже байта вместо границы ветки. Вместе с [0x70967] = 3 это P3 (S, уровень AGS 4). Смысл значения 2 не установлен.",
+   "categories": [
+    1
+   ],
+   "confidence": "proven",
+   "proof": "код: 0x18E2C 0x18E8A",
+   "z": {
+    "addr": 460946,
+    "bits": 8,
+    "signed": false,
+    "lsb_first": false,
+    "units": "очки",
+    "decimals": 0,
+    "math": "X",
+    "units_en": "points"
+   },
+   "uid": 9965,
+   "title_en": "AGS: points not below the byte when [0xFFFF918C] = 2, factory 193 = level 4 (0x70892, 20C0 only)",
+   "description_en": "0x18E20-0x18E34, 0x18E80-0x18E8A: with [0xFFFF918C] = 2 (bits 0-1 of byte 2 of CAN 0x338) the AGS points stay at or above the byte. Together with [0x70967] = 3 this is P3 (S, AGS level 4). Meaning of value 2 not established."
+  },
+  {
+   "kind": "table",
    "title": "AGS: нижняя граница очков, ветки D / S, завод 32 / 129 (0x70890)",
-   "description": "0x18E42 movea.l #$70890 (пара 19D0 0x1DCB8 movea.l #$887a → 0x887C/0x887D). Верхние границы 19D0 0x8878/0x8879 в 20C0 не найдены.",
+   "description": "0x18E42 movea.l #$70890 (пара 19D0 0x1DCB8 movea.l #$887a → 0x887C/0x887D). Верхняя граница: 0x7088E.",
    "categories": [
     1
    ],
@@ -3200,7 +3281,7 @@
    },
    "uid": 8244,
    "title_en": "AGS: lower points limit, branches D / S, factory 32 / 129 (0x70890)",
-   "description_en": "AGS (adaptive program selection) points lower limit per branch."
+   "description_en": "AGS (adaptive program selection) points lower limit per branch. Upper limit: 0x7088E."
   },
   {
    "kind": "table",
@@ -3543,7 +3624,7 @@
   {
    "kind": "constant",
    "title": "Программа в левой кулисе при [0xFFFF918C] ≠ 2, завод 0x0B = PB (0x70966)",
-   "description": "0x1EB88 cmp.b, 0x1EBE4 move.b: код 0x0B (PB, матрица k10) ставится сразу при рычаге в кулисе, без нажатия +/-. Пара 19D0 0x8975 = 0xFE (там до нажатия — S). Также читают 0x1DB78-0x1DB8C, 0x1FE1C-0x1FE2C.",
+   "description": "0x1EB88 cmp.b, 0x1EBE4 move.b: код 0x0B (PB, матрица k10, M) ставится сразу при рычаге в кулисе, без нажатия +/-. Пара 19D0 0x8975: у BMW 19C0 и BMW 15C0 0xFE (до первого нажатия +/- кулиса даёт S, P2/P3), у Alpina 19D0 620P 0x0B, как здесь. 0xFE ставит кулису в S до нажатия (патч gate:mode=S, документ 13). Также читают 0x1DB78-0x1DB8C, 0x1FE1C-0x1FE2C.",
    "categories": [
     1
    ],
@@ -3561,12 +3642,12 @@
    },
    "uid": 8253,
    "title_en": "Program in the left gate when [0xFFFF918C] != 2, factory 0x0B = PB (0x70966)",
-   "description_en": "Code 0x0B (PB, matrix k10) is set as soon as the lever is in the gate, without +/-."
+   "description_en": "Code 0x0B (PB, matrix k10, M) is set as soon as the lever is in the gate, without +/-. 19D0 pair 0x8975: BMW 19C0 and BMW 15C0 have 0xFE (the gate gives S until the first +/- tap), Alpina 19D0 620P has 0x0B like this file. Patch gate:mode=S writes 0xFE (document 13)."
   },
   {
    "kind": "constant",
    "title": "Программа в левой кулисе при [0xFFFF918C] = 2, завод 3 (0x70967, только 20C0)",
-   "description": "0x1EB94 cmp.b, 0x1EBDC move.b. [0xFFFF918C] = биты 0-1 байта 2 сообщения CAN 0x338 (0x1CF20-0x1CF2C). Смысл значения 2 не установлен.",
+   "description": "0x1EB94 cmp.b, 0x1EBDC move.b. [0xFFFF918C] = биты 0-1 байта 2 сообщения CAN 0x338 (0x1CF20-0x1CF2C). Код 3 = P3 (S, k15) до первого нажатия +/-, потом M (защёлка [0xFFFF9112]); очки AGS при этом не ниже [0x70892] = 193. Смысл значения 2 не установлен.",
    "categories": [
     1
    ],
@@ -3584,7 +3665,7 @@
    },
    "uid": 8254,
    "title_en": "Program in the left gate when [0xFFFF918C] = 2, factory 3 (0x70967, 20C0 only)",
-   "description_en": "[0xFFFF918C] = bits 0-1 of byte 2 of CAN 0x338; meaning of value 2 not established."
+   "description_en": "[0xFFFF918C] = bits 0-1 of byte 2 of CAN 0x338. Code 3 = P3 (S, k15) until the first +/- tap, then M (latch [0xFFFF9112]); the AGS points stay at or above [0x70892] = 193. Meaning of value 2 not established."
   },
   {
    "kind": "table",
@@ -3650,8 +3731,8 @@
   },
   {
    "kind": "table",
-   "title": "Прибавка к порогу повышения по передаче 1-6 при [0xFFFF91B3] = 2, завод 4 / 2 / 2 / 5 / 0 / 4 (0x70B98, только 20C0)",
-   "description": "0x20D8E: при [0xFFFF91B3] = 2 байт 0x70B98[передача - 1] → [0xFFFF9143] (0x20DAA-0x20DB0), иначе 0. 0x2061E прибавляет [0xFFFF9143] к порогу матрицы (0x20660-0x20670). Смысл [0xFFFF91B3] = 2 не установлен.",
+   "title": "Прибавка к порогу повышения по передаче 1-6 при замкнутой ГДТ, завод 4 / 2 / 2 / 5 / 0 / 4 (0x70B98, только 20C0)",
+   "description": "0x20D8E: при [0xFFFF91B3] = 2 байт 0x70B98[передача - 1] → [0xFFFF9143] (0x20DAA-0x20DB0), иначе 0. 0x2061E прибавляет [0xFFFF9143] к порогу матрицы (0x20660-0x20670), сложение 16 бит с потолком 255. [0xFFFF91B3] = состояние муфты ГДТ (0 разомкнута, 1 скольжение, 2 замкнута): 0x405F8 копирует [0xFFFF92D6] = [0xFFFF95EB], его пишет 0x4C4B2 (пара 19D0 0x33F66) по состоянию автомата муфты (разбор 06.10.2026). Завод при замкнутой ГДТ: 1-2 позже на 469 об/мин турбины, 2-3 на 128, 3-4 на 90, 4-5 на 160. В 19D0 этой прибавки нет. Ручной порог вверх у отсечки считать с ней (tools/egs_tables.py verify-shift).",
    "categories": [
     0
    ],
@@ -3707,8 +3788,8 @@
     "units_en": "output shaft rpm / 32"
    },
    "uid": 8256,
-   "title_en": "Upshift threshold offset per gear 1-6 when [0xFFFF91B3] = 2, factory 4 / 2 / 2 / 5 / 0 / 4 (0x70B98, 20C0 only)",
-   "description_en": "Added to the matrix threshold (0x2061E); meaning of [0xFFFF91B3] = 2 not established."
+   "title_en": "Upshift threshold offset per gear 1-6 with the converter locked, factory 4 / 2 / 2 / 5 / 0 / 4 (0x70B98, 20C0 only)",
+   "description_en": "Added to the matrix threshold (0x2061E, 16-bit add capped at 255) when [0xFFFF91B3] = 2; [0xFFFF91B3] is the TCC clutch state (0 open, 1 slip, 2 locked), copied at 0x405F8 from [0xFFFF95EB] written by 0x4C4B2 (19D0 pair 0x33F66). Factory with the converter locked: 1-2 later by 469 turbine rpm, 2-3 by 128, 3-4 by 90, 4-5 by 160. Not in 19D0. Count it in a manual upshift threshold at the cut (egs_tables.py verify-shift)."
   },
   {
    "kind": "table",
@@ -3775,7 +3856,7 @@
   {
    "kind": "constant",
    "title": "Запрос повышения по оборотам мотора: верхний предел [0xFFFF9066] (сырая ATF), завод 40 (0x7011B)",
-   "description": "0x105EA cmp.b $7011b: 0x105DE работает только при [0xFFFF9066] не больше 40. [0xFFFF9066] = младший байт [0xFFFF8C8C] из таблицы датчика ATF 0x71B66 (по 19D0 сырая температура со смещением 50, 40 ≈ -10 °C).",
+   "description": "0x105EA cmp.b $7011b: 0x105DE работает только при [0xFFFF9066] не больше 40. [0xFFFF9066] = младший байт [0xFFFF8C8C] из таблицы датчика ATF 0x71B66 (перевод сырой ATF в °C кодом не установлен, документ 03 §6).",
    "categories": [
     0
    ],
@@ -3793,7 +3874,7 @@
    },
    "uid": 8258,
    "title_en": "Upshift request by engine speed: upper limit of [0xFFFF9066] (raw ATF), factory 40 (0x7011B)",
-   "description_en": "0x105DE works only with raw ATF not above 40 (about -10 °C per 19D0)."
+   "description_en": "0x105DE works only with raw ATF not above 40 (the °C scale of raw ATF is not established by code, document 03 section 6)."
   },
   {
    "kind": "constant",
@@ -4571,7 +4652,7 @@
   {
    "kind": "table",
    "title": "Датчик ATF: мВ → сырая температура (0x71B66, слот 41)",
-   "description": "Слот 41 каталога (0x71C66), читает 0x1C5AC-0x1C5C2 → [0xFFFF8C8C], младший байт → [0xFFFF9066] (0x1C610). Совпадает с 19D0 0x9A82 (X 1014…2673 мВ, значения 0…215, по 19D0 смещение 50).",
+   "description": "Слот 41 каталога (0x71C66), читает 0x1C5AC-0x1C5C2 → [0xFFFF8C8C], младший байт → [0xFFFF9066] (0x1C610). Совпадает с 19D0 0x9A82 (X 1014…2673 мВ, значения 0…215). В кадр 0B 03 идёт байтом 6 как [0xFFFF8C8C] + 15. Перевод сырой ATF в °C кодом не установлен (документ 03 §6).",
    "categories": [
     11
    ],
@@ -4613,37 +4694,113 @@
     "signed": false,
     "lsb_first": false,
     "math": "X",
-    "units": "сырое (°C + 50 по 19D0)",
+    "units": "сырое ATF",
     "decimals": 0,
     "major": 0,
     "minor": 0,
-    "units_en": "raw (°C + 50 per 19D0)"
+    "units_en": "raw ATF"
    },
    "uid": 8276,
    "title_en": "ATF sensor: mV -> raw temperature (0x71B66, slot 41)",
-   "description_en": "Raw ATF = °C + 50 per 19D0."
+   "description_en": "Equal to 19D0 0x9A82. Frame 0B 03 byte 6 = [0xFFFF8C8C] + 15. The conversion of raw ATF to °C is not established by code (document 03 section 6)."
+  },
+  {
+   "kind": "constant",
+   "title": "Прогрев: конец по скорости, n_вых/32 не ниже байта, завод 48 = 1536 об/мин вых. вала (0x70BAC). 0 = прогрева нет",
+   "description": "0x251A0 cmp.b $70bac (единственная ссылка): [0xFFFF9138] не ниже байта -> флаг [0xFFFF9088] = 0 и [0xFFFF912C] = 0 (0x252AA-0x252B8). При 0 условие верно сразу. Пара 19D0 0x8B48 = 48. Программа прогрева 0x25182 (пара 19D0 0x28D50, разбор 06.10.2026): флаг [0xFFFF9088] = 1 ставит 0x10994 (функция 0x1098A, она же копирует температуру мотора при включении, 0x109A4), сбрасывают 0x252B8 и 0x18F0E, состояния 1-4. Пока флаг не 0, матрицы переключения видят педаль [0xFFFF912C] = max(педаль [0xFFFF912A], 0x7013A(температура мотора, программа)) (0x2072A-0x2073C). Конец: n_вых/32 [0xFFFF9138] не ниже [0x70BAC] (0x251A0), бит 3 байта CAN [0xFFFF83E1] ([0xFFFF90A5], 0x1CE90), кончился счётчик 0x71B52 или таблица 0x7013A дала 0. Температура мотора [0xFFFF906A] = байт CAN [0xFFFF83DF] x 3 / 4 (0x1CE44, °C + 48), копия при включении [0xFFFF906C]. Пары 19D0 с теми же данными: 0x8142, 0x8141, 0x81CC, 0x9A6E, 0x9A78, 0x8B48. Документ 05 §2 до 06.10.2026 называл это «термодерейтом»: неверно, это прогрев.",
+   "categories": [
+    1
+   ],
+   "confidence": "proven",
+   "proof": "код: 0x251A0",
+   "z": {
+    "addr": 461740,
+    "bits": 8,
+    "signed": false,
+    "lsb_first": false,
+    "units": "об/мин вых. вала / 32",
+    "decimals": 0,
+    "math": "X",
+    "units_en": "output shaft rpm / 32"
+   },
+   "uid": 9966,
+   "title_en": "Warm-up: end by speed, n_out/32 not below the byte, factory 48 = 1536 output rpm (0x70BAC). 0 = no warm-up program",
+   "description_en": "0x251A0 (the only reference) ends the warm-up program 0x25182 (19D0 pair 0x28D50; flag [0xFFFF9088], set at power-on). While it runs the shift matrices see the pedal [0xFFFF912C] = max(pedal, 0x7013A(engine temperature, program)). Other ends: bit 3 of CAN byte [0xFFFF83E1], the counter 0x71B52 or the table 0x7013A reaching 0. 19D0 pair 0x8B48. Document 05 called this a thermal derate until 06.10.2026: wrong, it is the warm-up."
   },
   {
    "kind": "table",
-   "title": "Термодерейт по ATF: температура → счётчик, завод 83 / 93 / 103 / 113 → 170 / 90 / 55 / 0 (0x71B52, слот 39)",
-   "description": "Слот 39 каталога (0x71C5E), читает 0x251FC. Значения и оси равны 19D0 0x9A6E (документ 05 §2, там читает 0x28DCA по [0xFFFF90D5]). Роль перенесена по положению в каталоге и совпадению данных: структура.",
+   "title": "Прогрев: педаль для матриц по температуре мотора и программе, P0 / P1 / P7 = 102 (40 %) до 55 °C, 0 с 65 °C (0x7013A)",
+   "description": "0x25226, 0x2523E, 0x2528C pea.l $7013a, вызов 0x19BD2 (X = температура мотора [0xFFFF906A], °C + 48: 18 / 93 / 103 / 113 = -30 / 45 / 55 / 65 °C; Y = программа [0xFFFF914C]). Результат d7 -> [0xFFFF912C] = max(d7, d6, педаль). Пара 19D0 0x8142 (через слот каталога 0x9ADC), данные равны. В состоянии 4 ноль результата кончает прогрев (0x2529E). Программа прогрева 0x25182 (пара 19D0 0x28D50, разбор 06.10.2026): флаг [0xFFFF9088] = 1 ставит 0x10994 (функция 0x1098A, она же копирует температуру мотора при включении, 0x109A4), сбрасывают 0x252B8 и 0x18F0E, состояния 1-4. Пока флаг не 0, матрицы переключения видят педаль [0xFFFF912C] = max(педаль [0xFFFF912A], 0x7013A(температура мотора, программа)) (0x2072A-0x2073C). Конец: n_вых/32 [0xFFFF9138] не ниже [0x70BAC] (0x251A0), бит 3 байта CAN [0xFFFF83E1] ([0xFFFF90A5], 0x1CE90), кончился счётчик 0x71B52 или таблица 0x7013A дала 0. Температура мотора [0xFFFF906A] = байт CAN [0xFFFF83DF] x 3 / 4 (0x1CE44, °C + 48), копия при включении [0xFFFF906C]. Пары 19D0 с теми же данными: 0x8142, 0x8141, 0x81CC, 0x9A6E, 0x9A78, 0x8B48. Документ 05 §2 до 06.10.2026 называл это «термодерейтом»: неверно, это прогрев.",
    "categories": [
-    11
+    1
    ],
-   "confidence": "structure",
-   "proof": "структура: слот 0x71C5E читает 0x251FC, данные = 19D0 0x9A6E",
+   "confidence": "proven",
+   "proof": "код: 0x25226 0x2523E 0x2528C",
    "x": {
-    "addr": 465748,
+    "addr": 459070,
     "bits": 8,
     "count": 4,
     "labels": [],
-    "units": "°C",
+    "units": "°C + 48 (мотор)",
     "math": "X",
     "signed": false,
     "lsb_first": false,
     "major": 0,
     "minor": 0,
-    "units_en": "°C"
+    "units_en": "°C + 48 (engine)"
+   },
+   "y": {
+    "addr": 459074,
+    "bits": 8,
+    "count": 16,
+    "labels": [],
+    "units": "программа",
+    "math": "X",
+    "signed": false,
+    "lsb_first": false,
+    "major": 0,
+    "minor": 0,
+    "units_en": "program"
+   },
+   "z": {
+    "addr": 459090,
+    "bits": 8,
+    "rows": 16,
+    "cols": 4,
+    "signed": false,
+    "lsb_first": false,
+    "math": "X",
+    "units": "педаль коробки",
+    "decimals": 0,
+    "major": 0,
+    "minor": 0,
+    "units_en": "gearbox pedal"
+   },
+   "uid": 8303,
+   "title_en": "Warm-up: pedal for the matrices by engine temperature and program, P0 / P1 / P7 = 102 (40 %) up to 55 °C, 0 from 65 °C (0x7013A)",
+   "description_en": "Read at 0x25226, 0x2523E, 0x2528C (0x19BD2, X = engine temperature [0xFFFF906A], °C + 48: 18 / 93 / 103 / 113 = -30 / 45 / 55 / 65 °C; Y = program). Result -> [0xFFFF912C] = max(result, pedal) while the warm-up runs. 19D0 pair 0x8142, same data."
+  },
+  {
+   "kind": "table",
+   "title": "Прогрев: счётчик по температуре мотора при включении, завод 35 / 45 / 55 / 65 °C → 170 / 90 / 55 / 0 (0x71B52, слот 39)",
+   "description": "Слот 39 каталога (0x71C5E), 0x251FC-0x25210: [0xFFFF91CE] = поле(температура мотора при включении [0xFFFF906C], °C + 48) в состоянии 1. 0x21FC4 уменьшает [0xFFFF91CE] на 1 раз в 100 отсчётов таймера (0x21F86-0x21F94). В состоянии 4 ноль счётчика кончает прогрев (0x25280-0x25288). Пара 19D0 0x9A6E, данные равны. Программа прогрева 0x25182 (пара 19D0 0x28D50, разбор 06.10.2026): флаг [0xFFFF9088] = 1 ставит 0x10994 (функция 0x1098A, она же копирует температуру мотора при включении, 0x109A4), сбрасывают 0x252B8 и 0x18F0E, состояния 1-4. Пока флаг не 0, матрицы переключения видят педаль [0xFFFF912C] = max(педаль [0xFFFF912A], 0x7013A(температура мотора, программа)) (0x2072A-0x2073C). Конец: n_вых/32 [0xFFFF9138] не ниже [0x70BAC] (0x251A0), бит 3 байта CAN [0xFFFF83E1] ([0xFFFF90A5], 0x1CE90), кончился счётчик 0x71B52 или таблица 0x7013A дала 0. Температура мотора [0xFFFF906A] = байт CAN [0xFFFF83DF] x 3 / 4 (0x1CE44, °C + 48), копия при включении [0xFFFF906C]. Пары 19D0 с теми же данными: 0x8142, 0x8141, 0x81CC, 0x9A6E, 0x9A78, 0x8B48. Документ 05 §2 до 06.10.2026 называл это «термодерейтом»: неверно, это прогрев.",
+   "categories": [
+    1
+   ],
+   "confidence": "proven",
+   "proof": "код: 0x251FC",
+   "x": {
+    "addr": 465748,
+    "bits": 8,
+    "count": 4,
+    "labels": [],
+    "units": "°C + 48 (мотор)",
+    "math": "X",
+    "signed": false,
+    "lsb_first": false,
+    "major": 0,
+    "minor": 0,
+    "units_en": "°C + 48 (engine)"
    },
    "y": {
     "addr": null,
@@ -4675,30 +4832,30 @@
     "units_en": "counter"
    },
    "uid": 8277,
-   "title_en": "ATF derate: temperature -> counter, factory 83 / 93 / 103 / 113 -> 170 / 90 / 55 / 0 (0x71B52, slot 39)",
-   "description_en": "Slot 39 of the pointer catalog."
+   "title_en": "Warm-up: counter by engine temperature at power-on, factory 35 / 45 / 55 / 65 °C -> 170 / 90 / 55 / 0 (0x71B52, slot 39)",
+   "description_en": "Slot 39 (0x71C5E), read at 0x251FC -> [0xFFFF91CE] (engine temperature at power-on [0xFFFF906C], °C + 48), counted down by 0x21FC4 once per 100 timer counts. In state 4 a zero counter ends the warm-up program 0x25182. 19D0 pair 0x9A6E, same data."
   },
   {
    "kind": "table",
-   "title": "Не расшифровано 71B5C (1D8 4×1), слот 40, пара 19D0 0x9A78 (нули)",
-   "description": "Слот 40 каталога (0x71C62), читает 0x251E6. В 19D0 0x9A78 → [0xFFFF9210], тоже нули.",
+   "title": "Прогрев: счётчик ветки 0x701BE по температуре мотора при включении, завод нули (0x71B5C, слот 40)",
+   "description": "Слот 40 каталога (0x71C62), 0x251E6-0x251FA: [0xFFFF91CF] = поле([0xFFFF906C]) в состоянии 1, 0x21FB6 уменьшает его тем же таймером. Пока не 0 и мотор холоднее [0x70139], нижний предел педали = 0x701BE[программа]. Завод 0: ветка не работает. Пара 19D0 0x9A78 (тоже нули). Программа прогрева 0x25182 (пара 19D0 0x28D50, разбор 06.10.2026): флаг [0xFFFF9088] = 1 ставит 0x10994 (функция 0x1098A, она же копирует температуру мотора при включении, 0x109A4), сбрасывают 0x252B8 и 0x18F0E, состояния 1-4. Пока флаг не 0, матрицы переключения видят педаль [0xFFFF912C] = max(педаль [0xFFFF912A], 0x7013A(температура мотора, программа)) (0x2072A-0x2073C). Конец: n_вых/32 [0xFFFF9138] не ниже [0x70BAC] (0x251A0), бит 3 байта CAN [0xFFFF83E1] ([0xFFFF90A5], 0x1CE90), кончился счётчик 0x71B52 или таблица 0x7013A дала 0. Температура мотора [0xFFFF906A] = байт CAN [0xFFFF83DF] x 3 / 4 (0x1CE44, °C + 48), копия при включении [0xFFFF906C]. Пары 19D0 с теми же данными: 0x8142, 0x8141, 0x81CC, 0x9A6E, 0x9A78, 0x8B48. Документ 05 §2 до 06.10.2026 называл это «термодерейтом»: неверно, это прогрев.",
    "categories": [
-    15
+    1
    ],
-   "confidence": "unknown",
+   "confidence": "proven",
    "proof": "код: 0x251E6",
    "x": {
     "addr": 465758,
     "bits": 8,
     "count": 4,
     "labels": [],
-    "units": "°C",
+    "units": "°C + 48 (мотор)",
     "math": "X",
     "signed": false,
     "lsb_first": false,
     "major": 0,
     "minor": 0,
-    "units_en": "°C"
+    "units_en": "°C + 48 (engine)"
    },
    "y": {
     "addr": null,
@@ -4723,15 +4880,156 @@
     "signed": false,
     "lsb_first": false,
     "math": "X",
-    "units": "сырое",
+    "units": "счётчик",
     "decimals": 0,
     "major": 0,
     "minor": 0,
-    "units_en": "raw"
+    "units_en": "counter"
    },
    "uid": 8278,
-   "title_en": "Unknown 71B5C (1D8 4×1), slot 40, 19D0 pair 0x9A78 (zeros)",
-   "description_en": "Shape proven (table header and axes, or pointer packing); role not established. Proof: 0x251E6."
+   "title_en": "Warm-up: counter of the 0x701BE branch by engine temperature at power-on, factory zeros (0x71B5C, slot 40)",
+   "description_en": "Slot 40 (0x71C62), read at 0x251E6 -> [0xFFFF91CF], counted down by 0x21FB6. While not 0 and the engine is colder than [0x70139] the pedal floor is 0x701BE[program]. Factory 0: the branch is off. 19D0 pair 0x9A78 (zeros)."
+  },
+  {
+   "kind": "constant",
+   "title": "Прогрев: температура мотора, с которой ветка 0x701BE выключается, завод 113 = 65 °C (0x70139)",
+   "description": "0x2525C cmp.b $70139: [0xFFFF906A] не ниже байта -> [0xFFFF91CF] = 0 и нижний предел 0x701BE снят (0x25264-0x25268). Пара 19D0 0x8141. Программа прогрева 0x25182 (пара 19D0 0x28D50, разбор 06.10.2026): флаг [0xFFFF9088] = 1 ставит 0x10994 (функция 0x1098A, она же копирует температуру мотора при включении, 0x109A4), сбрасывают 0x252B8 и 0x18F0E, состояния 1-4. Пока флаг не 0, матрицы переключения видят педаль [0xFFFF912C] = max(педаль [0xFFFF912A], 0x7013A(температура мотора, программа)) (0x2072A-0x2073C). Конец: n_вых/32 [0xFFFF9138] не ниже [0x70BAC] (0x251A0), бит 3 байта CAN [0xFFFF83E1] ([0xFFFF90A5], 0x1CE90), кончился счётчик 0x71B52 или таблица 0x7013A дала 0. Температура мотора [0xFFFF906A] = байт CAN [0xFFFF83DF] x 3 / 4 (0x1CE44, °C + 48), копия при включении [0xFFFF906C]. Пары 19D0 с теми же данными: 0x8142, 0x8141, 0x81CC, 0x9A6E, 0x9A78, 0x8B48. Документ 05 §2 до 06.10.2026 называл это «термодерейтом»: неверно, это прогрев.",
+   "categories": [
+    1
+   ],
+   "confidence": "proven",
+   "proof": "код: 0x2525C",
+   "z": {
+    "addr": 459065,
+    "bits": 8,
+    "signed": false,
+    "lsb_first": false,
+    "units": "°C + 48 (мотор)",
+    "decimals": 0,
+    "math": "X",
+    "units_en": "°C + 48 (engine)"
+   },
+   "uid": 9967,
+   "title_en": "Warm-up: engine temperature that ends the 0x701BE branch, factory 113 = 65 °C (0x70139)",
+   "description_en": "0x2525C: engine temperature not below the byte clears [0xFFFF91CF] and the 0x701BE floor. 19D0 pair 0x8141."
+  },
+  {
+   "kind": "table",
+   "title": "Прогрев: нижний предел педали по программе P0-PF, пока [0xFFFF91CF] не 0, завод нули (0x701BE)",
+   "description": "0x2521C и 0x25274 movea.l #$701be, байт[[0xFFFF914C]] -> d6 -> [0xFFFF912C] = max(d6, d7, педаль). Завод: все 0. Программа прогрева 0x25182 (пара 19D0 0x28D50, разбор 06.10.2026): флаг [0xFFFF9088] = 1 ставит 0x10994 (функция 0x1098A, она же копирует температуру мотора при включении, 0x109A4), сбрасывают 0x252B8 и 0x18F0E, состояния 1-4. Пока флаг не 0, матрицы переключения видят педаль [0xFFFF912C] = max(педаль [0xFFFF912A], 0x7013A(температура мотора, программа)) (0x2072A-0x2073C). Конец: n_вых/32 [0xFFFF9138] не ниже [0x70BAC] (0x251A0), бит 3 байта CAN [0xFFFF83E1] ([0xFFFF90A5], 0x1CE90), кончился счётчик 0x71B52 или таблица 0x7013A дала 0. Температура мотора [0xFFFF906A] = байт CAN [0xFFFF83DF] x 3 / 4 (0x1CE44, °C + 48), копия при включении [0xFFFF906C]. Пары 19D0 с теми же данными: 0x8142, 0x8141, 0x81CC, 0x9A6E, 0x9A78, 0x8B48. Документ 05 §2 до 06.10.2026 называл это «термодерейтом»: неверно, это прогрев.",
+   "categories": [
+    1
+   ],
+   "confidence": "proven",
+   "proof": "код: 0x2521C 0x25274",
+   "x": {
+    "addr": null,
+    "bits": 8,
+    "count": 16,
+    "labels": [
+     "P0",
+     "P1",
+     "P2",
+     "P3",
+     "P4",
+     "P5",
+     "P6",
+     "P7",
+     "P8",
+     "P9",
+     "PA",
+     "PB",
+     "PC",
+     "PD",
+     "PE",
+     "PF"
+    ],
+    "units": "программа",
+    "math": "X",
+    "signed": false,
+    "lsb_first": false,
+    "major": -32,
+    "minor": 0,
+    "units_en": "program"
+   },
+   "y": {
+    "addr": null,
+    "bits": 8,
+    "count": 1,
+    "labels": [
+     "педаль"
+    ],
+    "units": "строка",
+    "math": "X",
+    "signed": false,
+    "lsb_first": false,
+    "major": -32,
+    "minor": 0,
+    "units_en": "row"
+   },
+   "z": {
+    "addr": 459198,
+    "bits": 8,
+    "rows": 1,
+    "cols": 16,
+    "signed": false,
+    "lsb_first": false,
+    "math": "X",
+    "units": "педаль коробки",
+    "decimals": 0,
+    "major": 0,
+    "minor": 0,
+    "units_en": "gearbox pedal"
+   },
+   "uid": 9968,
+   "title_en": "Warm-up: pedal floor by program P0-PF while [0xFFFF91CF] is not 0, factory zeros (0x701BE)",
+   "description_en": "0x2521C and 0x25274: byte[program] -> [0xFFFF912C] = max(byte, table 0x7013A, pedal). Factory all 0."
+  },
+  {
+   "kind": "constant",
+   "title": "Кикдаун: источник, 1 = бит DME2 по CAN ([0xFFFF90BA]), 0 = контакт педали и педаль выше 0x70232, завод 1 (0x70D6A)",
+   "description": "0x1BCA4 tst.b $70d6a: не 0 -> [0xFFFF90B7] = [0xFFFF90BA] (0x1BD9C, бит 2 байта 6 DME2 по CAN); 0 -> контакт бит 7 порта [0xFFFF8A0A] (активный 0, фильтр [0x70ED6] опросов) и педаль [0xFFFF912A] выше [0x70232] (0x1BCB4-0x1BD92). Ещё читает 0x1A16A. Пара 19D0 0x8D1A (E39 = 0, контакт). Убрать кикдаун: 0 сюда и 255 в 0x70232 (патч no-kickdown, документ 13). Кикдаун 0x1BC9C (пара 19D0 0x205FC, разбор 06.10.2026) -> флаг [0xFFFF90B7]: при нём матрицы берут педаль 255 (0x206F8-0x20728), AGS не считается (0x1908C), ручная ветка M пропускается (0x2047E): в M с педалью в пол +/- не работают (документ 02 §5).",
+   "categories": [
+    13
+   ],
+   "confidence": "proven",
+   "proof": "код: 0x1BCA4 0x1A16A",
+   "z": {
+    "addr": 462186,
+    "bits": 8,
+    "signed": false,
+    "lsb_first": false,
+    "units": "флаг",
+    "decimals": 0,
+    "math": "X",
+    "units_en": "flag"
+   },
+   "uid": 9969,
+   "title_en": "Kick-down: source, 1 = DME2 bit over CAN ([0xFFFF90BA]), 0 = pedal switch and pedal above 0x70232, factory 1 (0x70D6A)",
+   "description_en": "0x1BCA4: not 0 -> kick-down flag [0xFFFF90B7] = [0xFFFF90BA] (bit 2 of byte 6 of DME2); 0 -> switch on bit 7 of port [0xFFFF8A0A] (active low, filtered over [0x70ED6] samples) and pedal above [0x70232]. With the flag the matrices use pedal 255 (0x206F8), AGS is not updated (0x1908C) and the manual M branch is skipped (0x2047E): in M +/- do not work with the pedal floored. 19D0 pair 0x8D1A (E39 = 0, switch). Kick-down off: 0 here and 255 in 0x70232 (patch no-kickdown, document 13)."
+  },
+  {
+   "kind": "constant",
+   "title": "Кикдаун: порог педали в ветке контакта, завод 230 (0x70232)",
+   "description": "0x1BD82 cmp.b $70232 (единственная ссылка): педаль [0xFFFF912A] выше байта и контакт -> кикдаун. Работает только при [0x70D6A] = 0. Педаль коробки не выше 254, поэтому 255 = никогда. Пара 19D0 0x8246. Кикдаун 0x1BC9C (пара 19D0 0x205FC, разбор 06.10.2026) -> флаг [0xFFFF90B7]: при нём матрицы берут педаль 255 (0x206F8-0x20728), AGS не считается (0x1908C), ручная ветка M пропускается (0x2047E): в M с педалью в пол +/- не работают (документ 02 §5).",
+   "categories": [
+    13
+   ],
+   "confidence": "proven",
+   "proof": "код: 0x1BD82",
+   "z": {
+    "addr": 459314,
+    "bits": 8,
+    "signed": false,
+    "lsb_first": false,
+    "units": "педаль коробки",
+    "decimals": 0,
+    "math": "X",
+    "units_en": "gearbox pedal"
+   },
+   "uid": 9970,
+   "title_en": "Kick-down: pedal threshold of the switch path, factory 230 (0x70232)",
+   "description_en": "0x1BD82 (the only reference): pedal above the byte and the switch -> kick-down; used only with [0x70D6A] = 0. The gearbox pedal is at most 254, so 255 = never. 19D0 pair 0x8246."
   },
   {
    "kind": "constant",
@@ -5376,59 +5674,6 @@
    "uid": 8302,
    "title_en": "Second pedal-rate threshold [0xFFFF911E] vs engine speed / 32 and branch (0x701A8, 19D0 pair 0x81B2)",
    "description_en": "Compared with the pedal rate at 0x1AB84 and 0x1AD92."
-  },
-  {
-   "kind": "table",
-   "title": "Не расшифровано 7013A (2D8 4×16), пара 19D0 0x8142, читает код напрямую",
-   "description": "Читает 0x25226, 0x2523E, 0x2528C (в 19D0 через слот каталога 0x9ADC-0x9AF0). Роль в 19D0 не разобрана.",
-   "categories": [
-    15
-   ],
-   "confidence": "unknown",
-   "proof": "код: 0x25226 0x2523E 0x2528C",
-   "x": {
-    "addr": 459070,
-    "bits": 8,
-    "count": 4,
-    "labels": [],
-    "units": "X",
-    "math": "X",
-    "signed": false,
-    "lsb_first": false,
-    "major": 0,
-    "minor": 0,
-    "units_en": "X"
-   },
-   "y": {
-    "addr": 459074,
-    "bits": 8,
-    "count": 16,
-    "labels": [],
-    "units": "Y",
-    "math": "X",
-    "signed": false,
-    "lsb_first": false,
-    "major": 0,
-    "minor": 0,
-    "units_en": "Y"
-   },
-   "z": {
-    "addr": 459090,
-    "bits": 8,
-    "rows": 16,
-    "cols": 4,
-    "signed": false,
-    "lsb_first": false,
-    "math": "X",
-    "units": "сырое",
-    "decimals": 0,
-    "major": 0,
-    "minor": 0,
-    "units_en": "raw"
-   },
-   "uid": 8303,
-   "title_en": "Unknown 7013A (2D8 4×16), 19D0 pair 0x8142, read by code directly",
-   "description_en": "Shape proven (table header and axes, or pointer packing); role not established. Proof: 0x25226, 0x2523E, 0x2528C."
   },
   {
    "kind": "table",
@@ -60849,25 +61094,25 @@
   },
   {
    "kind": "table",
-   "title": "[9808 f00.e.f24] Не расшифровано 7C370 (1D16 3×1)",
-   "description": "Параметр корня записей 0xFFFF9808 (путь от ячейки RAM, установленной в 0x52BCA: fNN = поле, e = элемент директории), форма по упаковке указателей. Роль не установлена.",
+   "title": "ГДТ, нижний уровень: обороты мотора не выше поля (по ATF) -> автомат муфты на путь размыкания (состояния кроме 5) [9808 f00.e.f24] (0x7C370)",
+   "description": "ГДТ, нижний уровень: обороты мотора не выше поля (по ATF) -> автомат муфты на путь размыкания (состояния кроме 5). Ось X: ATF (ATF, сырое), [0xFFFF92BC]. Значение: об/мин ДВС. Корень 0xFFFF9808, места в записях: 9808 f00.e.f24. Доказательство кодом 20C0: 0x4A7A4-0x4A7C2 (при состоянии [0xFFFF95E0] != 5: поле +0x60 по ATF [0xFFFF92BC] (0x52298) < обороты мотора [0xFFFF9282]); 0x4A766 (пара 19D0 0x32A8C), вызов 0x4A8A6: при отказе следующее состояние муфты = таблица 0xE500[[0xFFFF95E0]] (0x4A886-0x4A88A, данные = 19D0 0x12F40), путь размыкания; запись = 9808.f00.e[[0xFFFF95E2]] -> [0xFFFF958C] (0x49C74-0x49C92). Записи переменных осей: документ 11 §10.",
    "categories": [
-    10
+    2
    ],
-   "confidence": "unknown",
-   "proof": "структура: указатель поля корня записей",
+   "confidence": "proven",
+   "proof": "код: 0x4A7A4-0x4A7C2 (при состоянии [0xFFFF95E0] != 5: поле +0x60 по ATF [0xFFFF92BC] (0x52298) < обороты мотора [0xFFFF9282]); 0x4A766 (пара 19D0 0x32A8C), вызов 0x4A8A6: при отказе следующее состояние муфты = таблица 0xE500[[0xFFFF95E0]] (0x4A886-0x4A88A, данные = 19D0 0x12F40), путь размыкания; запись = 9808.f00.e[[0xFFFF95E2]] -> [0xFFFF958C] (0x49C74-0x49C92)",
    "x": {
     "addr": 508786,
     "bits": 16,
     "count": 3,
     "labels": [],
-    "units": "X",
+    "units": "ATF, сырое",
     "math": "X",
-    "signed": false,
+    "signed": true,
     "lsb_first": false,
     "major": 0,
     "minor": 0,
-    "units_en": "X"
+    "units_en": "ATF, raw"
    },
    "y": {
     "addr": null,
@@ -60889,40 +61134,40 @@
     "bits": 16,
     "rows": 1,
     "cols": 3,
-    "signed": false,
+    "signed": true,
     "lsb_first": false,
     "math": "X",
-    "units": "сырое",
+    "units": "об/мин ДВС",
     "decimals": 0,
     "major": 0,
     "minor": 0,
-    "units_en": "raw"
+    "units_en": "engine rpm"
    },
    "uid": 9653,
-   "title_en": "[9808 f00.e.f24] Unknown 7C370 (1D16 3×1)",
-   "description_en": "Shape proven (table header and axes, or pointer packing); role not established. Proof: pointer field of a record root."
+   "title_en": "TCC lower level: engine speed not above the field (vs ATF) -> the clutch automaton takes the opening path (states other than 5) [9808 f00.e.f24] (0x7C370)",
+   "description_en": "TCC lower level: engine speed not above the field (vs ATF) -> the clutch automaton takes the opening path (states other than 5). Axis X: ATF (ATF, raw). Value: engine rpm. Root 0xFFFF9808, record places [9808 f00.e.f24]. Role proven by 20C0 code, instruction addresses: 0x4A7A4, 0x4A7C2, 0x52298, 0x4A766, 0x32A8C, 0x4A8A6, 0x4A886, 0x4A88A, 0x12F40, 0x49C74, 0x49C92 (full proof and the path to the pressure channel or CAN frame in the RU description)."
   },
   {
    "kind": "table",
-   "title": "[9808 f00.e.f24] Не расшифровано 7C37E (1D16 3×1)",
-   "description": "Параметр корня записей 0xFFFF9808 (путь от ячейки RAM, установленной в 0x52BCA: fNN = поле, e = элемент директории), форма по упаковке указателей. Роль не установлена.",
+   "title": "ГДТ, нижний уровень: обороты мотора не выше поля (по ATF) -> автомат муфты на путь размыкания (состояния кроме 5) [9808 f00.e.f24] (0x7C37E)",
+   "description": "ГДТ, нижний уровень: обороты мотора не выше поля (по ATF) -> автомат муфты на путь размыкания (состояния кроме 5). Ось X: ATF (ATF, сырое), [0xFFFF92BC]. Значение: об/мин ДВС. Корень 0xFFFF9808, места в записях: 9808 f00.e.f24. Доказательство кодом 20C0: 0x4A7A4-0x4A7C2 (при состоянии [0xFFFF95E0] != 5: поле +0x60 по ATF [0xFFFF92BC] (0x52298) < обороты мотора [0xFFFF9282]); 0x4A766 (пара 19D0 0x32A8C), вызов 0x4A8A6: при отказе следующее состояние муфты = таблица 0xE500[[0xFFFF95E0]] (0x4A886-0x4A88A, данные = 19D0 0x12F40), путь размыкания; запись = 9808.f00.e[[0xFFFF95E2]] -> [0xFFFF958C] (0x49C74-0x49C92). Записи переменных осей: документ 11 §10.",
    "categories": [
-    10
+    2
    ],
-   "confidence": "unknown",
-   "proof": "структура: указатель поля корня записей",
+   "confidence": "proven",
+   "proof": "код: 0x4A7A4-0x4A7C2 (при состоянии [0xFFFF95E0] != 5: поле +0x60 по ATF [0xFFFF92BC] (0x52298) < обороты мотора [0xFFFF9282]); 0x4A766 (пара 19D0 0x32A8C), вызов 0x4A8A6: при отказе следующее состояние муфты = таблица 0xE500[[0xFFFF95E0]] (0x4A886-0x4A88A, данные = 19D0 0x12F40), путь размыкания; запись = 9808.f00.e[[0xFFFF95E2]] -> [0xFFFF958C] (0x49C74-0x49C92)",
    "x": {
     "addr": 508800,
     "bits": 16,
     "count": 3,
     "labels": [],
-    "units": "X",
+    "units": "ATF, сырое",
     "math": "X",
-    "signed": false,
+    "signed": true,
     "lsb_first": false,
     "major": 0,
     "minor": 0,
-    "units_en": "X"
+    "units_en": "ATF, raw"
    },
    "y": {
     "addr": null,
@@ -60944,40 +61189,40 @@
     "bits": 16,
     "rows": 1,
     "cols": 3,
-    "signed": false,
+    "signed": true,
     "lsb_first": false,
     "math": "X",
-    "units": "сырое",
+    "units": "об/мин ДВС",
     "decimals": 0,
     "major": 0,
     "minor": 0,
-    "units_en": "raw"
+    "units_en": "engine rpm"
    },
    "uid": 9654,
-   "title_en": "[9808 f00.e.f24] Unknown 7C37E (1D16 3×1)",
-   "description_en": "Shape proven (table header and axes, or pointer packing); role not established. Proof: pointer field of a record root."
+   "title_en": "TCC lower level: engine speed not above the field (vs ATF) -> the clutch automaton takes the opening path (states other than 5) [9808 f00.e.f24] (0x7C37E)",
+   "description_en": "TCC lower level: engine speed not above the field (vs ATF) -> the clutch automaton takes the opening path (states other than 5). Axis X: ATF (ATF, raw). Value: engine rpm. Root 0xFFFF9808, record places [9808 f00.e.f24]. Role proven by 20C0 code, instruction addresses: 0x4A7A4, 0x4A7C2, 0x52298, 0x4A766, 0x32A8C, 0x4A8A6, 0x4A886, 0x4A88A, 0x12F40, 0x49C74, 0x49C92 (full proof and the path to the pressure channel or CAN frame in the RU description)."
   },
   {
    "kind": "table",
-   "title": "[9808 f00.e.f25] Не расшифровано 7C38C (1D16 3×1)",
-   "description": "Параметр корня записей 0xFFFF9808 (путь от ячейки RAM, установленной в 0x52BCA: fNN = поле, e = элемент директории), форма по упаковке указателей. Роль не установлена.",
+   "title": "ГДТ, нижний уровень: из состояния 5 автомат муфты идёт дальше, только с оборотов мотора не ниже поля (по ATF) [9808 f00.e.f25] (0x7C38C)",
+   "description": "ГДТ, нижний уровень: из состояния 5 автомат муфты идёт дальше, только с оборотов мотора не ниже поля (по ATF). Ось X: ATF (ATF, сырое), [0xFFFF92BC]. Значение: об/мин ДВС. Корень 0xFFFF9808, места в записях: 9808 f00.e.f25. Доказательство кодом 20C0: 0x4A782-0x4A7A2 (при состоянии [0xFFFF95E0] = 5: поле +0x64 по ATF (0x52298) <= обороты мотора [0xFFFF9282]); 0x4A766 (пара 19D0 0x32A8C), вызов 0x4A8A6: при отказе следующее состояние муфты = таблица 0xE500[[0xFFFF95E0]] (0x4A886-0x4A88A, данные = 19D0 0x12F40), путь размыкания; запись = 9808.f00.e[[0xFFFF95E2]] -> [0xFFFF958C] (0x49C74-0x49C92). Записи переменных осей: документ 11 §10.",
    "categories": [
-    10
+    2
    ],
-   "confidence": "unknown",
-   "proof": "структура: указатель поля корня записей",
+   "confidence": "proven",
+   "proof": "код: 0x4A782-0x4A7A2 (при состоянии [0xFFFF95E0] = 5: поле +0x64 по ATF (0x52298) <= обороты мотора [0xFFFF9282]); 0x4A766 (пара 19D0 0x32A8C), вызов 0x4A8A6: при отказе следующее состояние муфты = таблица 0xE500[[0xFFFF95E0]] (0x4A886-0x4A88A, данные = 19D0 0x12F40), путь размыкания; запись = 9808.f00.e[[0xFFFF95E2]] -> [0xFFFF958C] (0x49C74-0x49C92)",
    "x": {
     "addr": 508814,
     "bits": 16,
     "count": 3,
     "labels": [],
-    "units": "X",
+    "units": "ATF, сырое",
     "math": "X",
-    "signed": false,
+    "signed": true,
     "lsb_first": false,
     "major": 0,
     "minor": 0,
-    "units_en": "X"
+    "units_en": "ATF, raw"
    },
    "y": {
     "addr": null,
@@ -60999,40 +61244,40 @@
     "bits": 16,
     "rows": 1,
     "cols": 3,
-    "signed": false,
+    "signed": true,
     "lsb_first": false,
     "math": "X",
-    "units": "сырое",
+    "units": "об/мин ДВС",
     "decimals": 0,
     "major": 0,
     "minor": 0,
-    "units_en": "raw"
+    "units_en": "engine rpm"
    },
    "uid": 9655,
-   "title_en": "[9808 f00.e.f25] Unknown 7C38C (1D16 3×1)",
-   "description_en": "Shape proven (table header and axes, or pointer packing); role not established. Proof: pointer field of a record root."
+   "title_en": "TCC lower level: from state 5 the clutch automaton moves on only with engine speed not below the field (vs ATF) [9808 f00.e.f25] (0x7C38C)",
+   "description_en": "TCC lower level: from state 5 the clutch automaton moves on only with engine speed not below the field (vs ATF). Axis X: ATF (ATF, raw). Value: engine rpm. Root 0xFFFF9808, record places [9808 f00.e.f25]. Role proven by 20C0 code, instruction addresses: 0x4A782, 0x4A7A2, 0x52298, 0x4A766, 0x32A8C, 0x4A8A6, 0x4A886, 0x4A88A, 0x12F40, 0x49C74, 0x49C92 (full proof and the path to the pressure channel or CAN frame in the RU description)."
   },
   {
    "kind": "table",
-   "title": "[9808 f00.e.f25] Не расшифровано 7C39A (1D16 3×1)",
-   "description": "Параметр корня записей 0xFFFF9808 (путь от ячейки RAM, установленной в 0x52BCA: fNN = поле, e = элемент директории), форма по упаковке указателей. Роль не установлена.",
+   "title": "ГДТ, нижний уровень: из состояния 5 автомат муфты идёт дальше, только с оборотов мотора не ниже поля (по ATF) [9808 f00.e.f25] (0x7C39A)",
+   "description": "ГДТ, нижний уровень: из состояния 5 автомат муфты идёт дальше, только с оборотов мотора не ниже поля (по ATF). Ось X: ATF (ATF, сырое), [0xFFFF92BC]. Значение: об/мин ДВС. Корень 0xFFFF9808, места в записях: 9808 f00.e.f25. Доказательство кодом 20C0: 0x4A782-0x4A7A2 (при состоянии [0xFFFF95E0] = 5: поле +0x64 по ATF (0x52298) <= обороты мотора [0xFFFF9282]); 0x4A766 (пара 19D0 0x32A8C), вызов 0x4A8A6: при отказе следующее состояние муфты = таблица 0xE500[[0xFFFF95E0]] (0x4A886-0x4A88A, данные = 19D0 0x12F40), путь размыкания; запись = 9808.f00.e[[0xFFFF95E2]] -> [0xFFFF958C] (0x49C74-0x49C92). Записи переменных осей: документ 11 §10.",
    "categories": [
-    10
+    2
    ],
-   "confidence": "unknown",
-   "proof": "структура: указатель поля корня записей",
+   "confidence": "proven",
+   "proof": "код: 0x4A782-0x4A7A2 (при состоянии [0xFFFF95E0] = 5: поле +0x64 по ATF (0x52298) <= обороты мотора [0xFFFF9282]); 0x4A766 (пара 19D0 0x32A8C), вызов 0x4A8A6: при отказе следующее состояние муфты = таблица 0xE500[[0xFFFF95E0]] (0x4A886-0x4A88A, данные = 19D0 0x12F40), путь размыкания; запись = 9808.f00.e[[0xFFFF95E2]] -> [0xFFFF958C] (0x49C74-0x49C92)",
    "x": {
     "addr": 508828,
     "bits": 16,
     "count": 3,
     "labels": [],
-    "units": "X",
+    "units": "ATF, сырое",
     "math": "X",
-    "signed": false,
+    "signed": true,
     "lsb_first": false,
     "major": 0,
     "minor": 0,
-    "units_en": "X"
+    "units_en": "ATF, raw"
    },
    "y": {
     "addr": null,
@@ -61054,18 +61299,18 @@
     "bits": 16,
     "rows": 1,
     "cols": 3,
-    "signed": false,
+    "signed": true,
     "lsb_first": false,
     "math": "X",
-    "units": "сырое",
+    "units": "об/мин ДВС",
     "decimals": 0,
     "major": 0,
     "minor": 0,
-    "units_en": "raw"
+    "units_en": "engine rpm"
    },
    "uid": 9656,
-   "title_en": "[9808 f00.e.f25] Unknown 7C39A (1D16 3×1)",
-   "description_en": "Shape proven (table header and axes, or pointer packing); role not established. Proof: pointer field of a record root."
+   "title_en": "TCC lower level: from state 5 the clutch automaton moves on only with engine speed not below the field (vs ATF) [9808 f00.e.f25] (0x7C39A)",
+   "description_en": "TCC lower level: from state 5 the clutch automaton moves on only with engine speed not below the field (vs ATF). Axis X: ATF (ATF, raw). Value: engine rpm. Root 0xFFFF9808, record places [9808 f00.e.f25]. Role proven by 20C0 code, instruction addresses: 0x4A782, 0x4A7A2, 0x52298, 0x4A766, 0x32A8C, 0x4A8A6, 0x4A886, 0x4A88A, 0x12F40, 0x49C74, 0x49C92 (full proof and the path to the pressure channel or CAN frame in the RU description)."
   },
   {
    "kind": "table",

@@ -54,18 +54,24 @@ What remains open:
 - fault code 0x95 (149) in the EGS memory — no mapping table from internal fault numbers to DS2 codes has been found; its link to the event is unproven.
 - That the DS2 code 0x95 is the internal fault 0x25 of the turbine monitor is a hypothesis, not proven: no DS2 code table for 19D0 has been found.
 
-## 2. Thermal derate by ATF
+## 2. Warm-up program (until 06.10.2026 this section said "thermal derate by ATF")
 
-Thermal derate by ATF (doc 03 §6). This is not the only use of ATF temperature: it also acts in the TCC lower level (0x320DC: open below raw 70, no slip above raw 160, doc 03 §4) and in the program selection on overheating (`0xFFFF90E4`: programs PC and PD, doc 01 §5).
+> **Corrected 06.10.2026.** The former text called the table `0x9A6E` an ATF thermal derate: "the hotter the fluid, the smaller the time budget for full pedal, at 113 °C it is zero". The code disproves it. The table input `[0xFFFF90D5]` is the **engine** temperature at power-on: `0x15F92` copies `[0xFFFF90D3]` into it, and that is byte 1 of the DME2 frame × 3 / 4 (`0x21696`, °C + 48; when CAN is lost ATF + 8 is substituted, `0x21682–0x2168A`, document 03 §6). The axis 83 / 93 / 103 / 113 is 35 / 45 / 55 / 65 °C of the engine. The function `0x28D50` does not cap the pedal from above, it raises it from below: this is the warm-up program. Analysis with addresses in document 13 §3.
 
 | Address | What |
 |---|---|
-| `0x9A6E` | 1D8, axis `83 / 93 / 103 / 113` °C → values `170 / 90 / 55 / 0`; read with `0xFFFF90D5` (0x28DCA), result → counter `0xFFFF920F` |
-| `0x9A78` | second table (zeros) → `0xFFFF9210` |
-| `0x25E54–0x25E6C` | counters decrement every cycle |
-| `0x28D50` | when `[0xFFFF920F] == 0` it clamps the **effective pedal** `0xFFFF9184` (itself capped by the real pedal `0xFFFF9182`) |
+| `0x28D50` | warm-up program. The flag `[0xFFFF90EE]` = 1 is set at power-on by `0x15F82` (function `0x15F78`), states 1-4 |
+| `0x8142` | 2D8 4×16, slot 0 of the catalog `0x9ADC`: pedal for the matrices by engine temperature `[0xFFFF90D3]` and program `[0xFFFF91A0]`. P0, P1, P7 = 102 (40 %) up to 55 °C, 0 from 65 °C; read at `0x28DF6`, `0x28E10`, `0x28E62` |
+| `0x9A6E` | 1D8, slot 44 (`0x9B8C`): counter by engine temperature at power-on, 35 / 45 / 55 / 65 °C → 170 / 90 / 55 / 0 → `[0xFFFF920F]` (`0x28DCA`). In state 4 a zero counter ends the warm-up |
+| `0x9A78`, `0x81CC`, `0x8141` | second branch: counter (zeros) → `[0xFFFF9210]`, pedal floor by program (zeros), engine temperature 113 = 65 °C that switches the branch off |
+| `0x25E54–0x25E6C` | both counters count down by 1 on a timer (function `0x25C40`) |
+| `0x8B48` = 48 | end by speed: n_out / 32 at or above the byte (`0x28D6E`), 1536 output rpm. 0 = no warm-up |
+| `0x24B66–0x24B76` | while the flag is set the shift matrices see `[0xFFFF9184]` = max(pedal `[0xFFFF9182]`, `0x8142`, `0x81CC`) instead of the pedal |
+| `0x231F8` | while the flag is set the program arbiter gets request 8 (P0) |
 
-Meaning: the hotter the fluid, the smaller the "time budget" for full pedal, at 113 °C it is zero. This is a **maximum**-temperature protection. Through the pedal it indirectly affects the shift points and the AGS tables that this section used to call TCC thresholds (both are in pedal, doc 03 §7). The derate chain has no minimum temperature below which anything is inhibited, but the TCC lower level keeps the clutch open below raw ATF 70 (about 22 °C, doc 03 §4). Cold hydraulic behaviour comes from the `0xA2C6…0xA3FC` family (2D16 4×5, axis 140 / 150 / 180 / 255 raw units ≈ 57 / 65 / 87 / 143 °C, values −80 or 0), slot 12 of the descriptors `0x3AA60`.
+Meaning: with a cold engine D upshifts as if the pedal were at 40 % or more, i.e. later, until the engine reaches 55-65 °C, the car reaches n_out / 32 = 48 or the counter runs out. There is no gearbox protection by oil temperature here.
+
+ATF temperature acts elsewhere: the TCC lower level (`0x320DC`: open below raw 70, no slip above raw 160, document 03 §4) and the overheat programs (`0xFFFF90E4`: programs PC and PD, document 01 §5). The cold behaviour of the hydraulics is set by the family `0xA2C6…0xA3FC` (2D16 4×5, axis 140 / 150 / 180 / 255 raw units, values −80 or 0), slot 12 of the descriptors `0x3AA60`.
 
 ## 3. Limp mode — how it looks in the frame
 

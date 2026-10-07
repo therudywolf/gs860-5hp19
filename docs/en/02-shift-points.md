@@ -122,4 +122,6 @@ Matrices 03 / 04 / 07 are programs PF / PE / PC, the D replacements. The main D 
 
 ## 7. Relation to TCC lockup and torque reduction
 
+Two more mechanisms change the pedal input of the matrices: while the warm-up program runs the matrices see max(pedal, `0x8142`) (doc 05 §2), with kick-down row 255 (`0x24B34`, doc 13 §6). Ready patches for the full-throttle points and the manual mode: doc 13 §5, §7.
+
 The matrices are selected by the active program `0xFFFF91A0` through the table in function 0x24BA4 (doc 01 §5). D runs on matrices 14 (P0) and 06 (P1), S on 11 (P2) and 15 (P3), M on 10 (PB), with overheated ATF D on 07 (PC) and M on 08 (PD). The `0xFFFF90CD` steps (matrices 00 / 01 / 02) override D and S. The AGS level chooses between P0 and P1 in D and between P2 and P3 in S (doc 03 §7). The hydraulics (doc 04) are the same for D and S/M: the execution module does not read `0xFFFF91CB`. The TCC lockup thresholds also depend on the program, through the groups 0x897E (doc 03 §3). The 0xAB0C… maps (doc 04 §9) are the reference slip of the TCC regulator, not torque reduction.

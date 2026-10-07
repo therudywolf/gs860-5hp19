@@ -21,7 +21,8 @@ RAM read: command `0x06`, **segment 4**, range `0xFF8000–0xFF9E00` (table `0x3
 | 2 | output shaft rpm | × 32; speed = byte × 32 / k (reference car k = 27.11 rpm per km/h) |
 | 3 | pedal | ≈ × 3.6 (0…255 → %); full throttle without kickdown ≈ 229 |
 | 4 | rpm gradient | signed |
-| 6 | ATF temperature | **°C = byte − 48** (`[0xFFFF90D4] = [0xFFFF8435] × 3/4`, doc 03 §6) |
+| 5 | engine (coolant) temperature | °C = byte − 48 (`[0xFFFF90D4] = [0xFFFF8435] × 3/4`, byte 1 of the DME2 frame; matches the DME coolant in a log, doc 03 §6) |
+| 6 | ATF, raw + 15 (corrected 07.10.2026: until this date it said "°C = byte − 48") | `[0xFFFF8D1A] + 15`, sensor table `0x9A82`. The conversion to °C is not proven, by the code's substitution logic probably °C = byte − 55 (doc 03 §6) |
 | 7 | battery voltage | × 0.0813 V (by correlation) |
 | 12 | **255 = shift in progress** | proven by log (every 255 frame is adjacent to a change of byte 20). No 0xFF write in ROM — hypothesis: the job outputs flag `0xFFFF9717/9718` |
 | 17 | solenoid picture MV1/MV2/MV3 (bits 7/6/5): 1st/2nd → 192, 3rd → 64, 4th → 0/64, 5th → 160 | matches table `0x12E30` (doc 04 §13) |

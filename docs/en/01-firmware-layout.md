@@ -69,7 +69,7 @@ Interpolators: `0x1E848` — 2D 8-bit, `0x1EB18` — 2D 16-bit, `0x1E680` / `0x1
 | 5–8 | 0x9AF0–0x9AFC | 0x8EAC, 0x8FF6, 0x9008, 0x9016 |
 | 9-19 | **0x9B00-0x9B28** | **10 AGS tables** 0x901E … 0x915E: D / S pairs by `0xFFFF91CB` (the pair is chosen at 0x1DF6C), pedal threshold vs speed for the target AGS level. They have nothing to do with the converter clutch (doc 03 §7). Plus 0x917E, role not traced |
 | 20–35 | **0x9B2C–0x9B68** | **16 shift-point matrices** 0x91B2 + k·0x70 (doc 02) |
-| 36-47 | 0x9B6C-0x9B98 | 0x98B2, 0x98C0, 0x98CE, 0x98E0, 0x98F0, **0x993A** (pointer 0x9B80: TCC lockup thresholds 30 × 7, function 0x29056, the main table of the clutch, doc 03 §3), 0x9A36, 0x9A50, **0x9A6E** (thermal derate), 0x9A78, 0x9A82 (apparently the ATF sensor table: hypothesis, not proven), 0x9AA8 |
+| 36-47 | 0x9B6C-0x9B98 | 0x98B2, 0x98C0, 0x98CE, 0x98E0, 0x98F0, **0x993A** (pointer 0x9B80: TCC lockup thresholds 30 × 7, function 0x29056, the main table of the clutch, doc 03 §3), 0x9A36, 0x9A50, **0x9A6E**, 0x9A78 (counters of the warm-up program by engine temperature, doc 05 §2; until 06.10.2026 0x9A6E was called a "thermal derate"), 0x9A82 (ATF sensor table: mV → raw ATF, proven, 0x20EEE, doc 03 §6), 0x9AA8 |
 
 ## 4. Two calibration branches — flag 0xFFFF91CB
 
@@ -142,7 +142,7 @@ Program selection (traced on 23.09.2026): 0x2300C, arbitration 0x23110, resoluti
 - Gate without Steptronic logic (`0xFFFF91F5` not 2) gives P8.
 - Step `0xFFFF90CD` = 1 / 2 / 3 gives P4 / P5 / P6 with priority above D and S: step 2 overrides S at AGS level 3, step 3 always overrides S. The step is computed at 0x1651E from the quantity 0x8D04 = f(0x8D9C, 0x8D06) and reset at 0x165A0 (these three addresses are written without the 0xFFFF prefix in the analysis, probably RAM).
 
-That the `0xFFFF90CD` steps are hill steps (0x8D04 looks like driving resistance, and k0 / k1 / k2 hold each gear longer and longer) is a hypothesis, not proven. The meaning of `0xFFFF91CA` is not established. The ATF temperature that switches to PC and PD was estimated from table 0x9A82 at about 120 °C: hypothesis, not proven.
+That the `0xFFFF90CD` steps are hill steps (0x8D04 looks like driving resistance, and k0 / k1 / k2 hold each gear longer and longer) is a hypothesis, not proven. The meaning of `0xFFFF91CA` is not established. The ATF temperature that switches to PC and PD was estimated from table 0x9A82 at about 120 °C: hypothesis, not proven (the °C scale of raw ATF is not established by code, doc 03 §6).
 
 Descriptors `0x3AA60`: 5 records × 32 pointers (stride 0x80). Slot 12 → six 2D16 4×5 maps `0xA2C6 / 0xA304 / 0xA342 / 0xA380 / 0xA3BE / 0xA3FC` (X axis 140/150/180/255 raw temperature units, values −80 or 0) — cold corrections. Slots 13–15 → 16 tables 4×4 in `0xA066–0xA20A` — purpose not decoded (these are **not** TCC thresholds, as one third-party report claimed).
 

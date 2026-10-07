@@ -2,8 +2,8 @@
 <XDFFORMAT version="1.60">
   <XDFHEADER>
     <flags>0x1</flags>
-    <deftitle>GS8600 19D0 Full 256K - WOLF4X v3.1 (2026-09-27)</deftitle>
-    <description>Bosch GS8.60.0 (ZF 5HP19, ПО 19C0/19D0, 256 КБ), Motorola 68k CPU32. Таблицы: [u16 nx][u16 ny][X][Y][данные], big-endian. Файл сгенерирован из catalog/gs8600_19d0.json скриптом tools/make_xdf.py, руками не правится. v3 25.09.2026: исправлены роли по разбору кода 23-25.09: таблицы 0x888C, 0x88B0, 0x901E-0x915E и функция 0x1DEBC это AGS (адаптивный выбор программы), а не блокировка ГДТ. Настоящая блокировка: функция 0x29056, пороги 0x993A, группы 0x897E, нижний уровень 0xB0D4-0xB140. Карты 0xAB0C-0xAE40 это опорное скольжение регулятора ГДТ, а не снятие момента. Номера матриц это индекс k, программа выбирает матрицу через 0x24BA4. Добавлены порог монитора турбины 0x8B44, таблица минимальной передачи 0x8AE2, поля f24 и f27 повышений под нагрузкой, маски реакции на ошибки 0x8366. Категории в TunerPro больше не съезжают на одну (в v2.1 номера шли с 0). Значения матриц и порогов ГДТ: обороты выходного вала / 32. После правки в TunerPro пересчитать суммы: python3 tools/gs860_crc.py fix edited.bin fixed.bin. EN: v3: roles corrected from code (AGS vs torque-converter lockup, reference slip maps, program to matrix mapping), turbine monitor threshold 0x8B44, minimum-gear table 0x8AE2, shift-record fields f24 and f27, error reaction masks. Categories fixed (1-based). After editing, recompute the checksums with tools/gs860_crc.py fix. v3.1 27.09.2026: поля f21 записей переключения это слова u16, а не таблицы (пересечения убраны), три ложные таблицы сканера 0xDA8A / 0xDADE / 0xDB16 внутри объектов f06 удалены, единицы констант проставлены (мВ у блока напряжений, остальное «сырое», где не доказано).</description>
+    <deftitle>GS8600 19D0 Full 256K - WOLF4X v3.2 (2026-10-07)</deftitle>
+    <description>Bosch GS8.60.0 (ZF 5HP19, ПО 19C0/19D0, 256 КБ), Motorola 68k CPU32. Таблицы: [u16 nx][u16 ny][X][Y][данные], big-endian. Файл сгенерирован из catalog/gs8600_19d0.json скриптом tools/make_xdf.py, руками не правится. v3 25.09.2026: исправлены роли по разбору кода 23-25.09: таблицы 0x888C, 0x88B0, 0x901E-0x915E и функция 0x1DEBC это AGS (адаптивный выбор программы), а не блокировка ГДТ. Настоящая блокировка: функция 0x29056, пороги 0x993A, группы 0x897E, нижний уровень 0xB0D4-0xB140. Карты 0xAB0C-0xAE40 это опорное скольжение регулятора ГДТ, а не снятие момента. Номера матриц это индекс k, программа выбирает матрицу через 0x24BA4. Добавлены порог монитора турбины 0x8B44, таблица минимальной передачи 0x8AE2, поля f24 и f27 повышений под нагрузкой, маски реакции на ошибки 0x8366. Категории в TunerPro больше не съезжают на одну (в v2.1 номера шли с 0). Значения матриц и порогов ГДТ: обороты выходного вала / 32. После правки в TunerPro пересчитать суммы: python3 tools/gs860_crc.py fix edited.bin fixed.bin. EN: v3: roles corrected from code (AGS vs torque-converter lockup, reference slip maps, program to matrix mapping), turbine monitor threshold 0x8B44, minimum-gear table 0x8AE2, shift-record fields f24 and f27, error reaction masks. Categories fixed (1-based). After editing, recompute the checksums with tools/gs860_crc.py fix. v3.1 27.09.2026: поля f21 записей переключения это слова u16, а не таблицы (пересечения убраны), три ложные таблицы сканера 0xDA8A / 0xDADE / 0xDB16 внутри объектов f06 удалены, единицы констант проставлены (мВ у блока напряжений, остальное «сырое», где не доказано). v3.2 07.10.2026: программа прогрева разобрана кодом (0x28D50: 0x8142, 0x9A6E, 0x9A78, 0x8141, 0x81CC, 0x8B48; 0x9A6E это не «термодерейт»), источник и порог кикдауна 0x8D1A / 0x8246, кулиса 0x8975 (BMW 0xFE, Alpina 0x0B), датчик ATF 0x9A82 (шкала в °C не доказана). Патчи из них: tools/egs_patch.py, документ 13.</description>
     <author>rudywolf (WOLF4X)</author>
     <baseoffset>0</baseoffset>
     <REGION type="0xFFFFFFFF" startaddress="0x0" size="0x40000" regionflags="0x0" name="Binary File" desc="" />
@@ -94,12 +94,12 @@
     </XDFAXIS>
   </XDFTABLE>
   <XDFTABLE uniqueid="0x1002" flags="0x0">
-    <title>Не расшифровано 08142 (2D8 4×16)</title>
-    <description>Таблица из нарезки: 2D8, 4×16, 88 байт. Диапазон X 18..113, Y 0..15, Z 0..102.</description>
-    <CATEGORYMEM index="0" category="11" />
+    <title>Прогрев: педаль для матриц по температуре мотора и программе, P0 / P1 / P7 = 102 (40 %) до 55 °C, 0 с 65 °C (0x8142)</title>
+    <description>Слот 0 каталога 0x9ADC, читают 0x28DF6, 0x28E10, 0x28E62 (pea.l $9adc, интерполятор 0x1E848: X = температура мотора [0xFFFF90D3], °C + 48: 18 / 93 / 103 / 113 = -30 / 45 / 55 / 65 °C; Y = программа [0xFFFF91A0]). Результат -&gt; [0xFFFF9184] = max(результат, 0x81CC, педаль). Программа прогрева 0x28D50 (пара 20C0 0x25182, разбор 06.10.2026): флаг [0xFFFF90EE] = 1 ставит 0x15F82 (функция 0x15F78, она же копирует температуру мотора при включении в [0xFFFF90D5], 0x15F92), состояния 1-4. Пока флаг не 0, матрицы переключения видят педаль [0xFFFF9184] (0x24B66-0x24B76) = max(педаль [0xFFFF9182], 0x8142(температура мотора, программа), 0x81CC[программа]) (0x28E84-0x28EAA); ещё флаг читают арбитр программ (0x231F8) и AGS (0x1DC1E). Конец: n_вых/32 [0xFFFF918F] не ниже [0x8B48] (0x28D6E), [0xFFFF9107] не 0, кончился счётчик 0x9A6E или таблица 0x8142 дала 0. Температура мотора [0xFFFF90D3] = байт CAN [0xFFFF8435] x 3 / 4 (0x20FAC, запись 0x21696, °C + 48). До 06.10.2026 таблица 0x9A6E называлась «термодерейтом по ATF» (документ 05 §2): неверно, это прогрев. Данные 20C0 те же (документ 11 §8).</description>
+    <CATEGORYMEM index="0" category="2" />
     <XDFAXIS id="x" uniqueid="0x0">
       <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x8146" mmedelementsizebits="8" mmedcolcount="4" mmedmajorstridebits="0" mmedminorstridebits="0" />
-      <units>X</units>
+      <units>°C + 48 (мотор)</units>
       <indexcount>4</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -110,7 +110,7 @@
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x814A" mmedelementsizebits="8" mmedcolcount="16" mmedmajorstridebits="0" mmedminorstridebits="0" />
-      <units>Y</units>
+      <units>программа</units>
       <indexcount>16</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -121,8 +121,8 @@
     </XDFAXIS>
     <XDFAXIS id="z">
       <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x815A" mmedelementsizebits="8" mmedrowcount="16" mmedcolcount="4" mmedmajorstridebits="0" mmedminorstridebits="0" />
-      <decimalpl>1</decimalpl>
-      <units>сырое</units>
+      <decimalpl>0</decimalpl>
+      <units>педаль коробки</units>
       <outputtype>1</outputtype>
       <MATH equation="X">
         <VAR id="X" />
@@ -2278,12 +2278,12 @@
     </XDFAXIS>
   </XDFTABLE>
   <XDFTABLE uniqueid="0x1035" flags="0x0">
-    <title>Термодерейт по ATF: температура в счётчик разрешения</title>
-    <description>Ось 83/93/103/113 °C (сырое = °C), значения 170/90/55/0 в счётчик [0xFFFF920F], при нуле 0x28D50 ограничивает эффективную педаль [0xFFFF9184].</description>
-    <CATEGORYMEM index="0" category="7" />
+    <title>Прогрев: счётчик по температуре мотора при включении, 35 / 45 / 55 / 65 °C → 170 / 90 / 55 / 0 (0x9A6E)</title>
+    <description>Слот 44 каталога (0x9B8C), 0x28DCA: [0xFFFF920F] = поле(температура мотора при включении [0xFFFF90D5], °C + 48) в состоянии 1; 0x25E62-0x25E6C уменьшает его на 1 по таймеру (функция 0x25C40). В состоянии 4 ноль счётчика кончает прогрев (0x28E56-0x28E5E). Программа прогрева 0x28D50 (пара 20C0 0x25182, разбор 06.10.2026): флаг [0xFFFF90EE] = 1 ставит 0x15F82 (функция 0x15F78, она же копирует температуру мотора при включении в [0xFFFF90D5], 0x15F92), состояния 1-4. Пока флаг не 0, матрицы переключения видят педаль [0xFFFF9184] (0x24B66-0x24B76) = max(педаль [0xFFFF9182], 0x8142(температура мотора, программа), 0x81CC[программа]) (0x28E84-0x28EAA); ещё флаг читают арбитр программ (0x231F8) и AGS (0x1DC1E). Конец: n_вых/32 [0xFFFF918F] не ниже [0x8B48] (0x28D6E), [0xFFFF9107] не 0, кончился счётчик 0x9A6E или таблица 0x8142 дала 0. Температура мотора [0xFFFF90D3] = байт CAN [0xFFFF8435] x 3 / 4 (0x20FAC, запись 0x21696, °C + 48). До 06.10.2026 таблица 0x9A6E называлась «термодерейтом по ATF» (документ 05 §2): неверно, это прогрев. Данные 20C0 те же (документ 11 §8).</description>
+    <CATEGORYMEM index="0" category="2" />
     <XDFAXIS id="x" uniqueid="0x0">
       <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x9A70" mmedelementsizebits="8" mmedcolcount="4" mmedmajorstridebits="0" mmedminorstridebits="0" />
-      <units>°C</units>
+      <units>°C + 48 (мотор)</units>
       <indexcount>4</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -2306,7 +2306,7 @@
     </XDFAXIS>
     <XDFAXIS id="z">
       <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x9A74" mmedelementsizebits="8" mmedrowcount="1" mmedcolcount="4" mmedmajorstridebits="0" mmedminorstridebits="0" />
-      <decimalpl>1</decimalpl>
+      <decimalpl>0</decimalpl>
       <units>счётчик</units>
       <outputtype>1</outputtype>
       <MATH equation="X">
@@ -2315,12 +2315,12 @@
     </XDFAXIS>
   </XDFTABLE>
   <XDFTABLE uniqueid="0x1036" flags="0x0">
-    <title>Не расшифровано 09A78 (1D8 4×1)</title>
-    <description>Таблица из нарезки: 1D8, 4×1, 10 байт. Диапазон X 18..113, Y 0..0, Z 0..0.</description>
-    <CATEGORYMEM index="0" category="11" />
+    <title>Прогрев: счётчик ветки 0x81CC по температуре мотора при включении, завод нули (0x9A78)</title>
+    <description>Слот 45 каталога (0x9B90), 0x28DB4: [0xFFFF9210] = поле([0xFFFF90D5]) в состоянии 1. Пока не 0 и мотор холоднее [0x8141], нижний предел педали = 0x81CC[программа]. Завод 0: ветка не работает. Программа прогрева 0x28D50 (пара 20C0 0x25182, разбор 06.10.2026): флаг [0xFFFF90EE] = 1 ставит 0x15F82 (функция 0x15F78, она же копирует температуру мотора при включении в [0xFFFF90D5], 0x15F92), состояния 1-4. Пока флаг не 0, матрицы переключения видят педаль [0xFFFF9184] (0x24B66-0x24B76) = max(педаль [0xFFFF9182], 0x8142(температура мотора, программа), 0x81CC[программа]) (0x28E84-0x28EAA); ещё флаг читают арбитр программ (0x231F8) и AGS (0x1DC1E). Конец: n_вых/32 [0xFFFF918F] не ниже [0x8B48] (0x28D6E), [0xFFFF9107] не 0, кончился счётчик 0x9A6E или таблица 0x8142 дала 0. Температура мотора [0xFFFF90D3] = байт CAN [0xFFFF8435] x 3 / 4 (0x20FAC, запись 0x21696, °C + 48). До 06.10.2026 таблица 0x9A6E называлась «термодерейтом по ATF» (документ 05 §2): неверно, это прогрев. Данные 20C0 те же (документ 11 §8).</description>
+    <CATEGORYMEM index="0" category="2" />
     <XDFAXIS id="x" uniqueid="0x0">
       <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x9A7A" mmedelementsizebits="8" mmedcolcount="4" mmedmajorstridebits="0" mmedminorstridebits="0" />
-      <units>X</units>
+      <units>°C + 48 (мотор)</units>
       <indexcount>4</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -2343,8 +2343,8 @@
     </XDFAXIS>
     <XDFAXIS id="z">
       <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x9A7E" mmedelementsizebits="8" mmedrowcount="1" mmedcolcount="4" mmedmajorstridebits="0" mmedminorstridebits="0" />
-      <decimalpl>1</decimalpl>
-      <units>сырое</units>
+      <decimalpl>0</decimalpl>
+      <units>счётчик</units>
       <outputtype>1</outputtype>
       <MATH equation="X">
         <VAR id="X" />
@@ -2352,8 +2352,8 @@
     </XDFAXIS>
   </XDFTABLE>
   <XDFTABLE uniqueid="0x1037" flags="0x0">
-    <title>Датчик ATF: таблица пересчёта (0x9A82)</title>
-    <description>Таблица датчика температуры ATF (смещение 50). Порог около 120 °C программ PC и PD оценён по ней, это оценка.</description>
+    <title>Датчик ATF: мВ → сырая ATF (0x9A82)</title>
+    <description>Слот 0x9B94, 0x20EEE-0x20F02: мВ [0xFFFF9080] (АЦП x 5000 / 1024) → [0xFFFF8D1A], младший байт → сырая ATF модуля переключения [0xFFFF90D0] (0x20F50). В кадр 0B 03 идёт байтом 6 как [0xFFFF8D1A] + 15 (0x19B88-0x19B92). Перевод сырой ATF в °C кодом не установлен (документ 03 §6); прежняя пометка «смещение 50» и оценка «около 120 °C» для программ перегрева PC / PD (сырое 170) не доказаны.</description>
     <CATEGORYMEM index="0" category="7" />
     <XDFAXIS id="x" uniqueid="0x0">
       <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x9A84" mmedelementsizebits="16" mmedcolcount="9" mmedmajorstridebits="0" mmedminorstridebits="0" />
@@ -2381,7 +2381,7 @@
     <XDFAXIS id="z">
       <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x9A96" mmedelementsizebits="16" mmedrowcount="1" mmedcolcount="9" mmedmajorstridebits="0" mmedminorstridebits="0" />
       <decimalpl>1</decimalpl>
-      <units>сырое</units>
+      <units>сырое ATF</units>
       <outputtype>1</outputtype>
       <MATH equation="X">
         <VAR id="X" />
@@ -31446,12 +31446,12 @@
       </MATH>
   </XDFCONSTANT>
   <XDFCONSTANT uniqueid="0x135A" flags="0x0">
-    <title>Выбор S при кулисе до нажатия +/-, 0xFE = S (0x8975)</title>
-    <description>0xFE при 0xFFFF916C (кулиса до нажатия +/-) даёт 0xFFFF91CB = 1, то есть S. Ветку D/S читают функции AGS.</description>
+    <title>Программа в левой кулисе до нажатия +/-: 0xFE = S (BMW), 0x0B = сразу M (Alpina) (0x8975)</title>
+    <description>0xFE при 0xFFFF916C (кулиса до нажатия +/-) даёт 0xFFFF91CB = 1, то есть S (P2/P3 по уровню AGS), первое нажатие +/- переводит в M (PB). 0x0B (код PB) даёт M сразу. Завод: BMW 19C0 KA20 и BMW GS8.60.4 15C0 = 0xFE, Alpina 19D0 620P и Alpina 20C0 (0x70966) = 0x0B. Читают 0x2218C, 0x22196, 0x221A0, 0x230D8, 0x24306. Патч gate (tools/egs_patch.py, документ 13) пишет 0xFE или 0x0B.</description>
     <CATEGORYMEM index="0" category="2" />
     <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x8975" mmedelementsizebits="8" mmedmajorstridebits="0" mmedminorstridebits="0" />
     <units>код</units>
-    <decimalpl>2</decimalpl>
+    <decimalpl>0</decimalpl>
     <outputtype>1</outputtype>
     <MATH equation="X">
         <VAR id="X" />
@@ -32159,6 +32159,107 @@
     <CATEGORYMEM index="0" category="9" />
     <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x8F73" mmedelementsizebits="8" mmedmajorstridebits="0" mmedminorstridebits="0" />
     <units>вес</units>
+    <decimalpl>0</decimalpl>
+    <outputtype>1</outputtype>
+    <MATH equation="X">
+        <VAR id="X" />
+      </MATH>
+  </XDFCONSTANT>
+  <XDFCONSTANT uniqueid="0x1386" flags="0x0">
+    <title>Прогрев: конец по скорости, n_вых/32 не ниже байта, завод 48 = 1536 об/мин вых. вала (0x8B48). 0 = прогрева нет</title>
+    <description>0x28D6E cmp.b $8b48 (единственная ссылка): [0xFFFF918F] не ниже байта -&gt; флаг [0xFFFF90EE] = 0 и [0xFFFF9184] = 0. При 0 условие верно сразу (патч no-warmup, документ 13). 1536 об/мин вых. вала это около 57 км/ч на E39 523i с 3.23. Программа прогрева 0x28D50 (пара 20C0 0x25182, разбор 06.10.2026): флаг [0xFFFF90EE] = 1 ставит 0x15F82 (функция 0x15F78, она же копирует температуру мотора при включении в [0xFFFF90D5], 0x15F92), состояния 1-4. Пока флаг не 0, матрицы переключения видят педаль [0xFFFF9184] (0x24B66-0x24B76) = max(педаль [0xFFFF9182], 0x8142(температура мотора, программа), 0x81CC[программа]) (0x28E84-0x28EAA); ещё флаг читают арбитр программ (0x231F8) и AGS (0x1DC1E). Конец: n_вых/32 [0xFFFF918F] не ниже [0x8B48] (0x28D6E), [0xFFFF9107] не 0, кончился счётчик 0x9A6E или таблица 0x8142 дала 0. Температура мотора [0xFFFF90D3] = байт CAN [0xFFFF8435] x 3 / 4 (0x20FAC, запись 0x21696, °C + 48). До 06.10.2026 таблица 0x9A6E называлась «термодерейтом по ATF» (документ 05 §2): неверно, это прогрев. Данные 20C0 те же (документ 11 §8).</description>
+    <CATEGORYMEM index="0" category="2" />
+    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x8B48" mmedelementsizebits="8" mmedmajorstridebits="0" mmedminorstridebits="0" />
+    <units>об/мин вых. вала / 32</units>
+    <decimalpl>0</decimalpl>
+    <outputtype>1</outputtype>
+    <MATH equation="X">
+        <VAR id="X" />
+      </MATH>
+  </XDFCONSTANT>
+  <XDFCONSTANT uniqueid="0x1387" flags="0x0">
+    <title>Прогрев: температура мотора, с которой ветка 0x81CC выключается, завод 113 = 65 °C (0x8141)</title>
+    <description>0x28E30 cmp.b $8141: [0xFFFF90D3] не ниже байта -&gt; [0xFFFF9210] = 0 и нижний предел 0x81CC снят. Программа прогрева 0x28D50 (пара 20C0 0x25182, разбор 06.10.2026): флаг [0xFFFF90EE] = 1 ставит 0x15F82 (функция 0x15F78, она же копирует температуру мотора при включении в [0xFFFF90D5], 0x15F92), состояния 1-4. Пока флаг не 0, матрицы переключения видят педаль [0xFFFF9184] (0x24B66-0x24B76) = max(педаль [0xFFFF9182], 0x8142(температура мотора, программа), 0x81CC[программа]) (0x28E84-0x28EAA); ещё флаг читают арбитр программ (0x231F8) и AGS (0x1DC1E). Конец: n_вых/32 [0xFFFF918F] не ниже [0x8B48] (0x28D6E), [0xFFFF9107] не 0, кончился счётчик 0x9A6E или таблица 0x8142 дала 0. Температура мотора [0xFFFF90D3] = байт CAN [0xFFFF8435] x 3 / 4 (0x20FAC, запись 0x21696, °C + 48). До 06.10.2026 таблица 0x9A6E называлась «термодерейтом по ATF» (документ 05 §2): неверно, это прогрев. Данные 20C0 те же (документ 11 §8).</description>
+    <CATEGORYMEM index="0" category="2" />
+    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x8141" mmedelementsizebits="8" mmedmajorstridebits="0" mmedminorstridebits="0" />
+    <units>°C + 48 (мотор)</units>
+    <decimalpl>0</decimalpl>
+    <outputtype>1</outputtype>
+    <MATH equation="X">
+        <VAR id="X" />
+      </MATH>
+  </XDFCONSTANT>
+  <XDFTABLE uniqueid="0x1388" flags="0x0">
+    <title>Прогрев: нижний предел педали по программе P0-PF, пока [0xFFFF9210] не 0, завод нули (0x81CC)</title>
+    <description>0x28DEA и 0x28E48: movea.l #$81ca, + программа, байт $2(a0) -&gt; d6 -&gt; [0xFFFF9184] = max(d6, 0x8142, педаль). Завод: все 0. Программа прогрева 0x28D50 (пара 20C0 0x25182, разбор 06.10.2026): флаг [0xFFFF90EE] = 1 ставит 0x15F82 (функция 0x15F78, она же копирует температуру мотора при включении в [0xFFFF90D5], 0x15F92), состояния 1-4. Пока флаг не 0, матрицы переключения видят педаль [0xFFFF9184] (0x24B66-0x24B76) = max(педаль [0xFFFF9182], 0x8142(температура мотора, программа), 0x81CC[программа]) (0x28E84-0x28EAA); ещё флаг читают арбитр программ (0x231F8) и AGS (0x1DC1E). Конец: n_вых/32 [0xFFFF918F] не ниже [0x8B48] (0x28D6E), [0xFFFF9107] не 0, кончился счётчик 0x9A6E или таблица 0x8142 дала 0. Температура мотора [0xFFFF90D3] = байт CAN [0xFFFF8435] x 3 / 4 (0x20FAC, запись 0x21696, °C + 48). До 06.10.2026 таблица 0x9A6E называлась «термодерейтом по ATF» (документ 05 §2): неверно, это прогрев. Данные 20C0 те же (документ 11 §8).</description>
+    <CATEGORYMEM index="0" category="2" />
+    <XDFAXIS id="x" uniqueid="0x0">
+      <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
+      <units>программа</units>
+      <indexcount>16</indexcount>
+      <datatype>0</datatype>
+      <unittype>0</unittype>
+      <DALINK index="0" />
+      <LABEL index="0" value="P0" />
+      <LABEL index="1" value="P1" />
+      <LABEL index="2" value="P2" />
+      <LABEL index="3" value="P3" />
+      <LABEL index="4" value="P4" />
+      <LABEL index="5" value="P5" />
+      <LABEL index="6" value="P6" />
+      <LABEL index="7" value="P7" />
+      <LABEL index="8" value="P8" />
+      <LABEL index="9" value="P9" />
+      <LABEL index="10" value="PA" />
+      <LABEL index="11" value="PB" />
+      <LABEL index="12" value="PC" />
+      <LABEL index="13" value="PD" />
+      <LABEL index="14" value="PE" />
+      <LABEL index="15" value="PF" />
+      <MATH equation="X">
+        <VAR id="X" />
+      </MATH>
+    </XDFAXIS>
+    <XDFAXIS id="y" uniqueid="0x0">
+      <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
+      <units>строка</units>
+      <indexcount>1</indexcount>
+      <datatype>0</datatype>
+      <unittype>0</unittype>
+      <DALINK index="0" />
+      <LABEL index="0" value="педаль" />
+      <MATH equation="X">
+        <VAR id="X" />
+      </MATH>
+    </XDFAXIS>
+    <XDFAXIS id="z">
+      <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x81CC" mmedelementsizebits="8" mmedrowcount="1" mmedcolcount="16" mmedmajorstridebits="0" mmedminorstridebits="0" />
+      <decimalpl>0</decimalpl>
+      <units>педаль коробки</units>
+      <outputtype>1</outputtype>
+      <MATH equation="X">
+        <VAR id="X" />
+      </MATH>
+    </XDFAXIS>
+  </XDFTABLE>
+  <XDFCONSTANT uniqueid="0x1389" flags="0x0">
+    <title>Кикдаун: источник, 0 = контакт педали и педаль выше 0x8246 (E39), не 0 = бит DME2 по CAN, завод 0 (0x8D1A)</title>
+    <description>0x20604 tst.b $8d1a: 0 -&gt; контакт бит 7 порта [0xFFFF89BE] (активный 0, фильтр [0x8E84] опросов) и педаль [0xFFFF9182] выше [0x8246] (0x20614-0x206F8); не 0 -&gt; [0xFFFF9113] = [0xFFFF9116] (0x206FC). Ещё читает 0x1EE80. Пара 20C0 0x70D6A (там 1). Убрать кикдаун: 0 сюда и 255 в 0x8246 (патч no-kickdown, документ 13). Кикдаун 0x205FC (пара 20C0 0x1BC9C) -&gt; флаг [0xFFFF9113]: при нём матрицы берут педаль 255 (0x24B34-0x24B64), ручная ветка M выключена (в M с педалью в пол +/- не работают, документ 02 §5).</description>
+    <CATEGORYMEM index="0" category="9" />
+    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x8D1A" mmedelementsizebits="8" mmedmajorstridebits="0" mmedminorstridebits="0" />
+    <units>флаг</units>
+    <decimalpl>0</decimalpl>
+    <outputtype>1</outputtype>
+    <MATH equation="X">
+        <VAR id="X" />
+      </MATH>
+  </XDFCONSTANT>
+  <XDFCONSTANT uniqueid="0x138A" flags="0x0">
+    <title>Кикдаун: порог педали в ветке контакта, завод 230 (0x8246)</title>
+    <description>0x206E2 cmp.b $8246 (единственная ссылка): педаль [0xFFFF9182] выше байта и контакт -&gt; кикдаун. Работает при [0x8D1A] = 0 (E39). Педаль коробки не выше 254, поэтому 255 = никогда. Пара 20C0 0x70232. Кикдаун 0x205FC (пара 20C0 0x1BC9C) -&gt; флаг [0xFFFF9113]: при нём матрицы берут педаль 255 (0x24B34-0x24B64), ручная ветка M выключена (в M с педалью в пол +/- не работают, документ 02 §5).</description>
+    <CATEGORYMEM index="0" category="9" />
+    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x8246" mmedelementsizebits="8" mmedmajorstridebits="0" mmedminorstridebits="0" />
+    <units>педаль коробки</units>
     <decimalpl>0</decimalpl>
     <outputtype>1</outputtype>
     <MATH equation="X">

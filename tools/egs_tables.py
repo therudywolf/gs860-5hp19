@@ -9,7 +9,8 @@ Works on 256K full images of GS8.60.0 (19C0 / 19D0), on their 32K partial images
 and, since 27.09.2026, on 512K full images of GS8.60.4 (20C0): calibration zones
 0x70000-0x71BC0 and 0x78000-0x7D858, 16 shift matrices at 0x7120E + k * 0x70, gear
 ratios at 0x0E0D2, program code 0x08000-0x70000 (docs 11). The layout is chosen by the
-file size. What is not proven for 20C0 is said so in the output (matrix roles).
+file size. Matrix roles by code (both programs, docs 01 §5 and 11 §5, 06.10.2026):
+D = k14 (P0) and k06 (P1), S = k11 (P2) and k15 (P3), M = k10 (PB) and k08 (PD).
 
 Table formats (big-endian, Motorola 68k/CPU32):
   2D8  : [u16 nx][u16 ny][nx bytes X axis][ny bytes Y axis][nx*ny bytes data]
@@ -58,17 +59,19 @@ CODE_SHA256_20C0 = "28d921796ffc1fdaafed346e21808dfac80498bf140222f07906abf74a20
 SHIFT_BASE, SHIFT_STRIDE = 0x091B2, 0x70
 # Layout by file size. zones = table zones, win = calibration window, code = program code and
 # its reference hash, shift = first matrix, ratios = (address, index of 1st gear), labels = program
-# and calibration label, tables = tables the scanner finds in a factory image, manual = matrices
-# known to be the manual program (19x0: by shape of stock and Alpina; 20C0: not proven, None).
+# and calibration label, tables = tables the scanner finds in a factory image, manual = matrices of the
+# manual program M (PB = k10, PD = k08, by code in both programs), monitor = turbine monitor threshold (u16),
+# lock_add = bytes added to the upshift threshold while the converter is locked (20C0 only).
 LAYOUTS = {
     0x40000: dict(name="GS8.60.0 19x0 full 256K", zones=[(CAL_LO, CAL_HI)], win=(WIN_LO, WIN_HI), code=(CODE_LO, CODE_HI),
                   code_sha=CODE_SHA256_19x0, shift=SHIFT_BASE, ratios=(0x12F9C, 0), labels=(0x4322, 0xFFCE),
-                  tables=536, manual=(8, 9, 10), off=0),
+                  tables=536, manual=(8, 10), off=0, monitor=0x8B44, lock_add=None),
     0x08000: dict(name="GS8.60.0 19x0 partial 32K", zones=[(CAL_LO, CAL_HI)], win=(WIN_LO, WIN_HI), code=None,
-                  code_sha=None, shift=SHIFT_BASE, ratios=None, labels=(None, 0xFFCE), tables=536, manual=(8, 9, 10), off=WIN_LO),
+                  code_sha=None, shift=SHIFT_BASE, ratios=None, labels=(None, 0xFFCE), tables=536, manual=(8, 10), off=WIN_LO,
+                  monitor=0x8B44, lock_add=None),
     0x80000: dict(name="GS8.60.4 20C0 full 512K", zones=[(0x70000, 0x71BC0), (0x78000, 0x7D858)], win=(0x70000, 0x80000),
                   code=(0x08000, 0x70000), code_sha=CODE_SHA256_20C0, shift=0x7120E, ratios=(0x0E0D2, 1),
-                  labels=(0x6FF7C, 0x7FFCE), tables=614, manual=None, off=0),
+                  labels=(0x6FF7C, 0x7FFCE), tables=614, manual=(8, 10), off=0, monitor=0x70BA8, lock_add=0x70B98),
 }
 SHIFT_COLS = ["1>2", "2>3", "3>4", "4>5", "2>1", "3>2", "4>3", "5>4"]
 
@@ -87,7 +90,9 @@ NEVER = 250                                # an upshift value >= 250 never trigg
 # kickdown rows (the factory leaves about 330-850 rpm to its own limiter).
 DEFAULT_MARGIN = (1120, 610, 490, 400)
 DEFAULT_DOWN_MARGIN = 500                  # turbine rpm left below the spark cut after a downshift
-OVERRUN_TOLERANCE = 100                    # a manual upshift may sit this much above the fuel cut
+GUARD_ABOVE_CUT = 150                      # M: the overrun guard sits at least this far above the hard cut
+MONITOR_MARGIN = 100                       # ... and at least this far below the turbine monitor
+ROLE_BY_CODE = {14: "drive", 6: "drive", 11: "sport", 15: "sport", 10: "manual", 8: "manual"}
 MIN_GAP = 6                                # units kept between an upshift and its downshift by --fix
 ORD = ("1st", "2nd", "3rd", "4th", "5th")
 
@@ -233,6 +238,41 @@ class FW:
                 res.append(None)
         return res
 
+    def monitor(self):
+        """Turbine monitor threshold, rpm (fault 0x25 and limp mode about a second above it), or None."""
+        a = self.L.get("monitor")
+        return self.u16(a) if a and self.valid(a) and self.valid(a + 1) else None
+
+    def lock_adds(self):
+        """Matrix units added to the upshift threshold of gears 1..5 while the converter is locked
+        (20C0: 0x70B98, function 0x20D8E; 19x0: none)."""
+        a = self.L.get("lock_add")
+        return [self.u8(a + g) for g in range(5)] if a and self.valid(a + 5) else [0] * 5
+
+    def overrun_lock_adds(self):
+        """20C0: the locked addition per gear 1..5 only where M (PB or PD) can have the converter locked with the
+        pedal released (row 0 of its TCC group below 200 n_out/32, group table 0x70970, thresholds 0x71996 /
+        0x71AD0): only then the overrun upshift comes later. 19x0: zeros."""
+        if not self.is_20c0:
+            return [0] * 5
+        adds = self.lock_adds()
+        out = []
+        for gear in range(1, 6):
+            codes = (1, 6) if gear == 1 else (gear,)
+            locked = False
+            for p in (0xB, 0xD):
+                for code in codes:
+                    g = self.u8(0x70970 + 6 * p + code - 1)
+                    if not g:
+                        continue
+                    a, c0 = (0x71996, 3 * (g - 1)) if g <= 10 else (0x71AD0, 3 * (g - 11))
+                    t = self.try_table(a)
+                    if t:
+                        _xs, _ys, data, _da, _w = self.read_table(t)
+                        locked |= data[0][c0 + 2] < 200
+            out.append(adds[gear - 1] if locked else 0)
+        return out
+
     def sha256(self, lo=None, hi=None):
         lo = self.off if lo is None else lo
         hi = self.off + self.N if hi is None else hi
@@ -255,6 +295,10 @@ def classify_programs(fw):
         limit2 = all(all(v == 255 for v in row[1:4]) for row in body)
         role = ("manual" if pedal_indep and not hold and not limit2 else
                 "hold" if hold else "2nd-only" if limit2 else "winter" if winter else "drive")
+        if k in ROLE_BY_CODE and (fw.L["code"] is None or fw.sha256(*fw.L["code"]) == fw.L["code_sha"]):
+            role = ROLE_BY_CODE[k]
+        elif role == "manual":
+            role = "fixed"         # pedal-independent but not M (19x0 k09 = P8, the gate without Steptronic logic)
         out.append(dict(index=k, addr=t["addr"], role=role, y=ys,
                         idle_up=data[0][:4], wot_up=data[-2][:4], kd_up=data[-1][:4], kd_dn=data[-1][4:]))
     return out
@@ -311,9 +355,10 @@ def cmd_shift(fw, turbine=False, rpm_per_kmh=None):
     R = fw.ratios()
     print(f"{fw.L['name']}: values = output shaft rpm / 32 (compared with {'0xFFFF9138 at 0x20688 / 0x206E4' if fw.is_20c0 else '0xFFFF918F at 0x24AC8 / 0x24B20'}); "
           "turbine rpm per unit: " + ", ".join(f"{ORD[g]} {UNIT_RPM * r:.1f}" for g, r in enumerate(R)))
+    print("roles by code: D = k14 (P0), k06 (P1); S = k11 (P2), k15 (P3); M = k10 (PB), k08 (PD)")
     if fw.is_20c0:
-        print("20C0: the upshift threshold gets [0xFFFF9143] added (byte 0x70B98[gear - 1] when [0xFFFF91B3] = 2, "
-              "function 0x20D8E), and matrix roles S / M / D are not proven (docs 11)")
+        print("20C0: while the converter is locked ([0xFFFF91B3] = 2) the upshift threshold gets 0x70B98[gear - 1] "
+              f"added (function 0x20D8E): {fw.lock_adds()} units for gears 1-5")
     if rpm_per_kmh:
         print(f"with {rpm_per_kmh} output rpm per km/h one unit is {UNIT_RPM / rpm_per_kmh:.3f} km/h")
     if turbine:
@@ -408,7 +453,8 @@ def cmd_info(fw):
     print(f"tables in {', '.join(f'0x{lo:05X}-0x{hi:05X}' for lo, hi in fw.zones())}: {len(tabs)} "
           f"{'(ok)' if len(tabs) == L['tables'] else '(expected ' + str(L['tables']) + ')'}")
     if fw.is_20c0:
-        print("GS8.60.4 20C0: catalog/gs8604_20c0.json and docs 11 apply; the recipes of this repository do not")
+        print("GS8.60.4 20C0: catalog/gs8604_20c0.json, docs 11 and the recipes recipes/gs8604_*.json apply; "
+              "the 19x0 recipes do not")
     try:
         import gs860_crc
         rows = gs860_crc.sums(bytes(fw.d))
@@ -425,39 +471,54 @@ def cmd_info(fw):
 
 
 # ------------------------------------------------------------------------------
-MANUAL_19x0 = (8, 9, 10)                   # manual (M) matrices of 19C0/19D0: stock and Alpina agree by shape
-
-
 def roles_for(fw, stock=None):
-    """Role of each matrix for the rules: by shape of the stock image when given, otherwise by shape of
-    the image itself, except that 08/09/10 of 19C0/19D0 stay "manual" even when a tune made their
-    upshift columns 255 (by shape that would look like a hold program). For 20C0 the roles are by
-    shape only: which matrix is the manual program is not proven there (docs 11 §5)."""
-    roles = {p["index"]: p["role"] for p in classify_programs(stock if stock else fw)}
-    if stock is None and fw.L["manual"] and (fw.L["code"] is None or fw.sha256(*fw.L["code"]) == fw.L["code_sha"]):
-        for k in fw.L["manual"]:
-            roles[k] = "manual"
-    return roles
+    """Role of each matrix for the rules. D (drive), S (sport) and M (manual) by code in both programs
+    (k14/k06, k11/k15, k10/k08); the other matrices by shape of the stock image when given, otherwise of the
+    image itself (hold, winter, 2nd-only, fixed, drive)."""
+    return {p["index"]: p["role"] for p in classify_programs(stock if stock else fw)}
 
 
-def shift_limits(ratios, spark, margin=DEFAULT_MARGIN, down_margin=DEFAULT_DOWN_MARGIN):
-    """Largest matrix values allowed by doc 02 §4: upshift 1>2..4>5 and downshift landing 2>1..5>4."""
-    up = [int((spark - margin[g]) // (UNIT_RPM * ratios[g])) for g in range(4)]
+def shift_limits(ratios, spark, margin=DEFAULT_MARGIN, down_margin=DEFAULT_DOWN_MARGIN, adds=None):
+    """Largest matrix values allowed by doc 02 §4: upshift 1>2..4>5 and downshift landing 2>1..5>4.
+    `adds` (20C0) are subtracted from the upshift limits: while the converter is locked the command comes
+    that many units later (0x70B98, function 0x20D8E)."""
+    adds = adds or [0] * 5
+    up = [int((spark - margin[g]) // (UNIT_RPM * ratios[g])) - adds[g] for g in range(4)]
     down = [int((spark - down_margin) // (UNIT_RPM * ratios[g])) for g in range(4)]
     return up, down
 
 
-def overrun_guard(ratios, cut):
-    """Manual upshift values at the fuel cut: the box shifts up by itself only on the overrun."""
-    return [round(cut / (UNIT_RPM * ratios[g])) for g in range(4)]
+def manual_guard(ratios, cut, monitor, adds=None):
+    """Upshift values of M that hold the gear on the limiter (docs 02 §5, 13 §7): the lowest value GUARD_ABOVE_CUT
+    over the hard cut, unless the overrun threshold (plus the 20C0 locked addition `adds[g]` where the converter
+    can be locked on the overrun) would come closer than MONITOR_MARGIN to the turbine monitor. Returns
+    (values, notes); raises ValueError when a gear cannot sit at least at the cut."""
+    adds = adds or [0] * 5
+    vals, notes = [], []
+    for g in range(4):
+        u = UNIT_RPM * ratios[g]
+        safe = int((monitor - MONITOR_MARGIN) // u) - adds[g]
+        want = int(-(-(cut + GUARD_ABOVE_CUT) // u))
+        v = min(safe, want)
+        if v * u < cut:
+            raise ValueError(f"gear {g + 1}: the turbine monitor {monitor} leaves no room above the cut {cut} "
+                             f"(guard {round(v * u)} rpm); raise the monitor with egs_patch.py manual-hold:monitor=auto")
+        if v < want:
+            notes.append(f"gear {g + 1}: guard {round(v * u)} rpm, less than {GUARD_ABOVE_CUT} rpm above the cut")
+        vals.append(v)
+    return vals, notes
 
 
 def verify_shift(fw, spark, cut=None, margin=DEFAULT_MARGIN, down_margin=DEFAULT_DOWN_MARGIN, stock=None):
     """Findings [(level, k, role, pedal, column, value, turbine, message, is_stock)] for all 16 matrices.
-    ERROR: cannot work (never reached under load, lands above the spark cut, hunting, no overrun
-    protection in a manual program). WARN: works, but with less room than the margins."""
+    ERROR: cannot work (never reached under load, lands above the spark cut, hunting, M guard above the turbine
+    monitor). WARN: works, but with less room than the margins, or M without overrun protection or with a guard
+    under the cut (M shifts up by itself on the limiter)."""
     R = fw.ratios()
-    cap_up, cap_down = shift_limits(R, spark, margin, down_margin)
+    adds = fw.lock_adds()
+    oadds = fw.overrun_lock_adds()
+    cap_up, cap_down = shift_limits(R, spark, margin, down_margin, adds)
+    monitor = fw.monitor()
     roles = roles_for(fw, stock)
     st_m = stock.shift_matrices() if stock else None
     out = []
@@ -481,20 +542,27 @@ def verify_shift(fw, spark, cut=None, margin=DEFAULT_MARGIN, down_margin=DEFAULT
                 tu = turbine_rpm(up, g, R)
                 if role == "manual":
                     if up >= NEVER:
-                        add("ERROR" if g < 3 else "WARN", r, [g],
-                            "never shifts up: no protection on the overrun, the wheels can drive the engine past the cut"
-                            + (f" (guard at the cut: {overrun_guard(R, cut)[g]})" if cut else ""))
-                    elif cut and tu > cut + OVERRUN_TOLERANCE:
-                        add("WARN", r, [g], f"overrun protection only at {tu} rpm, fuel cut {cut}")
-                elif role in ("drive", "winter") and 0 < up < NEVER:
+                        add("WARN", r, [g], "never shifts up: no protection on the overrun, the wheels can drive the "
+                                            "engine past the cut (egs_patch.py manual-hold puts a guard instead)")
+                    else:
+                        if monitor and round((up + oadds[g]) * UNIT_RPM * R[g]) > monitor - MONITOR_MARGIN:
+                            add("ERROR", r, [g], f"guard {round((up + oadds[g]) * UNIT_RPM * R[g])} rpm"
+                                                 f"{' (locked on the overrun)' if oadds[g] else ''} is above the turbine "
+                                                 f"monitor {monitor} - {MONITOR_MARGIN}: fault 0x25 and limp mode before the shift")
+                        if cut and tu < cut:
+                            add("WARN", r, [g], f"shifts up at {tu} rpm, under the hard cut {cut}: with the converter "
+                                                f"locked M shifts up by itself on the limiter")
+                elif role in ("drive", "sport", "winter") and 0 < up < NEVER:
                     # 4>5 at full load needs 4th gear near the limiter, above the top speed of most cars:
                     # the factory uses 200 there as "practically never", so it is only a warning
-                    if tu >= spark:
+                    tl = round((up + adds[g]) * UNIT_RPM * R[g])
+                    if tl >= spark:
                         add("ERROR" if g < 3 else "WARN", r, [g],
-                            f"never reached under load (turbine {tu} >= spark cut {spark}): the box hangs at the "
-                            f"limiter{' in 4th' if g == 3 else ''}; limit {cap_up[g]}")
+                            f"never reached under load (turbine {tl}{' locked' if adds[g] else ''} >= spark cut {spark}): "
+                            f"the box hangs at the limiter{' in 4th' if g == 3 else ''}; limit {cap_up[g]}")
                     elif up > cap_up[g]:
-                        add("WARN", r, [g], f"{spark - tu} rpm to the spark cut, margin {margin[g]}: limit {cap_up[g]}")
+                        add("WARN", r, [g], f"{spark - tl} rpm to the spark cut{' (locked)' if adds[g] else ''}, "
+                                            f"margin {margin[g]}: limit {cap_up[g]}")
                 if 0 < dn < NEVER:
                     td = turbine_rpm(dn, 4 + g, R)
                     if td >= spark:
@@ -520,19 +588,26 @@ def fix_shift(fw, spark, cut=None, margin=DEFAULT_MARGIN, down_margin=DEFAULT_DO
     """Bring the drive, sport and manual matrices within the limits of doc 02 §4 by lowering only the
     cells that break them. Returns [(k, pedal, column, old, new)] and edits fw.d in place.
     Upshift 1>2..3>4 above the limit: set to the limit (4>5 is not touched). Manual upshift that never
-    triggers: set to the overrun guard at the fuel cut (needs cut). Downshift landing too high: set to
-    the limit, and at least MIN_GAP below its upshift where the upshift was lowered or the pair hunts.
-    With `stock`, cells equal to stock are the factory's choice and are not moved, except a downshift
-    whose upshift was lowered (otherwise the pair would hunt)."""
+    triggers, sits under the cut or above the turbine monitor: set to the guard of manual_guard (needs cut).
+    Downshift landing too high: set to the limit, and at least MIN_GAP below its upshift where the upshift
+    was lowered or the pair hunts. With `stock`, cells equal to stock are the factory's choice and are not
+    moved, except a downshift whose upshift was lowered (otherwise the pair would hunt)."""
     R = fw.ratios()
-    cap_up, cap_down = shift_limits(R, spark, margin, down_margin)
-    guard = overrun_guard(R, cut) if cut else None
+    adds = fw.lock_adds()
+    oadds = fw.overrun_lock_adds()
+    cap_up, cap_down = shift_limits(R, spark, margin, down_margin, adds)
+    guard = None
+    if cut and fw.monitor():
+        try:
+            guard, _notes = manual_guard(R, cut, fw.monitor(), oadds)
+        except ValueError as e:
+            raise SystemExit(f"manual programs: {e}")
     roles = roles_for(fw, stock)
     st_m = stock.shift_matrices() if stock else None
     changes = []
     for k, t in enumerate(fw.shift_matrices()):
         role = roles.get(k)
-        if t is None or role not in ("drive", "winter", "manual"):
+        if t is None or role not in ("drive", "sport", "winter", "manual"):
             continue
         _xs, ys, data, _da, _w = fw.read_table(t)
         sd = stock.read_table(st_m[k])[2] if st_m and st_m[k] else None
@@ -544,10 +619,11 @@ def fix_shift(fw, spark, cut=None, margin=DEFAULT_MARGIN, down_margin=DEFAULT_DO
                 if factory(r, g):
                     pass
                 elif role == "manual":
-                    if up >= NEVER or (cut and up * UNIT_RPM * R[g] > cut + OVERRUN_TOLERANCE):
+                    bad = up >= NEVER or (cut and up * UNIT_RPM * R[g] < cut) or (
+                        fw.monitor() and (up + oadds[g]) * UNIT_RPM * R[g] > fw.monitor() - MONITOR_MARGIN)
+                    if bad:
                         if guard is None:
-                            raise SystemExit("manual programs without an overrun guard: give --cut (the fuel cut) "
-                                             "so the guard can sit above the spark cut")
+                            raise SystemExit("manual programs: give --cut (the hard cut of the engine) for the guard")
                         new[g] = guard[g]
                 elif 0 < up < NEVER and up > cap_up[g] and g < 3:     # 4>5 is left alone (see verify_shift)
                     new[g] = cap_up[g]
@@ -568,16 +644,24 @@ def fix_shift(fw, spark, cut=None, margin=DEFAULT_MARGIN, down_margin=DEFAULT_DO
 def cmd_verify_shift(fw, spark, cut=None, margin=DEFAULT_MARGIN, down_margin=DEFAULT_DOWN_MARGIN,
                      stock=None, fix_out=None):
     R = fw.ratios()
-    cap_up, cap_down = shift_limits(R, spark, margin, down_margin)
+    adds = fw.lock_adds()
+    cap_up, cap_down = shift_limits(R, spark, margin, down_margin, adds)
     print(f"file: {fw.path} ({fw.L['name']})")
-    print(f"spark cut {spark}" + (f", fuel cut {cut}" if cut else "") + f"; ratios {'/'.join(f'{r:.3f}' for r in R)}; "
-          f"margins up {'/'.join(map(str, margin))}, down {down_margin}")
-    if fw.is_20c0:
-        print("20C0: matrix roles are by shape only (manual / hold / winter / drive); which matrix the manual program "
-              "really uses is a hypothesis (docs 11 §5). The upshift threshold is matrix value + [0xFFFF9143] "
-              "(0x70B98, function 0x20D8E), so the real command comes a few units later than the value checked here.")
-    print(f"limits (matrix units): up 1>2..4>5 {cap_up}, down landing 2>1..5>4 {cap_down}"
-          + (f", manual overrun guard {overrun_guard(R, cut)}" if cut else ""))
+    print(f"spark cut {spark}" + (f", hard cut {cut}" if cut else "") + f"; ratios {'/'.join(f'{r:.3f}' for r in R)}; "
+          f"margins up {'/'.join(map(str, margin))}, down {down_margin}"
+          + (f"; turbine monitor {fw.monitor()}" if fw.monitor() else ""))
+    print("roles by code: D = k14, k06; S = k11, k15; M = k10, k08 (docs 01 §5, 11 §5); the others by shape")
+    if any(adds):
+        print(f"20C0: while the converter is locked the upshift comes {adds[:4]} units later (0x70B98, 0x20D8E); "
+              "the limits below already subtract that")
+    guard_txt = ""
+    if cut and fw.monitor():
+        try:
+            gv, gn = manual_guard(R, cut, fw.monitor(), fw.overrun_lock_adds())
+            guard_txt = f", M guard {gv}" + (f" ({'; '.join(gn)})" if gn else "")
+        except ValueError as e:
+            guard_txt = f", M guard: {e}"
+    print(f"limits (matrix units): up 1>2..4>5 {cap_up}, down landing 2>1..5>4 {cap_down}{guard_txt}")
     if fix_out:
         if os.path.abspath(fix_out) == os.path.abspath(fw.path) or os.path.exists(fix_out):
             print(f"{fix_out}: exists or is the input - not overwriting"); return 2

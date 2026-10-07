@@ -29,7 +29,7 @@
 | **n_out** | output shaft speed (`0xFFFF97B2`), 27.11 rpm per km/h on the reference car. The shift matrices, the speed axes of the AGS tables and the TCC thresholds 0x993A hold n_out / 32 (`0xFFFF918F`), doc 02 §3 |
 | **Torque** | `0xFFFF97A0`: turbine torque, Nm, 97A4 × 97F4 / 100 (0x2DFBA). Map Y axis `0xFFFF97DF` = 97A0/4 + 25 |
 | **ATF** | transmission fluid; raw sensor byte `0xFFFF8435`; in the frame °C = byte − 48 |
-| **Thermal derate** | limitation of the effective pedal by ATF temperature (table `0x9A6E`, doc 05 §2) |
+| **Warm-up program** | after power-on, while the engine is cold, the matrices see at least 40 % pedal (P0, P1, P7) and the arbiter holds P0; it ends by speed (`0x8B48` / `0x70BAC` = 48), time or engine temperature (doc 05 §2, doc 13 §3). Until 06.10.2026 the table `0x9A6E` was wrongly called an "ATF thermal derate" |
 | **Torque reduction** | request to the DME to cut torque during a shift. One channel: byte 3 of the EGS1 frame, `0xFFFF90C0` from `0xFFFF918D` = max(`0xFFFF958D`, `0xFFFF97E1`), 958D is written only by 0x2E3C6 (doc 04 §9). The maps `0xAB0C…0xAE40` are the reference slip of the TCC regulator, not torque reduction |
 | **Tick (10 ms)** | unit of all times in the shift-execution tables |
 | **Kickdown** | pedal row 255 of the shift matrices, the full-travel switch. Kickdown flag `0xFFFF9113`: with it the manual branch is off (doc 02 §5) |

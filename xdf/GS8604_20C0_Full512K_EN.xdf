@@ -2,8 +2,8 @@
 <XDFFORMAT version="1.60">
   <XDFHEADER>
     <flags>0x1</flags>
-    <deftitle>GS8604 20C0 Full 512K - WOLF4X v2 (2026-09-30), English</deftitle>
-    <description>Bosch GS8.60.4 (ZF 5HP19, software 20C0, 512 KB, program label B223K_0520C0 at 0x6FF7C), Motorola 68k CPU32. Calibration 0x70000-0x71BC0 and 0x78000-0x7D858, pointer catalog 0x71BC2 (43 slots), three CRC-16 sums (loader 0x0-0x43FF -&gt; 0x5FFE, program 0x8000-0x6FF7B -&gt; 0x6FFFE, calibration 0x70000-0x7FFCD -&gt; 0x7FFFE): after editing in TunerPro run tools/gs860_crc.py fix. Generated from catalog/gs8604_20c0.json by tools/make_xdf.py, never edited by hand. Confidence: proven = read by 20C0 code (instruction address in the proof), structure = same place in a structure as in 19D0 with the role proven there, unknown = shape proven, role not established, hypothesis = not proven. Roles of the shift-automaton record fields (sets 9820-983C) and of the root 0xFFFF9804 (drive engagement) are proven by 20C0 code. Roles of the S/M/D matrices on 20C0 are not proven (document 11). RU text is the reference (catalog field description).</description>
+    <deftitle>GS8604 20C0 Full 512K - WOLF4X v3 (2026-10-07), English</deftitle>
+    <description>Bosch GS8.60.4 (ZF 5HP19, software 20C0, 512 KB, program label B223K_0520C0 at 0x6FF7C), Motorola 68k CPU32. Calibration 0x70000-0x71BC0 and 0x78000-0x7D858, pointer catalog 0x71BC2 (43 slots), three CRC-16 sums (loader 0x0-0x43FF -&gt; 0x5FFE, program 0x8000-0x6FF7B -&gt; 0x6FFFE, calibration 0x70000-0x7FFCD -&gt; 0x7FFFE): after editing in TunerPro run tools/gs860_crc.py fix. Generated from catalog/gs8604_20c0.json by tools/make_xdf.py, never edited by hand. Confidence: proven = read by 20C0 code (instruction address in the proof), structure = same place in a structure as in 19D0 with the role proven there, unknown = shape proven, role not established, hypothesis = not proven. Roles of the shift-automaton record fields (sets 9820-983C) and of the root 0xFFFF9804 (drive engagement) are proven by 20C0 code. Roles of the D / S / M matrices are proven by 20C0 code and a log (D = k14 and k6, S = k11 and k15, M = k10, k8 at overheat; document 11 section 5), so are the warm-up program (0x25182), kick-down (0x1BC9C) and the lower TCC level (root 0xFFFF9808). RU text is the reference (catalog field description).</description>
     <author>rudywolf (WOLF4X)</author>
     <baseoffset>0</baseoffset>
     <REGION type="0xFFFFFFFF" startaddress="0x0" size="0x80000" regionflags="0x0" name="Binary File" desc="" />
@@ -26,7 +26,7 @@
   </XDFHEADER>
   <XDFTABLE uniqueid="0x2000" flags="0x0">
     <title>Shift points: matrix k00, program P4 (0x7120E)</title>
-    <description>Values = output shaft rpm / 32 (compared with [0xFFFF9138] at 0x20688 up and 0x206E4 down). Columns 1-4 upshifts 1-2 ... 4-5, columns 5-8 downshifts 2-1 ... 5-4. Row Y = gearbox pedal, 255 = kick-down. The matrix is selected by 0x20768 by program number.</description>
+    <description>Values = output shaft rpm / 32 (compared with [0xFFFF9138] at 0x20688 up and 0x206E4 down). Columns 1-4 upshifts 1-2 ... 4-5, columns 5-8 downshifts 2-1 ... 5-4. Row Y = gearbox pedal, 255 = kick-down. The matrix is selected by 0x20768 by program number. With the converter locked the upshift threshold gets the offset 0x70B98 (0x20D8E).</description>
     <CATEGORYMEM index="0" category="1" />
     <XDFAXIS id="x" uniqueid="0x0">
       <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x71212" mmedelementsizebits="8" mmedcolcount="8" mmedmajorstridebits="0" mmedminorstridebits="0" />
@@ -70,7 +70,7 @@
   </XDFTABLE>
   <XDFTABLE uniqueid="0x2001" flags="0x0">
     <title>Shift points: matrix k01, program P5 (0x7127E)</title>
-    <description>Values = output shaft rpm / 32 (compared with [0xFFFF9138] at 0x20688 up and 0x206E4 down). Columns 1-4 upshifts 1-2 ... 4-5, columns 5-8 downshifts 2-1 ... 5-4. Row Y = gearbox pedal, 255 = kick-down. The matrix is selected by 0x20768 by program number.</description>
+    <description>Values = output shaft rpm / 32 (compared with [0xFFFF9138] at 0x20688 up and 0x206E4 down). Columns 1-4 upshifts 1-2 ... 4-5, columns 5-8 downshifts 2-1 ... 5-4. Row Y = gearbox pedal, 255 = kick-down. The matrix is selected by 0x20768 by program number. With the converter locked the upshift threshold gets the offset 0x70B98 (0x20D8E).</description>
     <CATEGORYMEM index="0" category="1" />
     <XDFAXIS id="x" uniqueid="0x0">
       <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x71282" mmedelementsizebits="8" mmedcolcount="8" mmedmajorstridebits="0" mmedminorstridebits="0" />
@@ -114,7 +114,7 @@
   </XDFTABLE>
   <XDFTABLE uniqueid="0x2002" flags="0x0">
     <title>Shift points: matrix k02, program P6 (0x712EE)</title>
-    <description>Values = output shaft rpm / 32 (compared with [0xFFFF9138] at 0x20688 up and 0x206E4 down). Columns 1-4 upshifts 1-2 ... 4-5, columns 5-8 downshifts 2-1 ... 5-4. Row Y = gearbox pedal, 255 = kick-down. The matrix is selected by 0x20768 by program number.</description>
+    <description>Values = output shaft rpm / 32 (compared with [0xFFFF9138] at 0x20688 up and 0x206E4 down). Columns 1-4 upshifts 1-2 ... 4-5, columns 5-8 downshifts 2-1 ... 5-4. Row Y = gearbox pedal, 255 = kick-down. The matrix is selected by 0x20768 by program number. With the converter locked the upshift threshold gets the offset 0x70B98 (0x20D8E).</description>
     <CATEGORYMEM index="0" category="1" />
     <XDFAXIS id="x" uniqueid="0x0">
       <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x712F2" mmedelementsizebits="8" mmedcolcount="8" mmedmajorstridebits="0" mmedminorstridebits="0" />
@@ -158,7 +158,7 @@
   </XDFTABLE>
   <XDFTABLE uniqueid="0x2003" flags="0x0">
     <title>Shift points: matrix k03, program PF (0x7135E)</title>
-    <description>Values = output shaft rpm / 32 (compared with [0xFFFF9138] at 0x20688 up and 0x206E4 down). Columns 1-4 upshifts 1-2 ... 4-5, columns 5-8 downshifts 2-1 ... 5-4. Row Y = gearbox pedal, 255 = kick-down. The matrix is selected by 0x20768 by program number.</description>
+    <description>Values = output shaft rpm / 32 (compared with [0xFFFF9138] at 0x20688 up and 0x206E4 down). Columns 1-4 upshifts 1-2 ... 4-5, columns 5-8 downshifts 2-1 ... 5-4. Row Y = gearbox pedal, 255 = kick-down. The matrix is selected by 0x20768 by program number. With the converter locked the upshift threshold gets the offset 0x70B98 (0x20D8E).</description>
     <CATEGORYMEM index="0" category="1" />
     <XDFAXIS id="x" uniqueid="0x0">
       <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x71362" mmedelementsizebits="8" mmedcolcount="8" mmedmajorstridebits="0" mmedminorstridebits="0" />
@@ -202,7 +202,7 @@
   </XDFTABLE>
   <XDFTABLE uniqueid="0x2004" flags="0x0">
     <title>Shift points: matrix k04, program PE (0x713CE)</title>
-    <description>Values = output shaft rpm / 32 (compared with [0xFFFF9138] at 0x20688 up and 0x206E4 down). Columns 1-4 upshifts 1-2 ... 4-5, columns 5-8 downshifts 2-1 ... 5-4. Row Y = gearbox pedal, 255 = kick-down. The matrix is selected by 0x20768 by program number.</description>
+    <description>Values = output shaft rpm / 32 (compared with [0xFFFF9138] at 0x20688 up and 0x206E4 down). Columns 1-4 upshifts 1-2 ... 4-5, columns 5-8 downshifts 2-1 ... 5-4. Row Y = gearbox pedal, 255 = kick-down. The matrix is selected by 0x20768 by program number. With the converter locked the upshift threshold gets the offset 0x70B98 (0x20D8E).</description>
     <CATEGORYMEM index="0" category="1" />
     <XDFAXIS id="x" uniqueid="0x0">
       <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x713D2" mmedelementsizebits="8" mmedcolcount="8" mmedmajorstridebits="0" mmedminorstridebits="0" />
@@ -246,7 +246,7 @@
   </XDFTABLE>
   <XDFTABLE uniqueid="0x2005" flags="0x0">
     <title>Shift points: matrix k05, program PA (0x7143E)</title>
-    <description>Values = output shaft rpm / 32 (compared with [0xFFFF9138] at 0x20688 up and 0x206E4 down). Columns 1-4 upshifts 1-2 ... 4-5, columns 5-8 downshifts 2-1 ... 5-4. Row Y = gearbox pedal, 255 = kick-down. The matrix is selected by 0x20768 by program number.</description>
+    <description>Values = output shaft rpm / 32 (compared with [0xFFFF9138] at 0x20688 up and 0x206E4 down). Columns 1-4 upshifts 1-2 ... 4-5, columns 5-8 downshifts 2-1 ... 5-4. Row Y = gearbox pedal, 255 = kick-down. The matrix is selected by 0x20768 by program number. With the converter locked the upshift threshold gets the offset 0x70B98 (0x20D8E).</description>
     <CATEGORYMEM index="0" category="1" />
     <XDFAXIS id="x" uniqueid="0x0">
       <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x71442" mmedelementsizebits="8" mmedcolcount="8" mmedmajorstridebits="0" mmedminorstridebits="0" />
@@ -289,8 +289,8 @@
     </XDFAXIS>
   </XDFTABLE>
   <XDFTABLE uniqueid="0x2006" flags="0x0">
-    <title>Shift points: matrix k06, program P1 (0x714AE)</title>
-    <description>Values = output shaft rpm / 32 (compared with [0xFFFF9138] at 0x20688 up and 0x206E4 down). Columns 1-4 upshifts 1-2 ... 4-5, columns 5-8 downshifts 2-1 ... 5-4. Row Y = gearbox pedal, 255 = kick-down. The matrix is selected by 0x20768 by program number.</description>
+    <title>Shift points: matrix k06, program P1 = D, AGS level 2 (0x714AE)</title>
+    <description>Values = output shaft rpm / 32 (compared with [0xFFFF9138] at 0x20688 up and 0x206E4 down). Columns 1-4 upshifts 1-2 ... 4-5, columns 5-8 downshifts 2-1 ... 5-4. Row Y = gearbox pedal, 255 = kick-down. The matrix is selected by 0x20768 by program number. With the converter locked the upshift threshold gets the offset 0x70B98 (0x20D8E). Role: D, AGS level 2, proven by 20C0 code (selector 0x1EAEE, arbitration 0x1EC1C / 0x1ED3C, AGS level -&gt; program 0x09A42) and the log of 23.09.2026; document 11 section 5.</description>
     <CATEGORYMEM index="0" category="1" />
     <XDFAXIS id="x" uniqueid="0x0">
       <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x714B2" mmedelementsizebits="8" mmedcolcount="8" mmedmajorstridebits="0" mmedminorstridebits="0" />
@@ -334,7 +334,7 @@
   </XDFTABLE>
   <XDFTABLE uniqueid="0x2007" flags="0x0">
     <title>Shift points: matrix k07, program PC (0x7151E)</title>
-    <description>Values = output shaft rpm / 32 (compared with [0xFFFF9138] at 0x20688 up and 0x206E4 down). Columns 1-4 upshifts 1-2 ... 4-5, columns 5-8 downshifts 2-1 ... 5-4. Row Y = gearbox pedal, 255 = kick-down. The matrix is selected by 0x20768 by program number.</description>
+    <description>Values = output shaft rpm / 32 (compared with [0xFFFF9138] at 0x20688 up and 0x206E4 down). Columns 1-4 upshifts 1-2 ... 4-5, columns 5-8 downshifts 2-1 ... 5-4. Row Y = gearbox pedal, 255 = kick-down. The matrix is selected by 0x20768 by program number. With the converter locked the upshift threshold gets the offset 0x70B98 (0x20D8E).</description>
     <CATEGORYMEM index="0" category="1" />
     <XDFAXIS id="x" uniqueid="0x0">
       <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x71522" mmedelementsizebits="8" mmedcolcount="8" mmedmajorstridebits="0" mmedminorstridebits="0" />
@@ -377,8 +377,8 @@
     </XDFAXIS>
   </XDFTABLE>
   <XDFTABLE uniqueid="0x2008" flags="0x0">
-    <title>Shift points: matrix k08, program PD (0x7158E)</title>
-    <description>Values = output shaft rpm / 32 (compared with [0xFFFF9138] at 0x20688 up and 0x206E4 down). Columns 1-4 upshifts 1-2 ... 4-5, columns 5-8 downshifts 2-1 ... 5-4. Row Y = gearbox pedal, 255 = kick-down. The matrix is selected by 0x20768 by program number.</description>
+    <title>Shift points: matrix k08, program PD = M at overheat (0x7158E)</title>
+    <description>Values = output shaft rpm / 32 (compared with [0xFFFF9138] at 0x20688 up and 0x206E4 down). Columns 1-4 upshifts 1-2 ... 4-5, columns 5-8 downshifts 2-1 ... 5-4. Row Y = gearbox pedal, 255 = kick-down. The matrix is selected by 0x20768 by program number. With the converter locked the upshift threshold gets the offset 0x70B98 (0x20D8E). Role: M at overheat, proven by 20C0 code (selector 0x1EAEE, arbitration 0x1EC1C / 0x1ED3C, AGS level -&gt; program 0x09A42) and the log of 23.09.2026; document 11 section 5.</description>
     <CATEGORYMEM index="0" category="1" />
     <XDFAXIS id="x" uniqueid="0x0">
       <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x71592" mmedelementsizebits="8" mmedcolcount="8" mmedmajorstridebits="0" mmedminorstridebits="0" />
@@ -422,7 +422,7 @@
   </XDFTABLE>
   <XDFTABLE uniqueid="0x2009" flags="0x0">
     <title>Shift points: matrix k09, program P8 (0x715FE)</title>
-    <description>Values = output shaft rpm / 32 (compared with [0xFFFF9138] at 0x20688 up and 0x206E4 down). Columns 1-4 upshifts 1-2 ... 4-5, columns 5-8 downshifts 2-1 ... 5-4. Row Y = gearbox pedal, 255 = kick-down. The matrix is selected by 0x20768 by program number.</description>
+    <description>Values = output shaft rpm / 32 (compared with [0xFFFF9138] at 0x20688 up and 0x206E4 down). Columns 1-4 upshifts 1-2 ... 4-5, columns 5-8 downshifts 2-1 ... 5-4. Row Y = gearbox pedal, 255 = kick-down. The matrix is selected by 0x20768 by program number. With the converter locked the upshift threshold gets the offset 0x70B98 (0x20D8E).</description>
     <CATEGORYMEM index="0" category="1" />
     <XDFAXIS id="x" uniqueid="0x0">
       <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x71602" mmedelementsizebits="8" mmedcolcount="8" mmedmajorstridebits="0" mmedminorstridebits="0" />
@@ -465,8 +465,8 @@
     </XDFAXIS>
   </XDFTABLE>
   <XDFTABLE uniqueid="0x200A" flags="0x0">
-    <title>Shift points: matrix k10, program PB (0x7166E)</title>
-    <description>Values = output shaft rpm / 32 (compared with [0xFFFF9138] at 0x20688 up and 0x206E4 down). Columns 1-4 upshifts 1-2 ... 4-5, columns 5-8 downshifts 2-1 ... 5-4. Row Y = gearbox pedal, 255 = kick-down. The matrix is selected by 0x20768 by program number.</description>
+    <title>Shift points: matrix k10, program PB = M (manual) (0x7166E)</title>
+    <description>Values = output shaft rpm / 32 (compared with [0xFFFF9138] at 0x20688 up and 0x206E4 down). Columns 1-4 upshifts 1-2 ... 4-5, columns 5-8 downshifts 2-1 ... 5-4. Row Y = gearbox pedal, 255 = kick-down. The matrix is selected by 0x20768 by program number. With the converter locked the upshift threshold gets the offset 0x70B98 (0x20D8E). Role: M (manual), proven by 20C0 code (selector 0x1EAEE, arbitration 0x1EC1C / 0x1ED3C, AGS level -&gt; program 0x09A42) and the log of 23.09.2026; document 11 section 5.</description>
     <CATEGORYMEM index="0" category="1" />
     <XDFAXIS id="x" uniqueid="0x0">
       <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x71672" mmedelementsizebits="8" mmedcolcount="8" mmedmajorstridebits="0" mmedminorstridebits="0" />
@@ -509,8 +509,8 @@
     </XDFAXIS>
   </XDFTABLE>
   <XDFTABLE uniqueid="0x200B" flags="0x0">
-    <title>Shift points: matrix k11, program P2 (0x716DE)</title>
-    <description>Values = output shaft rpm / 32 (compared with [0xFFFF9138] at 0x20688 up and 0x206E4 down). Columns 1-4 upshifts 1-2 ... 4-5, columns 5-8 downshifts 2-1 ... 5-4. Row Y = gearbox pedal, 255 = kick-down. The matrix is selected by 0x20768 by program number.</description>
+    <title>Shift points: matrix k11, program P2 = S, AGS level 3 (0x716DE)</title>
+    <description>Values = output shaft rpm / 32 (compared with [0xFFFF9138] at 0x20688 up and 0x206E4 down). Columns 1-4 upshifts 1-2 ... 4-5, columns 5-8 downshifts 2-1 ... 5-4. Row Y = gearbox pedal, 255 = kick-down. The matrix is selected by 0x20768 by program number. With the converter locked the upshift threshold gets the offset 0x70B98 (0x20D8E). Role: S, AGS level 3, proven by 20C0 code (selector 0x1EAEE, arbitration 0x1EC1C / 0x1ED3C, AGS level -&gt; program 0x09A42) and the log of 23.09.2026; document 11 section 5.</description>
     <CATEGORYMEM index="0" category="1" />
     <XDFAXIS id="x" uniqueid="0x0">
       <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x716E2" mmedelementsizebits="8" mmedcolcount="8" mmedmajorstridebits="0" mmedminorstridebits="0" />
@@ -554,7 +554,7 @@
   </XDFTABLE>
   <XDFTABLE uniqueid="0x200C" flags="0x0">
     <title>Shift points: matrix k12, program P9 (0x7174E)</title>
-    <description>Values = output shaft rpm / 32 (compared with [0xFFFF9138] at 0x20688 up and 0x206E4 down). Columns 1-4 upshifts 1-2 ... 4-5, columns 5-8 downshifts 2-1 ... 5-4. Row Y = gearbox pedal, 255 = kick-down. The matrix is selected by 0x20768 by program number.</description>
+    <description>Values = output shaft rpm / 32 (compared with [0xFFFF9138] at 0x20688 up and 0x206E4 down). Columns 1-4 upshifts 1-2 ... 4-5, columns 5-8 downshifts 2-1 ... 5-4. Row Y = gearbox pedal, 255 = kick-down. The matrix is selected by 0x20768 by program number. With the converter locked the upshift threshold gets the offset 0x70B98 (0x20D8E).</description>
     <CATEGORYMEM index="0" category="1" />
     <XDFAXIS id="x" uniqueid="0x0">
       <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x71752" mmedelementsizebits="8" mmedcolcount="8" mmedmajorstridebits="0" mmedminorstridebits="0" />
@@ -598,7 +598,7 @@
   </XDFTABLE>
   <XDFTABLE uniqueid="0x200D" flags="0x0">
     <title>Shift points: matrix k13, program P7 (0x717BE)</title>
-    <description>Values = output shaft rpm / 32 (compared with [0xFFFF9138] at 0x20688 up and 0x206E4 down). Columns 1-4 upshifts 1-2 ... 4-5, columns 5-8 downshifts 2-1 ... 5-4. Row Y = gearbox pedal, 255 = kick-down. The matrix is selected by 0x20768 by program number.</description>
+    <description>Values = output shaft rpm / 32 (compared with [0xFFFF9138] at 0x20688 up and 0x206E4 down). Columns 1-4 upshifts 1-2 ... 4-5, columns 5-8 downshifts 2-1 ... 5-4. Row Y = gearbox pedal, 255 = kick-down. The matrix is selected by 0x20768 by program number. With the converter locked the upshift threshold gets the offset 0x70B98 (0x20D8E).</description>
     <CATEGORYMEM index="0" category="1" />
     <XDFAXIS id="x" uniqueid="0x0">
       <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x717C2" mmedelementsizebits="8" mmedcolcount="8" mmedmajorstridebits="0" mmedminorstridebits="0" />
@@ -641,8 +641,8 @@
     </XDFAXIS>
   </XDFTABLE>
   <XDFTABLE uniqueid="0x200E" flags="0x0">
-    <title>Shift points: matrix k14, program P0 (0x7182E)</title>
-    <description>Values = output shaft rpm / 32 (compared with [0xFFFF9138] at 0x20688 up and 0x206E4 down). Columns 1-4 upshifts 1-2 ... 4-5, columns 5-8 downshifts 2-1 ... 5-4. Row Y = gearbox pedal, 255 = kick-down. The matrix is selected by 0x20768 by program number.</description>
+    <title>Shift points: matrix k14, program P0 = D, AGS level 1 (0x7182E)</title>
+    <description>Values = output shaft rpm / 32 (compared with [0xFFFF9138] at 0x20688 up and 0x206E4 down). Columns 1-4 upshifts 1-2 ... 4-5, columns 5-8 downshifts 2-1 ... 5-4. Row Y = gearbox pedal, 255 = kick-down. The matrix is selected by 0x20768 by program number. With the converter locked the upshift threshold gets the offset 0x70B98 (0x20D8E). Role: D, AGS level 1, proven by 20C0 code (selector 0x1EAEE, arbitration 0x1EC1C / 0x1ED3C, AGS level -&gt; program 0x09A42) and the log of 23.09.2026; document 11 section 5.</description>
     <CATEGORYMEM index="0" category="1" />
     <XDFAXIS id="x" uniqueid="0x0">
       <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x71832" mmedelementsizebits="8" mmedcolcount="8" mmedmajorstridebits="0" mmedminorstridebits="0" />
@@ -685,8 +685,8 @@
     </XDFAXIS>
   </XDFTABLE>
   <XDFTABLE uniqueid="0x200F" flags="0x0">
-    <title>Shift points: matrix k15, program P3 (0x7189E)</title>
-    <description>Values = output shaft rpm / 32 (compared with [0xFFFF9138] at 0x20688 up and 0x206E4 down). Columns 1-4 upshifts 1-2 ... 4-5, columns 5-8 downshifts 2-1 ... 5-4. Row Y = gearbox pedal, 255 = kick-down. The matrix is selected by 0x20768 by program number.</description>
+    <title>Shift points: matrix k15, program P3 = S, AGS level 4 (0x7189E)</title>
+    <description>Values = output shaft rpm / 32 (compared with [0xFFFF9138] at 0x20688 up and 0x206E4 down). Columns 1-4 upshifts 1-2 ... 4-5, columns 5-8 downshifts 2-1 ... 5-4. Row Y = gearbox pedal, 255 = kick-down. The matrix is selected by 0x20768 by program number. With the converter locked the upshift threshold gets the offset 0x70B98 (0x20D8E). Role: S, AGS level 4, proven by 20C0 code (selector 0x1EAEE, arbitration 0x1EC1C / 0x1ED3C, AGS level -&gt; program 0x09A42) and the log of 23.09.2026; document 11 section 5.</description>
     <CATEGORYMEM index="0" category="1" />
     <XDFAXIS id="x" uniqueid="0x0">
       <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x718A2" mmedelementsizebits="8" mmedcolcount="8" mmedmajorstridebits="0" mmedminorstridebits="0" />
@@ -1534,7 +1534,7 @@
   </XDFTABLE>
   <XDFTABLE uniqueid="0x2021" flags="0x0">
     <title>TCC: lock-up thresholds, columns 30-35 = groups 11-12 (0x71AD0, 20C0 only)</title>
-    <description>Groups 11 and 12 of the lock-up thresholds, 20C0 only (slot 36 of the pointer catalog).</description>
+    <description>Groups 11 and 12 of the lock-up thresholds, 20C0 only (slot 36 of the pointer catalog). Group 11 = 1st gear of P0-P3 (D and S): 202 (never) at pedal 0-224, 10 / 11 / 12 at 230 / 240 / 255, so with the pedal floored the converter locks in 1st above n_out/32 = 12 (turbine about 1410 rpm); BMW 15C0 from 17, 19D0 has no lock-up in 1st. Group 12 is used by no program.</description>
     <CATEGORYMEM index="0" category="3" />
     <XDFAXIS id="x" uniqueid="0x0">
       <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x71AD4" mmedelementsizebits="8" mmedcolcount="6" mmedmajorstridebits="0" mmedminorstridebits="0" />
@@ -1582,7 +1582,7 @@
   </XDFCONSTANT>
   <XDFTABLE uniqueid="0x2023" flags="0x0">
     <title>TCC: threshold group of the first check by program and gear 1-6 (0x70970)</title>
-    <description>Group index into 0x71996 for the first check, per program and gear.</description>
+    <description>Group index into 0x71996 for the first check, per program and gear. Factory P0-P3: 11, 4, 1, 2, 3, 0 (D and S share the groups), PB: 0, 5, 8, 9, 10, 11. Group 11 = 1st gear with the pedal floored (0x71AD0).</description>
     <CATEGORYMEM index="0" category="3" />
     <XDFAXIS id="x" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
@@ -2202,9 +2202,60 @@
       </MATH>
     </XDFAXIS>
   </XDFTABLE>
+  <XDFTABLE uniqueid="0x26EC" flags="0x0">
+    <title>AGS: upper points limit, branches D / S, factory 90 / 255 (0x7088E)</title>
+    <description>0x18E66: AGS points per branch not above the byte. 19D0 pair 0x8878/0x8879 = 128 / 255, BMW 15C0 128 / 255. D stays within level 2 (ladder 0x70898), S runs 129-255 = levels 3-4.</description>
+    <CATEGORYMEM index="0" category="2" />
+    <XDFAXIS id="x" uniqueid="0x0">
+      <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
+      <units>branch</units>
+      <indexcount>2</indexcount>
+      <datatype>0</datatype>
+      <unittype>0</unittype>
+      <DALINK index="0" />
+      <LABEL index="0" value="D" />
+      <LABEL index="1" value="S" />
+      <MATH equation="X">
+        <VAR id="X" />
+      </MATH>
+    </XDFAXIS>
+    <XDFAXIS id="y" uniqueid="0x0">
+      <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
+      <units>row</units>
+      <indexcount>1</indexcount>
+      <datatype>0</datatype>
+      <unittype>0</unittype>
+      <DALINK index="0" />
+      <LABEL index="0" value="очки" />
+      <MATH equation="X">
+        <VAR id="X" />
+      </MATH>
+    </XDFAXIS>
+    <XDFAXIS id="z">
+      <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x7088E" mmedelementsizebits="8" mmedrowcount="1" mmedcolcount="2" mmedmajorstridebits="0" mmedminorstridebits="0" />
+      <decimalpl>0</decimalpl>
+      <units>points</units>
+      <outputtype>1</outputtype>
+      <MATH equation="X">
+        <VAR id="X" />
+      </MATH>
+    </XDFAXIS>
+  </XDFTABLE>
+  <XDFCONSTANT uniqueid="0x26ED" flags="0x0">
+    <title>AGS: points not below the byte when [0xFFFF918C] = 2, factory 193 = level 4 (0x70892, 20C0 only)</title>
+    <description>0x18E20-0x18E34, 0x18E80-0x18E8A: with [0xFFFF918C] = 2 (bits 0-1 of byte 2 of CAN 0x338) the AGS points stay at or above the byte. Together with [0x70967] = 3 this is P3 (S, AGS level 4). Meaning of value 2 not established.</description>
+    <CATEGORYMEM index="0" category="2" />
+    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x70892" mmedelementsizebits="8" mmedmajorstridebits="0" mmedminorstridebits="0" />
+    <units>points</units>
+    <decimalpl>0</decimalpl>
+    <outputtype>1</outputtype>
+    <MATH equation="X">
+        <VAR id="X" />
+      </MATH>
+  </XDFCONSTANT>
   <XDFTABLE uniqueid="0x2034" flags="0x0">
     <title>AGS: lower points limit, branches D / S, factory 32 / 129 (0x70890)</title>
-    <description>AGS (adaptive program selection) points lower limit per branch.</description>
+    <description>AGS (adaptive program selection) points lower limit per branch. Upper limit: 0x7088E.</description>
     <CATEGORYMEM index="0" category="2" />
     <XDFAXIS id="x" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
@@ -2461,7 +2512,7 @@
   </XDFCONSTANT>
   <XDFCONSTANT uniqueid="0x203D" flags="0x0">
     <title>Program in the left gate when [0xFFFF918C] != 2, factory 0x0B = PB (0x70966)</title>
-    <description>Code 0x0B (PB, matrix k10) is set as soon as the lever is in the gate, without +/-.</description>
+    <description>Code 0x0B (PB, matrix k10, M) is set as soon as the lever is in the gate, without +/-. 19D0 pair 0x8975: BMW 19C0 and BMW 15C0 have 0xFE (the gate gives S until the first +/- tap), Alpina 19D0 620P has 0x0B like this file. Patch gate:mode=S writes 0xFE (document 13).</description>
     <CATEGORYMEM index="0" category="2" />
     <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x70966" mmedelementsizebits="8" mmedmajorstridebits="0" mmedminorstridebits="0" />
     <units>program code</units>
@@ -2473,7 +2524,7 @@
   </XDFCONSTANT>
   <XDFCONSTANT uniqueid="0x203E" flags="0x0">
     <title>Program in the left gate when [0xFFFF918C] = 2, factory 3 (0x70967, 20C0 only)</title>
-    <description>[0xFFFF918C] = bits 0-1 of byte 2 of CAN 0x338; meaning of value 2 not established.</description>
+    <description>[0xFFFF918C] = bits 0-1 of byte 2 of CAN 0x338. Code 3 = P3 (S, k15) until the first +/- tap, then M (latch [0xFFFF9112]); the AGS points stay at or above [0x70892] = 193. Meaning of value 2 not established.</description>
     <CATEGORYMEM index="0" category="2" />
     <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x70967" mmedelementsizebits="8" mmedmajorstridebits="0" mmedminorstridebits="0" />
     <units>program code</units>
@@ -2527,8 +2578,8 @@
     </XDFAXIS>
   </XDFTABLE>
   <XDFTABLE uniqueid="0x2040" flags="0x0">
-    <title>Upshift threshold offset per gear 1-6 when [0xFFFF91B3] = 2, factory 4 / 2 / 2 / 5 / 0 / 4 (0x70B98, 20C0 only)</title>
-    <description>Added to the matrix threshold (0x2061E); meaning of [0xFFFF91B3] = 2 not established.</description>
+    <title>Upshift threshold offset per gear 1-6 with the converter locked, factory 4 / 2 / 2 / 5 / 0 / 4 (0x70B98, 20C0 only)</title>
+    <description>Added to the matrix threshold (0x2061E, 16-bit add capped at 255) when [0xFFFF91B3] = 2; [0xFFFF91B3] is the TCC clutch state (0 open, 1 slip, 2 locked), copied at 0x405F8 from [0xFFFF95EB] written by 0x4C4B2 (19D0 pair 0x33F66). Factory with the converter locked: 1-2 later by 469 turbine rpm, 2-3 by 128, 3-4 by 90, 4-5 by 160. Not in 19D0. Count it in a manual upshift threshold at the cut (egs_tables.py verify-shift).</description>
     <CATEGORYMEM index="0" category="1" />
     <XDFAXIS id="x" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
@@ -2614,7 +2665,7 @@
   </XDFTABLE>
   <XDFCONSTANT uniqueid="0x2042" flags="0x0">
     <title>Upshift request by engine speed: upper limit of [0xFFFF9066] (raw ATF), factory 40 (0x7011B)</title>
-    <description>0x105DE works only with raw ATF not above 40 (about -10 °C per 19D0).</description>
+    <description>0x105DE works only with raw ATF not above 40 (the °C scale of raw ATF is not established by code, document 03 section 6).</description>
     <CATEGORYMEM index="0" category="1" />
     <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x7011B" mmedelementsizebits="8" mmedmajorstridebits="0" mmedminorstridebits="0" />
     <units>raw ATF</units>
@@ -3148,7 +3199,7 @@
   </XDFTABLE>
   <XDFTABLE uniqueid="0x2054" flags="0x0">
     <title>ATF sensor: mV -&gt; raw temperature (0x71B66, slot 41)</title>
-    <description>Raw ATF = °C + 50 per 19D0.</description>
+    <description>Equal to 19D0 0x9A82. Frame 0B 03 byte 6 = [0xFFFF8C8C] + 15. The conversion of raw ATF to °C is not established by code (document 03 section 6).</description>
     <CATEGORYMEM index="0" category="12" />
     <XDFAXIS id="x" uniqueid="0x0">
       <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x71B68" mmedelementsizebits="16" mmedcolcount="9" mmedmajorstridebits="0" mmedminorstridebits="0" />
@@ -3176,7 +3227,55 @@
     <XDFAXIS id="z">
       <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x71B7A" mmedelementsizebits="16" mmedrowcount="1" mmedcolcount="9" mmedmajorstridebits="0" mmedminorstridebits="0" />
       <decimalpl>0</decimalpl>
-      <units>raw (°C + 50 per 19D0)</units>
+      <units>raw ATF</units>
+      <outputtype>1</outputtype>
+      <MATH equation="X">
+        <VAR id="X" />
+      </MATH>
+    </XDFAXIS>
+  </XDFTABLE>
+  <XDFCONSTANT uniqueid="0x26EE" flags="0x0">
+    <title>Warm-up: end by speed, n_out/32 not below the byte, factory 48 = 1536 output rpm (0x70BAC). 0 = no warm-up program</title>
+    <description>0x251A0 (the only reference) ends the warm-up program 0x25182 (19D0 pair 0x28D50; flag [0xFFFF9088], set at power-on). While it runs the shift matrices see the pedal [0xFFFF912C] = max(pedal, 0x7013A(engine temperature, program)). Other ends: bit 3 of CAN byte [0xFFFF83E1], the counter 0x71B52 or the table 0x7013A reaching 0. 19D0 pair 0x8B48. Document 05 called this a thermal derate until 06.10.2026: wrong, it is the warm-up.</description>
+    <CATEGORYMEM index="0" category="2" />
+    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x70BAC" mmedelementsizebits="8" mmedmajorstridebits="0" mmedminorstridebits="0" />
+    <units>output shaft rpm / 32</units>
+    <decimalpl>0</decimalpl>
+    <outputtype>1</outputtype>
+    <MATH equation="X">
+        <VAR id="X" />
+      </MATH>
+  </XDFCONSTANT>
+  <XDFTABLE uniqueid="0x206F" flags="0x0">
+    <title>Warm-up: pedal for the matrices by engine temperature and program, P0 / P1 / P7 = 102 (40 %) up to 55 °C, 0 from 65 °C (0x7013A)</title>
+    <description>Read at 0x25226, 0x2523E, 0x2528C (0x19BD2, X = engine temperature [0xFFFF906A], °C + 48: 18 / 93 / 103 / 113 = -30 / 45 / 55 / 65 °C; Y = program). Result -&gt; [0xFFFF912C] = max(result, pedal) while the warm-up runs. 19D0 pair 0x8142, same data.</description>
+    <CATEGORYMEM index="0" category="2" />
+    <XDFAXIS id="x" uniqueid="0x0">
+      <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x7013E" mmedelementsizebits="8" mmedcolcount="4" mmedmajorstridebits="0" mmedminorstridebits="0" />
+      <units>°C + 48 (engine)</units>
+      <indexcount>4</indexcount>
+      <datatype>0</datatype>
+      <unittype>0</unittype>
+      <DALINK index="0" />
+      <MATH equation="X">
+        <VAR id="X" />
+      </MATH>
+    </XDFAXIS>
+    <XDFAXIS id="y" uniqueid="0x0">
+      <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x70142" mmedelementsizebits="8" mmedcolcount="16" mmedmajorstridebits="0" mmedminorstridebits="0" />
+      <units>program</units>
+      <indexcount>16</indexcount>
+      <datatype>0</datatype>
+      <unittype>0</unittype>
+      <DALINK index="0" />
+      <MATH equation="X">
+        <VAR id="X" />
+      </MATH>
+    </XDFAXIS>
+    <XDFAXIS id="z">
+      <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x70152" mmedelementsizebits="8" mmedrowcount="16" mmedcolcount="4" mmedmajorstridebits="0" mmedminorstridebits="0" />
+      <decimalpl>0</decimalpl>
+      <units>gearbox pedal</units>
       <outputtype>1</outputtype>
       <MATH equation="X">
         <VAR id="X" />
@@ -3184,12 +3283,12 @@
     </XDFAXIS>
   </XDFTABLE>
   <XDFTABLE uniqueid="0x2055" flags="0x0">
-    <title>ATF derate: temperature -&gt; counter, factory 83 / 93 / 103 / 113 -&gt; 170 / 90 / 55 / 0 (0x71B52, slot 39)</title>
-    <description>Slot 39 of the pointer catalog.</description>
-    <CATEGORYMEM index="0" category="12" />
+    <title>Warm-up: counter by engine temperature at power-on, factory 35 / 45 / 55 / 65 °C -&gt; 170 / 90 / 55 / 0 (0x71B52, slot 39)</title>
+    <description>Slot 39 (0x71C5E), read at 0x251FC -&gt; [0xFFFF91CE] (engine temperature at power-on [0xFFFF906C], °C + 48), counted down by 0x21FC4 once per 100 timer counts. In state 4 a zero counter ends the warm-up program 0x25182. 19D0 pair 0x9A6E, same data.</description>
+    <CATEGORYMEM index="0" category="2" />
     <XDFAXIS id="x" uniqueid="0x0">
       <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x71B54" mmedelementsizebits="8" mmedcolcount="4" mmedmajorstridebits="0" mmedminorstridebits="0" />
-      <units>°C</units>
+      <units>°C + 48 (engine)</units>
       <indexcount>4</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -3221,12 +3320,12 @@
     </XDFAXIS>
   </XDFTABLE>
   <XDFTABLE uniqueid="0x2056" flags="0x0">
-    <title>Unknown 71B5C (1D8 4×1), slot 40, 19D0 pair 0x9A78 (zeros)</title>
-    <description>Shape proven (table header and axes, or pointer packing); role not established. Proof: 0x251E6.</description>
-    <CATEGORYMEM index="0" category="16" />
+    <title>Warm-up: counter of the 0x701BE branch by engine temperature at power-on, factory zeros (0x71B5C, slot 40)</title>
+    <description>Slot 40 (0x71C62), read at 0x251E6 -&gt; [0xFFFF91CF], counted down by 0x21FB6. While not 0 and the engine is colder than [0x70139] the pedal floor is 0x701BE[program]. Factory 0: the branch is off. 19D0 pair 0x9A78 (zeros).</description>
+    <CATEGORYMEM index="0" category="2" />
     <XDFAXIS id="x" uniqueid="0x0">
       <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x71B5E" mmedelementsizebits="8" mmedcolcount="4" mmedmajorstridebits="0" mmedminorstridebits="0" />
-      <units>°C</units>
+      <units>°C + 48 (engine)</units>
       <indexcount>4</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -3250,13 +3349,102 @@
     <XDFAXIS id="z">
       <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x71B62" mmedelementsizebits="8" mmedrowcount="1" mmedcolcount="4" mmedmajorstridebits="0" mmedminorstridebits="0" />
       <decimalpl>0</decimalpl>
-      <units>raw</units>
+      <units>counter</units>
       <outputtype>1</outputtype>
       <MATH equation="X">
         <VAR id="X" />
       </MATH>
     </XDFAXIS>
   </XDFTABLE>
+  <XDFCONSTANT uniqueid="0x26EF" flags="0x0">
+    <title>Warm-up: engine temperature that ends the 0x701BE branch, factory 113 = 65 °C (0x70139)</title>
+    <description>0x2525C: engine temperature not below the byte clears [0xFFFF91CF] and the 0x701BE floor. 19D0 pair 0x8141.</description>
+    <CATEGORYMEM index="0" category="2" />
+    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x70139" mmedelementsizebits="8" mmedmajorstridebits="0" mmedminorstridebits="0" />
+    <units>°C + 48 (engine)</units>
+    <decimalpl>0</decimalpl>
+    <outputtype>1</outputtype>
+    <MATH equation="X">
+        <VAR id="X" />
+      </MATH>
+  </XDFCONSTANT>
+  <XDFTABLE uniqueid="0x26F0" flags="0x0">
+    <title>Warm-up: pedal floor by program P0-PF while [0xFFFF91CF] is not 0, factory zeros (0x701BE)</title>
+    <description>0x2521C and 0x25274: byte[program] -&gt; [0xFFFF912C] = max(byte, table 0x7013A, pedal). Factory all 0.</description>
+    <CATEGORYMEM index="0" category="2" />
+    <XDFAXIS id="x" uniqueid="0x0">
+      <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
+      <units>program</units>
+      <indexcount>16</indexcount>
+      <datatype>0</datatype>
+      <unittype>0</unittype>
+      <DALINK index="0" />
+      <LABEL index="0" value="P0" />
+      <LABEL index="1" value="P1" />
+      <LABEL index="2" value="P2" />
+      <LABEL index="3" value="P3" />
+      <LABEL index="4" value="P4" />
+      <LABEL index="5" value="P5" />
+      <LABEL index="6" value="P6" />
+      <LABEL index="7" value="P7" />
+      <LABEL index="8" value="P8" />
+      <LABEL index="9" value="P9" />
+      <LABEL index="10" value="PA" />
+      <LABEL index="11" value="PB" />
+      <LABEL index="12" value="PC" />
+      <LABEL index="13" value="PD" />
+      <LABEL index="14" value="PE" />
+      <LABEL index="15" value="PF" />
+      <MATH equation="X">
+        <VAR id="X" />
+      </MATH>
+    </XDFAXIS>
+    <XDFAXIS id="y" uniqueid="0x0">
+      <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
+      <units>row</units>
+      <indexcount>1</indexcount>
+      <datatype>0</datatype>
+      <unittype>0</unittype>
+      <DALINK index="0" />
+      <LABEL index="0" value="педаль" />
+      <MATH equation="X">
+        <VAR id="X" />
+      </MATH>
+    </XDFAXIS>
+    <XDFAXIS id="z">
+      <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x701BE" mmedelementsizebits="8" mmedrowcount="1" mmedcolcount="16" mmedmajorstridebits="0" mmedminorstridebits="0" />
+      <decimalpl>0</decimalpl>
+      <units>gearbox pedal</units>
+      <outputtype>1</outputtype>
+      <MATH equation="X">
+        <VAR id="X" />
+      </MATH>
+    </XDFAXIS>
+  </XDFTABLE>
+  <XDFCONSTANT uniqueid="0x26F1" flags="0x0">
+    <title>Kick-down: source, 1 = DME2 bit over CAN ([0xFFFF90BA]), 0 = pedal switch and pedal above 0x70232, factory 1 (0x70D6A)</title>
+    <description>0x1BCA4: not 0 -&gt; kick-down flag [0xFFFF90B7] = [0xFFFF90BA] (bit 2 of byte 6 of DME2); 0 -&gt; switch on bit 7 of port [0xFFFF8A0A] (active low, filtered over [0x70ED6] samples) and pedal above [0x70232]. With the flag the matrices use pedal 255 (0x206F8), AGS is not updated (0x1908C) and the manual M branch is skipped (0x2047E): in M +/- do not work with the pedal floored. 19D0 pair 0x8D1A (E39 = 0, switch). Kick-down off: 0 here and 255 in 0x70232 (patch no-kickdown, document 13).</description>
+    <CATEGORYMEM index="0" category="14" />
+    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x70D6A" mmedelementsizebits="8" mmedmajorstridebits="0" mmedminorstridebits="0" />
+    <units>flag</units>
+    <decimalpl>0</decimalpl>
+    <outputtype>1</outputtype>
+    <MATH equation="X">
+        <VAR id="X" />
+      </MATH>
+  </XDFCONSTANT>
+  <XDFCONSTANT uniqueid="0x26F2" flags="0x0">
+    <title>Kick-down: pedal threshold of the switch path, factory 230 (0x70232)</title>
+    <description>0x1BD82 (the only reference): pedal above the byte and the switch -&gt; kick-down; used only with [0x70D6A] = 0. The gearbox pedal is at most 254, so 255 = never. 19D0 pair 0x8246.</description>
+    <CATEGORYMEM index="0" category="14" />
+    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x70232" mmedelementsizebits="8" mmedmajorstridebits="0" mmedminorstridebits="0" />
+    <units>gearbox pedal</units>
+    <decimalpl>0</decimalpl>
+    <outputtype>1</outputtype>
+    <MATH equation="X">
+        <VAR id="X" />
+      </MATH>
+  </XDFCONSTANT>
   <XDFCONSTANT uniqueid="0x2057" flags="0x0">
     <title>ATF overheat: threshold of [0xFFFF9066], factory 165 (0x70131)</title>
     <description>Raw ATF threshold.</description>
@@ -3612,42 +3800,6 @@
       <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x701B2" mmedelementsizebits="8" mmedrowcount="2" mmedcolcount="4" mmedmajorstridebits="0" mmedminorstridebits="0" />
       <decimalpl>0</decimalpl>
       <units>pedal rate</units>
-      <outputtype>1</outputtype>
-      <MATH equation="X">
-        <VAR id="X" />
-      </MATH>
-    </XDFAXIS>
-  </XDFTABLE>
-  <XDFTABLE uniqueid="0x206F" flags="0x0">
-    <title>Unknown 7013A (2D8 4×16), 19D0 pair 0x8142, read by code directly</title>
-    <description>Shape proven (table header and axes, or pointer packing); role not established. Proof: 0x25226, 0x2523E, 0x2528C.</description>
-    <CATEGORYMEM index="0" category="16" />
-    <XDFAXIS id="x" uniqueid="0x0">
-      <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x7013E" mmedelementsizebits="8" mmedcolcount="4" mmedmajorstridebits="0" mmedminorstridebits="0" />
-      <units>X</units>
-      <indexcount>4</indexcount>
-      <datatype>0</datatype>
-      <unittype>0</unittype>
-      <DALINK index="0" />
-      <MATH equation="X">
-        <VAR id="X" />
-      </MATH>
-    </XDFAXIS>
-    <XDFAXIS id="y" uniqueid="0x0">
-      <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x70142" mmedelementsizebits="8" mmedcolcount="16" mmedmajorstridebits="0" mmedminorstridebits="0" />
-      <units>Y</units>
-      <indexcount>16</indexcount>
-      <datatype>0</datatype>
-      <unittype>0</unittype>
-      <DALINK index="0" />
-      <MATH equation="X">
-        <VAR id="X" />
-      </MATH>
-    </XDFAXIS>
-    <XDFAXIS id="z">
-      <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x70152" mmedelementsizebits="8" mmedrowcount="16" mmedcolcount="4" mmedmajorstridebits="0" mmedminorstridebits="0" />
-      <decimalpl>0</decimalpl>
-      <units>raw</units>
       <outputtype>1</outputtype>
       <MATH equation="X">
         <VAR id="X" />
@@ -38968,12 +39120,12 @@
     </XDFAXIS>
   </XDFTABLE>
   <XDFTABLE uniqueid="0x25B5" flags="0x0">
-    <title>[9808 f00.e.f24] Unknown 7C370 (1D16 3×1)</title>
-    <description>Shape proven (table header and axes, or pointer packing); role not established. Proof: pointer field of a record root.</description>
-    <CATEGORYMEM index="0" category="11" />
+    <title>TCC lower level: engine speed not above the field (vs ATF) -&gt; the clutch automaton takes the opening path (states other than 5) [9808 f00.e.f24] (0x7C370)</title>
+    <description>TCC lower level: engine speed not above the field (vs ATF) -&gt; the clutch automaton takes the opening path (states other than 5). Axis X: ATF (ATF, raw). Value: engine rpm. Root 0xFFFF9808, record places [9808 f00.e.f24]. Role proven by 20C0 code, instruction addresses: 0x4A7A4, 0x4A7C2, 0x52298, 0x4A766, 0x32A8C, 0x4A8A6, 0x4A886, 0x4A88A, 0x12F40, 0x49C74, 0x49C92 (full proof and the path to the pressure channel or CAN frame in the RU description).</description>
+    <CATEGORYMEM index="0" category="3" />
     <XDFAXIS id="x" uniqueid="0x0">
-      <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x7C372" mmedelementsizebits="16" mmedcolcount="3" mmedmajorstridebits="0" mmedminorstridebits="0" />
-      <units>X</units>
+      <EMBEDDEDDATA mmedtypeflags="0x01" mmedaddress="0x7C372" mmedelementsizebits="16" mmedcolcount="3" mmedmajorstridebits="0" mmedminorstridebits="0" />
+      <units>ATF, raw</units>
       <indexcount>3</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -38995,9 +39147,9 @@
       </MATH>
     </XDFAXIS>
     <XDFAXIS id="z">
-      <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x7C378" mmedelementsizebits="16" mmedrowcount="1" mmedcolcount="3" mmedmajorstridebits="0" mmedminorstridebits="0" />
+      <EMBEDDEDDATA mmedtypeflags="0x01" mmedaddress="0x7C378" mmedelementsizebits="16" mmedrowcount="1" mmedcolcount="3" mmedmajorstridebits="0" mmedminorstridebits="0" />
       <decimalpl>0</decimalpl>
-      <units>raw</units>
+      <units>engine rpm</units>
       <outputtype>1</outputtype>
       <MATH equation="X">
         <VAR id="X" />
@@ -39005,12 +39157,12 @@
     </XDFAXIS>
   </XDFTABLE>
   <XDFTABLE uniqueid="0x25B6" flags="0x0">
-    <title>[9808 f00.e.f24] Unknown 7C37E (1D16 3×1)</title>
-    <description>Shape proven (table header and axes, or pointer packing); role not established. Proof: pointer field of a record root.</description>
-    <CATEGORYMEM index="0" category="11" />
+    <title>TCC lower level: engine speed not above the field (vs ATF) -&gt; the clutch automaton takes the opening path (states other than 5) [9808 f00.e.f24] (0x7C37E)</title>
+    <description>TCC lower level: engine speed not above the field (vs ATF) -&gt; the clutch automaton takes the opening path (states other than 5). Axis X: ATF (ATF, raw). Value: engine rpm. Root 0xFFFF9808, record places [9808 f00.e.f24]. Role proven by 20C0 code, instruction addresses: 0x4A7A4, 0x4A7C2, 0x52298, 0x4A766, 0x32A8C, 0x4A8A6, 0x4A886, 0x4A88A, 0x12F40, 0x49C74, 0x49C92 (full proof and the path to the pressure channel or CAN frame in the RU description).</description>
+    <CATEGORYMEM index="0" category="3" />
     <XDFAXIS id="x" uniqueid="0x0">
-      <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x7C380" mmedelementsizebits="16" mmedcolcount="3" mmedmajorstridebits="0" mmedminorstridebits="0" />
-      <units>X</units>
+      <EMBEDDEDDATA mmedtypeflags="0x01" mmedaddress="0x7C380" mmedelementsizebits="16" mmedcolcount="3" mmedmajorstridebits="0" mmedminorstridebits="0" />
+      <units>ATF, raw</units>
       <indexcount>3</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -39032,9 +39184,9 @@
       </MATH>
     </XDFAXIS>
     <XDFAXIS id="z">
-      <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x7C386" mmedelementsizebits="16" mmedrowcount="1" mmedcolcount="3" mmedmajorstridebits="0" mmedminorstridebits="0" />
+      <EMBEDDEDDATA mmedtypeflags="0x01" mmedaddress="0x7C386" mmedelementsizebits="16" mmedrowcount="1" mmedcolcount="3" mmedmajorstridebits="0" mmedminorstridebits="0" />
       <decimalpl>0</decimalpl>
-      <units>raw</units>
+      <units>engine rpm</units>
       <outputtype>1</outputtype>
       <MATH equation="X">
         <VAR id="X" />
@@ -39042,12 +39194,12 @@
     </XDFAXIS>
   </XDFTABLE>
   <XDFTABLE uniqueid="0x25B7" flags="0x0">
-    <title>[9808 f00.e.f25] Unknown 7C38C (1D16 3×1)</title>
-    <description>Shape proven (table header and axes, or pointer packing); role not established. Proof: pointer field of a record root.</description>
-    <CATEGORYMEM index="0" category="11" />
+    <title>TCC lower level: from state 5 the clutch automaton moves on only with engine speed not below the field (vs ATF) [9808 f00.e.f25] (0x7C38C)</title>
+    <description>TCC lower level: from state 5 the clutch automaton moves on only with engine speed not below the field (vs ATF). Axis X: ATF (ATF, raw). Value: engine rpm. Root 0xFFFF9808, record places [9808 f00.e.f25]. Role proven by 20C0 code, instruction addresses: 0x4A782, 0x4A7A2, 0x52298, 0x4A766, 0x32A8C, 0x4A8A6, 0x4A886, 0x4A88A, 0x12F40, 0x49C74, 0x49C92 (full proof and the path to the pressure channel or CAN frame in the RU description).</description>
+    <CATEGORYMEM index="0" category="3" />
     <XDFAXIS id="x" uniqueid="0x0">
-      <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x7C38E" mmedelementsizebits="16" mmedcolcount="3" mmedmajorstridebits="0" mmedminorstridebits="0" />
-      <units>X</units>
+      <EMBEDDEDDATA mmedtypeflags="0x01" mmedaddress="0x7C38E" mmedelementsizebits="16" mmedcolcount="3" mmedmajorstridebits="0" mmedminorstridebits="0" />
+      <units>ATF, raw</units>
       <indexcount>3</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -39069,9 +39221,9 @@
       </MATH>
     </XDFAXIS>
     <XDFAXIS id="z">
-      <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x7C394" mmedelementsizebits="16" mmedrowcount="1" mmedcolcount="3" mmedmajorstridebits="0" mmedminorstridebits="0" />
+      <EMBEDDEDDATA mmedtypeflags="0x01" mmedaddress="0x7C394" mmedelementsizebits="16" mmedrowcount="1" mmedcolcount="3" mmedmajorstridebits="0" mmedminorstridebits="0" />
       <decimalpl>0</decimalpl>
-      <units>raw</units>
+      <units>engine rpm</units>
       <outputtype>1</outputtype>
       <MATH equation="X">
         <VAR id="X" />
@@ -39079,12 +39231,12 @@
     </XDFAXIS>
   </XDFTABLE>
   <XDFTABLE uniqueid="0x25B8" flags="0x0">
-    <title>[9808 f00.e.f25] Unknown 7C39A (1D16 3×1)</title>
-    <description>Shape proven (table header and axes, or pointer packing); role not established. Proof: pointer field of a record root.</description>
-    <CATEGORYMEM index="0" category="11" />
+    <title>TCC lower level: from state 5 the clutch automaton moves on only with engine speed not below the field (vs ATF) [9808 f00.e.f25] (0x7C39A)</title>
+    <description>TCC lower level: from state 5 the clutch automaton moves on only with engine speed not below the field (vs ATF). Axis X: ATF (ATF, raw). Value: engine rpm. Root 0xFFFF9808, record places [9808 f00.e.f25]. Role proven by 20C0 code, instruction addresses: 0x4A782, 0x4A7A2, 0x52298, 0x4A766, 0x32A8C, 0x4A8A6, 0x4A886, 0x4A88A, 0x12F40, 0x49C74, 0x49C92 (full proof and the path to the pressure channel or CAN frame in the RU description).</description>
+    <CATEGORYMEM index="0" category="3" />
     <XDFAXIS id="x" uniqueid="0x0">
-      <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x7C39C" mmedelementsizebits="16" mmedcolcount="3" mmedmajorstridebits="0" mmedminorstridebits="0" />
-      <units>X</units>
+      <EMBEDDEDDATA mmedtypeflags="0x01" mmedaddress="0x7C39C" mmedelementsizebits="16" mmedcolcount="3" mmedmajorstridebits="0" mmedminorstridebits="0" />
+      <units>ATF, raw</units>
       <indexcount>3</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -39106,9 +39258,9 @@
       </MATH>
     </XDFAXIS>
     <XDFAXIS id="z">
-      <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x7C3A2" mmedelementsizebits="16" mmedrowcount="1" mmedcolcount="3" mmedmajorstridebits="0" mmedminorstridebits="0" />
+      <EMBEDDEDDATA mmedtypeflags="0x01" mmedaddress="0x7C3A2" mmedelementsizebits="16" mmedrowcount="1" mmedcolcount="3" mmedmajorstridebits="0" mmedminorstridebits="0" />
       <decimalpl>0</decimalpl>
-      <units>raw</units>
+      <units>engine rpm</units>
       <outputtype>1</outputtype>
       <MATH equation="X">
         <VAR id="X" />

@@ -1,15 +1,16 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-make_recipe.py - build a recipe (JSON diff) from two GS8.60.0 256K images: stock -> tuned.
-Part of the GS8.60.0 community repository. License: MIT.
+make_recipe.py - build a recipe (JSON diff) from two images of the same program: stock -> tuned.
+GS8.60.0 19C0/19D0 (256K) and GS8.60.4 20C0 (512K).
+Part of the GS8.60 community repository. License: MIT.
 
 A recipe records, for every changed table, its address, format, both axes, the old
 and the new data; scalar / matrix changes outside tables are recorded as byte runs.
 Axes are never part of a change: if the tuned image has different axes than the stock
 image for any table, the tool stops (see docs 09-what-not-to-touch).
-The calibration checksum 0xFFFE-0xFFFF is never part of a recipe either: apply_recipe.py
-computes it (tools/gs860_crc.py). The recorded result hashes are those of the image
+The calibration checksum (19x0: 0xFFFE-0xFFFF, 20C0: 0x7FFFE-0x7FFFF) is never part of a recipe
+either: apply_recipe.py computes it (tools/gs860_crc.py). The recorded result hashes are those of the image
 apply_recipe.py produces, that is the tuned image with the checksum recomputed.
 
 Usage:
@@ -33,11 +34,18 @@ Example:
 """
 import sys, json, hashlib, argparse, os
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from egs_tables import FW, CAL_LO, CAL_HI, WIN_LO, WIN_HI, CODE_LO, CODE_HI
+from egs_tables import FW
 import gs860_crc
 
 SCHEMA = "gs860-recipe/2"
-CRC_AT = 0xFFFE                              # calibration checksum: computed by apply_recipe.py, never recorded
+# per image size: calibration window, program code, calibration checksum (computed by apply_recipe.py, never
+# recorded), software text
+PLATFORMS = {
+    0x40000: dict(win=(0x08000, 0x10000), code=(0x10000, 0x40000), crc=0x0FFFE, platform="19x0",
+                  software="Bosch GS8.60.0 (ZF 5HP19), 256K, program 19C0/19D0"),
+    0x80000: dict(win=(0x70000, 0x80000), code=(0x08000, 0x70000), crc=0x7FFFE, platform="20C0",
+                  software="Bosch GS8.60.4 (ZF 5HP19), 512K, program 20C0"),
+}
 
 # Structures the table heuristic mis-detects as tables (their "axis" is really data),
 # or that are not tables at all but have a known shape. addr -> (width_bits, count, name)
@@ -56,39 +64,43 @@ for a in range(0x8EE0, 0x8F10, 2):           # block of 16-bit diagnostic thresh
     KNOWN_BLOCKS[a] = (16, 1, f"16-bit scalar 0x{a:04X} (diagnostic threshold block 0x8EE0-0x8F0E)")
 
 
-def main():
-    ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("stock", help="stock full 256K GS8.60.0 image")
-    ap.add_argument("tuned", help="tuned full 256K image of the same software")
-    ap.add_argument("-o", "--out", required=True, help="recipe JSON to write")
-    ap.add_argument("-a", "--annotations", help="annotations JSON: names, groups, comments, status, history")
-    args = ap.parse_args()
+class RecipeError(Exception):
+    pass
 
-    st, tn = FW(args.stock), FW(args.tuned)
-    if st.N != 0x40000 or tn.N != 0x40000:
-        sys.exit("both images must be full 256K")
+
+def make(stock_path, tuned_path, ann=None, out_name="recipe", tuned_data=None):
+    """The recipe dict for stock -> tuned (tuned_data: the tuned image bytes instead of a file)."""
+    st = FW(stock_path)
+    tn = FW(stock_path if tuned_data is not None else tuned_path)
+    if tuned_data is not None:
+        tn.d = bytearray(tuned_data)
+    ann = ann or {}
+    if st.N != tn.N or st.N not in PLATFORMS:
+        raise RecipeError("both images must be full and of the same size: 256K (GS8.60.0) or 512K (GS8.60.4 20C0)")
+    PL = PLATFORMS[st.N]
+    WIN_LO, WIN_HI = PL["win"]
+    CODE_LO, CODE_HI = PL["code"]
+    CRC_AT = PL["crc"]
+    if st.sha256(CODE_LO, CODE_HI) != st.L["code_sha"]:
+        raise RecipeError(f"stock image: program code 0x{CODE_LO:05X}-0x{CODE_HI:05X} is not the known {PL['platform']} program")
     if st.d[:WIN_LO] != tn.d[:WIN_LO] or st.d[WIN_HI:] != tn.d[WIN_HI:]:
         d = [i for i in range(st.N) if st.d[i] != tn.d[i] and not (WIN_LO <= i < WIN_HI)]
-        sys.exit(f"tuned image differs outside the calibration window 0x8000-0x10000 at {len(d)} bytes "
-                 f"(first {d[0]:05X}); a recipe cannot describe that - stop")
+        raise RecipeError(f"tuned image differs outside the calibration window 0x{WIN_LO:05X}-0x{WIN_HI:05X} at {len(d)} bytes "
+                 f"(first {d[0]:05X}); a recipe cannot describe that (a code patch, egs_patch.py tcc-first on 19x0?) - stop")
 
     for name, img in (("stock", st), ("tuned", tn)):
         bad = [n for n, _s, _e, _at, s, c in gs860_crc.sums(bytes(img.d)) if n != "calibration" and s != c]
         if bad:
-            sys.exit(f"{name} image: {' and '.join(bad)} checksum does not match - damaged or a different software")
+            raise RecipeError(f"{name} image: {' and '.join(bad)} checksum does not match - damaged or a different software")
+    notes = []
     result = gs860_crc.fixed(bytes(tn.d))            # what apply_recipe.py will produce from stock + recipe
     crc_stock = int.from_bytes(st.d[CRC_AT:CRC_AT + 2], "big")
     crc_tuned = int.from_bytes(tn.d[CRC_AT:CRC_AT + 2], "big")
     crc_result = int.from_bytes(result[CRC_AT:CRC_AT + 2], "big")
     if crc_tuned != crc_result:
-        print(f"note: the tuned image carries a stale calibration checksum 0x{crc_tuned:04X} "
+        notes.append(f"note: the tuned image carries a stale calibration checksum 0x{crc_tuned:04X} "
               f"(computed 0x{crc_result:04X}); the recipe leaves it out, apply_recipe.py recomputes it")
 
-    if args.annotations:
-        with open(args.annotations, encoding="utf-8") as f:
-            ann = json.load(f)
-    else:
-        ann = {}
     by_addr = {int(k, 16): v for k, v in ann.get("by_addr", {}).items()}
     ranges = [(int(r["from"], 16), int(r["to"], 16), r) for r in ann.get("ranges", [])]
 
@@ -104,7 +116,7 @@ def main():
                     entry[k] = info[k]
         return entry
 
-    tables = st.tile(CAL_LO, CAL_HI)
+    tables = st.tile()
     covered = set()
     out_tables, axis_errors = [], []
     for t in tables:
@@ -125,15 +137,14 @@ def main():
                      cells_changed=sum(1 for r in range(t["ny"]) for c in range(t["nx"]) if d_old[r][c] != d_new[r][c]))
             out_tables.append(annotate(t["addr"], e))
     if axis_errors:
-        print("\n".join(axis_errors))
-        sys.exit("axes changed - refusing to build a recipe (axes are never part of a recipe)")
+        raise RecipeError("\n".join(axis_errors) + "\naxes changed - refusing to build a recipe (axes are never part of a recipe)")
 
     # bytes outside tables (the checksum is not a calibration change)
     changed = [i for i in range(WIN_LO, WIN_HI) if st.d[i] != tn.d[i] and i not in covered
                and not CRC_AT <= i < CRC_AT + 2]
     out_bytes, i = [], 0
     handled = set()
-    for a, (bits, cnt, name) in sorted(KNOWN_BLOCKS.items()):
+    for a, (bits, cnt, name) in sorted(KNOWN_BLOCKS.items() if PL["platform"] == "19x0" else []):
         span = range(a, a + cnt * bits // 8)
         if any(x in changed for x in span):
             rd = (lambda f, x: f.u8(x)) if bits == 8 else (lambda f, x: f.u16(x))
@@ -155,32 +166,35 @@ def main():
     meta = ann.get("meta", {})
     rec = {
         "schema": SCHEMA,
-        "name": meta.get("name", os.path.splitext(os.path.basename(args.out))[0]),
+        "name": meta.get("name", out_name),
         "author": meta.get("author", ""),
         "date": meta.get("date", ""),
         "description": meta.get("description", {}),
         "base": {
-            "software": "Bosch GS8.60.0 (ZF 5HP19), 256K, program 19C0/19D0",
+            "software": PL["software"],
+            "platform": PL["platform"],
+            "image_size": st.N,
             "code_sha256": st.sha256(CODE_LO, CODE_HI),
             "stock_calibration_sha256": st.sha256(WIN_LO, WIN_HI),
-            "stock_calibration_label": bytes(st.d[0xFFCE:0xFFDE]).decode("latin1"),
+            "stock_calibration_label": bytes(st.d[st.L["labels"][1]:st.L["labels"][1] + 16]).decode("latin1"),
         },
         "result": {
             "full_sha256": hashlib.sha256(result).hexdigest(),
-            "partial_sha256": hashlib.sha256(result[WIN_LO:WIN_HI]).hexdigest(),
+            ("partial_sha256" if PL["platform"] == "19x0" else "calibration_window_sha256"):
+                hashlib.sha256(result[WIN_LO:WIN_HI]).hexdigest(),
             "bytes_changed": sum(1 for x in range(st.N) if st.d[x] != result[x]),
         },
         "checksum": {
-            "calibration": "CRC-16/XMODEM over 0x8000-0xFFCD, stored at 0xFFFE; computed by apply_recipe.py, "
-                           "not part of the recipe (tools/gs860_crc.py)",
+            "calibration": f"CRC-16/XMODEM over 0x{WIN_LO:05X}-0x{CRC_AT - 0x31:05X}, stored at 0x{CRC_AT:05X}; computed by "
+                           "apply_recipe.py, not part of the recipe (tools/gs860_crc.py)",
             "stock": f"0x{crc_stock:04X}",
             "result": f"0x{crc_result:04X}",
         },
         "rules": [
             "axes are never changed; apply_recipe.py refuses a table whose axes differ from the recipe",
-            "only 0x8000-0x10000 is ever written",
+            f"only 0x{WIN_LO:05X}-0x{WIN_HI:05X} is ever written",
             "old values are checked before writing; a mismatch means a different base calibration",
-            "the calibration checksum at 0xFFFE is recomputed after writing",
+            f"the calibration checksum at 0x{CRC_AT:05X} is recomputed after writing",
         ],
         "groups": ann.get("groups", {}),
         "tables": out_tables,
@@ -193,14 +207,39 @@ def main():
         rec = dict(items[:i] + [("status", meta["status"])] + items[i:])
     if ann.get("history"):
         rec["history"] = ann["history"]
-    with open(args.out, "w", encoding="utf-8") as f:
+    return rec, notes
+
+
+def main():
+    ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    ap.add_argument("stock", help="stock full image (256K GS8.60.0 or 512K GS8.60.4 20C0)")
+    ap.add_argument("tuned", help="tuned full image of the same software")
+    ap.add_argument("-o", "--out", required=True, help="recipe JSON to write")
+    ap.add_argument("-a", "--annotations", help="annotations JSON: names, groups, comments, status, history")
+    args = ap.parse_args()
+    ann = {}
+    if args.annotations:
+        with open(args.annotations, encoding="utf-8") as f:
+            ann = json.load(f)
+    try:
+        rec, notes = make(args.stock, args.tuned, ann, os.path.splitext(os.path.basename(args.out))[0])
+    except RecipeError as e:
+        sys.exit(str(e))
+    for n in notes:
+        print(n)
+    write(rec, args.out)
+
+
+def write(rec, path):
+    with open(path, "w", encoding="utf-8") as f:
         json.dump(rec, f, ensure_ascii=False, indent=1)
         f.write("\n")
+    out_tables, out_bytes = rec["tables"], rec["bytes"]
     print(f"tables changed: {len(out_tables)}  byte blocks: {len(out_bytes)}  total bytes: {rec['result']['bytes_changed']}")
     unnamed = [e["addr"] for e in out_tables + out_bytes if "group" not in e]
     if unnamed:
         print(f"entries without annotation: {len(unnamed)}: {' '.join(unnamed)}")
-    print("written:", args.out)
+    print("written:", path)
 
 
 if __name__ == "__main__":

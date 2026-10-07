@@ -9,7 +9,8 @@
 
 - Corrections with evidence: a disassembly excerpt, a table dump, a log, anything that lets somebody else re-check it. "I think X is Y" without a code reference goes into an issue as a hypothesis, not into the docs.
 - Logs of shifts (RAM read via DS2 0x06, doc 06 §4) before/after a recipe, with the recipe named.
-- Recipes for other engines / final drives, with annotations (group, name, EN+RU comment for every table) and the base calibration label.
+- Recipes for other engines / final drives, with annotations (group, name, EN+RU comment for every table) and the base calibration label. For the patches of document 13 the easiest way is `egs_patch.py recipe NAME stock.bin -o recipe.json --spark RPM --cut RPM`: the recipe carries the chain and the engine limits in `built_with`.
+- A new patch for `tools/egs_patch.py`: it must name the instruction that reads every address it writes, check the factory value or the table axes before writing, and come with a test in `tests/test_tools.py` and a section in document 13 (RU and EN).
 - Information about **other 19x0 calibration revisions** (different `B22K4_04xxxx` label at 0x0FFCE): which tables differ from the `19C0KA20` base.
 - Translations and wording fixes.
 
@@ -45,10 +46,10 @@ The XDF files are generated, never edited by hand. Change `catalog/*.json`, then
 python3 tools/make_xdf.py check catalog/gs8600_19d0.json
 python3 tools/make_xdf.py build catalog/gs8600_19d0.json xdf/GS8600_19D0_Full256K.xdf --partial xdf/GS8600_19x0_Partial32K.xdf
 python3 tools/make_xdf.py check catalog/gs8604_20c0.json
-python3 tools/make_xdf.py build catalog/gs8604_20c0.json xdf/GS8604_20C0_Full512K.xdf
+python3 tools/make_xdf.py build catalog/gs8604_20c0.json xdf/GS8604_20C0_Full512K.xdf --en xdf/GS8604_20C0_Full512K_EN.xdf
 ```
 
-`check` refuses a byte span outside the image, two entries reading the same byte, a repeated uid, an unknown category and an empty unit. `build` runs `check` first. The tests compare every XDF file with what its catalog renders. No partial XDF for 20C0 is published until it is known what the flasher reads as a Partial on the GS8.60.4 (doc 11 §13). Every entry carries a `confidence` level, and `proven` entries name the instruction in `proof`.
+The 20C0 catalog itself is generated from a 20C0 image by the generator of the WOLF4X project (every role with the instruction addresses that prove it, uids kept across regenerations); a correction to it is welcome as an issue with the evidence. `check` refuses a byte span outside the image, two entries reading the same byte, a repeated uid, an unknown category and an empty unit. `build` runs `check` first. The tests compare every XDF file with what its catalog renders. No partial XDF for 20C0 is published until it is known what the flasher reads as a Partial on the GS8.60.4 (doc 11 §13). Every entry carries a `confidence` level, and `proven` entries name the instruction in `proof`.
 
 ### Style
 
@@ -61,7 +62,8 @@ Same as the docs: addresses in hex with `0x`, RAM as `0xFFFFxxxx`, units for eve
 
 - Исправления с доказательством: фрагмент дизассемблера, распечатка таблицы, лог, то, что позволит другому перепроверить. «Я думаю, что X это Y» без ссылки на код идёт в issue как гипотеза, а не в документацию.
 - Логи переключений (чтение RAM через DS2 0x06, документ 06 §4) до/после рецепта с указанием рецепта.
-- Рецепты под другие моторы / главные пары с аннотациями (группа, имя, комментарий EN+RU для каждой таблицы) и меткой базовой калибровки.
+- Рецепты под другие моторы / главные пары с аннотациями (группа, имя, комментарий EN+RU для каждой таблицы) и меткой базовой калибровки. Для патчей документа 13 проще всего `egs_patch.py recipe ИМЯ stock.bin -o recipe.json --spark ОБ/МИН --cut ОБ/МИН`: рецепт несёт цепочку и обороты мотора в `built_with`.
+- Новый патч для `tools/egs_patch.py`: у каждого адреса, который он пишет, указана инструкция, которая его читает, перед записью проверяется заводское значение или оси таблицы, к патчу прилагается тест в `tests/test_tools.py` и параграф документа 13 (RU и EN).
 - Сведения о **других ревизиях калибровки 19x0** (другая метка `B22K4_04xxxx` по 0x0FFCE): какие таблицы отличаются от базы `19C0KA20`.
 - Переводы и правки формулировок.
 
@@ -97,10 +99,10 @@ GS860_STOCK=stock19x0.bin GS8604_STOCK=stock20c0.bin python3 tests/test_tools.py
 python3 tools/make_xdf.py check catalog/gs8600_19d0.json
 python3 tools/make_xdf.py build catalog/gs8600_19d0.json xdf/GS8600_19D0_Full256K.xdf --partial xdf/GS8600_19x0_Partial32K.xdf
 python3 tools/make_xdf.py check catalog/gs8604_20c0.json
-python3 tools/make_xdf.py build catalog/gs8604_20c0.json xdf/GS8604_20C0_Full512K.xdf
+python3 tools/make_xdf.py build catalog/gs8604_20c0.json xdf/GS8604_20C0_Full512K.xdf --en xdf/GS8604_20C0_Full512K_EN.xdf
 ```
 
-`check` не пропускает байты вне образа, две записи на одном байте, повтор uid, неизвестную категорию и пустую единицу. `build` сначала запускает `check`. Тесты сравнивают каждый файл XDF с тем, что рендерит его каталог. Частичного XDF для 20C0 нет, пока не известно, что флешер читает как Partial у GS8.60.4 (документ 11 §13). У каждой записи есть уровень `confidence`, у записей `proven` в `proof` указана инструкция.
+Сам каталог 20C0 генерируется из образа 20C0 генератором проекта WOLF4X (у каждой роли адреса доказывающих инструкций, uid сохраняются при перегенерации); исправление к нему присылайте issue с доказательством. `check` не пропускает байты вне образа, две записи на одном байте, повтор uid, неизвестную категорию и пустую единицу. `build` сначала запускает `check`. Тесты сравнивают каждый файл XDF с тем, что рендерит его каталог. Частичного XDF для 20C0 нет, пока не известно, что флешер читает как Partial у GS8.60.4 (документ 11 §13). У каждой записи есть уровень `confidence`, у записей `proven` в `proof` указана инструкция.
 
 ### Стиль
 
