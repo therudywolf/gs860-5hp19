@@ -12,6 +12,16 @@ Newest first. Each entry: date and title, then **EN** and **RU** with the same f
 
 - **Фоновая проверка CRC у GS8.60.0 19x0** (документы 01, 07 §6, 11 §2, 12): задача `0x26926` порциями по 150 байт считает CRC-16 загрузчика, программы и калибровки по тем же областям, что команда тестера `0x0A`, и при несовпадении сообщает внутреннюю ошибку `0x0D` (биты в `[0xFFFF8B45]`, копия в `[0xFFFF91D4]`). Утверждение «19x0 считает суммы только по запросу тестера» неверно. Реакция `0x0D` у 19x0 не установлена; сборки со старой суммой калибровки ездили без аварийного режима.
 
+## 2026-10-08 (4): GS8.60.4 22C0 (BMW, E46 2.2) described
+
+**EN**
+
+- Document 12 §11: a received BMW dump `B223K_0522C0` is not a 20C0. Same table addresses in the records area (`0x78000+`), but the matrices and the constants of the first block are shifted (`+0x0E`), the turbine monitor is 6720 (20C0: 7232), the AGS is on, S differs from D. The 20C0 XDF fits the 22C0 only for the records; `egs_patch.py` refuses the image.
+
+**RU**
+
+- Документ 12 §11: присланный дамп BMW `B223K_0522C0` это не 20C0. Адреса таблиц в области записей (`0x78000+`) те же, но матрицы и константы первого блока сдвинуты (`+0x0E`), монитор турбины 6720 (у 20C0 7232), AGS включена, S отличается от D. XDF 20C0 подходит к 22C0 только для записей; `egs_patch.py` образ не принимает.
+
 ## 2026-10-08 (3): `shift-feel` on 19x0
 
 **EN**

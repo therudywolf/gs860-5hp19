@@ -111,7 +111,7 @@ class Image:
                     self.key = k
         if self.key is None:
             raise PatchError(f"{path}: not a full 19C0/19D0 (256K) or 20C0 (512K) image with the known program code. "
-                             "Other software (for example GS8.60.4 15C0) has other addresses - nothing is patched.")
+                             "Other software (for example GS8.60.4 15C0 or 22C0) has other addresses - nothing is patched.")
         self.P = PLAT[self.key]
         bad = [n for n, _s, _e, _at, st, c in gs860_crc.sums(self.orig) if n != "calibration" and st != c]
         if bad:
