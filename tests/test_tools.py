@@ -156,10 +156,14 @@ class TestShiftUnits(unittest.TestCase):
         self.assertEqual(L[0x80000]["win"], (0x70000, 0x80000))
         self.assertEqual(L[0x80000]["manual"], (8, 10), "M = PB (k10) and PD (k08) by code (docs 11 §5)")
         self.assertEqual(L[0x40000]["manual"], (8, 10))
-        with tempfile.NamedTemporaryFile(suffix=".bin") as f:
-            f.write(b"\0" * 1000); f.flush()
+        fd, tmp = tempfile.mkstemp(suffix=".bin")
+        try:
+            with os.fdopen(fd, "wb") as f:
+                f.write(b"\0" * 1000)
             with self.assertRaises(SystemExit):
-                egs_tables.FW(f.name)
+                egs_tables.FW(tmp)
+        finally:
+            os.remove(tmp)
 
 
 class CatalogChecks:

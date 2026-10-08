@@ -57,7 +57,7 @@ One step — one build — one log. Do not combine in a first build steps that c
 - Disputed and not checked in code: the input of the filter `0xFFFF8DA4` (`0xFFFF8DA6` or `0xFFFF8DA8`, doc 02 §3), what 0x8EEA is compared with (doc 05 §1).
 - The meaning of `0xFFFF91CA` (replacements PE / PF), the roles of matrices k5 (PA), k12 (P9), k13 (P7), whether the `0xFFFF90CD` steps are hill steps (hypothesis).
 - The conditions of the full-lock permission 0x32150 and the role of state 5 of the TCC lower state machine.
-- Which clutch the slip-time controller drives (`0xFFFF974B`) in each downshift kind, the kind-0 records, the adaptation 0x2AE10.
+- Which clutch the slip-time controller drives (19D0 `0xFFFF974B`; 20C0 has no such cell, the pair is `[0xFFFF93CF]`, closed 08.10.2026, document 11 §15) in each downshift kind, the kind-0 records, the adaptation 0x2AE10.
 - Check the code at 0x21522: if the DME2 buffer is contiguous, `0xFFFF8435` is byte 1 of the DME2 frame, not the ADC of the ATF sensor (doc 03 §6).
 
 ## 8. Lesson of 23.09.2026: AGS taken for the TCC lockup
