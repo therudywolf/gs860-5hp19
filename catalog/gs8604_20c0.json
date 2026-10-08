@@ -2564,25 +2564,25 @@
   },
   {
    "kind": "table",
-   "title": "AGS: пороги педали, 1-я передача, ветка обычная (0x7107A, слот 3)",
-   "description": "Слот 3 каталога 0x71BC2 = слот 9 каталога 19D0 (0x901E, документ 03 §7: AGS, адаптивный выбор программы, не ГДТ), оси совпадают. Читает 0x19152 (функция AGS 0x19084, пара 19D0 0x1DEBC по сопоставлению функций). Роль перенесена из 19D0 по положению в каталоге: структура.",
+   "title": "AGS: порог педали для запроса следующего уровня, 1-я передача, ветка D (0x7107A, слот 3)",
+   "description": "Читает функция AGS 0x19084: при коде передачи [0xFFFF915F] = 1 или 6 (диспетчер 0x190DC-0x1912A) и ветка D ([0xFFFF917F] = 0) (проверка [0xFFFF917F] = 1 в 0x19134) берёт указатель слота 0x71BCE (lea 0x19152) и в цикле i = 1..3 ([0xFFFF915C]; цикл идёт, пока i < [0x70202] = 4, 0x1916E) вызывает поиск 2D8 0x19BD2 (jsr 0x1915E; 0x19BD2 -> 0x19A90, билинейная интерполяция): X = i (индекс порога, ось 1 / 2 / 3), Y = n_вых/32 [0xFFFF9138] (запись 0x20D38: lsr 5, отфильтрованный выходной вал). Байт-результат (интерполяция по Z) ложится в локальный массив thr[i-1] (0x19166). Далее (0x192A4-0x192D2) код идёт от i = 3 вниз и берёт первую (наибольшую) i, у которой порог не выше педали [0xFFFF912A] (= [0xFFFF911B], 0x1CDE6): [0xFFFF915D] = i + 1 (если ни один порог не пройден, [0xFFFF915D] = 1). Итак, Z = порог педали (0-255), при котором на данной скорости запрашивается уровень AGS i + 1 (столбец 1 = уровень 2, столбец 2 = уровень 3, столбец 3 = уровень 4). [0xFFFF915D] сравнивается с текущим уровнем [0xFFFF915B] (0x192E4-0x192E6): равны - очки тянутся к «домашним» 0x7089C; не равны - очки [0xFFFF91D6] меняет матрица 0x708A8 / 0x708B8 (строка = [0xFFFF915D], столбец = [0xFFFF915B]); очки через лестницу 0x70898 (0x18EB8-0x18ED0) дают уровень [0xFFFF915B], а он через 0x09A42 выбирает программу переключения (0x1ED8E: [0xFFFF87CC] = 0x09A42[[0xFFFF915B] - 1]). Ось Y: 20-50 (n_вых = 32 × значение, 640-1600 об/мин выходного вала). Массив Z по строкам Y: n_вых/32 = 20: 153/230/252; n_вых/32 = 28: 153/230/252; n_вых/32 = 32: 153/230/252; n_вых/32 = 38: 153/230/252; n_вых/32 = 44: 153/230/252; n_вых/32 = 50: 153/230/252. Эта таблица берётся для: ветка D ([0xFFFF917F] = 0); парная таблица другой ветки - слот 4. Подпись каталога «Y = педаль» неверна: педаль - результат (Z), а ось Y - обороты выходного вала. В заводской калибровке эта таблица не действует: функция AGS 0x19084 вызывается из 0x18676 только при бите 5 байта 0x70D39 (btst 0x18670, beq 0x18674), а в обоих образах 20C0 (эталон Alpina B3S и дамп машины) 0x70D39 = 0x91, бит 5 = 0. Роль доказана кодом; влияние на коробку появится, только если бит 5 включить (в 19D0 аналог 0x8CE7 = 0xFD, бит 5 стоит). В заводской калибровке 20C0 не действует: функция 0x19084 вызывается из 0x18676 только при бите 5 байта 0x70D39, а там 0x91 (бит 5 = 0).",
    "categories": [
     1
    ],
-   "confidence": "structure",
-   "proof": "структура: слот каталога 0x71BCE читает 0x19152, пара 19D0 0x901E",
+   "confidence": "proven",
+   "proof": "код: 0x18642 0x18670 0x18674 0x18676 0x190AE 0x190BE 0x190CA 0x190DC 0x19134 0x19152 0x1915E 0x19BD2 0x19C04 0x19A90 0x19166 0x1916E 0x192A4 0x192BC 0x192D2 0x20D38 0x1CDE6 0x18ED0 0x1ED8E",
    "x": {
     "addr": 462974,
     "bits": 8,
     "count": 3,
     "labels": [],
-    "units": "X",
+    "units": "индекс порога i = 1..3 (порог педали для запроса уровня AGS i + 1), [0xFFFF915C]",
     "math": "X",
     "signed": false,
     "lsb_first": false,
     "major": 0,
     "minor": 0,
-    "units_en": "X"
+    "units_en": "threshold index i = 1..3 (pedal threshold for requesting AGS level i + 1), [0xFFFF915C]"
    },
    "y": {
     "addr": 462977,
@@ -2605,37 +2605,37 @@
     "signed": false,
     "lsb_first": false,
     "math": "X",
-    "units": "сырое",
+    "units": "порог педали 0-255 (шкала [0xFFFF912A]); условие «педаль не ниже порога»",
     "decimals": 0,
     "major": 0,
     "minor": 0,
-    "units_en": "raw"
+    "units_en": "pedal threshold 0-255 (scale of [0xFFFF912A]); condition 'pedal >= threshold'"
    },
    "uid": 8233,
-   "title_en": "AGS: pedal thresholds, gear 1, branch normal (0x7107A, slot 3)",
-   "description_en": "Slot 3 of the catalog 0x71BC2 = slot 9 of the 19D0 catalog (document 03 §7: AGS, adaptive program selection, not TCC); role carried from 19D0 by the catalog position: structure."
+   "title_en": "AGS: pedal threshold for requesting the next level, 1st gear, branch D (0x7107A, slot 3)",
+   "description_en": "Read by the AGS function 0x19084: with the gear code [0xFFFF915F] = 1 or 6 (dispatcher 0x190DC-0x1912A) and branch D ([0xFFFF917F] = 0) (test of [0xFFFF917F] = 1 at 0x19134) it loads the catalog slot pointer 0x71BCE (lea 0x19152) and for i = 1..3 ([0xFFFF915C]; the loop runs while i < [0x70202] = 4, 0x1916E) calls the 2D8 lookup 0x19BD2 (jsr 0x1915E; 0x19BD2 -> 0x19A90, bilinear interpolation): X = i (threshold index 1 / 2 / 3), Y = n_out/32 [0xFFFF9138] (written at 0x20D38: lsr 5, filtered output shaft speed). The byte result (interpolated Z) goes into a local array thr[i-1] (0x19166). Then (0x192A4-0x192D2) the code walks i = 3 downward and takes the first (largest) i whose threshold is not above the pedal [0xFFFF912A] (= [0xFFFF911B], 0x1CDE6): [0xFFFF915D] = i + 1 (if none passes, [0xFFFF915D] = 1). So Z = pedal threshold (0-255) at which AGS level i + 1 is requested at that speed (column 1 = level 2, column 2 = level 3, column 3 = level 4). [0xFFFF915D] is compared with the current level [0xFFFF915B] (0x192E4-0x192E6): equal - the score drifts to the home scores 0x7089C; different - the matrix 0x708A8 / 0x708B8 changes the score [0xFFFF91D6] (row = [0xFFFF915D], column = [0xFFFF915B]); the score through the ladder 0x70898 (0x18EB8-0x18ED0) gives the level [0xFFFF915B], which selects the shift program through 0x09A42 (0x1ED8E: [0xFFFF87CC] = 0x09A42[[0xFFFF915B] - 1]). Axis Y: 20-50 (n_out = 32 x value, 640-1600 rpm of the output shaft). Z array by Y rows: n_out/32 = 20: 153/230/252; n_out/32 = 28: 153/230/252; n_out/32 = 32: 153/230/252; n_out/32 = 38: 153/230/252; n_out/32 = 44: 153/230/252; n_out/32 = 50: 153/230/252. This table is used for: branch D ([0xFFFF917F] = 0); the paired table of the other branch is slot 4. The catalog label 'Y = pedal' is wrong: the pedal is the result (Z), axis Y is the output shaft speed. In the factory calibration this table is inactive: the AGS function 0x19084 is called from 0x18676 only when bit 5 of byte 0x70D39 is set (btst 0x18670, beq 0x18674), and in both 20C0 images (Alpina B3S reference and the car dump) 0x70D39 = 0x91, bit 5 = 0. The role is proven by code; the table affects the gearbox only if that bit is set (the 19D0 counterpart 0x8CE7 = 0xFD has bit 5 set). Inactive in the factory 20C0 calibration: function 0x19084 is called from 0x18676 only when bit 5 of byte 0x70D39 is set, and it holds 0x91 (bit 5 = 0)."
   },
   {
    "kind": "table",
-   "title": "AGS: пороги педали, 1-я передача, ветка злая (0x7109A, слот 4)",
-   "description": "Слот 4 каталога 0x71BC2 = слот 10 каталога 19D0 (0x903E, документ 03 §7: AGS, адаптивный выбор программы, не ГДТ), оси совпадают. Читает 0x19138 (функция AGS 0x19084, пара 19D0 0x1DEBC по сопоставлению функций). Роль перенесена из 19D0 по положению в каталоге: структура.",
+   "title": "AGS: порог педали для запроса следующего уровня, 1-я передача, ветка S (0x7109A, слот 4)",
+   "description": "Читает функция AGS 0x19084: при коде передачи [0xFFFF915F] = 1 или 6 (диспетчер 0x190DC-0x1912A) и ветка S ([0xFFFF917F] = 1) (проверка [0xFFFF917F] = 1 в 0x19134) берёт указатель слота 0x71BD2 (lea 0x19138) и в цикле i = 1..3 ([0xFFFF915C]; цикл идёт, пока i < [0x70202] = 4, 0x1916E) вызывает поиск 2D8 0x19BD2 (jsr 0x19144; 0x19BD2 -> 0x19A90, билинейная интерполяция): X = i (индекс порога, ось 1 / 2 / 3), Y = n_вых/32 [0xFFFF9138] (запись 0x20D38: lsr 5, отфильтрованный выходной вал). Байт-результат (интерполяция по Z) ложится в локальный массив thr[i-1] (0x1914C). Далее (0x192A4-0x192D2) код идёт от i = 3 вниз и берёт первую (наибольшую) i, у которой порог не выше педали [0xFFFF912A] (= [0xFFFF911B], 0x1CDE6): [0xFFFF915D] = i + 1 (если ни один порог не пройден, [0xFFFF915D] = 1). Итак, Z = порог педали (0-255), при котором на данной скорости запрашивается уровень AGS i + 1 (столбец 1 = уровень 2, столбец 2 = уровень 3, столбец 3 = уровень 4). [0xFFFF915D] сравнивается с текущим уровнем [0xFFFF915B] (0x192E4-0x192E6): равны - очки тянутся к «домашним» 0x7089C; не равны - очки [0xFFFF91D6] меняет матрица 0x708A8 / 0x708B8 (строка = [0xFFFF915D], столбец = [0xFFFF915B]); очки через лестницу 0x70898 (0x18EB8-0x18ED0) дают уровень [0xFFFF915B], а он через 0x09A42 выбирает программу переключения (0x1ED8E: [0xFFFF87CC] = 0x09A42[[0xFFFF915B] - 1]). Ось Y: 20-50 (n_вых = 32 × значение, 640-1600 об/мин выходного вала). Массив Z по строкам Y: n_вых/32 = 20: 102/166/204; n_вых/32 = 28: 102/166/204; n_вых/32 = 32: 102/166/204; n_вых/32 = 38: 102/166/204; n_вых/32 = 44: 102/166/204; n_вых/32 = 50: 102/166/204. Эта таблица берётся для: ветка S ([0xFFFF917F] = 1); парная таблица другой ветки - слот 3. Подпись каталога «Y = педаль» неверна: педаль - результат (Z), а ось Y - обороты выходного вала. В заводской калибровке эта таблица не действует: функция AGS 0x19084 вызывается из 0x18676 только при бите 5 байта 0x70D39 (btst 0x18670, beq 0x18674), а в обоих образах 20C0 (эталон Alpina B3S и дамп машины) 0x70D39 = 0x91, бит 5 = 0. Роль доказана кодом; влияние на коробку появится, только если бит 5 включить (в 19D0 аналог 0x8CE7 = 0xFD, бит 5 стоит). В заводской калибровке 20C0 не действует: функция 0x19084 вызывается из 0x18676 только при бите 5 байта 0x70D39, а там 0x91 (бит 5 = 0).",
    "categories": [
     1
    ],
-   "confidence": "structure",
-   "proof": "структура: слот каталога 0x71BD2 читает 0x19138, пара 19D0 0x903E",
+   "confidence": "proven",
+   "proof": "код: 0x18642 0x18670 0x18674 0x18676 0x190AE 0x190BE 0x190CA 0x190DC 0x19134 0x19138 0x19144 0x19BD2 0x19C04 0x19A90 0x1914C 0x1916E 0x192A4 0x192BC 0x192D2 0x20D38 0x1CDE6 0x18ED0 0x1ED8E",
    "x": {
     "addr": 463006,
     "bits": 8,
     "count": 3,
     "labels": [],
-    "units": "X",
+    "units": "индекс порога i = 1..3 (порог педали для запроса уровня AGS i + 1), [0xFFFF915C]",
     "math": "X",
     "signed": false,
     "lsb_first": false,
     "major": 0,
     "minor": 0,
-    "units_en": "X"
+    "units_en": "threshold index i = 1..3 (pedal threshold for requesting AGS level i + 1), [0xFFFF915C]"
    },
    "y": {
     "addr": 463009,
@@ -2658,37 +2658,37 @@
     "signed": false,
     "lsb_first": false,
     "math": "X",
-    "units": "сырое",
+    "units": "порог педали 0-255 (шкала [0xFFFF912A]); условие «педаль не ниже порога»",
     "decimals": 0,
     "major": 0,
     "minor": 0,
-    "units_en": "raw"
+    "units_en": "pedal threshold 0-255 (scale of [0xFFFF912A]); condition 'pedal >= threshold'"
    },
    "uid": 8234,
-   "title_en": "AGS: pedal thresholds, gear 1, branch sport (0x7109A, slot 4)",
-   "description_en": "Slot 4 of the catalog 0x71BC2 = slot 10 of the 19D0 catalog (document 03 §7: AGS, adaptive program selection, not TCC); role carried from 19D0 by the catalog position: structure."
+   "title_en": "AGS: pedal threshold for requesting the next level, 1st gear, branch S (0x7109A, slot 4)",
+   "description_en": "Read by the AGS function 0x19084: with the gear code [0xFFFF915F] = 1 or 6 (dispatcher 0x190DC-0x1912A) and branch S ([0xFFFF917F] = 1) (test of [0xFFFF917F] = 1 at 0x19134) it loads the catalog slot pointer 0x71BD2 (lea 0x19138) and for i = 1..3 ([0xFFFF915C]; the loop runs while i < [0x70202] = 4, 0x1916E) calls the 2D8 lookup 0x19BD2 (jsr 0x19144; 0x19BD2 -> 0x19A90, bilinear interpolation): X = i (threshold index 1 / 2 / 3), Y = n_out/32 [0xFFFF9138] (written at 0x20D38: lsr 5, filtered output shaft speed). The byte result (interpolated Z) goes into a local array thr[i-1] (0x1914C). Then (0x192A4-0x192D2) the code walks i = 3 downward and takes the first (largest) i whose threshold is not above the pedal [0xFFFF912A] (= [0xFFFF911B], 0x1CDE6): [0xFFFF915D] = i + 1 (if none passes, [0xFFFF915D] = 1). So Z = pedal threshold (0-255) at which AGS level i + 1 is requested at that speed (column 1 = level 2, column 2 = level 3, column 3 = level 4). [0xFFFF915D] is compared with the current level [0xFFFF915B] (0x192E4-0x192E6): equal - the score drifts to the home scores 0x7089C; different - the matrix 0x708A8 / 0x708B8 changes the score [0xFFFF91D6] (row = [0xFFFF915D], column = [0xFFFF915B]); the score through the ladder 0x70898 (0x18EB8-0x18ED0) gives the level [0xFFFF915B], which selects the shift program through 0x09A42 (0x1ED8E: [0xFFFF87CC] = 0x09A42[[0xFFFF915B] - 1]). Axis Y: 20-50 (n_out = 32 x value, 640-1600 rpm of the output shaft). Z array by Y rows: n_out/32 = 20: 102/166/204; n_out/32 = 28: 102/166/204; n_out/32 = 32: 102/166/204; n_out/32 = 38: 102/166/204; n_out/32 = 44: 102/166/204; n_out/32 = 50: 102/166/204. This table is used for: branch S ([0xFFFF917F] = 1); the paired table of the other branch is slot 3. The catalog label 'Y = pedal' is wrong: the pedal is the result (Z), axis Y is the output shaft speed. In the factory calibration this table is inactive: the AGS function 0x19084 is called from 0x18676 only when bit 5 of byte 0x70D39 is set (btst 0x18670, beq 0x18674), and in both 20C0 images (Alpina B3S reference and the car dump) 0x70D39 = 0x91, bit 5 = 0. The role is proven by code; the table affects the gearbox only if that bit is set (the 19D0 counterpart 0x8CE7 = 0xFD has bit 5 set). Inactive in the factory 20C0 calibration: function 0x19084 is called from 0x18676 only when bit 5 of byte 0x70D39 is set, and it holds 0x91 (bit 5 = 0)."
   },
   {
    "kind": "table",
-   "title": "AGS: пороги педали, 2-я передача, ветка обычная (0x710BA, слот 5)",
-   "description": "Слот 5 каталога 0x71BC2 = слот 11 каталога 19D0 (0x905E, документ 03 §7: AGS, адаптивный выбор программы, не ГДТ), оси совпадают. Читает 0x1919E (функция AGS 0x19084, пара 19D0 0x1DEBC по сопоставлению функций). Роль перенесена из 19D0 по положению в каталоге: структура.",
+   "title": "AGS: порог педали для запроса следующего уровня, 2-я передача, ветка D (0x710BA, слот 5)",
+   "description": "Читает функция AGS 0x19084: при коде передачи [0xFFFF915F] = 2 (диспетчер 0x190DC-0x1912A) и ветка D ([0xFFFF917F] = 0) (проверка [0xFFFF917F] = 1 в 0x19180) берёт указатель слота 0x71BD6 (lea 0x1919E) и в цикле i = 1..3 ([0xFFFF915C]; цикл идёт, пока i < [0x70202] = 4, 0x1916E) вызывает поиск 2D8 0x19BD2 (jsr 0x191AA; 0x19BD2 -> 0x19A90, билинейная интерполяция): X = i (индекс порога, ось 1 / 2 / 3), Y = n_вых/32 [0xFFFF9138] (запись 0x20D38: lsr 5, отфильтрованный выходной вал). Байт-результат (интерполяция по Z) ложится в локальный массив thr[i-1] (0x191B2). Далее (0x192A4-0x192D2) код идёт от i = 3 вниз и берёт первую (наибольшую) i, у которой порог не выше педали [0xFFFF912A] (= [0xFFFF911B], 0x1CDE6): [0xFFFF915D] = i + 1 (если ни один порог не пройден, [0xFFFF915D] = 1). Итак, Z = порог педали (0-255), при котором на данной скорости запрашивается уровень AGS i + 1 (столбец 1 = уровень 2, столбец 2 = уровень 3, столбец 3 = уровень 4). [0xFFFF915D] сравнивается с текущим уровнем [0xFFFF915B] (0x192E4-0x192E6): равны - очки тянутся к «домашним» 0x7089C; не равны - очки [0xFFFF91D6] меняет матрица 0x708A8 / 0x708B8 (строка = [0xFFFF915D], столбец = [0xFFFF915B]); очки через лестницу 0x70898 (0x18EB8-0x18ED0) дают уровень [0xFFFF915B], а он через 0x09A42 выбирает программу переключения (0x1ED8E: [0xFFFF87CC] = 0x09A42[[0xFFFF915B] - 1]). Ось Y: 31-85 (n_вых = 32 × значение, 992-2720 об/мин выходного вала). Массив Z по строкам Y: n_вых/32 = 31: 153/230/252; n_вых/32 = 47: 153/230/252; n_вых/32 = 62: 153/230/252; n_вых/32 = 68: 153/230/252; n_вых/32 = 76: 153/230/252; n_вых/32 = 85: 153/230/252. Эта таблица берётся для: ветка D ([0xFFFF917F] = 0); парная таблица другой ветки - слот 6. Подпись каталога «Y = педаль» неверна: педаль - результат (Z), а ось Y - обороты выходного вала. В заводской калибровке эта таблица не действует: функция AGS 0x19084 вызывается из 0x18676 только при бите 5 байта 0x70D39 (btst 0x18670, beq 0x18674), а в обоих образах 20C0 (эталон Alpina B3S и дамп машины) 0x70D39 = 0x91, бит 5 = 0. Роль доказана кодом; влияние на коробку появится, только если бит 5 включить (в 19D0 аналог 0x8CE7 = 0xFD, бит 5 стоит). В заводской калибровке 20C0 не действует: функция 0x19084 вызывается из 0x18676 только при бите 5 байта 0x70D39, а там 0x91 (бит 5 = 0).",
    "categories": [
     1
    ],
-   "confidence": "structure",
-   "proof": "структура: слот каталога 0x71BD6 читает 0x1919E, пара 19D0 0x905E",
+   "confidence": "proven",
+   "proof": "код: 0x18642 0x18670 0x18674 0x18676 0x190AE 0x190BE 0x190CA 0x190DC 0x19180 0x1919E 0x191AA 0x19BD2 0x19C04 0x19A90 0x191B2 0x1916E 0x192A4 0x192BC 0x192D2 0x20D38 0x1CDE6 0x18ED0 0x1ED8E",
    "x": {
     "addr": 463038,
     "bits": 8,
     "count": 3,
     "labels": [],
-    "units": "X",
+    "units": "индекс порога i = 1..3 (порог педали для запроса уровня AGS i + 1), [0xFFFF915C]",
     "math": "X",
     "signed": false,
     "lsb_first": false,
     "major": 0,
     "minor": 0,
-    "units_en": "X"
+    "units_en": "threshold index i = 1..3 (pedal threshold for requesting AGS level i + 1), [0xFFFF915C]"
    },
    "y": {
     "addr": 463041,
@@ -2711,37 +2711,37 @@
     "signed": false,
     "lsb_first": false,
     "math": "X",
-    "units": "сырое",
+    "units": "порог педали 0-255 (шкала [0xFFFF912A]); условие «педаль не ниже порога»",
     "decimals": 0,
     "major": 0,
     "minor": 0,
-    "units_en": "raw"
+    "units_en": "pedal threshold 0-255 (scale of [0xFFFF912A]); condition 'pedal >= threshold'"
    },
    "uid": 8235,
-   "title_en": "AGS: pedal thresholds, gear 2, branch normal (0x710BA, slot 5)",
-   "description_en": "Slot 5 of the catalog 0x71BC2 = slot 11 of the 19D0 catalog (document 03 §7: AGS, adaptive program selection, not TCC); role carried from 19D0 by the catalog position: structure."
+   "title_en": "AGS: pedal threshold for requesting the next level, 2nd gear, branch D (0x710BA, slot 5)",
+   "description_en": "Read by the AGS function 0x19084: with the gear code [0xFFFF915F] = 2 (dispatcher 0x190DC-0x1912A) and branch D ([0xFFFF917F] = 0) (test of [0xFFFF917F] = 1 at 0x19180) it loads the catalog slot pointer 0x71BD6 (lea 0x1919E) and for i = 1..3 ([0xFFFF915C]; the loop runs while i < [0x70202] = 4, 0x1916E) calls the 2D8 lookup 0x19BD2 (jsr 0x191AA; 0x19BD2 -> 0x19A90, bilinear interpolation): X = i (threshold index 1 / 2 / 3), Y = n_out/32 [0xFFFF9138] (written at 0x20D38: lsr 5, filtered output shaft speed). The byte result (interpolated Z) goes into a local array thr[i-1] (0x191B2). Then (0x192A4-0x192D2) the code walks i = 3 downward and takes the first (largest) i whose threshold is not above the pedal [0xFFFF912A] (= [0xFFFF911B], 0x1CDE6): [0xFFFF915D] = i + 1 (if none passes, [0xFFFF915D] = 1). So Z = pedal threshold (0-255) at which AGS level i + 1 is requested at that speed (column 1 = level 2, column 2 = level 3, column 3 = level 4). [0xFFFF915D] is compared with the current level [0xFFFF915B] (0x192E4-0x192E6): equal - the score drifts to the home scores 0x7089C; different - the matrix 0x708A8 / 0x708B8 changes the score [0xFFFF91D6] (row = [0xFFFF915D], column = [0xFFFF915B]); the score through the ladder 0x70898 (0x18EB8-0x18ED0) gives the level [0xFFFF915B], which selects the shift program through 0x09A42 (0x1ED8E: [0xFFFF87CC] = 0x09A42[[0xFFFF915B] - 1]). Axis Y: 31-85 (n_out = 32 x value, 992-2720 rpm of the output shaft). Z array by Y rows: n_out/32 = 31: 153/230/252; n_out/32 = 47: 153/230/252; n_out/32 = 62: 153/230/252; n_out/32 = 68: 153/230/252; n_out/32 = 76: 153/230/252; n_out/32 = 85: 153/230/252. This table is used for: branch D ([0xFFFF917F] = 0); the paired table of the other branch is slot 6. The catalog label 'Y = pedal' is wrong: the pedal is the result (Z), axis Y is the output shaft speed. In the factory calibration this table is inactive: the AGS function 0x19084 is called from 0x18676 only when bit 5 of byte 0x70D39 is set (btst 0x18670, beq 0x18674), and in both 20C0 images (Alpina B3S reference and the car dump) 0x70D39 = 0x91, bit 5 = 0. The role is proven by code; the table affects the gearbox only if that bit is set (the 19D0 counterpart 0x8CE7 = 0xFD has bit 5 set). Inactive in the factory 20C0 calibration: function 0x19084 is called from 0x18676 only when bit 5 of byte 0x70D39 is set, and it holds 0x91 (bit 5 = 0)."
   },
   {
    "kind": "table",
-   "title": "AGS: пороги педали, 2-я передача, ветка злая (0x710DA, слот 6)",
-   "description": "Слот 6 каталога 0x71BC2 = слот 12 каталога 19D0 (0x907E, документ 03 §7: AGS, адаптивный выбор программы, не ГДТ), оси совпадают. Читает 0x19184 (функция AGS 0x19084, пара 19D0 0x1DEBC по сопоставлению функций). Роль перенесена из 19D0 по положению в каталоге: структура.",
+   "title": "AGS: порог педали для запроса следующего уровня, 2-я передача, ветка S (0x710DA, слот 6)",
+   "description": "Читает функция AGS 0x19084: при коде передачи [0xFFFF915F] = 2 (диспетчер 0x190DC-0x1912A) и ветка S ([0xFFFF917F] = 1) (проверка [0xFFFF917F] = 1 в 0x19180) берёт указатель слота 0x71BDA (lea 0x19184) и в цикле i = 1..3 ([0xFFFF915C]; цикл идёт, пока i < [0x70202] = 4, 0x1916E) вызывает поиск 2D8 0x19BD2 (jsr 0x19190; 0x19BD2 -> 0x19A90, билинейная интерполяция): X = i (индекс порога, ось 1 / 2 / 3), Y = n_вых/32 [0xFFFF9138] (запись 0x20D38: lsr 5, отфильтрованный выходной вал). Байт-результат (интерполяция по Z) ложится в локальный массив thr[i-1] (0x19198). Далее (0x192A4-0x192D2) код идёт от i = 3 вниз и берёт первую (наибольшую) i, у которой порог не выше педали [0xFFFF912A] (= [0xFFFF911B], 0x1CDE6): [0xFFFF915D] = i + 1 (если ни один порог не пройден, [0xFFFF915D] = 1). Итак, Z = порог педали (0-255), при котором на данной скорости запрашивается уровень AGS i + 1 (столбец 1 = уровень 2, столбец 2 = уровень 3, столбец 3 = уровень 4). [0xFFFF915D] сравнивается с текущим уровнем [0xFFFF915B] (0x192E4-0x192E6): равны - очки тянутся к «домашним» 0x7089C; не равны - очки [0xFFFF91D6] меняет матрица 0x708A8 / 0x708B8 (строка = [0xFFFF915D], столбец = [0xFFFF915B]); очки через лестницу 0x70898 (0x18EB8-0x18ED0) дают уровень [0xFFFF915B], а он через 0x09A42 выбирает программу переключения (0x1ED8E: [0xFFFF87CC] = 0x09A42[[0xFFFF915B] - 1]). Ось Y: 31-85 (n_вых = 32 × значение, 992-2720 об/мин выходного вала). Массив Z по строкам Y: n_вых/32 = 31: 64/115/179; n_вых/32 = 47: 64/115/179; n_вых/32 = 62: 64/115/179; n_вых/32 = 68: 64/115/179; n_вых/32 = 76: 64/115/179; n_вых/32 = 85: 64/115/179. Эта таблица берётся для: ветка S ([0xFFFF917F] = 1); парная таблица другой ветки - слот 5. Подпись каталога «Y = педаль» неверна: педаль - результат (Z), а ось Y - обороты выходного вала. В заводской калибровке эта таблица не действует: функция AGS 0x19084 вызывается из 0x18676 только при бите 5 байта 0x70D39 (btst 0x18670, beq 0x18674), а в обоих образах 20C0 (эталон Alpina B3S и дамп машины) 0x70D39 = 0x91, бит 5 = 0. Роль доказана кодом; влияние на коробку появится, только если бит 5 включить (в 19D0 аналог 0x8CE7 = 0xFD, бит 5 стоит). В заводской калибровке 20C0 не действует: функция 0x19084 вызывается из 0x18676 только при бите 5 байта 0x70D39, а там 0x91 (бит 5 = 0).",
    "categories": [
     1
    ],
-   "confidence": "structure",
-   "proof": "структура: слот каталога 0x71BDA читает 0x19184, пара 19D0 0x907E",
+   "confidence": "proven",
+   "proof": "код: 0x18642 0x18670 0x18674 0x18676 0x190AE 0x190BE 0x190CA 0x190DC 0x19180 0x19184 0x19190 0x19BD2 0x19C04 0x19A90 0x19198 0x1916E 0x192A4 0x192BC 0x192D2 0x20D38 0x1CDE6 0x18ED0 0x1ED8E",
    "x": {
     "addr": 463070,
     "bits": 8,
     "count": 3,
     "labels": [],
-    "units": "X",
+    "units": "индекс порога i = 1..3 (порог педали для запроса уровня AGS i + 1), [0xFFFF915C]",
     "math": "X",
     "signed": false,
     "lsb_first": false,
     "major": 0,
     "minor": 0,
-    "units_en": "X"
+    "units_en": "threshold index i = 1..3 (pedal threshold for requesting AGS level i + 1), [0xFFFF915C]"
    },
    "y": {
     "addr": 463073,
@@ -2764,37 +2764,37 @@
     "signed": false,
     "lsb_first": false,
     "math": "X",
-    "units": "сырое",
+    "units": "порог педали 0-255 (шкала [0xFFFF912A]); условие «педаль не ниже порога»",
     "decimals": 0,
     "major": 0,
     "minor": 0,
-    "units_en": "raw"
+    "units_en": "pedal threshold 0-255 (scale of [0xFFFF912A]); condition 'pedal >= threshold'"
    },
    "uid": 8236,
-   "title_en": "AGS: pedal thresholds, gear 2, branch sport (0x710DA, slot 6)",
-   "description_en": "Slot 6 of the catalog 0x71BC2 = slot 12 of the 19D0 catalog (document 03 §7: AGS, adaptive program selection, not TCC); role carried from 19D0 by the catalog position: structure."
+   "title_en": "AGS: pedal threshold for requesting the next level, 2nd gear, branch S (0x710DA, slot 6)",
+   "description_en": "Read by the AGS function 0x19084: with the gear code [0xFFFF915F] = 2 (dispatcher 0x190DC-0x1912A) and branch S ([0xFFFF917F] = 1) (test of [0xFFFF917F] = 1 at 0x19180) it loads the catalog slot pointer 0x71BDA (lea 0x19184) and for i = 1..3 ([0xFFFF915C]; the loop runs while i < [0x70202] = 4, 0x1916E) calls the 2D8 lookup 0x19BD2 (jsr 0x19190; 0x19BD2 -> 0x19A90, bilinear interpolation): X = i (threshold index 1 / 2 / 3), Y = n_out/32 [0xFFFF9138] (written at 0x20D38: lsr 5, filtered output shaft speed). The byte result (interpolated Z) goes into a local array thr[i-1] (0x19198). Then (0x192A4-0x192D2) the code walks i = 3 downward and takes the first (largest) i whose threshold is not above the pedal [0xFFFF912A] (= [0xFFFF911B], 0x1CDE6): [0xFFFF915D] = i + 1 (if none passes, [0xFFFF915D] = 1). So Z = pedal threshold (0-255) at which AGS level i + 1 is requested at that speed (column 1 = level 2, column 2 = level 3, column 3 = level 4). [0xFFFF915D] is compared with the current level [0xFFFF915B] (0x192E4-0x192E6): equal - the score drifts to the home scores 0x7089C; different - the matrix 0x708A8 / 0x708B8 changes the score [0xFFFF91D6] (row = [0xFFFF915D], column = [0xFFFF915B]); the score through the ladder 0x70898 (0x18EB8-0x18ED0) gives the level [0xFFFF915B], which selects the shift program through 0x09A42 (0x1ED8E: [0xFFFF87CC] = 0x09A42[[0xFFFF915B] - 1]). Axis Y: 31-85 (n_out = 32 x value, 992-2720 rpm of the output shaft). Z array by Y rows: n_out/32 = 31: 64/115/179; n_out/32 = 47: 64/115/179; n_out/32 = 62: 64/115/179; n_out/32 = 68: 64/115/179; n_out/32 = 76: 64/115/179; n_out/32 = 85: 64/115/179. This table is used for: branch S ([0xFFFF917F] = 1); the paired table of the other branch is slot 5. The catalog label 'Y = pedal' is wrong: the pedal is the result (Z), axis Y is the output shaft speed. In the factory calibration this table is inactive: the AGS function 0x19084 is called from 0x18676 only when bit 5 of byte 0x70D39 is set (btst 0x18670, beq 0x18674), and in both 20C0 images (Alpina B3S reference and the car dump) 0x70D39 = 0x91, bit 5 = 0. The role is proven by code; the table affects the gearbox only if that bit is set (the 19D0 counterpart 0x8CE7 = 0xFD has bit 5 set). Inactive in the factory 20C0 calibration: function 0x19084 is called from 0x18676 only when bit 5 of byte 0x70D39 is set, and it holds 0x91 (bit 5 = 0)."
   },
   {
    "kind": "table",
-   "title": "AGS: пороги педали, 3-я передача, ветка обычная (0x710FA, слот 7)",
-   "description": "Слот 7 каталога 0x71BC2 = слот 13 каталога 19D0 (0x909E, документ 03 §7: AGS, адаптивный выбор программы, не ГДТ), оси совпадают. Читает 0x191EA (функция AGS 0x19084, пара 19D0 0x1DEBC по сопоставлению функций). Роль перенесена из 19D0 по положению в каталоге: структура.",
+   "title": "AGS: порог педали для запроса следующего уровня, 3-я передача, ветка D (0x710FA, слот 7)",
+   "description": "Читает функция AGS 0x19084: при коде передачи [0xFFFF915F] = 3 (диспетчер 0x190DC-0x1912A) и ветка D ([0xFFFF917F] = 0) (проверка [0xFFFF917F] = 1 в 0x191CC) берёт указатель слота 0x71BDE (lea 0x191EA) и в цикле i = 1..3 ([0xFFFF915C]; цикл идёт, пока i < [0x70202] = 4, 0x1916E) вызывает поиск 2D8 0x19BD2 (jsr 0x191F6; 0x19BD2 -> 0x19A90, билинейная интерполяция): X = i (индекс порога, ось 1 / 2 / 3), Y = n_вых/32 [0xFFFF9138] (запись 0x20D38: lsr 5, отфильтрованный выходной вал). Байт-результат (интерполяция по Z) ложится в локальный массив thr[i-1] (0x191FE). Далее (0x192A4-0x192D2) код идёт от i = 3 вниз и берёт первую (наибольшую) i, у которой порог не выше педали [0xFFFF912A] (= [0xFFFF911B], 0x1CDE6): [0xFFFF915D] = i + 1 (если ни один порог не пройден, [0xFFFF915D] = 1). Итак, Z = порог педали (0-255), при котором на данной скорости запрашивается уровень AGS i + 1 (столбец 1 = уровень 2, столбец 2 = уровень 3, столбец 3 = уровень 4). [0xFFFF915D] сравнивается с текущим уровнем [0xFFFF915B] (0x192E4-0x192E6): равны - очки тянутся к «домашним» 0x7089C; не равны - очки [0xFFFF91D6] меняет матрица 0x708A8 / 0x708B8 (строка = [0xFFFF915D], столбец = [0xFFFF915B]); очки через лестницу 0x70898 (0x18EB8-0x18ED0) дают уровень [0xFFFF915B], а он через 0x09A42 выбирает программу переключения (0x1ED8E: [0xFFFF87CC] = 0x09A42[[0xFFFF915B] - 1]). Ось Y: 62-125 (n_вых = 32 × значение, 1984-4000 об/мин выходного вала). Массив Z по строкам Y: n_вых/32 = 62: 153/230/252; n_вых/32 = 77: 153/230/252; n_вых/32 = 94: 153/230/252; n_вых/32 = 105: 153/230/252; n_вых/32 = 116: 153/230/252; n_вых/32 = 125: 153/230/252. Эта таблица берётся для: ветка D ([0xFFFF917F] = 0); парная таблица другой ветки - слот 8. Подпись каталога «Y = педаль» неверна: педаль - результат (Z), а ось Y - обороты выходного вала. В заводской калибровке эта таблица не действует: функция AGS 0x19084 вызывается из 0x18676 только при бите 5 байта 0x70D39 (btst 0x18670, beq 0x18674), а в обоих образах 20C0 (эталон Alpina B3S и дамп машины) 0x70D39 = 0x91, бит 5 = 0. Роль доказана кодом; влияние на коробку появится, только если бит 5 включить (в 19D0 аналог 0x8CE7 = 0xFD, бит 5 стоит). В заводской калибровке 20C0 не действует: функция 0x19084 вызывается из 0x18676 только при бите 5 байта 0x70D39, а там 0x91 (бит 5 = 0).",
    "categories": [
     1
    ],
-   "confidence": "structure",
-   "proof": "структура: слот каталога 0x71BDE читает 0x191EA, пара 19D0 0x909E",
+   "confidence": "proven",
+   "proof": "код: 0x18642 0x18670 0x18674 0x18676 0x190AE 0x190BE 0x190CA 0x190DC 0x191CC 0x191EA 0x191F6 0x19BD2 0x19C04 0x19A90 0x191FE 0x1916E 0x192A4 0x192BC 0x192D2 0x20D38 0x1CDE6 0x18ED0 0x1ED8E",
    "x": {
     "addr": 463102,
     "bits": 8,
     "count": 3,
     "labels": [],
-    "units": "X",
+    "units": "индекс порога i = 1..3 (порог педали для запроса уровня AGS i + 1), [0xFFFF915C]",
     "math": "X",
     "signed": false,
     "lsb_first": false,
     "major": 0,
     "minor": 0,
-    "units_en": "X"
+    "units_en": "threshold index i = 1..3 (pedal threshold for requesting AGS level i + 1), [0xFFFF915C]"
    },
    "y": {
     "addr": 463105,
@@ -2817,37 +2817,37 @@
     "signed": false,
     "lsb_first": false,
     "math": "X",
-    "units": "сырое",
+    "units": "порог педали 0-255 (шкала [0xFFFF912A]); условие «педаль не ниже порога»",
     "decimals": 0,
     "major": 0,
     "minor": 0,
-    "units_en": "raw"
+    "units_en": "pedal threshold 0-255 (scale of [0xFFFF912A]); condition 'pedal >= threshold'"
    },
    "uid": 8237,
-   "title_en": "AGS: pedal thresholds, gear 3, branch normal (0x710FA, slot 7)",
-   "description_en": "Slot 7 of the catalog 0x71BC2 = slot 13 of the 19D0 catalog (document 03 §7: AGS, adaptive program selection, not TCC); role carried from 19D0 by the catalog position: structure."
+   "title_en": "AGS: pedal threshold for requesting the next level, 3rd gear, branch D (0x710FA, slot 7)",
+   "description_en": "Read by the AGS function 0x19084: with the gear code [0xFFFF915F] = 3 (dispatcher 0x190DC-0x1912A) and branch D ([0xFFFF917F] = 0) (test of [0xFFFF917F] = 1 at 0x191CC) it loads the catalog slot pointer 0x71BDE (lea 0x191EA) and for i = 1..3 ([0xFFFF915C]; the loop runs while i < [0x70202] = 4, 0x1916E) calls the 2D8 lookup 0x19BD2 (jsr 0x191F6; 0x19BD2 -> 0x19A90, bilinear interpolation): X = i (threshold index 1 / 2 / 3), Y = n_out/32 [0xFFFF9138] (written at 0x20D38: lsr 5, filtered output shaft speed). The byte result (interpolated Z) goes into a local array thr[i-1] (0x191FE). Then (0x192A4-0x192D2) the code walks i = 3 downward and takes the first (largest) i whose threshold is not above the pedal [0xFFFF912A] (= [0xFFFF911B], 0x1CDE6): [0xFFFF915D] = i + 1 (if none passes, [0xFFFF915D] = 1). So Z = pedal threshold (0-255) at which AGS level i + 1 is requested at that speed (column 1 = level 2, column 2 = level 3, column 3 = level 4). [0xFFFF915D] is compared with the current level [0xFFFF915B] (0x192E4-0x192E6): equal - the score drifts to the home scores 0x7089C; different - the matrix 0x708A8 / 0x708B8 changes the score [0xFFFF91D6] (row = [0xFFFF915D], column = [0xFFFF915B]); the score through the ladder 0x70898 (0x18EB8-0x18ED0) gives the level [0xFFFF915B], which selects the shift program through 0x09A42 (0x1ED8E: [0xFFFF87CC] = 0x09A42[[0xFFFF915B] - 1]). Axis Y: 62-125 (n_out = 32 x value, 1984-4000 rpm of the output shaft). Z array by Y rows: n_out/32 = 62: 153/230/252; n_out/32 = 77: 153/230/252; n_out/32 = 94: 153/230/252; n_out/32 = 105: 153/230/252; n_out/32 = 116: 153/230/252; n_out/32 = 125: 153/230/252. This table is used for: branch D ([0xFFFF917F] = 0); the paired table of the other branch is slot 8. The catalog label 'Y = pedal' is wrong: the pedal is the result (Z), axis Y is the output shaft speed. In the factory calibration this table is inactive: the AGS function 0x19084 is called from 0x18676 only when bit 5 of byte 0x70D39 is set (btst 0x18670, beq 0x18674), and in both 20C0 images (Alpina B3S reference and the car dump) 0x70D39 = 0x91, bit 5 = 0. The role is proven by code; the table affects the gearbox only if that bit is set (the 19D0 counterpart 0x8CE7 = 0xFD has bit 5 set). Inactive in the factory 20C0 calibration: function 0x19084 is called from 0x18676 only when bit 5 of byte 0x70D39 is set, and it holds 0x91 (bit 5 = 0)."
   },
   {
    "kind": "table",
-   "title": "AGS: пороги педали, 3-я передача, ветка злая (0x7111A, слот 8)",
-   "description": "Слот 8 каталога 0x71BC2 = слот 14 каталога 19D0 (0x90BE, документ 03 §7: AGS, адаптивный выбор программы, не ГДТ), оси совпадают. Читает 0x191D0 (функция AGS 0x19084, пара 19D0 0x1DEBC по сопоставлению функций). Роль перенесена из 19D0 по положению в каталоге: структура.",
+   "title": "AGS: порог педали для запроса следующего уровня, 3-я передача, ветка S (0x7111A, слот 8)",
+   "description": "Читает функция AGS 0x19084: при коде передачи [0xFFFF915F] = 3 (диспетчер 0x190DC-0x1912A) и ветка S ([0xFFFF917F] = 1) (проверка [0xFFFF917F] = 1 в 0x191CC) берёт указатель слота 0x71BE2 (lea 0x191D0) и в цикле i = 1..3 ([0xFFFF915C]; цикл идёт, пока i < [0x70202] = 4, 0x1916E) вызывает поиск 2D8 0x19BD2 (jsr 0x191DC; 0x19BD2 -> 0x19A90, билинейная интерполяция): X = i (индекс порога, ось 1 / 2 / 3), Y = n_вых/32 [0xFFFF9138] (запись 0x20D38: lsr 5, отфильтрованный выходной вал). Байт-результат (интерполяция по Z) ложится в локальный массив thr[i-1] (0x191E4). Далее (0x192A4-0x192D2) код идёт от i = 3 вниз и берёт первую (наибольшую) i, у которой порог не выше педали [0xFFFF912A] (= [0xFFFF911B], 0x1CDE6): [0xFFFF915D] = i + 1 (если ни один порог не пройден, [0xFFFF915D] = 1). Итак, Z = порог педали (0-255), при котором на данной скорости запрашивается уровень AGS i + 1 (столбец 1 = уровень 2, столбец 2 = уровень 3, столбец 3 = уровень 4). [0xFFFF915D] сравнивается с текущим уровнем [0xFFFF915B] (0x192E4-0x192E6): равны - очки тянутся к «домашним» 0x7089C; не равны - очки [0xFFFF91D6] меняет матрица 0x708A8 / 0x708B8 (строка = [0xFFFF915D], столбец = [0xFFFF915B]); очки через лестницу 0x70898 (0x18EB8-0x18ED0) дают уровень [0xFFFF915B], а он через 0x09A42 выбирает программу переключения (0x1ED8E: [0xFFFF87CC] = 0x09A42[[0xFFFF915B] - 1]). Ось Y: 62-125 (n_вых = 32 × значение, 1984-4000 об/мин выходного вала). Массив Z по строкам Y: n_вых/32 = 62: 64/115/179; n_вых/32 = 77: 64/115/179; n_вых/32 = 94: 64/115/179; n_вых/32 = 105: 64/115/179; n_вых/32 = 116: 64/115/179; n_вых/32 = 125: 64/115/179. Эта таблица берётся для: ветка S ([0xFFFF917F] = 1); парная таблица другой ветки - слот 7. Подпись каталога «Y = педаль» неверна: педаль - результат (Z), а ось Y - обороты выходного вала. В заводской калибровке эта таблица не действует: функция AGS 0x19084 вызывается из 0x18676 только при бите 5 байта 0x70D39 (btst 0x18670, beq 0x18674), а в обоих образах 20C0 (эталон Alpina B3S и дамп машины) 0x70D39 = 0x91, бит 5 = 0. Роль доказана кодом; влияние на коробку появится, только если бит 5 включить (в 19D0 аналог 0x8CE7 = 0xFD, бит 5 стоит). В заводской калибровке 20C0 не действует: функция 0x19084 вызывается из 0x18676 только при бите 5 байта 0x70D39, а там 0x91 (бит 5 = 0).",
    "categories": [
     1
    ],
-   "confidence": "structure",
-   "proof": "структура: слот каталога 0x71BE2 читает 0x191D0, пара 19D0 0x90BE",
+   "confidence": "proven",
+   "proof": "код: 0x18642 0x18670 0x18674 0x18676 0x190AE 0x190BE 0x190CA 0x190DC 0x191CC 0x191D0 0x191DC 0x19BD2 0x19C04 0x19A90 0x191E4 0x1916E 0x192A4 0x192BC 0x192D2 0x20D38 0x1CDE6 0x18ED0 0x1ED8E",
    "x": {
     "addr": 463134,
     "bits": 8,
     "count": 3,
     "labels": [],
-    "units": "X",
+    "units": "индекс порога i = 1..3 (порог педали для запроса уровня AGS i + 1), [0xFFFF915C]",
     "math": "X",
     "signed": false,
     "lsb_first": false,
     "major": 0,
     "minor": 0,
-    "units_en": "X"
+    "units_en": "threshold index i = 1..3 (pedal threshold for requesting AGS level i + 1), [0xFFFF915C]"
    },
    "y": {
     "addr": 463137,
@@ -2870,37 +2870,37 @@
     "signed": false,
     "lsb_first": false,
     "math": "X",
-    "units": "сырое",
+    "units": "порог педали 0-255 (шкала [0xFFFF912A]); условие «педаль не ниже порога»",
     "decimals": 0,
     "major": 0,
     "minor": 0,
-    "units_en": "raw"
+    "units_en": "pedal threshold 0-255 (scale of [0xFFFF912A]); condition 'pedal >= threshold'"
    },
    "uid": 8238,
-   "title_en": "AGS: pedal thresholds, gear 3, branch sport (0x7111A, slot 8)",
-   "description_en": "Slot 8 of the catalog 0x71BC2 = slot 14 of the 19D0 catalog (document 03 §7: AGS, adaptive program selection, not TCC); role carried from 19D0 by the catalog position: structure."
+   "title_en": "AGS: pedal threshold for requesting the next level, 3rd gear, branch S (0x7111A, slot 8)",
+   "description_en": "Read by the AGS function 0x19084: with the gear code [0xFFFF915F] = 3 (dispatcher 0x190DC-0x1912A) and branch S ([0xFFFF917F] = 1) (test of [0xFFFF917F] = 1 at 0x191CC) it loads the catalog slot pointer 0x71BE2 (lea 0x191D0) and for i = 1..3 ([0xFFFF915C]; the loop runs while i < [0x70202] = 4, 0x1916E) calls the 2D8 lookup 0x19BD2 (jsr 0x191DC; 0x19BD2 -> 0x19A90, bilinear interpolation): X = i (threshold index 1 / 2 / 3), Y = n_out/32 [0xFFFF9138] (written at 0x20D38: lsr 5, filtered output shaft speed). The byte result (interpolated Z) goes into a local array thr[i-1] (0x191E4). Then (0x192A4-0x192D2) the code walks i = 3 downward and takes the first (largest) i whose threshold is not above the pedal [0xFFFF912A] (= [0xFFFF911B], 0x1CDE6): [0xFFFF915D] = i + 1 (if none passes, [0xFFFF915D] = 1). So Z = pedal threshold (0-255) at which AGS level i + 1 is requested at that speed (column 1 = level 2, column 2 = level 3, column 3 = level 4). [0xFFFF915D] is compared with the current level [0xFFFF915B] (0x192E4-0x192E6): equal - the score drifts to the home scores 0x7089C; different - the matrix 0x708A8 / 0x708B8 changes the score [0xFFFF91D6] (row = [0xFFFF915D], column = [0xFFFF915B]); the score through the ladder 0x70898 (0x18EB8-0x18ED0) gives the level [0xFFFF915B], which selects the shift program through 0x09A42 (0x1ED8E: [0xFFFF87CC] = 0x09A42[[0xFFFF915B] - 1]). Axis Y: 62-125 (n_out = 32 x value, 1984-4000 rpm of the output shaft). Z array by Y rows: n_out/32 = 62: 64/115/179; n_out/32 = 77: 64/115/179; n_out/32 = 94: 64/115/179; n_out/32 = 105: 64/115/179; n_out/32 = 116: 64/115/179; n_out/32 = 125: 64/115/179. This table is used for: branch S ([0xFFFF917F] = 1); the paired table of the other branch is slot 7. The catalog label 'Y = pedal' is wrong: the pedal is the result (Z), axis Y is the output shaft speed. In the factory calibration this table is inactive: the AGS function 0x19084 is called from 0x18676 only when bit 5 of byte 0x70D39 is set (btst 0x18670, beq 0x18674), and in both 20C0 images (Alpina B3S reference and the car dump) 0x70D39 = 0x91, bit 5 = 0. The role is proven by code; the table affects the gearbox only if that bit is set (the 19D0 counterpart 0x8CE7 = 0xFD has bit 5 set). Inactive in the factory 20C0 calibration: function 0x19084 is called from 0x18676 only when bit 5 of byte 0x70D39 is set, and it holds 0x91 (bit 5 = 0)."
   },
   {
    "kind": "table",
-   "title": "AGS: пороги педали, 4-я передача, ветка обычная (0x7113A, слот 9)",
-   "description": "Слот 9 каталога 0x71BC2 = слот 15 каталога 19D0 (0x90DE, документ 03 §7: AGS, адаптивный выбор программы, не ГДТ), оси совпадают. Читает 0x19236 (функция AGS 0x19084, пара 19D0 0x1DEBC по сопоставлению функций). Роль перенесена из 19D0 по положению в каталоге: структура.",
+   "title": "AGS: порог педали для запроса следующего уровня, 4-я передача, ветка D (0x7113A, слот 9)",
+   "description": "Читает функция AGS 0x19084: при коде передачи [0xFFFF915F] = 4 (диспетчер 0x190DC-0x1912A) и ветка D ([0xFFFF917F] = 0) (проверка [0xFFFF917F] = 1 в 0x19218) берёт указатель слота 0x71BE6 (lea 0x19236) и в цикле i = 1..3 ([0xFFFF915C]; цикл идёт, пока i < [0x70202] = 4, 0x1916E) вызывает поиск 2D8 0x19BD2 (jsr 0x19242; 0x19BD2 -> 0x19A90, билинейная интерполяция): X = i (индекс порога, ось 1 / 2 / 3), Y = n_вых/32 [0xFFFF9138] (запись 0x20D38: lsr 5, отфильтрованный выходной вал). Байт-результат (интерполяция по Z) ложится в локальный массив thr[i-1] (0x1924A). Далее (0x192A4-0x192D2) код идёт от i = 3 вниз и берёт первую (наибольшую) i, у которой порог не выше педали [0xFFFF912A] (= [0xFFFF911B], 0x1CDE6): [0xFFFF915D] = i + 1 (если ни один порог не пройден, [0xFFFF915D] = 1). Итак, Z = порог педали (0-255), при котором на данной скорости запрашивается уровень AGS i + 1 (столбец 1 = уровень 2, столбец 2 = уровень 3, столбец 3 = уровень 4). [0xFFFF915D] сравнивается с текущим уровнем [0xFFFF915B] (0x192E4-0x192E6): равны - очки тянутся к «домашним» 0x7089C; не равны - очки [0xFFFF91D6] меняет матрица 0x708A8 / 0x708B8 (строка = [0xFFFF915D], столбец = [0xFFFF915B]); очки через лестницу 0x70898 (0x18EB8-0x18ED0) дают уровень [0xFFFF915B], а он через 0x09A42 выбирает программу переключения (0x1ED8E: [0xFFFF87CC] = 0x09A42[[0xFFFF915B] - 1]). Ось Y: 63-188 (n_вых = 32 × значение, 2016-6016 об/мин выходного вала). Массив Z по строкам Y: n_вых/32 = 63: 128/242/252; n_вых/32 = 88: 129/242/252; n_вых/32 = 113: 132/242/252; n_вых/32 = 125: 134/242/252; n_вых/32 = 138: 137/242/252; n_вых/32 = 147: 139/242/252; n_вых/32 = 156: 144/242/252; n_вых/32 = 166: 151/242/252; n_вых/32 = 181: 172/242/252; n_вых/32 = 188: 191/242/252. Эта таблица берётся для: ветка D ([0xFFFF917F] = 0); парная таблица другой ветки - слот 10. Подпись каталога «Y = педаль» неверна: педаль - результат (Z), а ось Y - обороты выходного вала. В заводской калибровке эта таблица не действует: функция AGS 0x19084 вызывается из 0x18676 только при бите 5 байта 0x70D39 (btst 0x18670, beq 0x18674), а в обоих образах 20C0 (эталон Alpina B3S и дамп машины) 0x70D39 = 0x91, бит 5 = 0. Роль доказана кодом; влияние на коробку появится, только если бит 5 включить (в 19D0 аналог 0x8CE7 = 0xFD, бит 5 стоит). В заводской калибровке 20C0 не действует: функция 0x19084 вызывается из 0x18676 только при бите 5 байта 0x70D39, а там 0x91 (бит 5 = 0).",
    "categories": [
     1
    ],
-   "confidence": "structure",
-   "proof": "структура: слот каталога 0x71BE6 читает 0x19236, пара 19D0 0x90DE",
+   "confidence": "proven",
+   "proof": "код: 0x18642 0x18670 0x18674 0x18676 0x190AE 0x190BE 0x190CA 0x190DC 0x19218 0x19236 0x19242 0x19BD2 0x19C04 0x19A90 0x1924A 0x1916E 0x192A4 0x192BC 0x192D2 0x20D38 0x1CDE6 0x18ED0 0x1ED8E",
    "x": {
     "addr": 463166,
     "bits": 8,
     "count": 3,
     "labels": [],
-    "units": "X",
+    "units": "индекс порога i = 1..3 (порог педали для запроса уровня AGS i + 1), [0xFFFF915C]",
     "math": "X",
     "signed": false,
     "lsb_first": false,
     "major": 0,
     "minor": 0,
-    "units_en": "X"
+    "units_en": "threshold index i = 1..3 (pedal threshold for requesting AGS level i + 1), [0xFFFF915C]"
    },
    "y": {
     "addr": 463169,
@@ -2923,37 +2923,37 @@
     "signed": false,
     "lsb_first": false,
     "math": "X",
-    "units": "сырое",
+    "units": "порог педали 0-255 (шкала [0xFFFF912A]); условие «педаль не ниже порога»",
     "decimals": 0,
     "major": 0,
     "minor": 0,
-    "units_en": "raw"
+    "units_en": "pedal threshold 0-255 (scale of [0xFFFF912A]); condition 'pedal >= threshold'"
    },
    "uid": 8239,
-   "title_en": "AGS: pedal thresholds, gear 4, branch normal (0x7113A, slot 9)",
-   "description_en": "Slot 9 of the catalog 0x71BC2 = slot 15 of the 19D0 catalog (document 03 §7: AGS, adaptive program selection, not TCC); role carried from 19D0 by the catalog position: structure."
+   "title_en": "AGS: pedal threshold for requesting the next level, 4th gear, branch D (0x7113A, slot 9)",
+   "description_en": "Read by the AGS function 0x19084: with the gear code [0xFFFF915F] = 4 (dispatcher 0x190DC-0x1912A) and branch D ([0xFFFF917F] = 0) (test of [0xFFFF917F] = 1 at 0x19218) it loads the catalog slot pointer 0x71BE6 (lea 0x19236) and for i = 1..3 ([0xFFFF915C]; the loop runs while i < [0x70202] = 4, 0x1916E) calls the 2D8 lookup 0x19BD2 (jsr 0x19242; 0x19BD2 -> 0x19A90, bilinear interpolation): X = i (threshold index 1 / 2 / 3), Y = n_out/32 [0xFFFF9138] (written at 0x20D38: lsr 5, filtered output shaft speed). The byte result (interpolated Z) goes into a local array thr[i-1] (0x1924A). Then (0x192A4-0x192D2) the code walks i = 3 downward and takes the first (largest) i whose threshold is not above the pedal [0xFFFF912A] (= [0xFFFF911B], 0x1CDE6): [0xFFFF915D] = i + 1 (if none passes, [0xFFFF915D] = 1). So Z = pedal threshold (0-255) at which AGS level i + 1 is requested at that speed (column 1 = level 2, column 2 = level 3, column 3 = level 4). [0xFFFF915D] is compared with the current level [0xFFFF915B] (0x192E4-0x192E6): equal - the score drifts to the home scores 0x7089C; different - the matrix 0x708A8 / 0x708B8 changes the score [0xFFFF91D6] (row = [0xFFFF915D], column = [0xFFFF915B]); the score through the ladder 0x70898 (0x18EB8-0x18ED0) gives the level [0xFFFF915B], which selects the shift program through 0x09A42 (0x1ED8E: [0xFFFF87CC] = 0x09A42[[0xFFFF915B] - 1]). Axis Y: 63-188 (n_out = 32 x value, 2016-6016 rpm of the output shaft). Z array by Y rows: n_out/32 = 63: 128/242/252; n_out/32 = 88: 129/242/252; n_out/32 = 113: 132/242/252; n_out/32 = 125: 134/242/252; n_out/32 = 138: 137/242/252; n_out/32 = 147: 139/242/252; n_out/32 = 156: 144/242/252; n_out/32 = 166: 151/242/252; n_out/32 = 181: 172/242/252; n_out/32 = 188: 191/242/252. This table is used for: branch D ([0xFFFF917F] = 0); the paired table of the other branch is slot 10. The catalog label 'Y = pedal' is wrong: the pedal is the result (Z), axis Y is the output shaft speed. In the factory calibration this table is inactive: the AGS function 0x19084 is called from 0x18676 only when bit 5 of byte 0x70D39 is set (btst 0x18670, beq 0x18674), and in both 20C0 images (Alpina B3S reference and the car dump) 0x70D39 = 0x91, bit 5 = 0. The role is proven by code; the table affects the gearbox only if that bit is set (the 19D0 counterpart 0x8CE7 = 0xFD has bit 5 set). Inactive in the factory 20C0 calibration: function 0x19084 is called from 0x18676 only when bit 5 of byte 0x70D39 is set, and it holds 0x91 (bit 5 = 0)."
   },
   {
    "kind": "table",
-   "title": "AGS: пороги педали, 4-я передача, ветка злая (0x7116A, слот 10)",
-   "description": "Слот 10 каталога 0x71BC2 = слот 16 каталога 19D0 (0x910E, документ 03 §7: AGS, адаптивный выбор программы, не ГДТ), оси совпадают. Читает 0x1921C (функция AGS 0x19084, пара 19D0 0x1DEBC по сопоставлению функций). Роль перенесена из 19D0 по положению в каталоге: структура.",
+   "title": "AGS: порог педали для запроса следующего уровня, 4-я передача, ветка S (0x7116A, слот 10)",
+   "description": "Читает функция AGS 0x19084: при коде передачи [0xFFFF915F] = 4 (диспетчер 0x190DC-0x1912A) и ветка S ([0xFFFF917F] = 1) (проверка [0xFFFF917F] = 1 в 0x19218) берёт указатель слота 0x71BEA (lea 0x1921C) и в цикле i = 1..3 ([0xFFFF915C]; цикл идёт, пока i < [0x70202] = 4, 0x1916E) вызывает поиск 2D8 0x19BD2 (jsr 0x19228; 0x19BD2 -> 0x19A90, билинейная интерполяция): X = i (индекс порога, ось 1 / 2 / 3), Y = n_вых/32 [0xFFFF9138] (запись 0x20D38: lsr 5, отфильтрованный выходной вал). Байт-результат (интерполяция по Z) ложится в локальный массив thr[i-1] (0x19230). Далее (0x192A4-0x192D2) код идёт от i = 3 вниз и берёт первую (наибольшую) i, у которой порог не выше педали [0xFFFF912A] (= [0xFFFF911B], 0x1CDE6): [0xFFFF915D] = i + 1 (если ни один порог не пройден, [0xFFFF915D] = 1). Итак, Z = порог педали (0-255), при котором на данной скорости запрашивается уровень AGS i + 1 (столбец 1 = уровень 2, столбец 2 = уровень 3, столбец 3 = уровень 4). [0xFFFF915D] сравнивается с текущим уровнем [0xFFFF915B] (0x192E4-0x192E6): равны - очки тянутся к «домашним» 0x7089C; не равны - очки [0xFFFF91D6] меняет матрица 0x708A8 / 0x708B8 (строка = [0xFFFF915D], столбец = [0xFFFF915B]); очки через лестницу 0x70898 (0x18EB8-0x18ED0) дают уровень [0xFFFF915B], а он через 0x09A42 выбирает программу переключения (0x1ED8E: [0xFFFF87CC] = 0x09A42[[0xFFFF915B] - 1]). Ось Y: 63-188 (n_вых = 32 × значение, 2016-6016 об/мин выходного вала). Массив Z по строкам Y: n_вых/32 = 63: 64/97/128; n_вых/32 = 88: 64/99/132; n_вых/32 = 113: 67/102/137; n_вых/32 = 125: 69/104/140; n_вых/32 = 138: 71/107/144; n_вых/32 = 147: 73/110/148; n_вых/32 = 156: 75/113/153; n_вых/32 = 166: 78/118/163; n_вых/32 = 181: 84/130/187; n_вых/32 = 188: 88/141/204. Эта таблица берётся для: ветка S ([0xFFFF917F] = 1); парная таблица другой ветки - слот 9. Подпись каталога «Y = педаль» неверна: педаль - результат (Z), а ось Y - обороты выходного вала. В заводской калибровке эта таблица не действует: функция AGS 0x19084 вызывается из 0x18676 только при бите 5 байта 0x70D39 (btst 0x18670, beq 0x18674), а в обоих образах 20C0 (эталон Alpina B3S и дамп машины) 0x70D39 = 0x91, бит 5 = 0. Роль доказана кодом; влияние на коробку появится, только если бит 5 включить (в 19D0 аналог 0x8CE7 = 0xFD, бит 5 стоит). В заводской калибровке 20C0 не действует: функция 0x19084 вызывается из 0x18676 только при бите 5 байта 0x70D39, а там 0x91 (бит 5 = 0).",
    "categories": [
     1
    ],
-   "confidence": "structure",
-   "proof": "структура: слот каталога 0x71BEA читает 0x1921C, пара 19D0 0x910E",
+   "confidence": "proven",
+   "proof": "код: 0x18642 0x18670 0x18674 0x18676 0x190AE 0x190BE 0x190CA 0x190DC 0x19218 0x1921C 0x19228 0x19BD2 0x19C04 0x19A90 0x19230 0x1916E 0x192A4 0x192BC 0x192D2 0x20D38 0x1CDE6 0x18ED0 0x1ED8E",
    "x": {
     "addr": 463214,
     "bits": 8,
     "count": 3,
     "labels": [],
-    "units": "X",
+    "units": "индекс порога i = 1..3 (порог педали для запроса уровня AGS i + 1), [0xFFFF915C]",
     "math": "X",
     "signed": false,
     "lsb_first": false,
     "major": 0,
     "minor": 0,
-    "units_en": "X"
+    "units_en": "threshold index i = 1..3 (pedal threshold for requesting AGS level i + 1), [0xFFFF915C]"
    },
    "y": {
     "addr": 463217,
@@ -2976,37 +2976,37 @@
     "signed": false,
     "lsb_first": false,
     "math": "X",
-    "units": "сырое",
+    "units": "порог педали 0-255 (шкала [0xFFFF912A]); условие «педаль не ниже порога»",
     "decimals": 0,
     "major": 0,
     "minor": 0,
-    "units_en": "raw"
+    "units_en": "pedal threshold 0-255 (scale of [0xFFFF912A]); condition 'pedal >= threshold'"
    },
    "uid": 8240,
-   "title_en": "AGS: pedal thresholds, gear 4, branch sport (0x7116A, slot 10)",
-   "description_en": "Slot 10 of the catalog 0x71BC2 = slot 16 of the 19D0 catalog (document 03 §7: AGS, adaptive program selection, not TCC); role carried from 19D0 by the catalog position: structure."
+   "title_en": "AGS: pedal threshold for requesting the next level, 4th gear, branch S (0x7116A, slot 10)",
+   "description_en": "Read by the AGS function 0x19084: with the gear code [0xFFFF915F] = 4 (dispatcher 0x190DC-0x1912A) and branch S ([0xFFFF917F] = 1) (test of [0xFFFF917F] = 1 at 0x19218) it loads the catalog slot pointer 0x71BEA (lea 0x1921C) and for i = 1..3 ([0xFFFF915C]; the loop runs while i < [0x70202] = 4, 0x1916E) calls the 2D8 lookup 0x19BD2 (jsr 0x19228; 0x19BD2 -> 0x19A90, bilinear interpolation): X = i (threshold index 1 / 2 / 3), Y = n_out/32 [0xFFFF9138] (written at 0x20D38: lsr 5, filtered output shaft speed). The byte result (interpolated Z) goes into a local array thr[i-1] (0x19230). Then (0x192A4-0x192D2) the code walks i = 3 downward and takes the first (largest) i whose threshold is not above the pedal [0xFFFF912A] (= [0xFFFF911B], 0x1CDE6): [0xFFFF915D] = i + 1 (if none passes, [0xFFFF915D] = 1). So Z = pedal threshold (0-255) at which AGS level i + 1 is requested at that speed (column 1 = level 2, column 2 = level 3, column 3 = level 4). [0xFFFF915D] is compared with the current level [0xFFFF915B] (0x192E4-0x192E6): equal - the score drifts to the home scores 0x7089C; different - the matrix 0x708A8 / 0x708B8 changes the score [0xFFFF91D6] (row = [0xFFFF915D], column = [0xFFFF915B]); the score through the ladder 0x70898 (0x18EB8-0x18ED0) gives the level [0xFFFF915B], which selects the shift program through 0x09A42 (0x1ED8E: [0xFFFF87CC] = 0x09A42[[0xFFFF915B] - 1]). Axis Y: 63-188 (n_out = 32 x value, 2016-6016 rpm of the output shaft). Z array by Y rows: n_out/32 = 63: 64/97/128; n_out/32 = 88: 64/99/132; n_out/32 = 113: 67/102/137; n_out/32 = 125: 69/104/140; n_out/32 = 138: 71/107/144; n_out/32 = 147: 73/110/148; n_out/32 = 156: 75/113/153; n_out/32 = 166: 78/118/163; n_out/32 = 181: 84/130/187; n_out/32 = 188: 88/141/204. This table is used for: branch S ([0xFFFF917F] = 1); the paired table of the other branch is slot 9. The catalog label 'Y = pedal' is wrong: the pedal is the result (Z), axis Y is the output shaft speed. In the factory calibration this table is inactive: the AGS function 0x19084 is called from 0x18676 only when bit 5 of byte 0x70D39 is set (btst 0x18670, beq 0x18674), and in both 20C0 images (Alpina B3S reference and the car dump) 0x70D39 = 0x91, bit 5 = 0. The role is proven by code; the table affects the gearbox only if that bit is set (the 19D0 counterpart 0x8CE7 = 0xFD has bit 5 set). Inactive in the factory 20C0 calibration: function 0x19084 is called from 0x18676 only when bit 5 of byte 0x70D39 is set, and it holds 0x91 (bit 5 = 0)."
   },
   {
    "kind": "table",
-   "title": "AGS: пороги педали, 5-я передача, ветка обычная (0x7119A, слот 11)",
-   "description": "Слот 11 каталога 0x71BC2 = слот 17 каталога 19D0 (0x913E, документ 03 §7: AGS, адаптивный выбор программы, не ГДТ), оси совпадают. Читает 0x19280 (функция AGS 0x19084, пара 19D0 0x1DEBC по сопоставлению функций). Роль перенесена из 19D0 по положению в каталоге: структура.",
+   "title": "AGS: порог педали для запроса следующего уровня, 5-я передача, ветка D (0x7119A, слот 11)",
+   "description": "Читает функция AGS 0x19084: при коде передачи [0xFFFF915F] = 5 (диспетчер 0x190DC-0x1912A) и ветка D ([0xFFFF917F] = 0) (проверка [0xFFFF917F] = 1 в 0x19262) берёт указатель слота 0x71BEE (lea 0x19280) и в цикле i = 1..3 ([0xFFFF915C]; цикл идёт, пока i < [0x70202] = 4, 0x1916E) вызывает поиск 2D8 0x19BD2 (jsr 0x1928C; 0x19BD2 -> 0x19A90, билинейная интерполяция): X = i (индекс порога, ось 1 / 2 / 3), Y = n_вых/32 [0xFFFF9138] (запись 0x20D38: lsr 5, отфильтрованный выходной вал). Байт-результат (интерполяция по Z) ложится в локальный массив thr[i-1] (0x19294). Далее (0x192A4-0x192D2) код идёт от i = 3 вниз и берёт первую (наибольшую) i, у которой порог не выше педали [0xFFFF912A] (= [0xFFFF911B], 0x1CDE6): [0xFFFF915D] = i + 1 (если ни один порог не пройден, [0xFFFF915D] = 1). Итак, Z = порог педали (0-255), при котором на данной скорости запрашивается уровень AGS i + 1 (столбец 1 = уровень 2, столбец 2 = уровень 3, столбец 3 = уровень 4). [0xFFFF915D] сравнивается с текущим уровнем [0xFFFF915B] (0x192E4-0x192E6): равны - очки тянутся к «домашним» 0x7089C; не равны - очки [0xFFFF91D6] меняет матрица 0x708A8 / 0x708B8 (строка = [0xFFFF915D], столбец = [0xFFFF915B]); очки через лестницу 0x70898 (0x18EB8-0x18ED0) дают уровень [0xFFFF915B], а он через 0x09A42 выбирает программу переключения (0x1ED8E: [0xFFFF87CC] = 0x09A42[[0xFFFF915B] - 1]). Ось Y: 31-188 (n_вых = 32 × значение, 992-6016 об/мин выходного вала). Массив Z по строкам Y: n_вых/32 = 31: 230/242/252; n_вых/32 = 63: 230/242/252; n_вых/32 = 94: 230/242/252; n_вых/32 = 125: 230/242/252; n_вых/32 = 156: 230/242/252; n_вых/32 = 188: 230/242/252. Эта таблица берётся для: ветка D ([0xFFFF917F] = 0); парная таблица другой ветки - слот 12. Подпись каталога «Y = педаль» неверна: педаль - результат (Z), а ось Y - обороты выходного вала. В заводской калибровке эта таблица не действует: функция AGS 0x19084 вызывается из 0x18676 только при бите 5 байта 0x70D39 (btst 0x18670, beq 0x18674), а в обоих образах 20C0 (эталон Alpina B3S и дамп машины) 0x70D39 = 0x91, бит 5 = 0. Роль доказана кодом; влияние на коробку появится, только если бит 5 включить (в 19D0 аналог 0x8CE7 = 0xFD, бит 5 стоит). В заводской калибровке 20C0 не действует: функция 0x19084 вызывается из 0x18676 только при бите 5 байта 0x70D39, а там 0x91 (бит 5 = 0).",
    "categories": [
     1
    ],
-   "confidence": "structure",
-   "proof": "структура: слот каталога 0x71BEE читает 0x19280, пара 19D0 0x913E",
+   "confidence": "proven",
+   "proof": "код: 0x18642 0x18670 0x18674 0x18676 0x190AE 0x190BE 0x190CA 0x190DC 0x19262 0x19280 0x1928C 0x19BD2 0x19C04 0x19A90 0x19294 0x1916E 0x192A4 0x192BC 0x192D2 0x20D38 0x1CDE6 0x18ED0 0x1ED8E",
    "x": {
     "addr": 463262,
     "bits": 8,
     "count": 3,
     "labels": [],
-    "units": "X",
+    "units": "индекс порога i = 1..3 (порог педали для запроса уровня AGS i + 1), [0xFFFF915C]",
     "math": "X",
     "signed": false,
     "lsb_first": false,
     "major": 0,
     "minor": 0,
-    "units_en": "X"
+    "units_en": "threshold index i = 1..3 (pedal threshold for requesting AGS level i + 1), [0xFFFF915C]"
    },
    "y": {
     "addr": 463265,
@@ -3029,37 +3029,37 @@
     "signed": false,
     "lsb_first": false,
     "math": "X",
-    "units": "сырое",
+    "units": "порог педали 0-255 (шкала [0xFFFF912A]); условие «педаль не ниже порога»",
     "decimals": 0,
     "major": 0,
     "minor": 0,
-    "units_en": "raw"
+    "units_en": "pedal threshold 0-255 (scale of [0xFFFF912A]); condition 'pedal >= threshold'"
    },
    "uid": 8241,
-   "title_en": "AGS: pedal thresholds, gear 5, branch normal (0x7119A, slot 11)",
-   "description_en": "Slot 11 of the catalog 0x71BC2 = slot 17 of the 19D0 catalog (document 03 §7: AGS, adaptive program selection, not TCC); role carried from 19D0 by the catalog position: structure."
+   "title_en": "AGS: pedal threshold for requesting the next level, 5th gear, branch D (0x7119A, slot 11)",
+   "description_en": "Read by the AGS function 0x19084: with the gear code [0xFFFF915F] = 5 (dispatcher 0x190DC-0x1912A) and branch D ([0xFFFF917F] = 0) (test of [0xFFFF917F] = 1 at 0x19262) it loads the catalog slot pointer 0x71BEE (lea 0x19280) and for i = 1..3 ([0xFFFF915C]; the loop runs while i < [0x70202] = 4, 0x1916E) calls the 2D8 lookup 0x19BD2 (jsr 0x1928C; 0x19BD2 -> 0x19A90, bilinear interpolation): X = i (threshold index 1 / 2 / 3), Y = n_out/32 [0xFFFF9138] (written at 0x20D38: lsr 5, filtered output shaft speed). The byte result (interpolated Z) goes into a local array thr[i-1] (0x19294). Then (0x192A4-0x192D2) the code walks i = 3 downward and takes the first (largest) i whose threshold is not above the pedal [0xFFFF912A] (= [0xFFFF911B], 0x1CDE6): [0xFFFF915D] = i + 1 (if none passes, [0xFFFF915D] = 1). So Z = pedal threshold (0-255) at which AGS level i + 1 is requested at that speed (column 1 = level 2, column 2 = level 3, column 3 = level 4). [0xFFFF915D] is compared with the current level [0xFFFF915B] (0x192E4-0x192E6): equal - the score drifts to the home scores 0x7089C; different - the matrix 0x708A8 / 0x708B8 changes the score [0xFFFF91D6] (row = [0xFFFF915D], column = [0xFFFF915B]); the score through the ladder 0x70898 (0x18EB8-0x18ED0) gives the level [0xFFFF915B], which selects the shift program through 0x09A42 (0x1ED8E: [0xFFFF87CC] = 0x09A42[[0xFFFF915B] - 1]). Axis Y: 31-188 (n_out = 32 x value, 992-6016 rpm of the output shaft). Z array by Y rows: n_out/32 = 31: 230/242/252; n_out/32 = 63: 230/242/252; n_out/32 = 94: 230/242/252; n_out/32 = 125: 230/242/252; n_out/32 = 156: 230/242/252; n_out/32 = 188: 230/242/252. This table is used for: branch D ([0xFFFF917F] = 0); the paired table of the other branch is slot 12. The catalog label 'Y = pedal' is wrong: the pedal is the result (Z), axis Y is the output shaft speed. In the factory calibration this table is inactive: the AGS function 0x19084 is called from 0x18676 only when bit 5 of byte 0x70D39 is set (btst 0x18670, beq 0x18674), and in both 20C0 images (Alpina B3S reference and the car dump) 0x70D39 = 0x91, bit 5 = 0. The role is proven by code; the table affects the gearbox only if that bit is set (the 19D0 counterpart 0x8CE7 = 0xFD has bit 5 set). Inactive in the factory 20C0 calibration: function 0x19084 is called from 0x18676 only when bit 5 of byte 0x70D39 is set, and it holds 0x91 (bit 5 = 0)."
   },
   {
    "kind": "table",
-   "title": "AGS: пороги педали, 5-я передача, ветка злая (0x711BA, слот 12)",
-   "description": "Слот 12 каталога 0x71BC2 = слот 18 каталога 19D0 (0x915E, документ 03 §7: AGS, адаптивный выбор программы, не ГДТ), оси совпадают. Читает 0x19266 (функция AGS 0x19084, пара 19D0 0x1DEBC по сопоставлению функций). Роль перенесена из 19D0 по положению в каталоге: структура.",
+   "title": "AGS: порог педали для запроса следующего уровня, 5-я передача, ветка S (0x711BA, слот 12)",
+   "description": "Читает функция AGS 0x19084: при коде передачи [0xFFFF915F] = 5 (диспетчер 0x190DC-0x1912A) и ветка S ([0xFFFF917F] = 1) (проверка [0xFFFF917F] = 1 в 0x19262) берёт указатель слота 0x71BF2 (lea 0x19266) и в цикле i = 1..3 ([0xFFFF915C]; цикл идёт, пока i < [0x70202] = 4, 0x1916E) вызывает поиск 2D8 0x19BD2 (jsr 0x19272; 0x19BD2 -> 0x19A90, билинейная интерполяция): X = i (индекс порога, ось 1 / 2 / 3), Y = n_вых/32 [0xFFFF9138] (запись 0x20D38: lsr 5, отфильтрованный выходной вал). Байт-результат (интерполяция по Z) ложится в локальный массив thr[i-1] (0x1927A). Далее (0x192A4-0x192D2) код идёт от i = 3 вниз и берёт первую (наибольшую) i, у которой порог не выше педали [0xFFFF912A] (= [0xFFFF911B], 0x1CDE6): [0xFFFF915D] = i + 1 (если ни один порог не пройден, [0xFFFF915D] = 1). Итак, Z = порог педали (0-255), при котором на данной скорости запрашивается уровень AGS i + 1 (столбец 1 = уровень 2, столбец 2 = уровень 3, столбец 3 = уровень 4). [0xFFFF915D] сравнивается с текущим уровнем [0xFFFF915B] (0x192E4-0x192E6): равны - очки тянутся к «домашним» 0x7089C; не равны - очки [0xFFFF91D6] меняет матрица 0x708A8 / 0x708B8 (строка = [0xFFFF915D], столбец = [0xFFFF915B]); очки через лестницу 0x70898 (0x18EB8-0x18ED0) дают уровень [0xFFFF915B], а он через 0x09A42 выбирает программу переключения (0x1ED8E: [0xFFFF87CC] = 0x09A42[[0xFFFF915B] - 1]). Ось Y: 31-188 (n_вых = 32 × значение, 992-6016 об/мин выходного вала). Массив Z по строкам Y: n_вых/32 = 31: 64/115/179; n_вых/32 = 63: 64/115/179; n_вых/32 = 94: 64/115/179; n_вых/32 = 125: 64/115/179; n_вых/32 = 156: 64/115/179; n_вых/32 = 188: 64/115/179. Эта таблица берётся для: ветка S ([0xFFFF917F] = 1); парная таблица другой ветки - слот 11. Подпись каталога «Y = педаль» неверна: педаль - результат (Z), а ось Y - обороты выходного вала. В заводской калибровке эта таблица не действует: функция AGS 0x19084 вызывается из 0x18676 только при бите 5 байта 0x70D39 (btst 0x18670, beq 0x18674), а в обоих образах 20C0 (эталон Alpina B3S и дамп машины) 0x70D39 = 0x91, бит 5 = 0. Роль доказана кодом; влияние на коробку появится, только если бит 5 включить (в 19D0 аналог 0x8CE7 = 0xFD, бит 5 стоит). В заводской калибровке 20C0 не действует: функция 0x19084 вызывается из 0x18676 только при бите 5 байта 0x70D39, а там 0x91 (бит 5 = 0).",
    "categories": [
     1
    ],
-   "confidence": "structure",
-   "proof": "структура: слот каталога 0x71BF2 читает 0x19266, пара 19D0 0x915E",
+   "confidence": "proven",
+   "proof": "код: 0x18642 0x18670 0x18674 0x18676 0x190AE 0x190BE 0x190CA 0x190DC 0x19262 0x19266 0x19272 0x19BD2 0x19C04 0x19A90 0x1927A 0x1916E 0x192A4 0x192BC 0x192D2 0x20D38 0x1CDE6 0x18ED0 0x1ED8E",
    "x": {
     "addr": 463294,
     "bits": 8,
     "count": 3,
     "labels": [],
-    "units": "X",
+    "units": "индекс порога i = 1..3 (порог педали для запроса уровня AGS i + 1), [0xFFFF915C]",
     "math": "X",
     "signed": false,
     "lsb_first": false,
     "major": 0,
     "minor": 0,
-    "units_en": "X"
+    "units_en": "threshold index i = 1..3 (pedal threshold for requesting AGS level i + 1), [0xFFFF915C]"
    },
    "y": {
     "addr": 463297,
@@ -3082,15 +3082,15 @@
     "signed": false,
     "lsb_first": false,
     "math": "X",
-    "units": "сырое",
+    "units": "порог педали 0-255 (шкала [0xFFFF912A]); условие «педаль не ниже порога»",
     "decimals": 0,
     "major": 0,
     "minor": 0,
-    "units_en": "raw"
+    "units_en": "pedal threshold 0-255 (scale of [0xFFFF912A]); condition 'pedal >= threshold'"
    },
    "uid": 8242,
-   "title_en": "AGS: pedal thresholds, gear 5, branch sport (0x711BA, slot 12)",
-   "description_en": "Slot 12 of the catalog 0x71BC2 = slot 18 of the 19D0 catalog (document 03 §7: AGS, adaptive program selection, not TCC); role carried from 19D0 by the catalog position: structure."
+   "title_en": "AGS: pedal threshold for requesting the next level, 5th gear, branch S (0x711BA, slot 12)",
+   "description_en": "Read by the AGS function 0x19084: with the gear code [0xFFFF915F] = 5 (dispatcher 0x190DC-0x1912A) and branch S ([0xFFFF917F] = 1) (test of [0xFFFF917F] = 1 at 0x19262) it loads the catalog slot pointer 0x71BF2 (lea 0x19266) and for i = 1..3 ([0xFFFF915C]; the loop runs while i < [0x70202] = 4, 0x1916E) calls the 2D8 lookup 0x19BD2 (jsr 0x19272; 0x19BD2 -> 0x19A90, bilinear interpolation): X = i (threshold index 1 / 2 / 3), Y = n_out/32 [0xFFFF9138] (written at 0x20D38: lsr 5, filtered output shaft speed). The byte result (interpolated Z) goes into a local array thr[i-1] (0x1927A). Then (0x192A4-0x192D2) the code walks i = 3 downward and takes the first (largest) i whose threshold is not above the pedal [0xFFFF912A] (= [0xFFFF911B], 0x1CDE6): [0xFFFF915D] = i + 1 (if none passes, [0xFFFF915D] = 1). So Z = pedal threshold (0-255) at which AGS level i + 1 is requested at that speed (column 1 = level 2, column 2 = level 3, column 3 = level 4). [0xFFFF915D] is compared with the current level [0xFFFF915B] (0x192E4-0x192E6): equal - the score drifts to the home scores 0x7089C; different - the matrix 0x708A8 / 0x708B8 changes the score [0xFFFF91D6] (row = [0xFFFF915D], column = [0xFFFF915B]); the score through the ladder 0x70898 (0x18EB8-0x18ED0) gives the level [0xFFFF915B], which selects the shift program through 0x09A42 (0x1ED8E: [0xFFFF87CC] = 0x09A42[[0xFFFF915B] - 1]). Axis Y: 31-188 (n_out = 32 x value, 992-6016 rpm of the output shaft). Z array by Y rows: n_out/32 = 31: 64/115/179; n_out/32 = 63: 64/115/179; n_out/32 = 94: 64/115/179; n_out/32 = 125: 64/115/179; n_out/32 = 156: 64/115/179; n_out/32 = 188: 64/115/179. This table is used for: branch S ([0xFFFF917F] = 1); the paired table of the other branch is slot 11. The catalog label 'Y = pedal' is wrong: the pedal is the result (Z), axis Y is the output shaft speed. In the factory calibration this table is inactive: the AGS function 0x19084 is called from 0x18676 only when bit 5 of byte 0x70D39 is set (btst 0x18670, beq 0x18674), and in both 20C0 images (Alpina B3S reference and the car dump) 0x70D39 = 0x91, bit 5 = 0. The role is proven by code; the table affects the gearbox only if that bit is set (the 19D0 counterpart 0x8CE7 = 0xFD has bit 5 set). Inactive in the factory 20C0 calibration: function 0x19084 is called from 0x18676 only when bit 5 of byte 0x70D39 is set, and it holds 0x91 (bit 5 = 0)."
   },
   {
    "kind": "table",
@@ -3347,7 +3347,7 @@
   {
    "kind": "table",
    "title": "AGS: «домашние» очки уровней 1-4, завод 32 / 75 / 160 / 224 (0x7089C)",
-   "description": "0x19302 movea.l #$7089c (пара 19D0 0x1E13C movea.l #$888a: ось 0x888C = 32 / 96 / 160 / 224). К этим очкам тянется очко AGS.",
+   "description": "0x19302 movea.l #$7089c (пара 19D0 0x1E13C movea.l #$888a: ось 0x888C = 32 / 96 / 160 / 224). К этим очкам тянется очко AGS. Читает только функция 0x19084, которая в заводской калибровке 20C0 не вызывается (бит 5 байта 0x70D39 = 0): значение ни на что не влияет.",
    "categories": [
     1
    ],
@@ -3402,7 +3402,7 @@
    },
    "uid": 8246,
    "title_en": "AGS: home points of levels 1-4, factory 32 / 75 / 160 / 224 (0x7089C)",
-   "description_en": "AGS points drift towards these values."
+   "description_en": "AGS points drift towards these values. Read only by function 0x19084, which is not called in the factory 20C0 calibration (bit 5 of byte 0x70D39 = 0): the value has no effect."
   },
   {
    "kind": "table",
@@ -3469,13 +3469,13 @@
   },
   {
    "kind": "table",
-   "title": "AGS: параметр ветки D, пара к 0x708B8 (0x708A8)",
-   "description": "0x1939C movea.l #$708a8 (пара 19D0 0x1E1DA movea.l #$8898 → 0x889C, роль в 19D0 гипотеза).",
+   "title": "AGS: шаг очков при несовпадении запрошенного по педали и текущего уровня, ветка D (пара к 0x708B8) (0x708A8)",
+   "description": "Матрица 4x4 байта, читается функцией AGS 0x19084 (movea 0x1939C, move.b (a0,d0.l) 0x193A2) при [0xFFFF917F] не равном 1, то есть в ветке D (сравнение (a2) с 1 в 0x19366-0x1936A; [0xFFFF917F] пишется только в 0x1FE08 = 0 и в 0x1FE64 / 0x1FE96 / 0x1FEBE = 1; при 1 читается пара 0x708B8, 0x1937E). Индекс = ([0xFFFF915D] - 1) × 4 + ([0xFFFF915B] - 1) (0x1936C-0x1939A): СТРОКА = [0xFFFF915D] (уровень, запрошенный по педали, слоты 3-12), СТОЛБЕЦ = [0xFFFF915B] (текущий уровень AGS, 0x18ED0, из очков по лестнице 0x70898). Байт d7: меньше 0x80 - плюс к очкам [0xFFFF91D6] с насыщением 255 (jsr 0x14CB2, 0x193B0-0x193B6); 0x80 и больше - минус (256 - d7) с насыщением 0 (jsr 0x14D4C, 0x193D6-0x193DC), но только если [0xFFFF9122] не больше [0x7029D] = 1 (0x193BA-0x193C6; [0xFFFF9122] считается в 0x20110-0x20118 из скорости изменения педали [0xFFFF906E], точная нормировка не разбиралась: малое значение означает почти неподвижную педаль). Заводские значения (знаковые, минус = снижение очков): строка (запрос по педали) 1: 0/-21/-127/-127; строка (запрос по педали) 2: 0/0/-65/-127; строка (запрос по педали) 3: 0/0/0/-65; строка (запрос по педали) 4: 0/0/0/0. Все ненулевые значения лежат там, где запрошенный уровень ниже текущего (строка меньше столбца); на диагонали и выше нули: этой матрицей очки только падают, рост очков при запросе выше текущего уровня делают другие места кода (в этом задании не разбирались). Очки [0xFFFF91D6] дают уровень [0xFFFF915B] (лестница 0x70898, 0x18EB8-0x18ED0), уровень через 0x09A42 выбирает программу переключения (0x1ED8E-0x1ED94). Сравнение с 0x708B8: в ветке S шаги слабее (-17 / -33 / -65 против -21 / -127). Подписи осей в записи каталога 0x708B8 (X = «новая ступень», Y = «старая ступень») стоят наоборот: столбец (X) - текущий уровень [0xFFFF915B], строка (Y) - запрошенный [0xFFFF915D]. В заводской калибровке эта таблица не действует: функция AGS 0x19084 вызывается из 0x18676 только при бите 5 байта 0x70D39 (btst 0x18670, beq 0x18674), а в обоих образах 20C0 (эталон Alpina B3S и дамп машины) 0x70D39 = 0x91, бит 5 = 0. Роль доказана кодом; влияние на коробку появится, только если бит 5 включить (в 19D0 аналог 0x8CE7 = 0xFD, бит 5 стоит). В заводской калибровке 20C0 не действует: функция 0x19084 вызывается из 0x18676 только при бите 5 байта 0x70D39, а там 0x91 (бит 5 = 0).",
    "categories": [
     1
    ],
-   "confidence": "hypothesis",
-   "proof": "код: 0x1939C",
+   "confidence": "proven",
+   "proof": "код: 0x18642 0x18670 0x18676 0x192D2 0x192E4 0x192E6 0x192EE 0x19366 0x1936A 0x1938A 0x19390 0x19398 0x1939C 0x193A2 0x193A6 0x193B0 0x193B6 0x193BA 0x193C0 0x193D6 0x193DC 0x18ED0 0x18EB8 0x1ED8E 0x1FE08 0x1FE64 0x20110 0x20118",
    "x": {
     "addr": null,
     "bits": 8,
@@ -3520,20 +3520,20 @@
     "signed": false,
     "lsb_first": false,
     "math": "X",
-    "units": "сырое",
+    "units": "шаг очков AGS за такт: знаковый байт, меньше 0x80 плюс, 0x80 и больше минус (256 - значение); минус действует при [0xFFFF9122] не больше 1",
     "decimals": 0,
     "major": 0,
     "minor": 0,
-    "units_en": "raw"
+    "units_en": "AGS score step per tick: signed byte, below 0x80 plus, 0x80 and above minus (256 - value); minus applies when [0xFFFF9122] is not above 1"
    },
    "uid": 8248,
-   "title_en": "AGS: branch D parameter, pair of 0x708B8 (0x708A8)",
-   "description_en": "Role is a hypothesis (as in 19D0)."
+   "title_en": "AGS: score step when the pedal-requested level differs from the current level, branch D (pair of 0x708B8) (0x708A8)",
+   "description_en": "4x4 byte matrix read by the AGS function 0x19084 (movea 0x1939C, move.b (a0,d0.l) 0x193A2) when [0xFFFF917F] is not 1, i.e. in branch D (compare of (a2) with 1 at 0x19366-0x1936A; [0xFFFF917F] is written only at 0x1FE08 = 0 and at 0x1FE64 / 0x1FE96 / 0x1FEBE = 1; for 1 the pair 0x708B8 is read, 0x1937E). Index = ([0xFFFF915D] - 1) x 4 + ([0xFFFF915B] - 1) (0x1936C-0x1939A): ROW = [0xFFFF915D] (level requested by the pedal, slots 3-12), COLUMN = [0xFFFF915B] (current AGS level, 0x18ED0, from the score by the ladder 0x70898). Byte d7: below 0x80 - added to the score [0xFFFF91D6] saturating at 255 (jsr 0x14CB2, 0x193B0-0x193B6); 0x80 and above - subtract (256 - d7) saturating at 0 (jsr 0x14D4C, 0x193D6-0x193DC), but only if [0xFFFF9122] is not above [0x7029D] = 1 (0x193BA-0x193C6; [0xFFFF9122] is computed at 0x20110-0x20118 from the pedal rate of change [0xFFFF906E], exact scaling not analysed: a small value means an almost still pedal). Factory values (signed, minus = score decrease): row (pedal request) 1: 0/-21/-127/-127; row (pedal request) 2: 0/0/-65/-127; row (pedal request) 3: 0/0/0/-65; row (pedal request) 4: 0/0/0/0. All non-zero values lie where the requested level is below the current one (row less than column); on the diagonal and above they are zero: this matrix only lowers the score, score increase for a request above the current level is done elsewhere (not analysed here). The score [0xFFFF91D6] gives the level [0xFFFF915B] (ladder 0x70898, 0x18EB8-0x18ED0), the level selects the shift program through 0x09A42 (0x1ED8E-0x1ED94). Compared with 0x708B8: branch S steps are weaker (-17 / -33 / -65 vs -21 / -127). The axis labels of the catalog entry 0x708B8 (X = 'new step', Y = 'old step') are swapped: the column (X) is the current level [0xFFFF915B], the row (Y) is the requested level [0xFFFF915D]. In the factory calibration this table is inactive: the AGS function 0x19084 is called from 0x18676 only when bit 5 of byte 0x70D39 is set (btst 0x18670, beq 0x18674), and in both 20C0 images (Alpina B3S reference and the car dump) 0x70D39 = 0x91, bit 5 = 0. The role is proven by code; the table affects the gearbox only if that bit is set (the 19D0 counterpart 0x8CE7 = 0xFD has bit 5 set). Inactive in the factory 20C0 calibration: function 0x19084 is called from 0x18676 only when bit 5 of byte 0x70D39 is set, and it holds 0x91 (bit 5 = 0)."
   },
   {
    "kind": "constant",
    "title": "AGS: скорость роста очков к «домашним», завод 5 (0x708C8)",
-   "description": "0x192F0 move.b $708c8 (пара 19D0 0x1E12A move.b $88c0).",
+   "description": "0x192F0 move.b $708c8 (пара 19D0 0x1E12A move.b $88c0). Читает только функция 0x19084, которая в заводской калибровке 20C0 не вызывается (бит 5 байта 0x70D39 = 0): значение ни на что не влияет.",
    "categories": [
     1
    ],
@@ -3551,7 +3551,7 @@
    },
    "uid": 8249,
    "title_en": "AGS: points growth rate towards home, factory 5 (0x708C8)",
-   "description_en": "Speed of the AGS points drift."
+   "description_en": "Speed of the AGS points drift. Read only by function 0x19084, which is not called in the factory 20C0 calibration (bit 5 of byte 0x70D39 = 0): the value has no effect."
   },
   {
    "kind": "constant",
@@ -3579,7 +3579,7 @@
   {
    "kind": "constant",
    "title": "AGS: порог педали ветки D, завод 3 (0x70192)",
-   "description": "0x190BE movea.l #$70192, индекс по ветке (пара 19D0 0x1DEF6 movea.l #$819a → 0x819C/0x819D).",
+   "description": "0x190BE movea.l #$70192, индекс по ветке (пара 19D0 0x1DEF6 movea.l #$819a → 0x819C/0x819D). Читает только функция 0x19084, которая в заводской калибровке 20C0 не вызывается (бит 5 байта 0x70D39 = 0): значение ни на что не влияет.",
    "categories": [
     1
    ],
@@ -3597,12 +3597,12 @@
    },
    "uid": 8251,
    "title_en": "AGS: pedal threshold of branch D, factory 3 (0x70192)",
-   "description_en": "Indexed by the branch."
+   "description_en": "Indexed by the branch. Read only by function 0x19084, which is not called in the factory 20C0 calibration (bit 5 of byte 0x70D39 = 0): the value has no effect."
   },
   {
    "kind": "constant",
    "title": "AGS: порог педали ветки S и M, завод 8 (0x70193)",
-   "description": "Та же таблица, что 0x70192, индекс 1.",
+   "description": "Та же таблица, что 0x70192, индекс 1. Читает только функция 0x19084, которая в заводской калибровке 20C0 не вызывается (бит 5 байта 0x70D39 = 0): значение ни на что не влияет.",
    "categories": [
     1
    ],
@@ -3620,7 +3620,7 @@
    },
    "uid": 8252,
    "title_en": "AGS: pedal threshold of branches S and M, factory 8 (0x70193)",
-   "description_en": "Same table as 0x70192, index 1."
+   "description_en": "Same table as 0x70192, index 1. Read only by function 0x19084, which is not called in the factory 20C0 calibration (bit 5 of byte 0x70D39 = 0): the value has no effect."
   },
   {
    "kind": "constant",
@@ -5158,187 +5158,187 @@
   },
   {
    "kind": "constant",
-   "title": "Допуск разницы двух линий питания, мВ (0x70F50, пара 19D0 0x8EFA)",
-   "description": "Блок 0x70F3E-0x70F64 повторяет блок 19D0 0x8EE8-0x8F0E слово в слово (20 слов). Роль перенесена из 19D0 (документ 05 §1, 03 §5) по положению в блоке: структура. Чтение этого слова кодом 20C0 здесь не проверялось.",
+   "title": "Проверка цепи B (ошибка 0x2D = 45): порог разности A - B, завод 1000 мВ (0x70F50)",
+   "description": "Каналы напряжения: [0xFFFF8FFE] (A) = АЦП 0xFFFF8A06 × 25250 / 1024, мВ (запись 0x1C4C4); [0xFFFF9000] (B) = АЦП 0xFFFF8A08 × 25250 / 1024, мВ (запись 0x1C47A); других записей нет. Читает функция 0x233DA (пара 19D0 0x26ED8) в состоянии [0xFFFF8C0E] = 1: d0 = [0xFFFF8FFE] - [0x70F50] (sub.w 0x233F4), затем cmp.w с [0xFFFF9000] (0x233FA-0x23400): условие «A - 1000 > B». Если оно выполнено и [0xFFFF9000] > [0x70F54] (0x2340C-0x23416), флаг d7 = 0, иначе d7 = 1; d7 передаётся как аргумент c(a6) в регистрацию ошибки 0x1534C с кодом 45 (0x2D) (jsr 0x23428); при d7 не равном 0 после регистрации [0xFFFF8FC8] = 3 или 2 (0x23442 / 0x23448), состояние [0xFFFF8C0E] = 2 (0x2344C). Какой из исходов проверки означает неисправность (полярность аргумента c(a6) функции 0x1534C), не установлено. Значение 1000 не «допуск между линиями питания» (такой допуск - 0x70F46 = 1500, 0x228C0): оно участвует только в проверке кода 45. Других ссылок на этот адрес в образе нет (поиск 32-битного значения по всему образу). ",
    "categories": [
     12
    ],
-   "confidence": "structure",
-   "proof": "структура: блок 0x70F3E-0x70F64 = 19D0 0x8EE8-0x8F0E, слово 9",
+   "confidence": "proven",
+   "proof": "код: 0x233EE 0x233F4 0x233FA 0x23400 0x2340C 0x23416 0x23428 0x23442 0x23448 0x2344C 0x1C4C4 0x1C47A 0x1B2D0",
    "z": {
     "addr": 462672,
     "bits": 16,
     "signed": false,
     "lsb_first": false,
-    "units": "мВ",
+    "units": "мВ (разность A - B, каналы шкалы 25.25 В)",
     "decimals": 0,
     "math": "X",
-    "units_en": "mV"
+    "units_en": "mV (difference A - B, 25.25 V scale channels)"
    },
    "uid": 8283,
-   "title_en": "Tolerance between the two supply lines, mV (0x70F50, 19D0 pair 0x8EFA)",
-   "description_en": "Supply voltage monitor."
+   "title_en": "Line B check (error 0x2D = 45): threshold of the difference A - B, factory 1000 mV (0x70F50)",
+   "description_en": "Voltage channels: [0xFFFF8FFE] (A) = ADC 0xFFFF8A06 x 25250 / 1024, mV (written at 0x1C4C4); [0xFFFF9000] (B) = ADC 0xFFFF8A08 x 25250 / 1024, mV (written at 0x1C47A); no other writers. Read by function 0x233DA (19D0 pair 0x26ED8) in state [0xFFFF8C0E] = 1: d0 = [0xFFFF8FFE] - [0x70F50] (sub.w 0x233F4), then cmp.w with [0xFFFF9000] (0x233FA-0x23400): condition 'A - 1000 > B'. If it holds and [0xFFFF9000] > [0x70F54] (0x2340C-0x23416), the flag d7 = 0, otherwise d7 = 1; d7 is passed as the c(a6) argument to the error registration 0x1534C with code 45 (0x2D) (jsr 0x23428); for d7 not 0 after the registration [0xFFFF8FC8] = 3 or 2 (0x23442 / 0x23448), state [0xFFFF8C0E] = 2 (0x2344C). Which outcome of the check means a fault (polarity of the c(a6) argument of 0x1534C) is not established. The value 1000 is not the 'tolerance between the supply lines' (that tolerance is 0x70F46 = 1500, 0x228C0): it takes part only in the code 45 check. There are no other references to this address in the image (32-bit value search over the whole image). "
   },
   {
    "kind": "constant",
-   "title": "Верх окна напряжения питания, завод 16.0 В: НЕ температура (0x70F52, пара 19D0 0x8EFC)",
-   "description": "Блок 0x70F3E-0x70F64 повторяет блок 19D0 0x8EE8-0x8F0E слово в слово (20 слов). Роль перенесена из 19D0 (документ 05 §1, 03 §5) по положению в блоке: структура. Чтение этого слова кодом 20C0 здесь не проверялось.",
+   "title": "Окно напряжения питания, верхняя граница, завод 16000 мВ (0x70F52)",
+   "description": "Каналы напряжения: [0xFFFF8FFE] (A) = АЦП 0xFFFF8A06 × 25250 / 1024, мВ (запись 0x1C4C4); [0xFFFF9000] (B) = АЦП 0xFFFF8A08 × 25250 / 1024, мВ (запись 0x1C47A); других записей нет. Читает 0x1B120 (cmp.w, проверка старта 0x1B106, пара 19D0 0x1FB3E): в состоянии [0xFFFF8648] = 1 (0x1B10E) при [0xFFFF8FFE] > [0x70F56] (0x1B118, bls 0x1B11E) и [0xFFFF8FFE] < [0x70F52] (0x1B120, bcc 0x1B126) пишет [0xFFFF8648] = 2 (0x1B128). Состояние 2 - последнее условие самотеста питания: [0xFFFF8648] ставится в 1 в 0x1B478, когда готовы остальные тесты (0x1B43C-0x1B470), а при [0xFFFF8648] = 2 и [0xFFFF86CC] = 2 цепочка 0x1B47A-0x1B48E ставит [0xFFFF8592] = 1; [0xFFFF8592] = 0 держит передачу [0xFFFF915F] = 4 (0x19572-0x195A8, ветка 0). Итог: вне окна 9.0-16.0 В [0xFFFF8648] не доходит до 2 и запуск автомата не продолжается. Не температура. Других ссылок на этот адрес в образе нет (поиск 32-битного значения по всему образу). ",
    "categories": [
     12
    ],
-   "confidence": "structure",
-   "proof": "структура: блок 0x70F3E-0x70F64 = 19D0 0x8EE8-0x8F0E, слово 10",
+   "confidence": "proven",
+   "proof": "код: 0x1B10E 0x1B112 0x1B118 0x1B120 0x1B128 0x1B43C 0x1B478 0x1B47A 0x1B48E 0x19572 0x195A2 0x1C4C4",
    "z": {
     "addr": 462674,
     "bits": 16,
     "signed": false,
     "lsb_first": false,
-    "units": "мВ",
+    "units": "мВ ([0xFFFF8FFE] строго меньше)",
     "decimals": 0,
     "math": "X",
-    "units_en": "mV"
+    "units_en": "mV ([0xFFFF8FFE] strictly below)"
    },
    "uid": 8284,
-   "title_en": "Supply voltage window top, factory 16.0 V: NOT a temperature (0x70F52, 19D0 pair 0x8EFC)",
-   "description_en": "Supply voltage monitor."
+   "title_en": "Supply voltage window, upper limit, factory 16000 mV (0x70F52)",
+   "description_en": "Voltage channels: [0xFFFF8FFE] (A) = ADC 0xFFFF8A06 x 25250 / 1024, mV (written at 0x1C4C4); [0xFFFF9000] (B) = ADC 0xFFFF8A08 x 25250 / 1024, mV (written at 0x1C47A); no other writers. Read at 0x1B120 (cmp.w, start-up check 0x1B106, 19D0 pair 0x1FB3E): in state [0xFFFF8648] = 1 (0x1B10E), when [0xFFFF8FFE] > [0x70F56] (0x1B118, bls 0x1B11E) and [0xFFFF8FFE] < [0x70F52] (0x1B120, bcc 0x1B126), it writes [0xFFFF8648] = 2 (0x1B128). State 2 is the last condition of the supply self-test: [0xFFFF8648] is set to 1 at 0x1B478 once the other tests are ready (0x1B43C-0x1B470), and with [0xFFFF8648] = 2 and [0xFFFF86CC] = 2 the chain 0x1B47A-0x1B48E sets [0xFFFF8592] = 1; [0xFFFF8592] = 0 holds the gear [0xFFFF915F] = 4 (0x19572-0x195A8, branch 0). Result: outside the 9.0-16.0 V window [0xFFFF8648] does not reach 2 and the transmission start-up does not continue. Not a temperature. There are no other references to this address in the image (32-bit value search over the whole image). "
   },
   {
    "kind": "constant",
-   "title": "Порог 2.5 В (0x70F54, пара 19D0 0x8EFE)",
-   "description": "Блок 0x70F3E-0x70F64 повторяет блок 19D0 0x8EE8-0x8F0E слово в слово (20 слов). Роль перенесена из 19D0 (документ 05 §1, 03 §5) по положению в блоке: структура. Чтение этого слова кодом 20C0 здесь не проверялось.",
+   "title": "Проверка цепи B (ошибка 0x2D = 45): порог напряжения B [0xFFFF9000], завод 2500 мВ (0x70F54)",
+   "description": "Каналы напряжения: [0xFFFF8FFE] (A) = АЦП 0xFFFF8A06 × 25250 / 1024, мВ (запись 0x1C4C4); [0xFFFF9000] (B) = АЦП 0xFFFF8A08 × 25250 / 1024, мВ (запись 0x1C47A); других записей нет. Читают три шага проверки кода 45 (0x2D): 0x233DA (movea 0x23402, cmp 0x2340E и 0x23438; состояние [0xFFFF8C0E]), 0x23456 (cmp 0x234AC и 0x234BC; состояние [0xFFFF8C10]), 0x234EC (cmp 0x23536 и 0x2355A; состояние [0xFFFF8C12]). Операнд: [0xFFFF9000] (B). Приёмники: флаг d7 как аргумент c(a6) регистрации ошибки 0x1534C с кодом 45 (jsr 0x23428, 0x234D6, 0x23574) и слово состояния [0xFFFF8FC8] (0x23442 = 3 при B ниже 2500, 0x23448 = 2; 0x234B4 = 0; 0x234E0 / 0x2357E = 4; 0x2353E = 0), которое читают шаг самотеста 0x1B340 ([0xFFFF8FC8] = 4 -> [0xFFFF863E] = 2), 0x1B37C-0x1B3B2 и проверка выходного каскада 0x106D8 (0x10736: [0xFFFF8FC8] = 3 и [0xFFFF8FFE] × 80 / 100 не больше [0xFFFF9000] -> d7 = 1 в регистрацию ошибки 0x2E = 46, jsr 0x10770). Какой из исходов проверки означает неисправность (полярность аргумента c(a6) функции 0x1534C), не установлено. Физический смысл линии B (что подключено к АЦП 0xFFFF8A08) не установлен; в 19D0 те же сравнения у 0x8EFE. Других ссылок на этот адрес в образе нет (поиск 32-битного значения по всему образу). ",
    "categories": [
     12
    ],
-   "confidence": "structure",
-   "proof": "структура: блок 0x70F3E-0x70F64 = 19D0 0x8EE8-0x8F0E, слово 11",
+   "confidence": "proven",
+   "proof": "код: 0x23402 0x2340E 0x23438 0x23442 0x23448 0x234AC 0x234BC 0x234D6 0x234B4 0x234E0 0x23536 0x2353E 0x2355A 0x23574 0x2357E 0x10736 0x10770 0x1B340 0x1C47A",
    "z": {
     "addr": 462676,
     "bits": 16,
     "signed": false,
     "lsb_first": false,
-    "units": "мВ",
+    "units": "мВ (канал B, шкала 25.25 В)",
     "decimals": 0,
     "math": "X",
-    "units_en": "mV"
+    "units_en": "mV (channel B, 25.25 V scale)"
    },
    "uid": 8285,
-   "title_en": "Threshold 2.5 V (0x70F54, 19D0 pair 0x8EFE)",
-   "description_en": "Sensor supply plausibility."
+   "title_en": "Line B check (error 0x2D = 45): threshold of the voltage B [0xFFFF9000], factory 2500 mV (0x70F54)",
+   "description_en": "Voltage channels: [0xFFFF8FFE] (A) = ADC 0xFFFF8A06 x 25250 / 1024, mV (written at 0x1C4C4); [0xFFFF9000] (B) = ADC 0xFFFF8A08 x 25250 / 1024, mV (written at 0x1C47A); no other writers. Read by three steps of the code 45 (0x2D) check: 0x233DA (movea 0x23402, cmp 0x2340E and 0x23438; state [0xFFFF8C0E]), 0x23456 (cmp 0x234AC and 0x234BC; state [0xFFFF8C10]), 0x234EC (cmp 0x23536 and 0x2355A; state [0xFFFF8C12]). Operand: [0xFFFF9000] (B). Sinks: the flag d7 as the c(a6) argument of the error registration 0x1534C with code 45 (jsr 0x23428, 0x234D6, 0x23574) and the state word [0xFFFF8FC8] (0x23442 = 3 for B below 2500, 0x23448 = 2; 0x234B4 = 0; 0x234E0 / 0x2357E = 4; 0x2353E = 0), which is read by the self-test step 0x1B340 ([0xFFFF8FC8] = 4 -> [0xFFFF863E] = 2), 0x1B37C-0x1B3B2 and the output stage check 0x106D8 (0x10736: [0xFFFF8FC8] = 3 and [0xFFFF8FFE] x 80 / 100 not above [0xFFFF9000] -> d7 = 1 into the registration of error 0x2E = 46, jsr 0x10770). Which outcome of the check means a fault (polarity of the c(a6) argument of 0x1534C) is not established. What is physically connected to the ADC 0xFFFF8A08 (line B) is not established; the same compares use 0x8EFE in 19D0. There are no other references to this address in the image (32-bit value search over the whole image). "
   },
   {
    "kind": "constant",
-   "title": "Низ окна напряжения питания, завод 9.0 В: НЕ «90 °C» (0x70F56, пара 19D0 0x8F00)",
-   "description": "Блок 0x70F3E-0x70F64 повторяет блок 19D0 0x8EE8-0x8F0E слово в слово (20 слов). Роль перенесена из 19D0 (документ 05 §1, 03 §5) по положению в блоке: структура. Чтение этого слова кодом 20C0 здесь не проверялось.",
+   "title": "Окно напряжения питания, нижняя граница, завод 9000 мВ (0x70F56)",
+   "description": "Каналы напряжения: [0xFFFF8FFE] (A) = АЦП 0xFFFF8A06 × 25250 / 1024, мВ (запись 0x1C4C4); [0xFFFF9000] (B) = АЦП 0xFFFF8A08 × 25250 / 1024, мВ (запись 0x1C47A); других записей нет. Читает 0x1B118 (cmp.w) в той же проверке 0x1B106, что 0x70F52: при [0xFFFF8FFE] не больше [0x70F56] (bls 0x1B11E) состояние [0xFFFF8648] не переходит в 2. Приёмник и последствия те же, что у 0x70F52 (0x1B128, 0x1B478-0x1B48E, 0x19572-0x195A8). Не «90 °C». Других ссылок на этот адрес в образе нет (поиск 32-битного значения по всему образу). ",
    "categories": [
     12
    ],
-   "confidence": "structure",
-   "proof": "структура: блок 0x70F3E-0x70F64 = 19D0 0x8EE8-0x8F0E, слово 12",
+   "confidence": "proven",
+   "proof": "код: 0x1B10E 0x1B112 0x1B118 0x1B11E 0x1B128 0x1B478 0x1B47A 0x1B48E 0x19572 0x1C4C4",
    "z": {
     "addr": 462678,
     "bits": 16,
     "signed": false,
     "lsb_first": false,
-    "units": "мВ",
+    "units": "мВ ([0xFFFF8FFE] строго больше)",
     "decimals": 0,
     "math": "X",
-    "units_en": "mV"
+    "units_en": "mV ([0xFFFF8FFE] strictly above)"
    },
    "uid": 8286,
-   "title_en": "Supply voltage window bottom, factory 9.0 V: NOT 90 °C (0x70F56, 19D0 pair 0x8F00)",
-   "description_en": "Supply voltage monitor."
+   "title_en": "Supply voltage window, lower limit, factory 9000 mV (0x70F56)",
+   "description_en": "Voltage channels: [0xFFFF8FFE] (A) = ADC 0xFFFF8A06 x 25250 / 1024, mV (written at 0x1C4C4); [0xFFFF9000] (B) = ADC 0xFFFF8A08 x 25250 / 1024, mV (written at 0x1C47A); no other writers. Read at 0x1B118 (cmp.w) in the same check 0x1B106 as 0x70F52: for [0xFFFF8FFE] not above [0x70F56] (bls 0x1B11E) the state [0xFFFF8648] does not go to 2. Sink and consequences are the same as for 0x70F52 (0x1B128, 0x1B478-0x1B48E, 0x19572-0x195A8). Not '90 C'. There are no other references to this address in the image (32-bit value search over the whole image). "
   },
   {
    "kind": "constant",
-   "title": "Плаузибилити датчика: верх, завод 2.7 В: НЕ «27 °C» (0x70F5E, пара 19D0 0x8F08)",
-   "description": "Блок 0x70F3E-0x70F64 повторяет блок 19D0 0x8EE8-0x8F0E слово в слово (20 слов). Роль перенесена из 19D0 (документ 05 §1, 03 §5) по положению в блоке: структура. Чтение этого слова кодом 20C0 здесь не проверялось.",
+   "title": "Датчик на [0xFFFF9014] / [0xFFFF9016]: окно «оба около 2.5 В», верх, завод 2700 мВ (0x70F5E)",
+   "description": "Два аналоговых входа [0xFFFF9014] и [0xFFFF9016] пишет 0x1C528 (пара 19D0 0x20E6C) из буфера, адрес которого лежит в ROM 0xA2D4: слова буфера +2 и +4, значение × 5000 / 1024, мВ (0x1C56A, 0x1C596: muls.l #$1388, divs.l #$400). Разность [0xFFFF9012] = max([0xFFFF9016] - [0xFFFF9014], 0) (jsr 0x14CF0 в 0x1C59E, запись 0x1C5AA) идёт в таблицу 1D16 слота 41 (0x71C66, jsr 0x199A2) -> [0xFFFF8C8C] -> младший байт [0xFFFF9066] (датчик температуры АТФ по документу 11 §8; 0x1C610). Монитор 0x236E2 (пара 19D0 0x271E0; адрес лежит в ROM-таблицах 0xA46E, 0xA68A, 0xA7F8) регистрирует ошибку с кодом 5 через jsr 0x1534C (0x2398A), класс в d1 = d7 (0 - оба канала в окне 2.3-2.7 В; 2, 3, 4 - сочетания выхода за 0x70F64 и 0x70F68; 1 - проверка изменения [0xFFFF8C8C] относительно [0xFFFF9067] с допуском [0x70116], 0x23914-0x23940). Код 5 читает ещё 0x1CDB6 (jsr 0x1532A) как условие подмены педали [0xFFFF911B] таблицей 0x19F42 (0x1CDCC-0x1CDE4); связь этого употребления с датчиком на [0xFFFF9014] / [0xFFFF9016] не установлена. Читает 0x236E2 в 0x238B4 (для [0xFFFF9016]) и 0x238CA (для [0xFFFF9014]): оба канала должны быть строго ниже 0x70F5E и строго выше 0x70F60 (0x238BC / 0x238D2), тогда класс d7 = 0 (0x238DA) и в 0x1534C уходит ошибка 5 класса 0. Соответствует 19D0 0x8F08. Не «27 °C». Других ссылок на этот адрес в образе нет (поиск 32-битного значения по всему образу). ",
    "categories": [
     12
    ],
-   "confidence": "structure",
-   "proof": "структура: блок 0x70F3E-0x70F64 = 19D0 0x8EE8-0x8F0E, слово 16",
+   "confidence": "proven",
+   "proof": "код: 0x238AE 0x238B4 0x238BC 0x238CA 0x238D2 0x238DA 0x2397E 0x2398A 0x1C56A 0x1C596 0x1C5AA 0x1C610",
    "z": {
     "addr": 462686,
     "bits": 16,
     "signed": false,
     "lsb_first": false,
-    "units": "мВ",
+    "units": "мВ (шкала 5 В)",
     "decimals": 0,
     "math": "X",
-    "units_en": "mV"
+    "units_en": "mV (5 V scale)"
    },
    "uid": 8287,
-   "title_en": "Sensor plausibility: top, factory 2.7 V: NOT 27 °C (0x70F5E, 19D0 pair 0x8F08)",
-   "description_en": "Sensor supply plausibility."
+   "title_en": "Sensor on [0xFFFF9014] / [0xFFFF9016]: 'both near 2.5 V' window, top, factory 2700 mV (0x70F5E)",
+   "description_en": "Two analog inputs [0xFFFF9014] and [0xFFFF9016] are written by 0x1C528 (19D0 pair 0x20E6C) from a buffer whose address is stored in ROM at 0xA2D4: buffer words +2 and +4, value x 5000 / 1024, mV (0x1C56A, 0x1C596: muls.l #$1388, divs.l #$400). The difference [0xFFFF9012] = max([0xFFFF9016] - [0xFFFF9014], 0) (jsr 0x14CF0 at 0x1C59E, store 0x1C5AA) goes into the 1D16 table of slot 41 (0x71C66, jsr 0x199A2) -> [0xFFFF8C8C] -> low byte of [0xFFFF9066] (ATF temperature sensor per document 11 section 8; 0x1C610). The monitor 0x236E2 (19D0 pair 0x271E0; its address is in the ROM tables 0xA46E, 0xA68A, 0xA7F8) registers an error with code 5 through jsr 0x1534C (0x2398A), class in d1 = d7 (0 - both channels inside the 2.3-2.7 V window; 2, 3, 4 - combinations of exceeding 0x70F64 and 0x70F68; 1 - check of the change of [0xFFFF8C8C] against [0xFFFF9067] with the tolerance [0x70116], 0x23914-0x23940). Code 5 is also read at 0x1CDB6 (jsr 0x1532A) as the condition to replace the pedal [0xFFFF911B] by the table 0x19F42 (0x1CDCC-0x1CDE4); the relation of that use to the sensor on [0xFFFF9014] / [0xFFFF9016] is not established. Read by 0x236E2 at 0x238B4 (for [0xFFFF9016]) and 0x238CA (for [0xFFFF9014]): both channels must be strictly below 0x70F5E and strictly above 0x70F60 (0x238BC / 0x238D2), then the class d7 = 0 (0x238DA) and error 5 of class 0 goes to 0x1534C. Matches 19D0 0x8F08. Not '27 C'. There are no other references to this address in the image (32-bit value search over the whole image). "
   },
   {
    "kind": "constant",
-   "title": "Плаузибилити датчика: низ, завод 2.3 В: НЕ «23 °C» (0x70F60, пара 19D0 0x8F0A)",
-   "description": "Блок 0x70F3E-0x70F64 повторяет блок 19D0 0x8EE8-0x8F0E слово в слово (20 слов). Роль перенесена из 19D0 (документ 05 §1, 03 §5) по положению в блоке: структура. Чтение этого слова кодом 20C0 здесь не проверялось.",
+   "title": "Датчик на [0xFFFF9014] / [0xFFFF9016]: окно «оба около 2.5 В», низ, завод 2300 мВ (0x70F60)",
+   "description": "Два аналоговых входа [0xFFFF9014] и [0xFFFF9016] пишет 0x1C528 (пара 19D0 0x20E6C) из буфера, адрес которого лежит в ROM 0xA2D4: слова буфера +2 и +4, значение × 5000 / 1024, мВ (0x1C56A, 0x1C596: muls.l #$1388, divs.l #$400). Разность [0xFFFF9012] = max([0xFFFF9016] - [0xFFFF9014], 0) (jsr 0x14CF0 в 0x1C59E, запись 0x1C5AA) идёт в таблицу 1D16 слота 41 (0x71C66, jsr 0x199A2) -> [0xFFFF8C8C] -> младший байт [0xFFFF9066] (датчик температуры АТФ по документу 11 §8; 0x1C610). Монитор 0x236E2 (пара 19D0 0x271E0; адрес лежит в ROM-таблицах 0xA46E, 0xA68A, 0xA7F8) регистрирует ошибку с кодом 5 через jsr 0x1534C (0x2398A), класс в d1 = d7 (0 - оба канала в окне 2.3-2.7 В; 2, 3, 4 - сочетания выхода за 0x70F64 и 0x70F68; 1 - проверка изменения [0xFFFF8C8C] относительно [0xFFFF9067] с допуском [0x70116], 0x23914-0x23940). Код 5 читает ещё 0x1CDB6 (jsr 0x1532A) как условие подмены педали [0xFFFF911B] таблицей 0x19F42 (0x1CDCC-0x1CDE4); связь этого употребления с датчиком на [0xFFFF9014] / [0xFFFF9016] не установлена. Читает 0x236E2 в 0x238BC (для [0xFFFF9016]) и 0x238D2 (для [0xFFFF9014]): нижняя граница окна (значение должно быть строго выше), пара к 0x70F5E. Соответствует 19D0 0x8F0A. Не «23 °C». Других ссылок на этот адрес в образе нет (поиск 32-битного значения по всему образу). ",
    "categories": [
     12
    ],
-   "confidence": "structure",
-   "proof": "структура: блок 0x70F3E-0x70F64 = 19D0 0x8EE8-0x8F0E, слово 17",
+   "confidence": "proven",
+   "proof": "код: 0x238AE 0x238B4 0x238BC 0x238CA 0x238D2 0x238DA 0x2397E 0x2398A 0x1C56A 0x1C596 0x1C5AA 0x1C610",
    "z": {
     "addr": 462688,
     "bits": 16,
     "signed": false,
     "lsb_first": false,
-    "units": "мВ",
+    "units": "мВ (шкала 5 В)",
     "decimals": 0,
     "math": "X",
-    "units_en": "mV"
+    "units_en": "mV (5 V scale)"
    },
    "uid": 8288,
-   "title_en": "Sensor plausibility: bottom, factory 2.3 V: NOT 23 °C (0x70F60, 19D0 pair 0x8F0A)",
-   "description_en": "Sensor supply plausibility."
+   "title_en": "Sensor on [0xFFFF9014] / [0xFFFF9016]: 'both near 2.5 V' window, bottom, factory 2300 mV (0x70F60)",
+   "description_en": "Two analog inputs [0xFFFF9014] and [0xFFFF9016] are written by 0x1C528 (19D0 pair 0x20E6C) from a buffer whose address is stored in ROM at 0xA2D4: buffer words +2 and +4, value x 5000 / 1024, mV (0x1C56A, 0x1C596: muls.l #$1388, divs.l #$400). The difference [0xFFFF9012] = max([0xFFFF9016] - [0xFFFF9014], 0) (jsr 0x14CF0 at 0x1C59E, store 0x1C5AA) goes into the 1D16 table of slot 41 (0x71C66, jsr 0x199A2) -> [0xFFFF8C8C] -> low byte of [0xFFFF9066] (ATF temperature sensor per document 11 section 8; 0x1C610). The monitor 0x236E2 (19D0 pair 0x271E0; its address is in the ROM tables 0xA46E, 0xA68A, 0xA7F8) registers an error with code 5 through jsr 0x1534C (0x2398A), class in d1 = d7 (0 - both channels inside the 2.3-2.7 V window; 2, 3, 4 - combinations of exceeding 0x70F64 and 0x70F68; 1 - check of the change of [0xFFFF8C8C] against [0xFFFF9067] with the tolerance [0x70116], 0x23914-0x23940). Code 5 is also read at 0x1CDB6 (jsr 0x1532A) as the condition to replace the pedal [0xFFFF911B] by the table 0x19F42 (0x1CDCC-0x1CDE4); the relation of that use to the sensor on [0xFFFF9014] / [0xFFFF9016] is not established. Read by 0x236E2 at 0x238BC (for [0xFFFF9016]) and 0x238D2 (for [0xFFFF9014]): lower bound of the window (the value must be strictly above), pair of 0x70F5E. Matches 19D0 0x8F0A. Not '23 C'. There are no other references to this address in the image (32-bit value search over the whole image). "
   },
   {
    "kind": "constant",
-   "title": "Порог 2.504 В (0x70F62, пара 19D0 0x8F0C)",
-   "description": "Блок 0x70F3E-0x70F64 повторяет блок 19D0 0x8EE8-0x8F0E слово в слово (20 слов). Роль перенесена из 19D0 (документ 05 §1, 03 §5) по положению в блоке: структура. Чтение этого слова кодом 20C0 здесь не проверялось.",
+   "title": "Датчик ATF: верхний предел допустимой разности [0xFFFF9012], завод 2504 мВ (0x70F62)",
+   "description": "Два аналоговых входа [0xFFFF9014] и [0xFFFF9016] пишет 0x1C528 (пара 19D0 0x20E6C) из буфера, адрес которого лежит в ROM 0xA2D4: слова буфера +2 и +4, значение × 5000 / 1024, мВ (0x1C56A, 0x1C596: muls.l #$1388, divs.l #$400). Разность [0xFFFF9012] = max([0xFFFF9016] - [0xFFFF9014], 0) (jsr 0x14CF0 в 0x1C59E, запись 0x1C5AA) идёт в таблицу 1D16 слота 41 (0x71C66, jsr 0x199A2) -> [0xFFFF8C8C] -> младший байт [0xFFFF9066] (датчик температуры АТФ по документу 11 §8; 0x1C610). Читает 0x1C608 (cmp.w, функция 0x1C528) в ветке «ошибка 6 не активна» (jsr 0x1532A при d0 = 6 в 0x1C5C6, beq 0x1C5FE): [0xFFFF9012] должна быть не ниже 0x70F66 = 1014 (0x1C600, bcs 0x1C614) и не выше 0x70F62 (0x1C608, bhi 0x1C614), только тогда [0xFFFF9066] = младший байт [0xFFFF8C8C] (0x1C610); вне окна 1014-2504 мВ [0xFFFF9066] остаётся прежним (участок таблицы слота 41 между 2504 и 2673 мВ на [0xFFFF9066] не влияет). [0xFFFF9066] читают, в частности, 0x1CE30 ([0xFFFF906A] = [0xFFFF9066] + 8) и 0x228D0 (таблица 0x70F32 в мониторе напряжения). Соответствует 19D0 0x8F0C. Других ссылок на этот адрес в образе нет (поиск 32-битного значения по всему образу). ",
    "categories": [
     12
    ],
-   "confidence": "structure",
-   "proof": "структура: блок 0x70F3E-0x70F64 = 19D0 0x8EE8-0x8F0E, слово 18",
+   "confidence": "proven",
+   "proof": "код: 0x1C56A 0x1C596 0x1C59E 0x1C5AA 0x1C5B6 0x1C5C2 0x1C5C6 0x1C5FE 0x1C600 0x1C608 0x1C610 0x1CE30 0x228D0",
    "z": {
     "addr": 462690,
     "bits": 16,
     "signed": false,
     "lsb_first": false,
-    "units": "мВ",
+    "units": "мВ ([0xFFFF9012], шкала 5 В)",
     "decimals": 0,
     "math": "X",
-    "units_en": "mV"
+    "units_en": "mV ([0xFFFF9012], 5 V scale)"
    },
    "uid": 8289,
-   "title_en": "Threshold 2.504 V (0x70F62, 19D0 pair 0x8F0C)",
-   "description_en": "Sensor supply plausibility."
+   "title_en": "ATF sensor: upper limit of the accepted difference [0xFFFF9012], factory 2504 mV (0x70F62)",
+   "description_en": "Two analog inputs [0xFFFF9014] and [0xFFFF9016] are written by 0x1C528 (19D0 pair 0x20E6C) from a buffer whose address is stored in ROM at 0xA2D4: buffer words +2 and +4, value x 5000 / 1024, mV (0x1C56A, 0x1C596: muls.l #$1388, divs.l #$400). The difference [0xFFFF9012] = max([0xFFFF9016] - [0xFFFF9014], 0) (jsr 0x14CF0 at 0x1C59E, store 0x1C5AA) goes into the 1D16 table of slot 41 (0x71C66, jsr 0x199A2) -> [0xFFFF8C8C] -> low byte of [0xFFFF9066] (ATF temperature sensor per document 11 section 8; 0x1C610). Read at 0x1C608 (cmp.w, function 0x1C528) in the branch 'error 6 not active' (jsr 0x1532A with d0 = 6 at 0x1C5C6, beq 0x1C5FE): [0xFFFF9012] must be not below 0x70F66 = 1014 (0x1C600, bcs 0x1C614) and not above 0x70F62 (0x1C608, bhi 0x1C614); only then [0xFFFF9066] = low byte of [0xFFFF8C8C] (0x1C610); outside 1014-2504 mV [0xFFFF9066] keeps its old value (the part of the slot 41 table between 2504 and 2673 mV does not reach [0xFFFF9066]). [0xFFFF9066] is read, among others, by 0x1CE30 ([0xFFFF906A] = [0xFFFF9066] + 8) and 0x228D0 (table 0x70F32 in the voltage monitor). Matches 19D0 0x8F0C. There are no other references to this address in the image (32-bit value search over the whole image). "
   },
   {
    "kind": "constant",
-   "title": "Порог 4.5 В (0x70F64, пара 19D0 0x8F0E)",
-   "description": "Блок 0x70F3E-0x70F64 повторяет блок 19D0 0x8EE8-0x8F0E слово в слово (20 слов). Роль перенесена из 19D0 (документ 05 §1, 03 §5) по положению в блоке: структура. Чтение этого слова кодом 20C0 здесь не проверялось.",
+   "title": "Датчик на [0xFFFF9014] / [0xFFFF9016]: верхний порог канала [0xFFFF9016], завод 4500 мВ (0x70F64)",
+   "description": "Два аналоговых входа [0xFFFF9014] и [0xFFFF9016] пишет 0x1C528 (пара 19D0 0x20E6C) из буфера, адрес которого лежит в ROM 0xA2D4: слова буфера +2 и +4, значение × 5000 / 1024, мВ (0x1C56A, 0x1C596: muls.l #$1388, divs.l #$400). Разность [0xFFFF9012] = max([0xFFFF9016] - [0xFFFF9014], 0) (jsr 0x14CF0 в 0x1C59E, запись 0x1C5AA) идёт в таблицу 1D16 слота 41 (0x71C66, jsr 0x199A2) -> [0xFFFF8C8C] -> младший байт [0xFFFF9066] (датчик температуры АТФ по документу 11 §8; 0x1C610). Монитор 0x236E2 (пара 19D0 0x271E0; адрес лежит в ROM-таблицах 0xA46E, 0xA68A, 0xA7F8) регистрирует ошибку с кодом 5 через jsr 0x1534C (0x2398A), класс в d1 = d7 (0 - оба канала в окне 2.3-2.7 В; 2, 3, 4 - сочетания выхода за 0x70F64 и 0x70F68; 1 - проверка изменения [0xFFFF8C8C] относительно [0xFFFF9067] с допуском [0x70116], 0x23914-0x23940). Код 5 читает ещё 0x1CDB6 (jsr 0x1532A) как условие подмены педали [0xFFFF911B] таблицей 0x19F42 (0x1CDCC-0x1CDE4); связь этого употребления с датчиком на [0xFFFF9014] / [0xFFFF9016] не установлена. Читает 0x236E2 в 0x2384E, 0x23870, 0x23892 (cmp.w [0xFFFF9016] с 0x70F64) вместе с порогом 0x70F68 = 500 для [0xFFFF9014]: [0xFFFF9016] > 4500 и [0xFFFF9014] > 500 - класс 2 (0x23864); [0xFFFF9016] < 4500 и [0xFFFF9014] < 500 - класс 3 (0x23886); [0xFFFF9016] > 4500 и [0xFFFF9014] < 500 - класс 4 (0x238A8). Класс уходит в d1 регистрации ошибки 5 (jsr 0x1534C, 0x2398A). Соответствует 19D0 0x8F0E. Других ссылок на этот адрес в образе нет (поиск 32-битного значения по всему образу). ",
    "categories": [
     12
    ],
-   "confidence": "structure",
-   "proof": "структура: блок 0x70F3E-0x70F64 = 19D0 0x8EE8-0x8F0E, слово 19",
+   "confidence": "proven",
+   "proof": "код: 0x23848 0x2384E 0x2385C 0x23864 0x2386A 0x23870 0x23886 0x2388C 0x23892 0x238A8 0x2397E 0x2398A 0x1C596",
    "z": {
     "addr": 462692,
     "bits": 16,
     "signed": false,
     "lsb_first": false,
-    "units": "мВ",
+    "units": "мВ (шкала 5 В)",
     "decimals": 0,
     "math": "X",
-    "units_en": "mV"
+    "units_en": "mV (5 V scale)"
    },
    "uid": 8290,
-   "title_en": "Threshold 4.5 V (0x70F64, 19D0 pair 0x8F0E)",
-   "description_en": "Sensor supply plausibility."
+   "title_en": "Sensor on [0xFFFF9014] / [0xFFFF9016]: upper threshold of channel [0xFFFF9016], factory 4500 mV (0x70F64)",
+   "description_en": "Two analog inputs [0xFFFF9014] and [0xFFFF9016] are written by 0x1C528 (19D0 pair 0x20E6C) from a buffer whose address is stored in ROM at 0xA2D4: buffer words +2 and +4, value x 5000 / 1024, mV (0x1C56A, 0x1C596: muls.l #$1388, divs.l #$400). The difference [0xFFFF9012] = max([0xFFFF9016] - [0xFFFF9014], 0) (jsr 0x14CF0 at 0x1C59E, store 0x1C5AA) goes into the 1D16 table of slot 41 (0x71C66, jsr 0x199A2) -> [0xFFFF8C8C] -> low byte of [0xFFFF9066] (ATF temperature sensor per document 11 section 8; 0x1C610). The monitor 0x236E2 (19D0 pair 0x271E0; its address is in the ROM tables 0xA46E, 0xA68A, 0xA7F8) registers an error with code 5 through jsr 0x1534C (0x2398A), class in d1 = d7 (0 - both channels inside the 2.3-2.7 V window; 2, 3, 4 - combinations of exceeding 0x70F64 and 0x70F68; 1 - check of the change of [0xFFFF8C8C] against [0xFFFF9067] with the tolerance [0x70116], 0x23914-0x23940). Code 5 is also read at 0x1CDB6 (jsr 0x1532A) as the condition to replace the pedal [0xFFFF911B] by the table 0x19F42 (0x1CDCC-0x1CDE4); the relation of that use to the sensor on [0xFFFF9014] / [0xFFFF9016] is not established. Read by 0x236E2 at 0x2384E, 0x23870, 0x23892 (cmp.w [0xFFFF9016] with 0x70F64) together with the threshold 0x70F68 = 500 for [0xFFFF9014]: [0xFFFF9016] > 4500 and [0xFFFF9014] > 500 - class 2 (0x23864); [0xFFFF9016] < 4500 and [0xFFFF9014] < 500 - class 3 (0x23886); [0xFFFF9016] > 4500 and [0xFFFF9014] < 500 - class 4 (0x238A8). The class goes into d1 of the error 5 registration (jsr 0x1534C, 0x2398A). Matches 19D0 0x8F0E. There are no other references to this address in the image (32-bit value search over the whole image). "
   },
   {
    "kind": "constant",

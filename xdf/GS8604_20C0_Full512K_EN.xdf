@@ -1808,12 +1808,12 @@
     </XDFAXIS>
   </XDFTABLE>
   <XDFTABLE uniqueid="0x2029" flags="0x0">
-    <title>AGS: pedal thresholds, gear 1, branch normal (0x7107A, slot 3)</title>
-    <description>Slot 3 of the catalog 0x71BC2 = slot 9 of the 19D0 catalog (document 03 §7: AGS, adaptive program selection, not TCC); role carried from 19D0 by the catalog position: structure.</description>
+    <title>AGS: pedal threshold for requesting the next level, 1st gear, branch D (0x7107A, slot 3)</title>
+    <description>Read by the AGS function 0x19084: with the gear code [0xFFFF915F] = 1 or 6 (dispatcher 0x190DC-0x1912A) and branch D ([0xFFFF917F] = 0) (test of [0xFFFF917F] = 1 at 0x19134) it loads the catalog slot pointer 0x71BCE (lea 0x19152) and for i = 1..3 ([0xFFFF915C]; the loop runs while i &lt; [0x70202] = 4, 0x1916E) calls the 2D8 lookup 0x19BD2 (jsr 0x1915E; 0x19BD2 -&gt; 0x19A90, bilinear interpolation): X = i (threshold index 1 / 2 / 3), Y = n_out/32 [0xFFFF9138] (written at 0x20D38: lsr 5, filtered output shaft speed). The byte result (interpolated Z) goes into a local array thr[i-1] (0x19166). Then (0x192A4-0x192D2) the code walks i = 3 downward and takes the first (largest) i whose threshold is not above the pedal [0xFFFF912A] (= [0xFFFF911B], 0x1CDE6): [0xFFFF915D] = i + 1 (if none passes, [0xFFFF915D] = 1). So Z = pedal threshold (0-255) at which AGS level i + 1 is requested at that speed (column 1 = level 2, column 2 = level 3, column 3 = level 4). [0xFFFF915D] is compared with the current level [0xFFFF915B] (0x192E4-0x192E6): equal - the score drifts to the home scores 0x7089C; different - the matrix 0x708A8 / 0x708B8 changes the score [0xFFFF91D6] (row = [0xFFFF915D], column = [0xFFFF915B]); the score through the ladder 0x70898 (0x18EB8-0x18ED0) gives the level [0xFFFF915B], which selects the shift program through 0x09A42 (0x1ED8E: [0xFFFF87CC] = 0x09A42[[0xFFFF915B] - 1]). Axis Y: 20-50 (n_out = 32 x value, 640-1600 rpm of the output shaft). Z array by Y rows: n_out/32 = 20: 153/230/252; n_out/32 = 28: 153/230/252; n_out/32 = 32: 153/230/252; n_out/32 = 38: 153/230/252; n_out/32 = 44: 153/230/252; n_out/32 = 50: 153/230/252. This table is used for: branch D ([0xFFFF917F] = 0); the paired table of the other branch is slot 4. The catalog label 'Y = pedal' is wrong: the pedal is the result (Z), axis Y is the output shaft speed. In the factory calibration this table is inactive: the AGS function 0x19084 is called from 0x18676 only when bit 5 of byte 0x70D39 is set (btst 0x18670, beq 0x18674), and in both 20C0 images (Alpina B3S reference and the car dump) 0x70D39 = 0x91, bit 5 = 0. The role is proven by code; the table affects the gearbox only if that bit is set (the 19D0 counterpart 0x8CE7 = 0xFD has bit 5 set). Inactive in the factory 20C0 calibration: function 0x19084 is called from 0x18676 only when bit 5 of byte 0x70D39 is set, and it holds 0x91 (bit 5 = 0).</description>
     <CATEGORYMEM index="0" category="2" />
     <XDFAXIS id="x" uniqueid="0x0">
       <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x7107E" mmedelementsizebits="8" mmedcolcount="3" mmedmajorstridebits="0" mmedminorstridebits="0" />
-      <units>X</units>
+      <units>threshold index i = 1..3 (pedal threshold for requesting AGS level i + 1), [0xFFFF915C]</units>
       <indexcount>3</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -1836,7 +1836,7 @@
     <XDFAXIS id="z">
       <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x71087" mmedelementsizebits="8" mmedrowcount="6" mmedcolcount="3" mmedmajorstridebits="0" mmedminorstridebits="0" />
       <decimalpl>0</decimalpl>
-      <units>raw</units>
+      <units>pedal threshold 0-255 (scale of [0xFFFF912A]); condition 'pedal &gt;= threshold'</units>
       <outputtype>1</outputtype>
       <MATH equation="X">
         <VAR id="X" />
@@ -1844,12 +1844,12 @@
     </XDFAXIS>
   </XDFTABLE>
   <XDFTABLE uniqueid="0x202A" flags="0x0">
-    <title>AGS: pedal thresholds, gear 1, branch sport (0x7109A, slot 4)</title>
-    <description>Slot 4 of the catalog 0x71BC2 = slot 10 of the 19D0 catalog (document 03 §7: AGS, adaptive program selection, not TCC); role carried from 19D0 by the catalog position: structure.</description>
+    <title>AGS: pedal threshold for requesting the next level, 1st gear, branch S (0x7109A, slot 4)</title>
+    <description>Read by the AGS function 0x19084: with the gear code [0xFFFF915F] = 1 or 6 (dispatcher 0x190DC-0x1912A) and branch S ([0xFFFF917F] = 1) (test of [0xFFFF917F] = 1 at 0x19134) it loads the catalog slot pointer 0x71BD2 (lea 0x19138) and for i = 1..3 ([0xFFFF915C]; the loop runs while i &lt; [0x70202] = 4, 0x1916E) calls the 2D8 lookup 0x19BD2 (jsr 0x19144; 0x19BD2 -&gt; 0x19A90, bilinear interpolation): X = i (threshold index 1 / 2 / 3), Y = n_out/32 [0xFFFF9138] (written at 0x20D38: lsr 5, filtered output shaft speed). The byte result (interpolated Z) goes into a local array thr[i-1] (0x1914C). Then (0x192A4-0x192D2) the code walks i = 3 downward and takes the first (largest) i whose threshold is not above the pedal [0xFFFF912A] (= [0xFFFF911B], 0x1CDE6): [0xFFFF915D] = i + 1 (if none passes, [0xFFFF915D] = 1). So Z = pedal threshold (0-255) at which AGS level i + 1 is requested at that speed (column 1 = level 2, column 2 = level 3, column 3 = level 4). [0xFFFF915D] is compared with the current level [0xFFFF915B] (0x192E4-0x192E6): equal - the score drifts to the home scores 0x7089C; different - the matrix 0x708A8 / 0x708B8 changes the score [0xFFFF91D6] (row = [0xFFFF915D], column = [0xFFFF915B]); the score through the ladder 0x70898 (0x18EB8-0x18ED0) gives the level [0xFFFF915B], which selects the shift program through 0x09A42 (0x1ED8E: [0xFFFF87CC] = 0x09A42[[0xFFFF915B] - 1]). Axis Y: 20-50 (n_out = 32 x value, 640-1600 rpm of the output shaft). Z array by Y rows: n_out/32 = 20: 102/166/204; n_out/32 = 28: 102/166/204; n_out/32 = 32: 102/166/204; n_out/32 = 38: 102/166/204; n_out/32 = 44: 102/166/204; n_out/32 = 50: 102/166/204. This table is used for: branch S ([0xFFFF917F] = 1); the paired table of the other branch is slot 3. The catalog label 'Y = pedal' is wrong: the pedal is the result (Z), axis Y is the output shaft speed. In the factory calibration this table is inactive: the AGS function 0x19084 is called from 0x18676 only when bit 5 of byte 0x70D39 is set (btst 0x18670, beq 0x18674), and in both 20C0 images (Alpina B3S reference and the car dump) 0x70D39 = 0x91, bit 5 = 0. The role is proven by code; the table affects the gearbox only if that bit is set (the 19D0 counterpart 0x8CE7 = 0xFD has bit 5 set). Inactive in the factory 20C0 calibration: function 0x19084 is called from 0x18676 only when bit 5 of byte 0x70D39 is set, and it holds 0x91 (bit 5 = 0).</description>
     <CATEGORYMEM index="0" category="2" />
     <XDFAXIS id="x" uniqueid="0x0">
       <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x7109E" mmedelementsizebits="8" mmedcolcount="3" mmedmajorstridebits="0" mmedminorstridebits="0" />
-      <units>X</units>
+      <units>threshold index i = 1..3 (pedal threshold for requesting AGS level i + 1), [0xFFFF915C]</units>
       <indexcount>3</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -1872,7 +1872,7 @@
     <XDFAXIS id="z">
       <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x710A7" mmedelementsizebits="8" mmedrowcount="6" mmedcolcount="3" mmedmajorstridebits="0" mmedminorstridebits="0" />
       <decimalpl>0</decimalpl>
-      <units>raw</units>
+      <units>pedal threshold 0-255 (scale of [0xFFFF912A]); condition 'pedal &gt;= threshold'</units>
       <outputtype>1</outputtype>
       <MATH equation="X">
         <VAR id="X" />
@@ -1880,12 +1880,12 @@
     </XDFAXIS>
   </XDFTABLE>
   <XDFTABLE uniqueid="0x202B" flags="0x0">
-    <title>AGS: pedal thresholds, gear 2, branch normal (0x710BA, slot 5)</title>
-    <description>Slot 5 of the catalog 0x71BC2 = slot 11 of the 19D0 catalog (document 03 §7: AGS, adaptive program selection, not TCC); role carried from 19D0 by the catalog position: structure.</description>
+    <title>AGS: pedal threshold for requesting the next level, 2nd gear, branch D (0x710BA, slot 5)</title>
+    <description>Read by the AGS function 0x19084: with the gear code [0xFFFF915F] = 2 (dispatcher 0x190DC-0x1912A) and branch D ([0xFFFF917F] = 0) (test of [0xFFFF917F] = 1 at 0x19180) it loads the catalog slot pointer 0x71BD6 (lea 0x1919E) and for i = 1..3 ([0xFFFF915C]; the loop runs while i &lt; [0x70202] = 4, 0x1916E) calls the 2D8 lookup 0x19BD2 (jsr 0x191AA; 0x19BD2 -&gt; 0x19A90, bilinear interpolation): X = i (threshold index 1 / 2 / 3), Y = n_out/32 [0xFFFF9138] (written at 0x20D38: lsr 5, filtered output shaft speed). The byte result (interpolated Z) goes into a local array thr[i-1] (0x191B2). Then (0x192A4-0x192D2) the code walks i = 3 downward and takes the first (largest) i whose threshold is not above the pedal [0xFFFF912A] (= [0xFFFF911B], 0x1CDE6): [0xFFFF915D] = i + 1 (if none passes, [0xFFFF915D] = 1). So Z = pedal threshold (0-255) at which AGS level i + 1 is requested at that speed (column 1 = level 2, column 2 = level 3, column 3 = level 4). [0xFFFF915D] is compared with the current level [0xFFFF915B] (0x192E4-0x192E6): equal - the score drifts to the home scores 0x7089C; different - the matrix 0x708A8 / 0x708B8 changes the score [0xFFFF91D6] (row = [0xFFFF915D], column = [0xFFFF915B]); the score through the ladder 0x70898 (0x18EB8-0x18ED0) gives the level [0xFFFF915B], which selects the shift program through 0x09A42 (0x1ED8E: [0xFFFF87CC] = 0x09A42[[0xFFFF915B] - 1]). Axis Y: 31-85 (n_out = 32 x value, 992-2720 rpm of the output shaft). Z array by Y rows: n_out/32 = 31: 153/230/252; n_out/32 = 47: 153/230/252; n_out/32 = 62: 153/230/252; n_out/32 = 68: 153/230/252; n_out/32 = 76: 153/230/252; n_out/32 = 85: 153/230/252. This table is used for: branch D ([0xFFFF917F] = 0); the paired table of the other branch is slot 6. The catalog label 'Y = pedal' is wrong: the pedal is the result (Z), axis Y is the output shaft speed. In the factory calibration this table is inactive: the AGS function 0x19084 is called from 0x18676 only when bit 5 of byte 0x70D39 is set (btst 0x18670, beq 0x18674), and in both 20C0 images (Alpina B3S reference and the car dump) 0x70D39 = 0x91, bit 5 = 0. The role is proven by code; the table affects the gearbox only if that bit is set (the 19D0 counterpart 0x8CE7 = 0xFD has bit 5 set). Inactive in the factory 20C0 calibration: function 0x19084 is called from 0x18676 only when bit 5 of byte 0x70D39 is set, and it holds 0x91 (bit 5 = 0).</description>
     <CATEGORYMEM index="0" category="2" />
     <XDFAXIS id="x" uniqueid="0x0">
       <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x710BE" mmedelementsizebits="8" mmedcolcount="3" mmedmajorstridebits="0" mmedminorstridebits="0" />
-      <units>X</units>
+      <units>threshold index i = 1..3 (pedal threshold for requesting AGS level i + 1), [0xFFFF915C]</units>
       <indexcount>3</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -1908,7 +1908,7 @@
     <XDFAXIS id="z">
       <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x710C7" mmedelementsizebits="8" mmedrowcount="6" mmedcolcount="3" mmedmajorstridebits="0" mmedminorstridebits="0" />
       <decimalpl>0</decimalpl>
-      <units>raw</units>
+      <units>pedal threshold 0-255 (scale of [0xFFFF912A]); condition 'pedal &gt;= threshold'</units>
       <outputtype>1</outputtype>
       <MATH equation="X">
         <VAR id="X" />
@@ -1916,12 +1916,12 @@
     </XDFAXIS>
   </XDFTABLE>
   <XDFTABLE uniqueid="0x202C" flags="0x0">
-    <title>AGS: pedal thresholds, gear 2, branch sport (0x710DA, slot 6)</title>
-    <description>Slot 6 of the catalog 0x71BC2 = slot 12 of the 19D0 catalog (document 03 §7: AGS, adaptive program selection, not TCC); role carried from 19D0 by the catalog position: structure.</description>
+    <title>AGS: pedal threshold for requesting the next level, 2nd gear, branch S (0x710DA, slot 6)</title>
+    <description>Read by the AGS function 0x19084: with the gear code [0xFFFF915F] = 2 (dispatcher 0x190DC-0x1912A) and branch S ([0xFFFF917F] = 1) (test of [0xFFFF917F] = 1 at 0x19180) it loads the catalog slot pointer 0x71BDA (lea 0x19184) and for i = 1..3 ([0xFFFF915C]; the loop runs while i &lt; [0x70202] = 4, 0x1916E) calls the 2D8 lookup 0x19BD2 (jsr 0x19190; 0x19BD2 -&gt; 0x19A90, bilinear interpolation): X = i (threshold index 1 / 2 / 3), Y = n_out/32 [0xFFFF9138] (written at 0x20D38: lsr 5, filtered output shaft speed). The byte result (interpolated Z) goes into a local array thr[i-1] (0x19198). Then (0x192A4-0x192D2) the code walks i = 3 downward and takes the first (largest) i whose threshold is not above the pedal [0xFFFF912A] (= [0xFFFF911B], 0x1CDE6): [0xFFFF915D] = i + 1 (if none passes, [0xFFFF915D] = 1). So Z = pedal threshold (0-255) at which AGS level i + 1 is requested at that speed (column 1 = level 2, column 2 = level 3, column 3 = level 4). [0xFFFF915D] is compared with the current level [0xFFFF915B] (0x192E4-0x192E6): equal - the score drifts to the home scores 0x7089C; different - the matrix 0x708A8 / 0x708B8 changes the score [0xFFFF91D6] (row = [0xFFFF915D], column = [0xFFFF915B]); the score through the ladder 0x70898 (0x18EB8-0x18ED0) gives the level [0xFFFF915B], which selects the shift program through 0x09A42 (0x1ED8E: [0xFFFF87CC] = 0x09A42[[0xFFFF915B] - 1]). Axis Y: 31-85 (n_out = 32 x value, 992-2720 rpm of the output shaft). Z array by Y rows: n_out/32 = 31: 64/115/179; n_out/32 = 47: 64/115/179; n_out/32 = 62: 64/115/179; n_out/32 = 68: 64/115/179; n_out/32 = 76: 64/115/179; n_out/32 = 85: 64/115/179. This table is used for: branch S ([0xFFFF917F] = 1); the paired table of the other branch is slot 5. The catalog label 'Y = pedal' is wrong: the pedal is the result (Z), axis Y is the output shaft speed. In the factory calibration this table is inactive: the AGS function 0x19084 is called from 0x18676 only when bit 5 of byte 0x70D39 is set (btst 0x18670, beq 0x18674), and in both 20C0 images (Alpina B3S reference and the car dump) 0x70D39 = 0x91, bit 5 = 0. The role is proven by code; the table affects the gearbox only if that bit is set (the 19D0 counterpart 0x8CE7 = 0xFD has bit 5 set). Inactive in the factory 20C0 calibration: function 0x19084 is called from 0x18676 only when bit 5 of byte 0x70D39 is set, and it holds 0x91 (bit 5 = 0).</description>
     <CATEGORYMEM index="0" category="2" />
     <XDFAXIS id="x" uniqueid="0x0">
       <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x710DE" mmedelementsizebits="8" mmedcolcount="3" mmedmajorstridebits="0" mmedminorstridebits="0" />
-      <units>X</units>
+      <units>threshold index i = 1..3 (pedal threshold for requesting AGS level i + 1), [0xFFFF915C]</units>
       <indexcount>3</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -1944,7 +1944,7 @@
     <XDFAXIS id="z">
       <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x710E7" mmedelementsizebits="8" mmedrowcount="6" mmedcolcount="3" mmedmajorstridebits="0" mmedminorstridebits="0" />
       <decimalpl>0</decimalpl>
-      <units>raw</units>
+      <units>pedal threshold 0-255 (scale of [0xFFFF912A]); condition 'pedal &gt;= threshold'</units>
       <outputtype>1</outputtype>
       <MATH equation="X">
         <VAR id="X" />
@@ -1952,12 +1952,12 @@
     </XDFAXIS>
   </XDFTABLE>
   <XDFTABLE uniqueid="0x202D" flags="0x0">
-    <title>AGS: pedal thresholds, gear 3, branch normal (0x710FA, slot 7)</title>
-    <description>Slot 7 of the catalog 0x71BC2 = slot 13 of the 19D0 catalog (document 03 §7: AGS, adaptive program selection, not TCC); role carried from 19D0 by the catalog position: structure.</description>
+    <title>AGS: pedal threshold for requesting the next level, 3rd gear, branch D (0x710FA, slot 7)</title>
+    <description>Read by the AGS function 0x19084: with the gear code [0xFFFF915F] = 3 (dispatcher 0x190DC-0x1912A) and branch D ([0xFFFF917F] = 0) (test of [0xFFFF917F] = 1 at 0x191CC) it loads the catalog slot pointer 0x71BDE (lea 0x191EA) and for i = 1..3 ([0xFFFF915C]; the loop runs while i &lt; [0x70202] = 4, 0x1916E) calls the 2D8 lookup 0x19BD2 (jsr 0x191F6; 0x19BD2 -&gt; 0x19A90, bilinear interpolation): X = i (threshold index 1 / 2 / 3), Y = n_out/32 [0xFFFF9138] (written at 0x20D38: lsr 5, filtered output shaft speed). The byte result (interpolated Z) goes into a local array thr[i-1] (0x191FE). Then (0x192A4-0x192D2) the code walks i = 3 downward and takes the first (largest) i whose threshold is not above the pedal [0xFFFF912A] (= [0xFFFF911B], 0x1CDE6): [0xFFFF915D] = i + 1 (if none passes, [0xFFFF915D] = 1). So Z = pedal threshold (0-255) at which AGS level i + 1 is requested at that speed (column 1 = level 2, column 2 = level 3, column 3 = level 4). [0xFFFF915D] is compared with the current level [0xFFFF915B] (0x192E4-0x192E6): equal - the score drifts to the home scores 0x7089C; different - the matrix 0x708A8 / 0x708B8 changes the score [0xFFFF91D6] (row = [0xFFFF915D], column = [0xFFFF915B]); the score through the ladder 0x70898 (0x18EB8-0x18ED0) gives the level [0xFFFF915B], which selects the shift program through 0x09A42 (0x1ED8E: [0xFFFF87CC] = 0x09A42[[0xFFFF915B] - 1]). Axis Y: 62-125 (n_out = 32 x value, 1984-4000 rpm of the output shaft). Z array by Y rows: n_out/32 = 62: 153/230/252; n_out/32 = 77: 153/230/252; n_out/32 = 94: 153/230/252; n_out/32 = 105: 153/230/252; n_out/32 = 116: 153/230/252; n_out/32 = 125: 153/230/252. This table is used for: branch D ([0xFFFF917F] = 0); the paired table of the other branch is slot 8. The catalog label 'Y = pedal' is wrong: the pedal is the result (Z), axis Y is the output shaft speed. In the factory calibration this table is inactive: the AGS function 0x19084 is called from 0x18676 only when bit 5 of byte 0x70D39 is set (btst 0x18670, beq 0x18674), and in both 20C0 images (Alpina B3S reference and the car dump) 0x70D39 = 0x91, bit 5 = 0. The role is proven by code; the table affects the gearbox only if that bit is set (the 19D0 counterpart 0x8CE7 = 0xFD has bit 5 set). Inactive in the factory 20C0 calibration: function 0x19084 is called from 0x18676 only when bit 5 of byte 0x70D39 is set, and it holds 0x91 (bit 5 = 0).</description>
     <CATEGORYMEM index="0" category="2" />
     <XDFAXIS id="x" uniqueid="0x0">
       <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x710FE" mmedelementsizebits="8" mmedcolcount="3" mmedmajorstridebits="0" mmedminorstridebits="0" />
-      <units>X</units>
+      <units>threshold index i = 1..3 (pedal threshold for requesting AGS level i + 1), [0xFFFF915C]</units>
       <indexcount>3</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -1980,7 +1980,7 @@
     <XDFAXIS id="z">
       <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x71107" mmedelementsizebits="8" mmedrowcount="6" mmedcolcount="3" mmedmajorstridebits="0" mmedminorstridebits="0" />
       <decimalpl>0</decimalpl>
-      <units>raw</units>
+      <units>pedal threshold 0-255 (scale of [0xFFFF912A]); condition 'pedal &gt;= threshold'</units>
       <outputtype>1</outputtype>
       <MATH equation="X">
         <VAR id="X" />
@@ -1988,12 +1988,12 @@
     </XDFAXIS>
   </XDFTABLE>
   <XDFTABLE uniqueid="0x202E" flags="0x0">
-    <title>AGS: pedal thresholds, gear 3, branch sport (0x7111A, slot 8)</title>
-    <description>Slot 8 of the catalog 0x71BC2 = slot 14 of the 19D0 catalog (document 03 §7: AGS, adaptive program selection, not TCC); role carried from 19D0 by the catalog position: structure.</description>
+    <title>AGS: pedal threshold for requesting the next level, 3rd gear, branch S (0x7111A, slot 8)</title>
+    <description>Read by the AGS function 0x19084: with the gear code [0xFFFF915F] = 3 (dispatcher 0x190DC-0x1912A) and branch S ([0xFFFF917F] = 1) (test of [0xFFFF917F] = 1 at 0x191CC) it loads the catalog slot pointer 0x71BE2 (lea 0x191D0) and for i = 1..3 ([0xFFFF915C]; the loop runs while i &lt; [0x70202] = 4, 0x1916E) calls the 2D8 lookup 0x19BD2 (jsr 0x191DC; 0x19BD2 -&gt; 0x19A90, bilinear interpolation): X = i (threshold index 1 / 2 / 3), Y = n_out/32 [0xFFFF9138] (written at 0x20D38: lsr 5, filtered output shaft speed). The byte result (interpolated Z) goes into a local array thr[i-1] (0x191E4). Then (0x192A4-0x192D2) the code walks i = 3 downward and takes the first (largest) i whose threshold is not above the pedal [0xFFFF912A] (= [0xFFFF911B], 0x1CDE6): [0xFFFF915D] = i + 1 (if none passes, [0xFFFF915D] = 1). So Z = pedal threshold (0-255) at which AGS level i + 1 is requested at that speed (column 1 = level 2, column 2 = level 3, column 3 = level 4). [0xFFFF915D] is compared with the current level [0xFFFF915B] (0x192E4-0x192E6): equal - the score drifts to the home scores 0x7089C; different - the matrix 0x708A8 / 0x708B8 changes the score [0xFFFF91D6] (row = [0xFFFF915D], column = [0xFFFF915B]); the score through the ladder 0x70898 (0x18EB8-0x18ED0) gives the level [0xFFFF915B], which selects the shift program through 0x09A42 (0x1ED8E: [0xFFFF87CC] = 0x09A42[[0xFFFF915B] - 1]). Axis Y: 62-125 (n_out = 32 x value, 1984-4000 rpm of the output shaft). Z array by Y rows: n_out/32 = 62: 64/115/179; n_out/32 = 77: 64/115/179; n_out/32 = 94: 64/115/179; n_out/32 = 105: 64/115/179; n_out/32 = 116: 64/115/179; n_out/32 = 125: 64/115/179. This table is used for: branch S ([0xFFFF917F] = 1); the paired table of the other branch is slot 7. The catalog label 'Y = pedal' is wrong: the pedal is the result (Z), axis Y is the output shaft speed. In the factory calibration this table is inactive: the AGS function 0x19084 is called from 0x18676 only when bit 5 of byte 0x70D39 is set (btst 0x18670, beq 0x18674), and in both 20C0 images (Alpina B3S reference and the car dump) 0x70D39 = 0x91, bit 5 = 0. The role is proven by code; the table affects the gearbox only if that bit is set (the 19D0 counterpart 0x8CE7 = 0xFD has bit 5 set). Inactive in the factory 20C0 calibration: function 0x19084 is called from 0x18676 only when bit 5 of byte 0x70D39 is set, and it holds 0x91 (bit 5 = 0).</description>
     <CATEGORYMEM index="0" category="2" />
     <XDFAXIS id="x" uniqueid="0x0">
       <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x7111E" mmedelementsizebits="8" mmedcolcount="3" mmedmajorstridebits="0" mmedminorstridebits="0" />
-      <units>X</units>
+      <units>threshold index i = 1..3 (pedal threshold for requesting AGS level i + 1), [0xFFFF915C]</units>
       <indexcount>3</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -2016,7 +2016,7 @@
     <XDFAXIS id="z">
       <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x71127" mmedelementsizebits="8" mmedrowcount="6" mmedcolcount="3" mmedmajorstridebits="0" mmedminorstridebits="0" />
       <decimalpl>0</decimalpl>
-      <units>raw</units>
+      <units>pedal threshold 0-255 (scale of [0xFFFF912A]); condition 'pedal &gt;= threshold'</units>
       <outputtype>1</outputtype>
       <MATH equation="X">
         <VAR id="X" />
@@ -2024,12 +2024,12 @@
     </XDFAXIS>
   </XDFTABLE>
   <XDFTABLE uniqueid="0x202F" flags="0x0">
-    <title>AGS: pedal thresholds, gear 4, branch normal (0x7113A, slot 9)</title>
-    <description>Slot 9 of the catalog 0x71BC2 = slot 15 of the 19D0 catalog (document 03 §7: AGS, adaptive program selection, not TCC); role carried from 19D0 by the catalog position: structure.</description>
+    <title>AGS: pedal threshold for requesting the next level, 4th gear, branch D (0x7113A, slot 9)</title>
+    <description>Read by the AGS function 0x19084: with the gear code [0xFFFF915F] = 4 (dispatcher 0x190DC-0x1912A) and branch D ([0xFFFF917F] = 0) (test of [0xFFFF917F] = 1 at 0x19218) it loads the catalog slot pointer 0x71BE6 (lea 0x19236) and for i = 1..3 ([0xFFFF915C]; the loop runs while i &lt; [0x70202] = 4, 0x1916E) calls the 2D8 lookup 0x19BD2 (jsr 0x19242; 0x19BD2 -&gt; 0x19A90, bilinear interpolation): X = i (threshold index 1 / 2 / 3), Y = n_out/32 [0xFFFF9138] (written at 0x20D38: lsr 5, filtered output shaft speed). The byte result (interpolated Z) goes into a local array thr[i-1] (0x1924A). Then (0x192A4-0x192D2) the code walks i = 3 downward and takes the first (largest) i whose threshold is not above the pedal [0xFFFF912A] (= [0xFFFF911B], 0x1CDE6): [0xFFFF915D] = i + 1 (if none passes, [0xFFFF915D] = 1). So Z = pedal threshold (0-255) at which AGS level i + 1 is requested at that speed (column 1 = level 2, column 2 = level 3, column 3 = level 4). [0xFFFF915D] is compared with the current level [0xFFFF915B] (0x192E4-0x192E6): equal - the score drifts to the home scores 0x7089C; different - the matrix 0x708A8 / 0x708B8 changes the score [0xFFFF91D6] (row = [0xFFFF915D], column = [0xFFFF915B]); the score through the ladder 0x70898 (0x18EB8-0x18ED0) gives the level [0xFFFF915B], which selects the shift program through 0x09A42 (0x1ED8E: [0xFFFF87CC] = 0x09A42[[0xFFFF915B] - 1]). Axis Y: 63-188 (n_out = 32 x value, 2016-6016 rpm of the output shaft). Z array by Y rows: n_out/32 = 63: 128/242/252; n_out/32 = 88: 129/242/252; n_out/32 = 113: 132/242/252; n_out/32 = 125: 134/242/252; n_out/32 = 138: 137/242/252; n_out/32 = 147: 139/242/252; n_out/32 = 156: 144/242/252; n_out/32 = 166: 151/242/252; n_out/32 = 181: 172/242/252; n_out/32 = 188: 191/242/252. This table is used for: branch D ([0xFFFF917F] = 0); the paired table of the other branch is slot 10. The catalog label 'Y = pedal' is wrong: the pedal is the result (Z), axis Y is the output shaft speed. In the factory calibration this table is inactive: the AGS function 0x19084 is called from 0x18676 only when bit 5 of byte 0x70D39 is set (btst 0x18670, beq 0x18674), and in both 20C0 images (Alpina B3S reference and the car dump) 0x70D39 = 0x91, bit 5 = 0. The role is proven by code; the table affects the gearbox only if that bit is set (the 19D0 counterpart 0x8CE7 = 0xFD has bit 5 set). Inactive in the factory 20C0 calibration: function 0x19084 is called from 0x18676 only when bit 5 of byte 0x70D39 is set, and it holds 0x91 (bit 5 = 0).</description>
     <CATEGORYMEM index="0" category="2" />
     <XDFAXIS id="x" uniqueid="0x0">
       <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x7113E" mmedelementsizebits="8" mmedcolcount="3" mmedmajorstridebits="0" mmedminorstridebits="0" />
-      <units>X</units>
+      <units>threshold index i = 1..3 (pedal threshold for requesting AGS level i + 1), [0xFFFF915C]</units>
       <indexcount>3</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -2052,7 +2052,7 @@
     <XDFAXIS id="z">
       <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x7114B" mmedelementsizebits="8" mmedrowcount="10" mmedcolcount="3" mmedmajorstridebits="0" mmedminorstridebits="0" />
       <decimalpl>0</decimalpl>
-      <units>raw</units>
+      <units>pedal threshold 0-255 (scale of [0xFFFF912A]); condition 'pedal &gt;= threshold'</units>
       <outputtype>1</outputtype>
       <MATH equation="X">
         <VAR id="X" />
@@ -2060,12 +2060,12 @@
     </XDFAXIS>
   </XDFTABLE>
   <XDFTABLE uniqueid="0x2030" flags="0x0">
-    <title>AGS: pedal thresholds, gear 4, branch sport (0x7116A, slot 10)</title>
-    <description>Slot 10 of the catalog 0x71BC2 = slot 16 of the 19D0 catalog (document 03 §7: AGS, adaptive program selection, not TCC); role carried from 19D0 by the catalog position: structure.</description>
+    <title>AGS: pedal threshold for requesting the next level, 4th gear, branch S (0x7116A, slot 10)</title>
+    <description>Read by the AGS function 0x19084: with the gear code [0xFFFF915F] = 4 (dispatcher 0x190DC-0x1912A) and branch S ([0xFFFF917F] = 1) (test of [0xFFFF917F] = 1 at 0x19218) it loads the catalog slot pointer 0x71BEA (lea 0x1921C) and for i = 1..3 ([0xFFFF915C]; the loop runs while i &lt; [0x70202] = 4, 0x1916E) calls the 2D8 lookup 0x19BD2 (jsr 0x19228; 0x19BD2 -&gt; 0x19A90, bilinear interpolation): X = i (threshold index 1 / 2 / 3), Y = n_out/32 [0xFFFF9138] (written at 0x20D38: lsr 5, filtered output shaft speed). The byte result (interpolated Z) goes into a local array thr[i-1] (0x19230). Then (0x192A4-0x192D2) the code walks i = 3 downward and takes the first (largest) i whose threshold is not above the pedal [0xFFFF912A] (= [0xFFFF911B], 0x1CDE6): [0xFFFF915D] = i + 1 (if none passes, [0xFFFF915D] = 1). So Z = pedal threshold (0-255) at which AGS level i + 1 is requested at that speed (column 1 = level 2, column 2 = level 3, column 3 = level 4). [0xFFFF915D] is compared with the current level [0xFFFF915B] (0x192E4-0x192E6): equal - the score drifts to the home scores 0x7089C; different - the matrix 0x708A8 / 0x708B8 changes the score [0xFFFF91D6] (row = [0xFFFF915D], column = [0xFFFF915B]); the score through the ladder 0x70898 (0x18EB8-0x18ED0) gives the level [0xFFFF915B], which selects the shift program through 0x09A42 (0x1ED8E: [0xFFFF87CC] = 0x09A42[[0xFFFF915B] - 1]). Axis Y: 63-188 (n_out = 32 x value, 2016-6016 rpm of the output shaft). Z array by Y rows: n_out/32 = 63: 64/97/128; n_out/32 = 88: 64/99/132; n_out/32 = 113: 67/102/137; n_out/32 = 125: 69/104/140; n_out/32 = 138: 71/107/144; n_out/32 = 147: 73/110/148; n_out/32 = 156: 75/113/153; n_out/32 = 166: 78/118/163; n_out/32 = 181: 84/130/187; n_out/32 = 188: 88/141/204. This table is used for: branch S ([0xFFFF917F] = 1); the paired table of the other branch is slot 9. The catalog label 'Y = pedal' is wrong: the pedal is the result (Z), axis Y is the output shaft speed. In the factory calibration this table is inactive: the AGS function 0x19084 is called from 0x18676 only when bit 5 of byte 0x70D39 is set (btst 0x18670, beq 0x18674), and in both 20C0 images (Alpina B3S reference and the car dump) 0x70D39 = 0x91, bit 5 = 0. The role is proven by code; the table affects the gearbox only if that bit is set (the 19D0 counterpart 0x8CE7 = 0xFD has bit 5 set). Inactive in the factory 20C0 calibration: function 0x19084 is called from 0x18676 only when bit 5 of byte 0x70D39 is set, and it holds 0x91 (bit 5 = 0).</description>
     <CATEGORYMEM index="0" category="2" />
     <XDFAXIS id="x" uniqueid="0x0">
       <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x7116E" mmedelementsizebits="8" mmedcolcount="3" mmedmajorstridebits="0" mmedminorstridebits="0" />
-      <units>X</units>
+      <units>threshold index i = 1..3 (pedal threshold for requesting AGS level i + 1), [0xFFFF915C]</units>
       <indexcount>3</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -2088,7 +2088,7 @@
     <XDFAXIS id="z">
       <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x7117B" mmedelementsizebits="8" mmedrowcount="10" mmedcolcount="3" mmedmajorstridebits="0" mmedminorstridebits="0" />
       <decimalpl>0</decimalpl>
-      <units>raw</units>
+      <units>pedal threshold 0-255 (scale of [0xFFFF912A]); condition 'pedal &gt;= threshold'</units>
       <outputtype>1</outputtype>
       <MATH equation="X">
         <VAR id="X" />
@@ -2096,12 +2096,12 @@
     </XDFAXIS>
   </XDFTABLE>
   <XDFTABLE uniqueid="0x2031" flags="0x0">
-    <title>AGS: pedal thresholds, gear 5, branch normal (0x7119A, slot 11)</title>
-    <description>Slot 11 of the catalog 0x71BC2 = slot 17 of the 19D0 catalog (document 03 §7: AGS, adaptive program selection, not TCC); role carried from 19D0 by the catalog position: structure.</description>
+    <title>AGS: pedal threshold for requesting the next level, 5th gear, branch D (0x7119A, slot 11)</title>
+    <description>Read by the AGS function 0x19084: with the gear code [0xFFFF915F] = 5 (dispatcher 0x190DC-0x1912A) and branch D ([0xFFFF917F] = 0) (test of [0xFFFF917F] = 1 at 0x19262) it loads the catalog slot pointer 0x71BEE (lea 0x19280) and for i = 1..3 ([0xFFFF915C]; the loop runs while i &lt; [0x70202] = 4, 0x1916E) calls the 2D8 lookup 0x19BD2 (jsr 0x1928C; 0x19BD2 -&gt; 0x19A90, bilinear interpolation): X = i (threshold index 1 / 2 / 3), Y = n_out/32 [0xFFFF9138] (written at 0x20D38: lsr 5, filtered output shaft speed). The byte result (interpolated Z) goes into a local array thr[i-1] (0x19294). Then (0x192A4-0x192D2) the code walks i = 3 downward and takes the first (largest) i whose threshold is not above the pedal [0xFFFF912A] (= [0xFFFF911B], 0x1CDE6): [0xFFFF915D] = i + 1 (if none passes, [0xFFFF915D] = 1). So Z = pedal threshold (0-255) at which AGS level i + 1 is requested at that speed (column 1 = level 2, column 2 = level 3, column 3 = level 4). [0xFFFF915D] is compared with the current level [0xFFFF915B] (0x192E4-0x192E6): equal - the score drifts to the home scores 0x7089C; different - the matrix 0x708A8 / 0x708B8 changes the score [0xFFFF91D6] (row = [0xFFFF915D], column = [0xFFFF915B]); the score through the ladder 0x70898 (0x18EB8-0x18ED0) gives the level [0xFFFF915B], which selects the shift program through 0x09A42 (0x1ED8E: [0xFFFF87CC] = 0x09A42[[0xFFFF915B] - 1]). Axis Y: 31-188 (n_out = 32 x value, 992-6016 rpm of the output shaft). Z array by Y rows: n_out/32 = 31: 230/242/252; n_out/32 = 63: 230/242/252; n_out/32 = 94: 230/242/252; n_out/32 = 125: 230/242/252; n_out/32 = 156: 230/242/252; n_out/32 = 188: 230/242/252. This table is used for: branch D ([0xFFFF917F] = 0); the paired table of the other branch is slot 12. The catalog label 'Y = pedal' is wrong: the pedal is the result (Z), axis Y is the output shaft speed. In the factory calibration this table is inactive: the AGS function 0x19084 is called from 0x18676 only when bit 5 of byte 0x70D39 is set (btst 0x18670, beq 0x18674), and in both 20C0 images (Alpina B3S reference and the car dump) 0x70D39 = 0x91, bit 5 = 0. The role is proven by code; the table affects the gearbox only if that bit is set (the 19D0 counterpart 0x8CE7 = 0xFD has bit 5 set). Inactive in the factory 20C0 calibration: function 0x19084 is called from 0x18676 only when bit 5 of byte 0x70D39 is set, and it holds 0x91 (bit 5 = 0).</description>
     <CATEGORYMEM index="0" category="2" />
     <XDFAXIS id="x" uniqueid="0x0">
       <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x7119E" mmedelementsizebits="8" mmedcolcount="3" mmedmajorstridebits="0" mmedminorstridebits="0" />
-      <units>X</units>
+      <units>threshold index i = 1..3 (pedal threshold for requesting AGS level i + 1), [0xFFFF915C]</units>
       <indexcount>3</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -2124,7 +2124,7 @@
     <XDFAXIS id="z">
       <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x711A7" mmedelementsizebits="8" mmedrowcount="6" mmedcolcount="3" mmedmajorstridebits="0" mmedminorstridebits="0" />
       <decimalpl>0</decimalpl>
-      <units>raw</units>
+      <units>pedal threshold 0-255 (scale of [0xFFFF912A]); condition 'pedal &gt;= threshold'</units>
       <outputtype>1</outputtype>
       <MATH equation="X">
         <VAR id="X" />
@@ -2132,12 +2132,12 @@
     </XDFAXIS>
   </XDFTABLE>
   <XDFTABLE uniqueid="0x2032" flags="0x0">
-    <title>AGS: pedal thresholds, gear 5, branch sport (0x711BA, slot 12)</title>
-    <description>Slot 12 of the catalog 0x71BC2 = slot 18 of the 19D0 catalog (document 03 §7: AGS, adaptive program selection, not TCC); role carried from 19D0 by the catalog position: structure.</description>
+    <title>AGS: pedal threshold for requesting the next level, 5th gear, branch S (0x711BA, slot 12)</title>
+    <description>Read by the AGS function 0x19084: with the gear code [0xFFFF915F] = 5 (dispatcher 0x190DC-0x1912A) and branch S ([0xFFFF917F] = 1) (test of [0xFFFF917F] = 1 at 0x19262) it loads the catalog slot pointer 0x71BF2 (lea 0x19266) and for i = 1..3 ([0xFFFF915C]; the loop runs while i &lt; [0x70202] = 4, 0x1916E) calls the 2D8 lookup 0x19BD2 (jsr 0x19272; 0x19BD2 -&gt; 0x19A90, bilinear interpolation): X = i (threshold index 1 / 2 / 3), Y = n_out/32 [0xFFFF9138] (written at 0x20D38: lsr 5, filtered output shaft speed). The byte result (interpolated Z) goes into a local array thr[i-1] (0x1927A). Then (0x192A4-0x192D2) the code walks i = 3 downward and takes the first (largest) i whose threshold is not above the pedal [0xFFFF912A] (= [0xFFFF911B], 0x1CDE6): [0xFFFF915D] = i + 1 (if none passes, [0xFFFF915D] = 1). So Z = pedal threshold (0-255) at which AGS level i + 1 is requested at that speed (column 1 = level 2, column 2 = level 3, column 3 = level 4). [0xFFFF915D] is compared with the current level [0xFFFF915B] (0x192E4-0x192E6): equal - the score drifts to the home scores 0x7089C; different - the matrix 0x708A8 / 0x708B8 changes the score [0xFFFF91D6] (row = [0xFFFF915D], column = [0xFFFF915B]); the score through the ladder 0x70898 (0x18EB8-0x18ED0) gives the level [0xFFFF915B], which selects the shift program through 0x09A42 (0x1ED8E: [0xFFFF87CC] = 0x09A42[[0xFFFF915B] - 1]). Axis Y: 31-188 (n_out = 32 x value, 992-6016 rpm of the output shaft). Z array by Y rows: n_out/32 = 31: 64/115/179; n_out/32 = 63: 64/115/179; n_out/32 = 94: 64/115/179; n_out/32 = 125: 64/115/179; n_out/32 = 156: 64/115/179; n_out/32 = 188: 64/115/179. This table is used for: branch S ([0xFFFF917F] = 1); the paired table of the other branch is slot 11. The catalog label 'Y = pedal' is wrong: the pedal is the result (Z), axis Y is the output shaft speed. In the factory calibration this table is inactive: the AGS function 0x19084 is called from 0x18676 only when bit 5 of byte 0x70D39 is set (btst 0x18670, beq 0x18674), and in both 20C0 images (Alpina B3S reference and the car dump) 0x70D39 = 0x91, bit 5 = 0. The role is proven by code; the table affects the gearbox only if that bit is set (the 19D0 counterpart 0x8CE7 = 0xFD has bit 5 set). Inactive in the factory 20C0 calibration: function 0x19084 is called from 0x18676 only when bit 5 of byte 0x70D39 is set, and it holds 0x91 (bit 5 = 0).</description>
     <CATEGORYMEM index="0" category="2" />
     <XDFAXIS id="x" uniqueid="0x0">
       <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x711BE" mmedelementsizebits="8" mmedcolcount="3" mmedmajorstridebits="0" mmedminorstridebits="0" />
-      <units>X</units>
+      <units>threshold index i = 1..3 (pedal threshold for requesting AGS level i + 1), [0xFFFF915C]</units>
       <indexcount>3</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -2160,7 +2160,7 @@
     <XDFAXIS id="z">
       <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x711C7" mmedelementsizebits="8" mmedrowcount="6" mmedcolcount="3" mmedmajorstridebits="0" mmedminorstridebits="0" />
       <decimalpl>0</decimalpl>
-      <units>raw</units>
+      <units>pedal threshold 0-255 (scale of [0xFFFF912A]); condition 'pedal &gt;= threshold'</units>
       <outputtype>1</outputtype>
       <MATH equation="X">
         <VAR id="X" />
@@ -2336,7 +2336,7 @@
   </XDFTABLE>
   <XDFTABLE uniqueid="0x2036" flags="0x0">
     <title>AGS: home points of levels 1-4, factory 32 / 75 / 160 / 224 (0x7089C)</title>
-    <description>AGS points drift towards these values.</description>
+    <description>AGS points drift towards these values. Read only by function 0x19084, which is not called in the factory 20C0 calibration (bit 5 of byte 0x70D39 = 0): the value has no effect.</description>
     <CATEGORYMEM index="0" category="2" />
     <XDFAXIS id="x" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
@@ -2420,8 +2420,8 @@
     </XDFAXIS>
   </XDFTABLE>
   <XDFTABLE uniqueid="0x2038" flags="0x0">
-    <title>AGS: branch D parameter, pair of 0x708B8 (0x708A8)</title>
-    <description>Role is a hypothesis (as in 19D0).</description>
+    <title>AGS: score step when the pedal-requested level differs from the current level, branch D (pair of 0x708B8) (0x708A8)</title>
+    <description>4x4 byte matrix read by the AGS function 0x19084 (movea 0x1939C, move.b (a0,d0.l) 0x193A2) when [0xFFFF917F] is not 1, i.e. in branch D (compare of (a2) with 1 at 0x19366-0x1936A; [0xFFFF917F] is written only at 0x1FE08 = 0 and at 0x1FE64 / 0x1FE96 / 0x1FEBE = 1; for 1 the pair 0x708B8 is read, 0x1937E). Index = ([0xFFFF915D] - 1) x 4 + ([0xFFFF915B] - 1) (0x1936C-0x1939A): ROW = [0xFFFF915D] (level requested by the pedal, slots 3-12), COLUMN = [0xFFFF915B] (current AGS level, 0x18ED0, from the score by the ladder 0x70898). Byte d7: below 0x80 - added to the score [0xFFFF91D6] saturating at 255 (jsr 0x14CB2, 0x193B0-0x193B6); 0x80 and above - subtract (256 - d7) saturating at 0 (jsr 0x14D4C, 0x193D6-0x193DC), but only if [0xFFFF9122] is not above [0x7029D] = 1 (0x193BA-0x193C6; [0xFFFF9122] is computed at 0x20110-0x20118 from the pedal rate of change [0xFFFF906E], exact scaling not analysed: a small value means an almost still pedal). Factory values (signed, minus = score decrease): row (pedal request) 1: 0/-21/-127/-127; row (pedal request) 2: 0/0/-65/-127; row (pedal request) 3: 0/0/0/-65; row (pedal request) 4: 0/0/0/0. All non-zero values lie where the requested level is below the current one (row less than column); on the diagonal and above they are zero: this matrix only lowers the score, score increase for a request above the current level is done elsewhere (not analysed here). The score [0xFFFF91D6] gives the level [0xFFFF915B] (ladder 0x70898, 0x18EB8-0x18ED0), the level selects the shift program through 0x09A42 (0x1ED8E-0x1ED94). Compared with 0x708B8: branch S steps are weaker (-17 / -33 / -65 vs -21 / -127). The axis labels of the catalog entry 0x708B8 (X = 'new step', Y = 'old step') are swapped: the column (X) is the current level [0xFFFF915B], the row (Y) is the requested level [0xFFFF915D]. In the factory calibration this table is inactive: the AGS function 0x19084 is called from 0x18676 only when bit 5 of byte 0x70D39 is set (btst 0x18670, beq 0x18674), and in both 20C0 images (Alpina B3S reference and the car dump) 0x70D39 = 0x91, bit 5 = 0. The role is proven by code; the table affects the gearbox only if that bit is set (the 19D0 counterpart 0x8CE7 = 0xFD has bit 5 set). Inactive in the factory 20C0 calibration: function 0x19084 is called from 0x18676 only when bit 5 of byte 0x70D39 is set, and it holds 0x91 (bit 5 = 0).</description>
     <CATEGORYMEM index="0" category="2" />
     <XDFAXIS id="x" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
@@ -2456,7 +2456,7 @@
     <XDFAXIS id="z">
       <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x708A8" mmedelementsizebits="8" mmedrowcount="4" mmedcolcount="4" mmedmajorstridebits="0" mmedminorstridebits="0" />
       <decimalpl>0</decimalpl>
-      <units>raw</units>
+      <units>AGS score step per tick: signed byte, below 0x80 plus, 0x80 and above minus (256 - value); minus applies when [0xFFFF9122] is not above 1</units>
       <outputtype>1</outputtype>
       <MATH equation="X">
         <VAR id="X" />
@@ -2465,7 +2465,7 @@
   </XDFTABLE>
   <XDFCONSTANT uniqueid="0x2039" flags="0x0">
     <title>AGS: points growth rate towards home, factory 5 (0x708C8)</title>
-    <description>Speed of the AGS points drift.</description>
+    <description>Speed of the AGS points drift. Read only by function 0x19084, which is not called in the factory 20C0 calibration (bit 5 of byte 0x70D39 = 0): the value has no effect.</description>
     <CATEGORYMEM index="0" category="2" />
     <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x708C8" mmedelementsizebits="8" mmedmajorstridebits="0" mmedminorstridebits="0" />
     <units>raw</units>
@@ -2489,7 +2489,7 @@
   </XDFCONSTANT>
   <XDFCONSTANT uniqueid="0x203B" flags="0x0">
     <title>AGS: pedal threshold of branch D, factory 3 (0x70192)</title>
-    <description>Indexed by the branch.</description>
+    <description>Indexed by the branch. Read only by function 0x19084, which is not called in the factory 20C0 calibration (bit 5 of byte 0x70D39 = 0): the value has no effect.</description>
     <CATEGORYMEM index="0" category="2" />
     <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x70192" mmedelementsizebits="8" mmedmajorstridebits="0" mmedminorstridebits="0" />
     <units>pedal</units>
@@ -2501,7 +2501,7 @@
   </XDFCONSTANT>
   <XDFCONSTANT uniqueid="0x203C" flags="0x0">
     <title>AGS: pedal threshold of branches S and M, factory 8 (0x70193)</title>
-    <description>Same table as 0x70192, index 1.</description>
+    <description>Same table as 0x70192, index 1. Read only by function 0x19084, which is not called in the factory 20C0 calibration (bit 5 of byte 0x70D39 = 0): the value has no effect.</description>
     <CATEGORYMEM index="0" category="2" />
     <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x70193" mmedelementsizebits="8" mmedmajorstridebits="0" mmedminorstridebits="0" />
     <units>pedal</units>
@@ -3520,11 +3520,11 @@
       </MATH>
   </XDFCONSTANT>
   <XDFCONSTANT uniqueid="0x205B" flags="0x0">
-    <title>Tolerance between the two supply lines, mV (0x70F50, 19D0 pair 0x8EFA)</title>
-    <description>Supply voltage monitor.</description>
+    <title>Line B check (error 0x2D = 45): threshold of the difference A - B, factory 1000 mV (0x70F50)</title>
+    <description>Voltage channels: [0xFFFF8FFE] (A) = ADC 0xFFFF8A06 x 25250 / 1024, mV (written at 0x1C4C4); [0xFFFF9000] (B) = ADC 0xFFFF8A08 x 25250 / 1024, mV (written at 0x1C47A); no other writers. Read by function 0x233DA (19D0 pair 0x26ED8) in state [0xFFFF8C0E] = 1: d0 = [0xFFFF8FFE] - [0x70F50] (sub.w 0x233F4), then cmp.w with [0xFFFF9000] (0x233FA-0x23400): condition 'A - 1000 &gt; B'. If it holds and [0xFFFF9000] &gt; [0x70F54] (0x2340C-0x23416), the flag d7 = 0, otherwise d7 = 1; d7 is passed as the c(a6) argument to the error registration 0x1534C with code 45 (0x2D) (jsr 0x23428); for d7 not 0 after the registration [0xFFFF8FC8] = 3 or 2 (0x23442 / 0x23448), state [0xFFFF8C0E] = 2 (0x2344C). Which outcome of the check means a fault (polarity of the c(a6) argument of 0x1534C) is not established. The value 1000 is not the 'tolerance between the supply lines' (that tolerance is 0x70F46 = 1500, 0x228C0): it takes part only in the code 45 check. There are no other references to this address in the image (32-bit value search over the whole image). </description>
     <CATEGORYMEM index="0" category="13" />
     <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x70F50" mmedelementsizebits="16" mmedmajorstridebits="0" mmedminorstridebits="0" />
-    <units>mV</units>
+    <units>mV (difference A - B, 25.25 V scale channels)</units>
     <decimalpl>0</decimalpl>
     <outputtype>1</outputtype>
     <MATH equation="X">
@@ -3532,11 +3532,11 @@
       </MATH>
   </XDFCONSTANT>
   <XDFCONSTANT uniqueid="0x205C" flags="0x0">
-    <title>Supply voltage window top, factory 16.0 V: NOT a temperature (0x70F52, 19D0 pair 0x8EFC)</title>
-    <description>Supply voltage monitor.</description>
+    <title>Supply voltage window, upper limit, factory 16000 mV (0x70F52)</title>
+    <description>Voltage channels: [0xFFFF8FFE] (A) = ADC 0xFFFF8A06 x 25250 / 1024, mV (written at 0x1C4C4); [0xFFFF9000] (B) = ADC 0xFFFF8A08 x 25250 / 1024, mV (written at 0x1C47A); no other writers. Read at 0x1B120 (cmp.w, start-up check 0x1B106, 19D0 pair 0x1FB3E): in state [0xFFFF8648] = 1 (0x1B10E), when [0xFFFF8FFE] &gt; [0x70F56] (0x1B118, bls 0x1B11E) and [0xFFFF8FFE] &lt; [0x70F52] (0x1B120, bcc 0x1B126), it writes [0xFFFF8648] = 2 (0x1B128). State 2 is the last condition of the supply self-test: [0xFFFF8648] is set to 1 at 0x1B478 once the other tests are ready (0x1B43C-0x1B470), and with [0xFFFF8648] = 2 and [0xFFFF86CC] = 2 the chain 0x1B47A-0x1B48E sets [0xFFFF8592] = 1; [0xFFFF8592] = 0 holds the gear [0xFFFF915F] = 4 (0x19572-0x195A8, branch 0). Result: outside the 9.0-16.0 V window [0xFFFF8648] does not reach 2 and the transmission start-up does not continue. Not a temperature. There are no other references to this address in the image (32-bit value search over the whole image). </description>
     <CATEGORYMEM index="0" category="13" />
     <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x70F52" mmedelementsizebits="16" mmedmajorstridebits="0" mmedminorstridebits="0" />
-    <units>mV</units>
+    <units>mV ([0xFFFF8FFE] strictly below)</units>
     <decimalpl>0</decimalpl>
     <outputtype>1</outputtype>
     <MATH equation="X">
@@ -3544,11 +3544,11 @@
       </MATH>
   </XDFCONSTANT>
   <XDFCONSTANT uniqueid="0x205D" flags="0x0">
-    <title>Threshold 2.5 V (0x70F54, 19D0 pair 0x8EFE)</title>
-    <description>Sensor supply plausibility.</description>
+    <title>Line B check (error 0x2D = 45): threshold of the voltage B [0xFFFF9000], factory 2500 mV (0x70F54)</title>
+    <description>Voltage channels: [0xFFFF8FFE] (A) = ADC 0xFFFF8A06 x 25250 / 1024, mV (written at 0x1C4C4); [0xFFFF9000] (B) = ADC 0xFFFF8A08 x 25250 / 1024, mV (written at 0x1C47A); no other writers. Read by three steps of the code 45 (0x2D) check: 0x233DA (movea 0x23402, cmp 0x2340E and 0x23438; state [0xFFFF8C0E]), 0x23456 (cmp 0x234AC and 0x234BC; state [0xFFFF8C10]), 0x234EC (cmp 0x23536 and 0x2355A; state [0xFFFF8C12]). Operand: [0xFFFF9000] (B). Sinks: the flag d7 as the c(a6) argument of the error registration 0x1534C with code 45 (jsr 0x23428, 0x234D6, 0x23574) and the state word [0xFFFF8FC8] (0x23442 = 3 for B below 2500, 0x23448 = 2; 0x234B4 = 0; 0x234E0 / 0x2357E = 4; 0x2353E = 0), which is read by the self-test step 0x1B340 ([0xFFFF8FC8] = 4 -&gt; [0xFFFF863E] = 2), 0x1B37C-0x1B3B2 and the output stage check 0x106D8 (0x10736: [0xFFFF8FC8] = 3 and [0xFFFF8FFE] x 80 / 100 not above [0xFFFF9000] -&gt; d7 = 1 into the registration of error 0x2E = 46, jsr 0x10770). Which outcome of the check means a fault (polarity of the c(a6) argument of 0x1534C) is not established. What is physically connected to the ADC 0xFFFF8A08 (line B) is not established; the same compares use 0x8EFE in 19D0. There are no other references to this address in the image (32-bit value search over the whole image). </description>
     <CATEGORYMEM index="0" category="13" />
     <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x70F54" mmedelementsizebits="16" mmedmajorstridebits="0" mmedminorstridebits="0" />
-    <units>mV</units>
+    <units>mV (channel B, 25.25 V scale)</units>
     <decimalpl>0</decimalpl>
     <outputtype>1</outputtype>
     <MATH equation="X">
@@ -3556,11 +3556,11 @@
       </MATH>
   </XDFCONSTANT>
   <XDFCONSTANT uniqueid="0x205E" flags="0x0">
-    <title>Supply voltage window bottom, factory 9.0 V: NOT 90 °C (0x70F56, 19D0 pair 0x8F00)</title>
-    <description>Supply voltage monitor.</description>
+    <title>Supply voltage window, lower limit, factory 9000 mV (0x70F56)</title>
+    <description>Voltage channels: [0xFFFF8FFE] (A) = ADC 0xFFFF8A06 x 25250 / 1024, mV (written at 0x1C4C4); [0xFFFF9000] (B) = ADC 0xFFFF8A08 x 25250 / 1024, mV (written at 0x1C47A); no other writers. Read at 0x1B118 (cmp.w) in the same check 0x1B106 as 0x70F52: for [0xFFFF8FFE] not above [0x70F56] (bls 0x1B11E) the state [0xFFFF8648] does not go to 2. Sink and consequences are the same as for 0x70F52 (0x1B128, 0x1B478-0x1B48E, 0x19572-0x195A8). Not '90 C'. There are no other references to this address in the image (32-bit value search over the whole image). </description>
     <CATEGORYMEM index="0" category="13" />
     <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x70F56" mmedelementsizebits="16" mmedmajorstridebits="0" mmedminorstridebits="0" />
-    <units>mV</units>
+    <units>mV ([0xFFFF8FFE] strictly above)</units>
     <decimalpl>0</decimalpl>
     <outputtype>1</outputtype>
     <MATH equation="X">
@@ -3568,11 +3568,11 @@
       </MATH>
   </XDFCONSTANT>
   <XDFCONSTANT uniqueid="0x205F" flags="0x0">
-    <title>Sensor plausibility: top, factory 2.7 V: NOT 27 °C (0x70F5E, 19D0 pair 0x8F08)</title>
-    <description>Sensor supply plausibility.</description>
+    <title>Sensor on [0xFFFF9014] / [0xFFFF9016]: 'both near 2.5 V' window, top, factory 2700 mV (0x70F5E)</title>
+    <description>Two analog inputs [0xFFFF9014] and [0xFFFF9016] are written by 0x1C528 (19D0 pair 0x20E6C) from a buffer whose address is stored in ROM at 0xA2D4: buffer words +2 and +4, value x 5000 / 1024, mV (0x1C56A, 0x1C596: muls.l #$1388, divs.l #$400). The difference [0xFFFF9012] = max([0xFFFF9016] - [0xFFFF9014], 0) (jsr 0x14CF0 at 0x1C59E, store 0x1C5AA) goes into the 1D16 table of slot 41 (0x71C66, jsr 0x199A2) -&gt; [0xFFFF8C8C] -&gt; low byte of [0xFFFF9066] (ATF temperature sensor per document 11 section 8; 0x1C610). The monitor 0x236E2 (19D0 pair 0x271E0; its address is in the ROM tables 0xA46E, 0xA68A, 0xA7F8) registers an error with code 5 through jsr 0x1534C (0x2398A), class in d1 = d7 (0 - both channels inside the 2.3-2.7 V window; 2, 3, 4 - combinations of exceeding 0x70F64 and 0x70F68; 1 - check of the change of [0xFFFF8C8C] against [0xFFFF9067] with the tolerance [0x70116], 0x23914-0x23940). Code 5 is also read at 0x1CDB6 (jsr 0x1532A) as the condition to replace the pedal [0xFFFF911B] by the table 0x19F42 (0x1CDCC-0x1CDE4); the relation of that use to the sensor on [0xFFFF9014] / [0xFFFF9016] is not established. Read by 0x236E2 at 0x238B4 (for [0xFFFF9016]) and 0x238CA (for [0xFFFF9014]): both channels must be strictly below 0x70F5E and strictly above 0x70F60 (0x238BC / 0x238D2), then the class d7 = 0 (0x238DA) and error 5 of class 0 goes to 0x1534C. Matches 19D0 0x8F08. Not '27 C'. There are no other references to this address in the image (32-bit value search over the whole image). </description>
     <CATEGORYMEM index="0" category="13" />
     <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x70F5E" mmedelementsizebits="16" mmedmajorstridebits="0" mmedminorstridebits="0" />
-    <units>mV</units>
+    <units>mV (5 V scale)</units>
     <decimalpl>0</decimalpl>
     <outputtype>1</outputtype>
     <MATH equation="X">
@@ -3580,11 +3580,11 @@
       </MATH>
   </XDFCONSTANT>
   <XDFCONSTANT uniqueid="0x2060" flags="0x0">
-    <title>Sensor plausibility: bottom, factory 2.3 V: NOT 23 °C (0x70F60, 19D0 pair 0x8F0A)</title>
-    <description>Sensor supply plausibility.</description>
+    <title>Sensor on [0xFFFF9014] / [0xFFFF9016]: 'both near 2.5 V' window, bottom, factory 2300 mV (0x70F60)</title>
+    <description>Two analog inputs [0xFFFF9014] and [0xFFFF9016] are written by 0x1C528 (19D0 pair 0x20E6C) from a buffer whose address is stored in ROM at 0xA2D4: buffer words +2 and +4, value x 5000 / 1024, mV (0x1C56A, 0x1C596: muls.l #$1388, divs.l #$400). The difference [0xFFFF9012] = max([0xFFFF9016] - [0xFFFF9014], 0) (jsr 0x14CF0 at 0x1C59E, store 0x1C5AA) goes into the 1D16 table of slot 41 (0x71C66, jsr 0x199A2) -&gt; [0xFFFF8C8C] -&gt; low byte of [0xFFFF9066] (ATF temperature sensor per document 11 section 8; 0x1C610). The monitor 0x236E2 (19D0 pair 0x271E0; its address is in the ROM tables 0xA46E, 0xA68A, 0xA7F8) registers an error with code 5 through jsr 0x1534C (0x2398A), class in d1 = d7 (0 - both channels inside the 2.3-2.7 V window; 2, 3, 4 - combinations of exceeding 0x70F64 and 0x70F68; 1 - check of the change of [0xFFFF8C8C] against [0xFFFF9067] with the tolerance [0x70116], 0x23914-0x23940). Code 5 is also read at 0x1CDB6 (jsr 0x1532A) as the condition to replace the pedal [0xFFFF911B] by the table 0x19F42 (0x1CDCC-0x1CDE4); the relation of that use to the sensor on [0xFFFF9014] / [0xFFFF9016] is not established. Read by 0x236E2 at 0x238BC (for [0xFFFF9016]) and 0x238D2 (for [0xFFFF9014]): lower bound of the window (the value must be strictly above), pair of 0x70F5E. Matches 19D0 0x8F0A. Not '23 C'. There are no other references to this address in the image (32-bit value search over the whole image). </description>
     <CATEGORYMEM index="0" category="13" />
     <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x70F60" mmedelementsizebits="16" mmedmajorstridebits="0" mmedminorstridebits="0" />
-    <units>mV</units>
+    <units>mV (5 V scale)</units>
     <decimalpl>0</decimalpl>
     <outputtype>1</outputtype>
     <MATH equation="X">
@@ -3592,11 +3592,11 @@
       </MATH>
   </XDFCONSTANT>
   <XDFCONSTANT uniqueid="0x2061" flags="0x0">
-    <title>Threshold 2.504 V (0x70F62, 19D0 pair 0x8F0C)</title>
-    <description>Sensor supply plausibility.</description>
+    <title>ATF sensor: upper limit of the accepted difference [0xFFFF9012], factory 2504 mV (0x70F62)</title>
+    <description>Two analog inputs [0xFFFF9014] and [0xFFFF9016] are written by 0x1C528 (19D0 pair 0x20E6C) from a buffer whose address is stored in ROM at 0xA2D4: buffer words +2 and +4, value x 5000 / 1024, mV (0x1C56A, 0x1C596: muls.l #$1388, divs.l #$400). The difference [0xFFFF9012] = max([0xFFFF9016] - [0xFFFF9014], 0) (jsr 0x14CF0 at 0x1C59E, store 0x1C5AA) goes into the 1D16 table of slot 41 (0x71C66, jsr 0x199A2) -&gt; [0xFFFF8C8C] -&gt; low byte of [0xFFFF9066] (ATF temperature sensor per document 11 section 8; 0x1C610). Read at 0x1C608 (cmp.w, function 0x1C528) in the branch 'error 6 not active' (jsr 0x1532A with d0 = 6 at 0x1C5C6, beq 0x1C5FE): [0xFFFF9012] must be not below 0x70F66 = 1014 (0x1C600, bcs 0x1C614) and not above 0x70F62 (0x1C608, bhi 0x1C614); only then [0xFFFF9066] = low byte of [0xFFFF8C8C] (0x1C610); outside 1014-2504 mV [0xFFFF9066] keeps its old value (the part of the slot 41 table between 2504 and 2673 mV does not reach [0xFFFF9066]). [0xFFFF9066] is read, among others, by 0x1CE30 ([0xFFFF906A] = [0xFFFF9066] + 8) and 0x228D0 (table 0x70F32 in the voltage monitor). Matches 19D0 0x8F0C. There are no other references to this address in the image (32-bit value search over the whole image). </description>
     <CATEGORYMEM index="0" category="13" />
     <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x70F62" mmedelementsizebits="16" mmedmajorstridebits="0" mmedminorstridebits="0" />
-    <units>mV</units>
+    <units>mV ([0xFFFF9012], 5 V scale)</units>
     <decimalpl>0</decimalpl>
     <outputtype>1</outputtype>
     <MATH equation="X">
@@ -3604,11 +3604,11 @@
       </MATH>
   </XDFCONSTANT>
   <XDFCONSTANT uniqueid="0x2062" flags="0x0">
-    <title>Threshold 4.5 V (0x70F64, 19D0 pair 0x8F0E)</title>
-    <description>Sensor supply plausibility.</description>
+    <title>Sensor on [0xFFFF9014] / [0xFFFF9016]: upper threshold of channel [0xFFFF9016], factory 4500 mV (0x70F64)</title>
+    <description>Two analog inputs [0xFFFF9014] and [0xFFFF9016] are written by 0x1C528 (19D0 pair 0x20E6C) from a buffer whose address is stored in ROM at 0xA2D4: buffer words +2 and +4, value x 5000 / 1024, mV (0x1C56A, 0x1C596: muls.l #$1388, divs.l #$400). The difference [0xFFFF9012] = max([0xFFFF9016] - [0xFFFF9014], 0) (jsr 0x14CF0 at 0x1C59E, store 0x1C5AA) goes into the 1D16 table of slot 41 (0x71C66, jsr 0x199A2) -&gt; [0xFFFF8C8C] -&gt; low byte of [0xFFFF9066] (ATF temperature sensor per document 11 section 8; 0x1C610). The monitor 0x236E2 (19D0 pair 0x271E0; its address is in the ROM tables 0xA46E, 0xA68A, 0xA7F8) registers an error with code 5 through jsr 0x1534C (0x2398A), class in d1 = d7 (0 - both channels inside the 2.3-2.7 V window; 2, 3, 4 - combinations of exceeding 0x70F64 and 0x70F68; 1 - check of the change of [0xFFFF8C8C] against [0xFFFF9067] with the tolerance [0x70116], 0x23914-0x23940). Code 5 is also read at 0x1CDB6 (jsr 0x1532A) as the condition to replace the pedal [0xFFFF911B] by the table 0x19F42 (0x1CDCC-0x1CDE4); the relation of that use to the sensor on [0xFFFF9014] / [0xFFFF9016] is not established. Read by 0x236E2 at 0x2384E, 0x23870, 0x23892 (cmp.w [0xFFFF9016] with 0x70F64) together with the threshold 0x70F68 = 500 for [0xFFFF9014]: [0xFFFF9016] &gt; 4500 and [0xFFFF9014] &gt; 500 - class 2 (0x23864); [0xFFFF9016] &lt; 4500 and [0xFFFF9014] &lt; 500 - class 3 (0x23886); [0xFFFF9016] &gt; 4500 and [0xFFFF9014] &lt; 500 - class 4 (0x238A8). The class goes into d1 of the error 5 registration (jsr 0x1534C, 0x2398A). Matches 19D0 0x8F0E. There are no other references to this address in the image (32-bit value search over the whole image). </description>
     <CATEGORYMEM index="0" category="13" />
     <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x70F64" mmedelementsizebits="16" mmedmajorstridebits="0" mmedminorstridebits="0" />
-    <units>mV</units>
+    <units>mV (5 V scale)</units>
     <decimalpl>0</decimalpl>
     <outputtype>1</outputtype>
     <MATH equation="X">
