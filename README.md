@@ -26,7 +26,7 @@
 </p>
 
 <p align="center">
-  by <b><a href="https://rudywolf.ru">rudywolf</a></b> | <a href="https://github.com/therudywolf">github.com/therudywolf</a> | <a href="https://boosty.to/therudywolf"><b>support on Boosty</b></a>
+  by <b><a href="https://rudywolf.ru">rudywolf</a></b> | <a href="https://github.com/therudywolf">github.com/therudywolf</a> | <a href="https://boosty.to/therudywolf"><b>support on Boosty</b></a> | <a href="https://t.me/rudy_wolf">Telegram</a> | <a href="mailto:alonerudywolf@gmail.com">alonerudywolf@gmail.com</a>
 </p>
 
 <p align="center">
@@ -169,6 +169,10 @@ AI tools were used for parts of the disassembly, cross-checking and writing. Eve
 
 Unpaid hobby research: dumps read by hand, code disassembled instruction by instruction, every finding checked against the code and, wherever possible, on a real car, including the mistakes, which are documented too. Everything here stays free and open. If it saved you time, money or a gearbox, support it on **[Boosty: boosty.to/therudywolf](https://boosty.to/therudywolf)**.
 
+### Custom work
+
+Want a custom tune for **MS42 / MS43**, a custom tune of the **5HP19** gearbox (GS8.60), or a custom logger for your car? Write to me, I take paid work: Telegram **[t.me/rudy_wolf](https://t.me/rudy_wolf)**, e-mail **[alonerudywolf@gmail.com](mailto:alonerudywolf@gmail.com)**.
+
 ---
 
 <a name="русский"></a>
@@ -304,3 +308,7 @@ assets/              логотип
 ### Поддержать
 
 Это хобби-исследование без бюджета: дампы читаются руками, код разбирается инструкция за инструкцией, каждая находка проверяется по коду и, где можно, на живой машине, включая ошибки, которые тоже документируются. Всё здесь остаётся бесплатным и открытым. Если это сэкономило вам время, деньги или коробку, поддержите на **[Boosty: boosty.to/therudywolf](https://boosty.to/therudywolf)**.
+
+### Работа на заказ
+
+Нужен кастомный тюн **MS42 / MS43**, кастомный тюн коробки **5HP19** (GS8.60) или свой логгер под машину? Напишите мне, готов взять работу платно: Telegram **[t.me/rudy_wolf](https://t.me/rudy_wolf)**, почта **[alonerudywolf@gmail.com](mailto:alonerudywolf@gmail.com)**.
