@@ -23,7 +23,7 @@ Coverage of 19x0: addresses fully, roles partially. `catalog/gs8600_19d0.json` a
 | `0x08000–0x10000` | **calibration window** — the only thing that gets edited. Exactly what the flasher calls Partial (32 KB) |
 | `0x080D0–0x0E4A2` | table zone inside the window (§2) |
 | `0x0E49A–0x0FFCE` | 6964 bytes of `0xFF` (free) |
-| `0x0FFCE–0x10000` | calibration label `B22K4_0419C0KA20` ×3 + 2 bytes at `0xFFFE`: the calibration checksum, CRC-16/XMODEM over `0x8000–0xFFCD` (0x47DB in stock, 0x1851 in Alpina). The ECU computes it only when a tester asks (command 0x0A), so edited calibrations with a stale sum still drive; the tools recompute it (doc 07 §6) |
+| `0x0FFCE–0x10000` | calibration label `B22K4_0419C0KA20` ×3 + 2 bytes at `0xFFFE`: the calibration checksum, CRC-16/XMODEM over `0x8000–0xFFCD` (0x47DB in stock, 0x1851 in Alpina). The ECU checks it on a tester request (command 0x0A) and in the background (task `0x26926`, doc 07 §6); the tools recompute it |
 | `0x10000–0x13400` | second data area, strings (`BK8D1920BMW51911` @0x131BC), shift-automaton matrices (0x12E30, 0x12F9C, 0x12FAA, 0x12FDC, 0x13012, 0x13034) |
 | `0x13784–0x15000` | `0xFF` |
 | `0x15000–0x3A800` | main code (including the shift-execution module 0x34000–0x39600) |
