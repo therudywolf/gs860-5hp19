@@ -256,6 +256,8 @@ Code analysis of 23-24.09.2026, some functions checked by running the real code 
 
 **Slip-time controller** 0x364A2 and 0x36678 (10 ms task) takes the target time from the record at the start of the slip phase. `0xFFFF9737` = target × remaining fraction, `0xFFFF96B6` = slip × 100 / 9737 = required gradient. The controller drives the pressure of the clutch chosen by `0xFFFF974B` (off-going 9721 or on-coming 9720) within the record fields $5C / $60. A smaller target means a steeper gradient and a quicker shift. A target of 0 is a special case (0x365DC). In 0x364A2 d4 = 0xFF, d2 = 1000. Which clutch 974B drives in each downshift kind is not traced.
 
+> **Correction 08.10.2026.** The cell `0xFFFF974B` exists in 19D0 only. In 20C0 the pair is `[0xFFFF93CF]` (1 = the controller drives the on-coming element, 0 = the off-going one), document 11 §15.
+
 **Time budget of a load upshift.** kind1 runs through phases 0, 1 (pause f08), 2 (fast fill, f10 vs ATF), 3 (1 tick), 4 (approach, f27), 9 (torque transfer, f43), 10 (controlled slip to sync, target f45), 11 (squeeze). Factory, 2-3 at full throttle with ATF at about 87 °C: phase 1 60 ms, fill 80 ms, phase 3 10 ms, phase 4 110 ms, phase 9 220 ms, 480 ms in total before the rpm starts to fall. The expected start of slip `0xFFFF9690`, which the box uses to time the torque-reduction request (0x3707A), is computed from f27 and f43 of the same record, the phases are driven by 0x35978.
 
 Hypothesis, not proven: the approach-pressure adaptation is shared by D, S and M per shift type and learns only with the turbine at 1400-1800 rpm at the start of the shift (0x2AE10 not fully traced).
