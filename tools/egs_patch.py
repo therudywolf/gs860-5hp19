@@ -20,7 +20,7 @@ Usage:
 
 PATCH is name[:key=value[,key=value...]], for example
   tcc-first:modes=S+M,rpm=1760   tcc-lock:modes=D+S+M,rpm=1600   no-warmup   s-no5
-  shift-wot:modes=S   no-kickdown:scope=M   manual-hold   gate:mode=S
+  shift-wot:modes=S   no-kickdown:scope=M   manual-hold   gate:mode=S   s-sport   shift-feel
 
 Engine limits (turbine rpm = engine rpm when the converter is locked):
   --spark RPM   the lower engine limiter (spark or soft cut); used by shift-wot
@@ -581,6 +581,108 @@ def p_tcc_lock(img, prm, ctx):
             img.set_group(p, gear, target[gear], f"tcc-lock: P{p:X} gear {gear} -> group {target[gear]}")
 
 
+# s-sport: weight of the way from the factory point to the full-throttle point of the same S matrix, by pedal
+S_SPORT_W = ((60, 0.0), (83, 0.20), (121, 0.35), (160, 0.50), (198, 0.65), (203, 0.67), (243, 0.75))
+
+
+def s_sport_weight(y):
+    if y >= 243 or y <= S_SPORT_W[0][0]:
+        return 0.0
+    for (y0, w0), (y1, w1) in zip(S_SPORT_W, S_SPORT_W[1:]):
+        if y <= y1:
+            return w0 + (w1 - w0) * (y - y0) / (y1 - y0)
+    return 0.0
+
+
+def p_s_sport(img, prm, ctx):
+    """s-sport - a sporty S: below full throttle (pedal 60-242) the upshift points of the S matrices (P2 = k11, P3 = k15)
+    move from the factory point toward the full-throttle point of the same matrix (20 % of the way at pedal 83, 50 % at
+    160, 67 % at 203) and the downshift points toward its full-throttle downshifts (down=0.35 of that way), each downshift
+    kept at least 6 units under its upshift. The rows 0-46 (cruising) and 243-255 are not touched. Use after shift-wot
+    (the full-throttle row is then under the limiter) and s-no5. Meant for a file whose S is the same as D (the Alpina
+    20C0 file: the Alpina box has no sport program in its gate); strength=1 (default) scales the weights. Docs 13 §9."""
+    strength = float(prm.get("strength", "1"))
+    dn_k = float(prm.get("down", "0.35"))
+    if not 0 < strength <= 1.5 or not 0 <= dn_k <= 1:
+        raise PatchError("s-sport: strength 0..1.5 (default 1), down 0..1 (default 0.35)")
+    for p in MODES["S"]:
+        k = PROG2K[p]
+        t, ys, data = img.matrix(k)
+        tops = [r for r, y in enumerate(ys) if y >= 243]
+        if not tops:
+            raise PatchError(f"s-sport k{k:02d}: no full-throttle row")
+        up_lim, dn_top = data[tops[0]][:4], data[tops[0]][4:]
+        for r, y in enumerate(ys):
+            w = s_sport_weight(y) * strength
+            if w <= 0:
+                continue
+            new_up = []
+            for c in range(4):
+                old = data[r][c]
+                new_up.append(old if old >= 250 or up_lim[c] >= 250 else max(old, min(up_lim[c], round(old + w * (up_lim[c] - old)))))
+            for c in range(4):
+                old = data[r][4 + c]
+                nd = round(old + dn_k * (w / 0.5) * max(0, dn_top[c] - old)) if old < 250 else old
+                nd = min(nd, new_up[c] - MIN_GAP) if new_up[c] < 250 else nd
+                nd = max(old, nd)
+                img.set_cell(t, r, c, new_up[c], f"s-sport k{k:02d} pedal {y}: {c + 1}>{c + 2} toward full throttle (w {w:.2f})")
+                img.set_cell(t, r, 4 + c, nd, f"s-sport k{k:02d} pedal {y}: {c + 2}>{c + 1} livelier (w {w:.2f})")
+
+
+# shift-feel (20C0): header addresses of the tables the patch scales
+FEEL_UP = {0x7B708: "1>2", 0x7B758: "2>3", 0x7B794: "3>4", 0x7B7D0: "4>5"}                    # target slip time, upshift under load (3x3)
+FEEL_DN = {0x7B76C: "3>1", 0x7B780: "3>2", 0x7B7A8: "4>2", 0x7B7BC: "4>3", 0x7B7E4: "5>3", 0x7B7F8: "5>4",
+           0x7B834: "3>2 var.1/2", 0x7B848: "4>3 var.1/2", 0x7B85C: "5>4 var.1/2"}                # downshift under load (3x3)
+FEEL_P = {0x78310: "1>2", 0x784C4: "2>3", 0x7862E: "3>4", 0x78798: "4>5"}                       # on-coming pressure in the slip phases (8x10)
+FEEL_BOUNDS = (0x7B94D, 0x7B94E, 0x7B94F, 0x7B950, 0x7B953, 0x7B954, 0x7B956, 0x7B958, 0x7B959, 0x7B95B, 0x7B95D, 0x7B95E, 0x7B960)
+
+
+def p_shift_feel(img, prm, ctx):
+    """shift-feel - 20C0 only: shift hardness that follows the load, because the hydraulic records do not depend on the
+    program D / S / M (the record selector 0x41842 reads the shift type and the load class only). The target slip time of the
+    shifts under load (docs 11 §9, rows = turbine torque) is scaled by row: the light row up_soft / dn_soft (default 1.20 /
+    1.15, a gentler D at light load), the middle row 1, the heavy row up_hard / dn_hard (0.80 / 0.85, crisp shifts at full
+    throttle and in M near the limiter), not below up_min / dn_min (28 / 15 ticks of 10 ms). The pressure of the on-coming element
+    in the slip phases of the upshifts under load rises by press (0.10) on the upper torque rows (linear from row 3 to the last)
+    and its upper bound by bound (1.10), so the slip controller is not held by the old cap. The garage shifts (N-D, 0>2) are
+    not touched. The effect needs a log on the car: the pressure units are not established. Docs 13 §10."""
+    if img.key != "20C0":
+        raise PatchError("shift-feel: GS8.60.4 20C0 only (the record layout of 19x0 is another one)")
+    f = lambda k, d: float(prm.get(k, d))
+    up_rows = [f("up_soft", 1.20), 1.0, f("up_hard", 0.80)]
+    dn_rows = [f("dn_soft", 1.15), 1.0, f("dn_hard", 0.85)]
+    up_min, dn_min = int(f("up_min", 28)), int(f("dn_min", 15))
+    press, bound, ramp = f("press", 0.10), f("bound", 1.10), int(f("ramp", 3))
+    if not (0.5 <= min(up_rows + dn_rows) and max(up_rows + dn_rows) <= 1.5 and 0 <= press <= 0.2 and 1 <= bound <= 1.2 and 0 <= ramp <= 8
+            and 10 <= up_min <= 80 and 10 <= dn_min <= 80):
+        raise PatchError("shift-feel: factors 0.5..1.5, press 0..0.2, bound 1..1.2, ramp 0..8, up_min / dn_min 10..80")
+    def scale(a, nm, rows, floor, kind):
+        t, xs, ys, data = img.table(a, "2D8", 3, 3)
+        if not all(5 <= v <= 200 for row in data for v in row):
+            raise PatchError(f"shift-feel: 0x{a:05X} has values outside 5..200 ticks - another calibration, stop")
+        for r in range(3):
+            for c in range(3):
+                v = data[r][c]; fr = rows[r]
+                nv = round(v * fr) if fr >= 1 else max(floor, min(v, round(v * fr)))
+                img.set_cell(t, r, c, nv, f"shift-feel {kind} {nm} under load: target slip time, torque row {r} x{fr:.2f}")
+    for a, nm in FEEL_UP.items():
+        scale(a, nm, up_rows, up_min, "up")
+    for a, nm in FEEL_DN.items():
+        scale(a, nm, dn_rows, dn_min, "down")
+    for a, nm in FEEL_P.items():
+        t, xs, ys, data = img.table(a, "2D8", 8, 10)
+        for r in range(10):
+            fr = 1.0 + press * max(0, r - ramp) / (9 - ramp)
+            for c in range(8):
+                img.set_cell(t, r, c, min(255, round(data[r][c] * fr)), f"shift-feel up {nm}: on-coming pressure in the slip phases, torque row {r} x{fr:.3f}")
+    for a in FEEL_BOUNDS:
+        v = img.u8(a)
+        if not 60 <= v <= 200:
+            raise PatchError(f"shift-feel: upper pressure bound 0x{a:05X} = {v}, expected 60..200 - stop")
+        img.set8(a, min(255, round(v * bound)), f"shift-feel: upper bound of the on-coming pressure x{bound:.2f}")
+
+
+
 PATCHES = {
     "tcc-first": p_tcc_first,
     "tcc-lock": p_tcc_lock,
@@ -590,6 +692,8 @@ PATCHES = {
     "no-kickdown": p_no_kickdown,
     "manual-hold": p_manual_hold,
     "gate": p_gate,
+    "s-sport": p_s_sport,
+    "shift-feel": p_shift_feel,
 }
 
 # Group texts of the recipes built from presets (make_recipe annotations)
@@ -620,6 +724,16 @@ PATCH_TEXT = {
                     "the pedal on the floor.",
                     "Кикдаун выключен: флаг не ставится никогда (ветка контакта с педалью > 255); в M нажатия +/- "
                     "работают с педалью в полу."),
+    "s-sport": ("Sporty S: pedal 60-242 of the S matrices move from the factory points toward their own full-throttle points "
+                "(20 % of the way at pedal 83, 50 % at 160, 67 % at 203), downshifts livelier and 6 units under the upshifts.",
+                "Спортивная S: педаль 60-242 в матрицах S идёт от заводских точек к своим точкам в пол (20 % пути на педали 83, "
+                "50 % на 160, 67 % на 203), понижения бодрее и на 6 единиц ниже повышений."),
+    "shift-feel": ("Shift hardness by load (20C0): target slip time of the shifts under load x1.20 / 1.00 / 0.80 (upshifts) and "
+                   "x1.15 / 1.00 / 0.85 (downshifts) on the light / middle / heavy torque row, on-coming pressure in the slip "
+                   "phases up to +10 % on the upper torque rows, its upper bound +10 %.",
+                   "Жёсткость переключений по нагрузке (20C0): целевое время скольжения переключений под нагрузкой x1.20 / 1.00 / "
+                   "0.80 (повышения) и x1.15 / 1.00 / 0.85 (понижения) на малой / средней / большой строке момента, давление "
+                   "включаемого в фазах скольжения до +10 % на верхних строках момента, его верхняя граница +10 %."),
     "no-warmup": ("Warm-up program off: it ends on the first cycle after power-on.",
                   "Режим прогрева выключен: заканчивается на первом такте после включения."),
 }

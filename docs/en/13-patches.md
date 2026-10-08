@@ -15,6 +15,8 @@ TCC below is the torque converter clutch (lock-up, document 03).
 | full-throttle shift rpm in S and D | `shift-wot` | matrices k11, k15, k14, k6 | the same k, minus the addition `0x70B98` | 5 |
 | no kick-down | `no-kickdown` | `0x8D1A`, `0x8246` | `0x70D6A`, `0x70232` | 6 |
 | M does not shift by itself | `manual-hold` | matrices k10, k8, monitor `0x8B44` | matrices k10, k8, monitor `0x70BA8` | 7 |
+| a sporty S on the part throttle | `s-sport` | k11, k15 (pedal 60-242) | k11, k15 (pedal 60-242) | 9 |
+| hard / gentle shifts by load | `shift-feel` | - | target slip times and on-coming pressure of the records `9824`, `9834`, `0x7B94D` | 10 |
 | gate: S first or M at once | `gate` | `0x8975` | `0x70966` | 8 |
 
 ```
@@ -186,9 +188,31 @@ The program byte of the left gate before the first +/- tap: 19x0 `0x8975` (`0x23
 
 `gate:mode=S` writes `0xFE`, `gate:mode=M` writes `0x0B`. 20C0 has a second byte, `0x70967` = 3 (P3), used when `[0xFFFF918C]` = 2 (bits 0-1 of byte 2 of CAN `0x338`, meaning of the value not established); the patch leaves it.
 
-## 9. What the patches do not do
+## 9. A sporty S (`s-sport`)
 
-- They do not touch the hydraulics, table axes, the loader or the identification. The list of don'ts is document 09.
+**Why.** In the Alpina 20C0 file the matrices of S (P2 = k11, P3 = k15) are almost the same as D (k14, k6): the same points at pedal 83-203. The Alpina gate gives M at once (`0x0B`), so the file never needed a sport program. After `gate:mode=S` the S level would only differ from D by the patches `s-no5` and `shift-wot`, which touch the full-throttle rows. `s-sport` makes S sporty also on the part throttle.
+
+**What it does.** For pedal 60-242 the upshift points of the S matrices move from the factory point toward the full-throttle point of the same matrix (the row of pedal 243, which `shift-wot` has put under the limiter): 20 % of the way at pedal 83, 35 % at 121, 50 % at 160, 65 % at 198, 67 % at 203, interpolated between. The downshift points move toward the full-throttle downshifts by `down=0.35` of that way and stay at least 6 units under their upshift (no hunting). The rows 0-46 (cruising) and 243-255 are not touched, the 4>5 column stays 255 after `s-no5`. `strength=` (default 1) scales the weights.
+
+Order in a chain: after `shift-wot` and `s-no5`. Works on both platforms. On a file whose S is already sporty (BMW factory) it would shift S even higher: lower `strength`.
+
+Example on the 20C0 file of Alpina B3S (turbine rpm, converter open): pedal 160, 1>2 / 2>3 / 3>4 = 2228 / 2751 / 2927 in D, 3518 / 4286 / 4412 in S.
+
+## 10. Shift hardness by load (`shift-feel`, 20C0)
+
+**What decides the hardness.** The hydraulic records (pressure, times, slip controller) are chosen by the shift type and the load class; the selector `0x41842` does not read the program D / S / M, and the variant byte `[0xFFFF93C0]` comes from the shift state, not from the program (document 11 §9). So "hard M, sporty S, gentle D" cannot be made by separate tables; the same tables apply to every program. What differs is the load: D shifts at light load, S and M near the limiter at full throttle. The patch makes the tables follow the load.
+
+**What it does.** 20C0 only.
+
+- The target slip time of the shifts under load (5 tables of the upshifts, 13 of the downshifts, 3 rows of turbine torque, ticks of 10 ms) is scaled by the row: the light row `up_soft` / `dn_soft` (default 1.20 / 1.15, longer = gentler), the middle row 1, the heavy row `up_hard` / `dn_hard` (0.80 / 0.85, shorter = crisper), not below `up_min` / `dn_min` (28 / 15 ticks). The garage shifts (N to D, type 0>2) and the downshifts 2>1 are not touched.
+- The pressure of the on-coming element in the slip phases of the upshifts under load (4 tables 8x10 of the types 1>2 to 4>5) rises by `press` (default 0.10) on the upper torque rows, linearly from row `ramp` (3) to the last; the first three rows stay as they are.
+- The upper bound of that pressure (13 bytes `0x7B94D`-`0x7B960`) is raised by `bound` (1.10), otherwise the slip controller would stay under the old cap.
+
+**What is proven and what is not.** The tables and the axes are proven by the code (document 11 §9); the slip time is the target of the controller, so a shorter target makes it raise the pressure by itself. The pressure units are not established; that "a larger byte is a higher pressure" follows from the tables rising with the torque. Whether the packs of a given box take the change is not known: the first drive needs a log (ATF, turbine, gear, converter state).
+
+## 11. What the patches do not do
+
+- They do not touch the hydraulics (except `shift-feel` on 20C0, section 10), table axes, the loader or the identification. The list of don'ts is document 09.
 - They do not raise the turbine monitor above 7232 and do not touch the voltage monitor (`0x8EE8…`, `0x70F32…`: those are millivolts, document 05 §1).
 - They do not work on other software (15C0 and the rest): other addresses, the tool refuses.
 - The presets as a whole are not road-tested (document 14). On 19x0 the counterparts of `tcc-lock`, `tcc-first`, `s-no5` and `manual-hold` are flashed on the reference E39 (WOLF4X builds v24-v44), the converter lock-up in 1st is not confirmed by a log yet. Check with a log (document 06).
