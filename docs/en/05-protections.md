@@ -52,7 +52,7 @@ What remains open:
 
 - **Closed on 23.09.2026.** The cause of limp mode at the limiter is found: the turbine monitor 0x26C84 with the threshold [0x8B44] = 6720 (§6). The 6613 peak is below the threshold, hitting the limiter at about 7008 is above it, limp mode after 1.3 s. The constants 0x8EE8 / 0x8EEA / 0x8EF0 have nothing to do with it.
 - fault code 0x95 (149) in the EGS memory — no mapping table from internal fault numbers to DS2 codes has been found; its link to the event is unproven.
-- That the DS2 code 0x95 is the internal fault 0x25 of the turbine monitor is a hypothesis, not proven: no DS2 code table for 19D0 has been found.
+- That the DS2 code 0x95 is the internal fault 0x25 of the turbine monitor was a hypothesis. **Refuted by the 20C0 code (08.10.2026):** in the DS2 table of 20C0 (`0x707A0`) the internal fault 0x25 gives the DS2 code 0x21 (P0716 overspeed / P0715 no signal), and 0x95 belongs to the fault 0x24 (wheel speeds from CAN invalid); in 19D0 the same pairs sit at `0x87A8` / `0x87B0`. Why 0x95 was stored next to the limiter event in the 19D0 log is not explained by the code.
 
 ## 2. Warm-up program (until 06.10.2026 this section said "thermal derate by ATF")
 

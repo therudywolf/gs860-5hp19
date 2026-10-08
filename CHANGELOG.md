@@ -2,6 +2,22 @@
 
 Newest first. Each entry: date and title, then **EN** and **RU** with the same facts. Older entries are not rewritten: what turned out wrong is corrected in a newer entry.
 
+## 2026-10-08: 20C0 roles of 176 more tables, AGS inactive in stock, read evidence for 19x0, corrections
+
+**EN**
+
+- **20C0 catalog.** 176 tables of the roots `9808`, `980C`, `9814`, `981C`, `982C`, `983C`, `9820`, `9824`, `9828`, `9840`, `9844`, `984C` got roles read from the 20C0 code (lower TCC level, learning of pressure corrections, torque path, current/pressure tables): 159 proven, 17 read by code with the meaning not established. The 19 entries that were "structure" or "hypothesis" are proven (pedal thresholds of the AGS, score matrices, voltage block). Now 1743 proven, 36 shape only. New category 17 in the RU and EN XDF.
+- **AGS is inactive in the factory 20C0.** The function `0x19084` is called from `0x18676` only when bit 5 of the byte `0x70D39` is set; it is 0 in the Alpina B3S image, the E46 dump and the BMW `15C0` image. The pedal thresholds, the D / S matrices `0x708A8` / `0x708B8` and the constants read only by that function have no effect there. The Y axis of the pedal thresholds is output shaft rpm / 32, not the pedal.
+- **19x0 catalog.** For 764 open entries the instruction addresses of the 19D0 code that read them are written to `proof`; 56 entries have no reader found. The roles of the entries carried from XDF v2.1 are not re-verified.
+- **Corrections.** The DS2 code 0x95 is not the turbine monitor fault 0x25 (that one gives 0x21); 0x95 belongs to the fault 0x24. The unit also runs a background CRC check of loader, program and calibration (task `0x22BD2`, fault `0x0D`, limp mode): documents 05 and 11 updated. The "slip controller `[0xFFFF974B]`" exists only in 19D0; in 20C0 the pair is `[0xFFFF93CF]`.
+
+**RU**
+
+- **Каталог 20C0.** 176 таблиц корней `9808`, `980C`, `9814`, `981C`, `982C`, `983C`, `9820`, `9824`, `9828`, `9840`, `9844`, `984C` получили роли, прочитанные по коду 20C0 (нижний уровень ГДТ, самообучение поправок давления, тракт момента, таблицы тока и давления): 159 доказаны, 17 прочитаны кодом, смысл не установлен. 19 записей, что были «по структуре» или «гипотеза», доказаны (пороги педали AGS, матрицы очков, блок напряжений). Теперь 1743 доказано, 36 только форма. Новая категория 17 в русском и английском XDF.
+- **AGS в заводской 20C0 не действует.** Функция `0x19084` вызывается из `0x18676` только при бите 5 байта `0x70D39`; он равен 0 в образе Alpina B3S, дампе E46 и образе BMW `15C0`. Пороги педали, матрицы D / S `0x708A8` / `0x708B8` и константы, которые читает только эта функция, ни на что не влияют. Ось Y порогов педали это обороты выходного вала / 32, а не педаль.
+- **Каталог 19x0.** Для 764 открытых записей адреса инструкций кода 19D0, которые их читают, записаны в `proof`; у 56 записей читатель не найден. Роли записей, перенесённых из XDF v2.1, не перепроверены.
+- **Поправки.** DS2-код 0x95 это не ошибка монитора турбины 0x25 (она даёт 0x21); 0x95 принадлежит ошибке 0x24. Блок ещё гоняет фоновую проверку CRC загрузчика, программы и калибровки (задача `0x22BD2`, ошибка `0x0D`, аварийный режим): документы 05 и 11 обновлены. «Регулятор скольжения `[0xFFFF974B]`» есть только в 19D0; в 20C0 пара это `[0xFFFF93CF]`.
+
 ## 2026-10-07: patches and presets for both units, 20C0 roles D / S / M, warm-up and kick-down, stock against stock
 
 **EN**
