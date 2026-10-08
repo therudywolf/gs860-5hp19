@@ -528,6 +528,12 @@ class TestPatchesOffline(unittest.TestCase):
         # coast off: no lock with the pedal released
         self.assertEqual(egs_patch.first_rows(ys, 1760, False)[:2], [(202, 202, 202)] * 2)
 
+    def test_s_sport_weight(self):
+        w = egs_patch.s_sport_weight
+        self.assertEqual([w(y) for y in (0, 46, 60, 243, 255)], [0.0] * 5)
+        self.assertEqual([round(w(y), 2) for y in (83, 121, 160, 198, 203)], [0.20, 0.35, 0.50, 0.65, 0.67])
+        self.assertTrue(0.20 < w(100) < 0.35 and w(242) > w(203))
+
     def test_presets_and_parsing(self):
         for name, pr in egs_patch.PRESETS.items():
             for c in pr["chain"]:
@@ -595,6 +601,17 @@ class TestPatches19x0(unittest.TestCase):
         a, b = self.apply("manual-hold:monitor=auto", extra=("--cut", "6592"))
         self.assertEqual((b[0x8B44] << 8) | b[0x8B45], 6912)
 
+    def test_s_sport_and_no_shift_feel(self):
+        stock = egs_tables.FW(STOCK)
+        r = run(os.path.join(TOOLS, "egs_patch.py"), "apply", STOCK, "-o", os.path.join(self.tmp.name, "ss.bin"),
+                "--spark", "6496", "--cut", "6592", "s-no5", "shift-wot:modes=S", "s-sport")
+        self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
+        fw = egs_tables.FW(os.path.join(self.tmp.name, "ss.bin"))
+        found = egs_tables.verify_shift(fw, 6496, 6592, stock=stock)
+        self.assertEqual([f for f in found if not f[8]], [])
+        r = run(os.path.join(TOOLS, "egs_patch.py"), "apply", STOCK, "-o", os.path.join(self.tmp.name, "sf.bin"), "shift-feel")
+        self.assertEqual(r.returncode, 2, "shift-feel is 20C0 only")
+
     def test_presets_pass_the_shift_rules(self):
         st = egs_tables.FW(STOCK)
         for name in egs_patch.PRESETS:
@@ -619,6 +636,41 @@ class TestPatches20C0(unittest.TestCase):
     @classmethod
     def tearDownClass(cls):
         cls.tmp.cleanup()
+
+    def test_s_sport_and_shift_feel(self):
+        out = os.path.join(self.tmp.name, "feel.bin")
+        r = run(os.path.join(TOOLS, "egs_patch.py"), "apply", STOCK20, "-o", out, "--spark", "6560", "--cut", "6720",
+                "gate:mode=S", "s-no5", "shift-wot:modes=S", "s-sport", "shift-feel")
+        self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
+        a, b = patch_checks(self, STOCK20, out, egs_patch.PLAT["20C0"])
+        # S (k11 = 0x716F5, 11 rows x 8) is livelier below full throttle, never above its own full-throttle row, downshifts under upshifts
+        for base in (0x716F5, 0x718B5):
+            for r_ in range(11):
+                ro = a[base + r_ * 8:base + r_ * 8 + 8]
+                rn = b[base + r_ * 8:base + r_ * 8 + 8]
+                y = (0, 46, 83, 121, 160, 198, 203, 243, 244, 254, 255)[r_]
+                if 83 <= y <= 203:
+                    for c in range(3):
+                        self.assertTrue(ro[c] <= rn[c] <= b[base + 7 * 8 + c], (hex(base), y, c))
+                        self.assertLessEqual(rn[4 + c], rn[c] - 6)
+                if y in (0, 46):
+                    self.assertEqual((ro[:3], ro[4:7]), (rn[:3], rn[4:7]))
+        # D (k14, 0x71845) is untouched
+        self.assertEqual(a[0x71845:0x71845 + 88], b[0x71845:0x71845 + 88])
+        # shift-feel: light row x1.20, heavy row x0.80 (not below 28), garage shifts (0x7B726 / 0x7B73A) untouched
+        self.assertEqual(list(b[0x7B712:0x7B712 + 3]), [round(a[0x7B712] * 1.2), round(a[0x7B713] * 1.2), round(a[0x7B714] * 1.2)])
+        self.assertEqual(b[0x7B712 + 6], max(28, round(a[0x7B712 + 6] * 0.8)))
+        self.assertEqual(a[0x7B726:0x7B726 + 9], b[0x7B726:0x7B726 + 9])
+        self.assertEqual(a[0x7B73A:0x7B73A + 9], b[0x7B73A:0x7B73A + 9])
+        # the on-coming pressure rises only on the upper torque rows; the first three rows are untouched
+        self.assertEqual(a[0x784DA:0x784DA + 24], b[0x784DA:0x784DA + 24])
+        self.assertGreater(sum(b[0x784DA + 24:0x784DA + 80]), sum(a[0x784DA + 24:0x784DA + 80]))
+        self.assertEqual(b[0x7B94D], round(a[0x7B94D] * 1.10))
+        found = egs_tables.verify_shift(egs_tables.FW(out), 6560, 6720, stock=egs_tables.FW(STOCK20))
+        self.assertEqual([f for f in found if not f[8]], [])
+        # parameters are checked
+        r = run(os.path.join(TOOLS, "egs_patch.py"), "apply", STOCK20, "-o", os.path.join(self.tmp.name, "bad.bin"), "shift-feel:up_hard=0.2")
+        self.assertEqual(r.returncode, 2)
 
     def test_presets_and_recipes(self):
         st = egs_tables.FW(STOCK20)

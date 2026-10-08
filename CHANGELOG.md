@@ -2,6 +2,20 @@
 
 Newest first. Each entry: date and title, then **EN** and **RU** with the same facts. Older entries are not rewritten: what turned out wrong is corrected in a newer entry.
 
+## 2026-10-08 (2): patches `s-sport` and `shift-feel`
+
+**EN**
+
+- **`s-sport`** (19x0 and 20C0, document 13 §9): the S matrices (k11, k15) move from the factory points toward their own full-throttle points on the part throttle (pedal 60-242), downshifts livelier and 6 units under the upshifts. The Alpina 20C0 file has S almost equal to D, so after `gate:mode=S` there was no sport program.
+- **`shift-feel`** (20C0, document 13 §10): the hydraulic records do not depend on the program D / S / M (the record selector does not read it), so the patch makes the shifts follow the load: target slip time of the shifts under load x1.20 / 1.00 / 0.80 (upshifts) and x1.15 / 1.00 / 0.85 (downshifts) on the light / middle / heavy torque row, on-coming pressure in the slip phases up to +10 % on the upper torque rows, its upper bound +10 %. Not road-tested.
+- Tests: 53 (the new patches on the Alpina 20C0 file and on a 19x0 file); the patch chain reproduces a hand-built image byte for byte.
+
+**RU**
+
+- **`s-sport`** (19x0 и 20C0, документ 13 §9): матрицы S (k11, k15) на частичной педали (60-242) идут от заводских точек к своим точкам в пол, понижения бодрее и на 6 единиц ниже повышений. В файле Alpina 20C0 S почти равна D, поэтому после `gate:mode=S` спортивной программы не было.
+- **`shift-feel`** (20C0, документ 13 §10): гидравлические записи не зависят от программы D / S / M (селектор записей её не читает), поэтому патч заставляет переключения следовать за нагрузкой: целевое время скольжения под нагрузкой x1.20 / 1.00 / 0.80 (повышения) и x1.15 / 1.00 / 0.85 (понижения) на малой / средней / большой строке момента, давление включаемого в фазах скольжения до +10 % на верхних строках момента, его верхняя граница +10 %. На дороге не проверен.
+- Тесты: 53 (новые патчи на файле Alpina 20C0 и на файле 19x0); цепочка патчей побайтно воспроизводит образ, собранный вручную.
+
 ## 2026-10-08: 20C0 roles of 176 more tables, AGS inactive in stock, read evidence for 19x0, corrections
 
 **EN**
