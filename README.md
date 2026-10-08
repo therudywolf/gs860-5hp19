@@ -87,7 +87,7 @@ The XDF files open in TunerPro: `xdf/GS8600_19D0_Full256K.xdf` for a 256 KB dump
 | `shift-wot` | full-throttle upshifts right under your engine limiter | k11, k15 (+ k14, k6) | the same, minus the lock-up addition |
 | `no-kickdown` | kick-down off (or only in M) | `0x8D1A`, `0x8246` | `0x70D6A`, `0x70232` |
 | `s-sport` | a sporty S on the part throttle (the Alpina 20C0 file has S = D) | matrices k11, k15 | matrices k11, k15 |
-| `shift-feel` | hard / gentle shifts by load (20C0) | - | target slip times, on-coming pressure, `0x7B94D` |
+| `shift-feel` | hard / gentle shifts by load | kinds 1 and 3 of the records | target slip times, on-coming pressure, `0x7B94D` |
 | `manual-hold` | M holds the gear on the limiter, upshifts only on the overrun | k10, k8, monitor | k10, k8 |
 | `gate` | left gate: S first (BMW) or M at once (Alpina) | `0x8975` | `0x70966` |
 
@@ -223,7 +223,7 @@ XDF открывается в TunerPro: `xdf/GS8600_19D0_Full256K.xdf` для д
 | `shift-wot` | повышения в пол сразу под ограничитель вашего мотора | k11, k15 (+ k14, k6) | то же, с вычетом прибавки при замкнутой ГДТ |
 | `no-kickdown` | кикдаун выключен (или только в M) | `0x8D1A`, `0x8246` | `0x70D6A`, `0x70232` |
 | `s-sport` | спортивная S на частичной педали (в файле Alpina 20C0 S = D) | матрицы k11, k15 | матрицы k11, k15 |
-| `shift-feel` | жёсткие / нежные переключения по нагрузке (20C0) | - | целевое время скольжения, давление включаемого, `0x7B94D` |
+| `shift-feel` | жёсткие / нежные переключения по нагрузке | записи видов 1 и 3 | целевое время скольжения, давление включаемого, `0x7B94D` |
 | `manual-hold` | M держит передачу на отсечке, повышает только на накате | k10, k8, монитор | k10, k8 |
 | `gate` | левая кулиса: сначала S (BMW) или сразу M (Alpina) | `0x8975` | `0x70966` |
 

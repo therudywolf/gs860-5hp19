@@ -16,7 +16,7 @@ TCC below is the torque converter clutch (lock-up, document 03).
 | no kick-down | `no-kickdown` | `0x8D1A`, `0x8246` | `0x70D6A`, `0x70232` | 6 |
 | M does not shift by itself | `manual-hold` | matrices k10, k8, monitor `0x8B44` | matrices k10, k8, monitor `0x70BA8` | 7 |
 | a sporty S on the part throttle | `s-sport` | k11, k15 (pedal 60-242) | k11, k15 (pedal 60-242) | 9 |
-| hard / gentle shifts by load | `shift-feel` | - | target slip times and on-coming pressure of the records `9824`, `9834`, `0x7B94D` | 10 |
+| hard / gentle shifts by load | `shift-feel` | records of kinds 1 and 3 (`0x0BF9C…0x0C0F0`, `0x0B656…`, `0x0DEC3…`) | target slip times and on-coming pressure of the records `9824`, `9834`, `0x7B94D` | 10 |
 | gate: S first or M at once | `gate` | `0x8975` | `0x70966` | 8 |
 
 ```
@@ -198,11 +198,11 @@ Order in a chain: after `shift-wot` and `s-no5`. Works on both platforms. On a f
 
 Example on the 20C0 file of Alpina B3S (turbine rpm, converter open): pedal 160, 1>2 / 2>3 / 3>4 = 2228 / 2751 / 2927 in D, 3518 / 4286 / 4412 in S.
 
-## 10. Shift hardness by load (`shift-feel`, 20C0)
+## 10. Shift hardness by load (`shift-feel`, 20C0 and 19x0)
 
 **What decides the hardness.** The hydraulic records (pressure, times, slip controller) are chosen by the shift type and the load class; the selector `0x41842` does not read the program D / S / M, and the variant byte `[0xFFFF93C0]` comes from the shift state, not from the program (document 11 §9). So "hard M, sporty S, gentle D" cannot be made by separate tables; the same tables apply to every program. What differs is the load: D shifts at light load, S and M near the limiter at full throttle. The patch makes the tables follow the load.
 
-**What it does.** 20C0 only.
+**What it does.** 20C0 and 19x0 (on 19x0 the tables sit in the records of kinds 1 and 3 of the module `0x34000-0x39600`: upshift slip time field f45 `0x364A2`, downshift f69 and f33 by the state `[0xFFFF972C]`, on-coming pressure f32 and its upper bound f24 `0x35DBE`; same values and shapes as the 20C0 pairs, addresses in `egs_patch.py`, `FEEL`). The shared 19x0 tables (`0x0C0C8` for three types, `0x0C0F0` for two) are scaled once. The time floor never lengthens a shift.
 
 - The target slip time of the shifts under load (5 tables of the upshifts, 13 of the downshifts, 3 rows of turbine torque, ticks of 10 ms) is scaled by the row: the light row `up_soft` / `dn_soft` (default 1.20 / 1.15, longer = gentler), the middle row 1, the heavy row `up_hard` / `dn_hard` (0.80 / 0.85, shorter = crisper), not below `up_min` / `dn_min` (28 / 15 ticks). The garage shifts (N to D, type 0>2) and the downshifts 2>1 are not touched.
 - The pressure of the on-coming element in the slip phases of the upshifts under load (4 tables 8x10 of the types 1>2 to 4>5) rises by `press` (default 0.10) on the upper torque rows, linearly from row `ramp` (3) to the last; the first three rows stay as they are.
