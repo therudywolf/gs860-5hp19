@@ -629,25 +629,33 @@ def p_s_sport(img, prm, ctx):
                 img.set_cell(t, r, 4 + c, nd, f"s-sport k{k:02d} pedal {y}: {c + 2}>{c + 1} livelier (w {w:.2f})")
 
 
-# shift-feel (20C0): header addresses of the tables the patch scales
-FEEL_UP = {0x7B708: "1>2", 0x7B758: "2>3", 0x7B794: "3>4", 0x7B7D0: "4>5"}                    # target slip time, upshift under load (3x3)
-FEEL_DN = {0x7B76C: "3>1", 0x7B780: "3>2", 0x7B7A8: "4>2", 0x7B7BC: "4>3", 0x7B7E4: "5>3", 0x7B7F8: "5>4",
-           0x7B834: "3>2 var.1/2", 0x7B848: "4>3 var.1/2", 0x7B85C: "5>4 var.1/2"}                # downshift under load (3x3)
-FEEL_P = {0x78310: "1>2", 0x784C4: "2>3", 0x7862E: "3>4", 0x78798: "4>5"}                       # on-coming pressure in the slip phases (8x10)
-FEEL_BOUNDS = (0x7B94D, 0x7B94E, 0x7B94F, 0x7B950, 0x7B953, 0x7B954, 0x7B956, 0x7B958, 0x7B959, 0x7B95B, 0x7B95D, 0x7B95E, 0x7B960)
+# shift-feel: header addresses of the tables the patch scales, by platform
+FEEL = {
+    "20C0": dict(
+        up={0x7B708: "1>2", 0x7B758: "2>3", 0x7B794: "3>4", 0x7B7D0: "4>5"},                      # target slip time, upshift under load (3x3)
+        dn={0x7B76C: "3>1", 0x7B780: "3>2", 0x7B7A8: "4>2", 0x7B7BC: "4>3", 0x7B7E4: "5>3", 0x7B7F8: "5>4",
+            0x7B834: "3>2 var.1/2", 0x7B848: "4>3 var.1/2", 0x7B85C: "5>4 var.1/2"},               # downshift under load (3x3)
+        press={0x78310: "1>2", 0x784C4: "2>3", 0x7862E: "3>4", 0x78798: "4>5"},                   # on-coming pressure in the slip phases (8x10)
+        bounds=(0x7B94D, 0x7B94E, 0x7B94F, 0x7B950, 0x7B953, 0x7B954, 0x7B956, 0x7B958, 0x7B959, 0x7B95B, 0x7B95D, 0x7B95E, 0x7B960)),
+    "19x0": dict(
+        up={0x0BF9C: "1>2", 0x0BFEC: "2>3", 0x0C028: "3>4", 0x0C064: "4>5"},                      # record kind 1, field f45 (0x364A2)
+        dn={0x0C014: "3>2", 0x0C050: "4>3", 0x0C08C: "5>4", 0x0C000: "3>1", 0x0C03C: "4>2", 0x0C078: "5>3",       # kind 3, f69, states 1/2
+            0x0C0C8: "3>2 / 3>1 / 4>2 (states 3/4, one table)", 0x0C0DC: "4>3 (states 3/4)", 0x0C0F0: "5>4 / 5>3 (states 3/4, one table)"},
+        press={0x0B656: "1>2", 0x0B80A: "2>3", 0x0B974: "3>4", 0x0BADE: "4>5"},                  # kind 1, f32 (0x35DBE)
+        bounds=(0x0DEC3, 0x0DEC4, 0x0DEC5, 0x0DEC6, 0x0DEC9, 0x0DECA, 0x0DECC, 0x0DECE, 0x0DECF, 0x0DED1, 0x0DED3, 0x0DED4, 0x0DED6)),
+}
 
 
 def p_shift_feel(img, prm, ctx):
-    """shift-feel - 20C0 only: shift hardness that follows the load, because the hydraulic records do not depend on the
+    """shift-feel - shift hardness that follows the load (20C0 and 19x0), because the hydraulic records do not depend on the
     program D / S / M (the record selector 0x41842 reads the shift type and the load class only). The target slip time of the
     shifts under load (docs 11 §9, rows = turbine torque) is scaled by row: the light row up_soft / dn_soft (default 1.20 /
     1.15, a gentler D at light load), the middle row 1, the heavy row up_hard / dn_hard (0.80 / 0.85, crisp shifts at full
-    throttle and in M near the limiter), not below up_min / dn_min (28 / 15 ticks of 10 ms). The pressure of the on-coming element
+    throttle and in M near the limiter), not below up_min / dn_min (28 / 15 ticks of 10 ms; a floor never lengthens a shift). The pressure of the on-coming element
     in the slip phases of the upshifts under load rises by press (0.10) on the upper torque rows (linear from row 3 to the last)
     and its upper bound by bound (1.10), so the slip controller is not held by the old cap. The garage shifts (N-D, 0>2) are
     not touched. The effect needs a log on the car: the pressure units are not established. Docs 13 §10."""
-    if img.key != "20C0":
-        raise PatchError("shift-feel: GS8.60.4 20C0 only (the record layout of 19x0 is another one)")
+    F = FEEL[img.key]
     f = lambda k, d: float(prm.get(k, d))
     up_rows = [f("up_soft", 1.20), 1.0, f("up_hard", 0.80)]
     dn_rows = [f("dn_soft", 1.15), 1.0, f("dn_hard", 0.85)]
@@ -663,19 +671,19 @@ def p_shift_feel(img, prm, ctx):
         for r in range(3):
             for c in range(3):
                 v = data[r][c]; fr = rows[r]
-                nv = round(v * fr) if fr >= 1 else max(floor, min(v, round(v * fr)))
+                nv = round(v * fr) if fr >= 1 else min(v, max(floor, round(v * fr)))
                 img.set_cell(t, r, c, nv, f"shift-feel {kind} {nm} under load: target slip time, torque row {r} x{fr:.2f}")
-    for a, nm in FEEL_UP.items():
+    for a, nm in F['up'].items():
         scale(a, nm, up_rows, up_min, "up")
-    for a, nm in FEEL_DN.items():
+    for a, nm in F['dn'].items():
         scale(a, nm, dn_rows, dn_min, "down")
-    for a, nm in FEEL_P.items():
+    for a, nm in F['press'].items():
         t, xs, ys, data = img.table(a, "2D8", 8, 10)
         for r in range(10):
             fr = 1.0 + press * max(0, r - ramp) / (9 - ramp)
             for c in range(8):
                 img.set_cell(t, r, c, min(255, round(data[r][c] * fr)), f"shift-feel up {nm}: on-coming pressure in the slip phases, torque row {r} x{fr:.3f}")
-    for a in FEEL_BOUNDS:
+    for a in F['bounds']:
         v = img.u8(a)
         if not 60 <= v <= 200:
             raise PatchError(f"shift-feel: upper pressure bound 0x{a:05X} = {v}, expected 60..200 - stop")

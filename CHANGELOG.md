@@ -2,6 +2,16 @@
 
 Newest first. Each entry: date and title, then **EN** and **RU** with the same facts. Older entries are not rewritten: what turned out wrong is corrected in a newer entry.
 
+## 2026-10-08 (3): `shift-feel` on 19x0
+
+**EN**
+
+- **`shift-feel` works on GS8.60.0 19x0** (document 13 §10): the same four table families found in the 19D0 code (slip time of the upshifts and downshifts under load, on-coming pressure in the slip phases, its upper bound); the hydraulic records of 19D0 do not depend on the program D / S / M either. The time floor no longer lengthens a shift (a cell below the floor stays as it is). Not road-tested.
+
+**RU**
+
+- **`shift-feel` работает на GS8.60.0 19x0** (документ 13 §10): те же четыре семейства таблиц найдены в коде 19D0 (время скольжения повышений и понижений под нагрузкой, давление включаемого в фазах скольжения, его верхняя граница); гидравлические записи 19D0 тоже не зависят от программы D / S / M. Пол времени больше не удлиняет переключение (ячейка ниже пола остаётся как есть). На дороге не проверен.
+
 ## 2026-10-08 (2): patches `s-sport` and `shift-feel`
 
 **EN**

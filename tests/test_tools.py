@@ -613,8 +613,12 @@ class TestPatches19x0(unittest.TestCase):
         fw = egs_tables.FW(os.path.join(self.tmp.name, "ss.bin"))
         found = egs_tables.verify_shift(fw, 6496, 6592, stock=stock)
         self.assertEqual([f for f in found if not f[8]], [])
-        r = run(os.path.join(TOOLS, "egs_patch.py"), "apply", STOCK, "-o", os.path.join(self.tmp.name, "sf.bin"), "shift-feel")
-        self.assertEqual(r.returncode, 2, "shift-feel is 20C0 only")
+        a, b = self.apply("shift-feel")
+        self.assertEqual(b[0x0BFA6], round(a[0x0BFA6] * 1.2))                    # 1>2 upshift under load, light torque row x1.20
+        self.assertEqual(a[0x0BFB0:0x0BFB0 + 28], b[0x0BFB0:0x0BFB0 + 28])      # garage shift table untouched
+        self.assertGreater(sum(b[0x0DEC4:0x0DEC5]), sum(a[0x0DEC4:0x0DEC5]))    # upper bound of the on-coming pressure raised
+        for i in range(6, 9):                                                    # heavy row of 0x0C0DC (4>3, states 3/4): never longer
+            self.assertLessEqual(b[0x0C0E6 + i], a[0x0C0E6 + i])
 
     def test_presets_pass_the_shift_rules(self):
         st = egs_tables.FW(STOCK)
