@@ -56,7 +56,7 @@ This repository is the missing description: what each table does **in code**, wh
 | | |
 |---|---|
 | **GS8.60.0, program 19x0** (256 KB) | Addresses fully, roles partially. Verified on two factory dumps, BMW `19C0 KA20` (E39 2.5) and Alpina B3 3.3 `19D0 620P`, with byte-identical code: **one XDF fits both**. `catalog/gs8600_19d0.json`: 904 entries, 843 tables + 61 constants, every table the scanner finds; 84 roles proven by code, 636 carried over from XDF v2.1, 182 shape only, 2 hypotheses. |
-| **GS8.60.4, program 20C0** (512 KB) | `catalog/gs8604_20c0.json`: 1779 entries, 1069 tables + 710 constants, **1565 roles proven by the 20C0 code**, 18 by structure, 195 shape only, 1 hypothesis. Image map and checksums, the 16 shift matrices with their roles, TCC lock-up (upper level, 1st gear, lower-level gate), AGS and gate, warm-up and kick-down, protections, the record fields of the shift automaton traced to the pressure channels and the CAN frame. Russian and English XDF. |
+| **GS8.60.4, program 20C0** (512 KB) | `catalog/gs8604_20c0.json`: 1779 entries, 1069 tables + 710 constants, **1743 roles proven by the 20C0 code**, 36 shape only, none by structure. Image map and checksums, the 16 shift matrices with their roles, TCC lock-up (upper level, 1st gear, lower-level gate), AGS and gate, warm-up and kick-down, protections, the record fields of the shift automaton traced to the pressure channels and the CAN frame. Russian and English XDF. |
 | **Not covered** | Other GS8.60.4 software builds (BMW `15C0` is mapped for comparison only), the engine ECU (see the [MS4X wiki](https://www.ms4x.net)). |
 
 ### Quick start
@@ -190,7 +190,7 @@ Unpaid hobby research: dumps read by hand, code disassembled instruction by inst
 | | |
 |---|---|
 | **GS8.60.0, программа 19x0** (256 КБ) | Адреса полностью, роли частично. Проверено на двух заводских дампах, BMW `19C0 KA20` (E39 2.5) и Alpina B3 3.3 `19D0 620P`, код байт в байт одинаковый: **один XDF подходит обоим**. `catalog/gs8600_19d0.json`: 904 записи, 843 таблицы + 61 константа, все таблицы, которые находит сканер; 84 роли доказаны кодом, 636 перенесены из XDF v2.1, 182 только форма, 2 гипотезы. |
-| **GS8.60.4, программа 20C0** (512 КБ) | `catalog/gs8604_20c0.json`: 1779 записей, 1069 таблиц + 710 констант, **1565 ролей доказаны кодом 20C0**, 18 по структуре, 195 только форма, 1 гипотеза. Карта образа и суммы, 16 матриц с ролями, блокировка ГДТ (верхний уровень, 1-я передача, ворота нижнего уровня), AGS и кулиса, прогрев и кикдаун, защиты, поля записей автомата переключения с путём до каналов давления и кадра CAN. XDF на русском и английском. |
+| **GS8.60.4, программа 20C0** (512 КБ) | `catalog/gs8604_20c0.json`: 1779 записей, 1069 таблиц + 710 констант, **1743 роли доказаны кодом 20C0**, 36 только форма, по структуре нет. Карта образа и суммы, 16 матриц с ролями, блокировка ГДТ (верхний уровень, 1-я передача, ворота нижнего уровня), AGS и кулиса, прогрев и кикдаун, защиты, поля записей автомата переключения с путём до каналов давления и кадра CAN. XDF на русском и английском. |
 | **Не покрыто** | Другие сборки ПО GS8.60.4 (BMW `15C0` сопоставлен только для сравнения), блок двигателя (смотрите [wiki MS4X](https://www.ms4x.net)). |
 
 ### Быстрый старт
