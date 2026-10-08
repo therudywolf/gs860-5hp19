@@ -2,6 +2,16 @@
 
 Newest first. Each entry: date and title, then **EN** and **RU** with the same facts. Older entries are not rewritten: what turned out wrong is corrected in a newer entry.
 
+## 2026-10-08 (4): 19x0 also checks the sums in the background
+
+**EN**
+
+- **Background CRC check on GS8.60.0 19x0** (documents 01, 07 §6, 11 §2, 12): the task `0x26926` computes the CRC-16 of the loader, program and calibration in chunks of 150 bytes over the same areas as the tester command `0x0A` and on a mismatch reports the internal fault `0x0D` (bits in `[0xFFFF8B45]`, copy in `[0xFFFF91D4]`). The statement "19x0 computes the sums only when a tester asks" is wrong. The reaction of `0x0D` on 19x0 is not established; builds with a stale calibration sum drove without limp mode.
+
+**RU**
+
+- **Фоновая проверка CRC у GS8.60.0 19x0** (документы 01, 07 §6, 11 §2, 12): задача `0x26926` порциями по 150 байт считает CRC-16 загрузчика, программы и калибровки по тем же областям, что команда тестера `0x0A`, и при несовпадении сообщает внутреннюю ошибку `0x0D` (биты в `[0xFFFF8B45]`, копия в `[0xFFFF91D4]`). Утверждение «19x0 считает суммы только по запросу тестера» неверно. Реакция `0x0D` у 19x0 не установлена; сборки со старой суммой калибровки ездили без аварийного режима.
+
 ## 2026-10-08 (3): `shift-feel` on 19x0
 
 **EN**
