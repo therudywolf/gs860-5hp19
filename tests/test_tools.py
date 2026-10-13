@@ -645,6 +645,18 @@ class TestPatches20C0(unittest.TestCase):
     def tearDownClass(cls):
         cls.tmp.cleanup()
 
+    def test_shift_feel_mid_and_skip(self):
+        out = os.path.join(self.tmp.name, "feel_mid.bin")
+        r = run(os.path.join(TOOLS, "egs_patch.py"), "apply", STOCK20, "-o", out,
+                "shift-feel:up_soft=1.0,up_mid=0.92,up_hard=0.75,dn_soft=1.0,dn_mid=0.85,dn_hard=0.78,skip=0")
+        self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
+        a, b = patch_checks(self, STOCK20, out, egs_patch.PLAT["20C0"])
+        self.assertEqual(a[0x7B712:0x7B715], b[0x7B712:0x7B715])                          # light row untouched (x1.0)
+        self.assertEqual(b[0x7B712 + 3], min(a[0x7B712 + 3], max(28, round(a[0x7B712 + 3] * 0.92))))   # middle row shorter
+        for h in egs_patch.FEEL["20C0"]["skip"]:                                              # skip downshifts kept
+            self.assertEqual(a[h + 10:h + 19], b[h + 10:h + 19])
+        self.assertNotEqual(a[0x7B7BC + 10 + 6:0x7B7BC + 19], b[0x7B7BC + 10 + 6:0x7B7BC + 19])  # 4>3 heavy row scaled
+
     def test_s_sport_and_shift_feel(self):
         out = os.path.join(self.tmp.name, "feel.bin")
         r = run(os.path.join(TOOLS, "egs_patch.py"), "apply", STOCK20, "-o", out, "--spark", "6560", "--cut", "6720",

@@ -636,13 +636,15 @@ FEEL = {
         dn={0x7B76C: "3>1", 0x7B780: "3>2", 0x7B7A8: "4>2", 0x7B7BC: "4>3", 0x7B7E4: "5>3", 0x7B7F8: "5>4",
             0x7B834: "3>2 var.1/2", 0x7B848: "4>3 var.1/2", 0x7B85C: "5>4 var.1/2"},               # downshift under load (3x3)
         press={0x78310: "1>2", 0x784C4: "2>3", 0x7862E: "3>4", 0x78798: "4>5"},                   # on-coming pressure in the slip phases (8x10)
-        bounds=(0x7B94D, 0x7B94E, 0x7B94F, 0x7B950, 0x7B953, 0x7B954, 0x7B956, 0x7B958, 0x7B959, 0x7B95B, 0x7B95D, 0x7B95E, 0x7B960)),
+        bounds=(0x7B94D, 0x7B94E, 0x7B94F, 0x7B950, 0x7B953, 0x7B954, 0x7B956, 0x7B958, 0x7B959, 0x7B95B, 0x7B95D, 0x7B95E, 0x7B960),
+        skip={0x7B76C, 0x7B7A8, 0x7B7E4}),                                                       # 3>1, 4>2, 5>3 (skip downshifts)
     "19x0": dict(
         up={0x0BF9C: "1>2", 0x0BFEC: "2>3", 0x0C028: "3>4", 0x0C064: "4>5"},                      # record kind 1, field f45 (0x364A2)
         dn={0x0C014: "3>2", 0x0C050: "4>3", 0x0C08C: "5>4", 0x0C000: "3>1", 0x0C03C: "4>2", 0x0C078: "5>3",       # kind 3, f69, states 1/2
             0x0C0C8: "3>2 / 3>1 / 4>2 (states 3/4, one table)", 0x0C0DC: "4>3 (states 3/4)", 0x0C0F0: "5>4 / 5>3 (states 3/4, one table)"},
         press={0x0B656: "1>2", 0x0B80A: "2>3", 0x0B974: "3>4", 0x0BADE: "4>5"},                  # kind 1, f32 (0x35DBE)
-        bounds=(0x0DEC3, 0x0DEC4, 0x0DEC5, 0x0DEC6, 0x0DEC9, 0x0DECA, 0x0DECC, 0x0DECE, 0x0DECF, 0x0DED1, 0x0DED3, 0x0DED4, 0x0DED6)),
+        bounds=(0x0DEC3, 0x0DEC4, 0x0DEC5, 0x0DEC6, 0x0DEC9, 0x0DECA, 0x0DECC, 0x0DECE, 0x0DECF, 0x0DED1, 0x0DED3, 0x0DED4, 0x0DED6),
+        skip={0x0C000, 0x0C03C, 0x0C078}),                                                       # 3>1, 4>2, 5>3, states 1/2 (the shared state 3/4 tables stay in)
 }
 
 
@@ -650,15 +652,17 @@ def p_shift_feel(img, prm, ctx):
     """shift-feel - shift hardness that follows the load (20C0 and 19x0), because the hydraulic records do not depend on the
     program D / S / M (the record selector 0x41842 reads the shift type and the load class only). The target slip time of the
     shifts under load (docs 11 §9, rows = turbine torque) is scaled by row: the light row up_soft / dn_soft (default 1.20 /
-    1.15, a gentler D at light load), the middle row 1, the heavy row up_hard / dn_hard (0.80 / 0.85, crisp shifts at full
-    throttle and in M near the limiter), not below up_min / dn_min (28 / 15 ticks of 10 ms; a floor never lengthens a shift). The pressure of the on-coming element
+    1.15, a gentler D at light load), the middle row up_mid / dn_mid (default 1), the heavy row up_hard / dn_hard (0.80 / 0.85,
+    crisp shifts at full throttle and in M near the limiter), not below up_min / dn_min (28 / 15 ticks of 10 ms; a floor never
+    lengthens a shift). skip=0 leaves the skip downshifts 3>1, 4>2, 5>3 at the factory times (default skip=1 scales them too). The pressure of the on-coming element
     in the slip phases of the upshifts under load rises by press (0.10) on the upper torque rows (linear from row 3 to the last)
     and its upper bound by bound (1.10), so the slip controller is not held by the old cap. The garage shifts (N-D, 0>2) are
     not touched. The effect needs a log on the car: the pressure units are not established. Docs 13 §10."""
     F = FEEL[img.key]
     f = lambda k, d: float(prm.get(k, d))
-    up_rows = [f("up_soft", 1.20), 1.0, f("up_hard", 0.80)]
-    dn_rows = [f("dn_soft", 1.15), 1.0, f("dn_hard", 0.85)]
+    up_rows = [f("up_soft", 1.20), f("up_mid", 1.0), f("up_hard", 0.80)]
+    dn_rows = [f("dn_soft", 1.15), f("dn_mid", 1.0), f("dn_hard", 0.85)]
+    skip = str(prm.get("skip", "1")) not in ("0", "no", "off")
     up_min, dn_min = int(f("up_min", 28)), int(f("dn_min", 15))
     press, bound, ramp = f("press", 0.10), f("bound", 1.10), int(f("ramp", 3))
     if not (0.5 <= min(up_rows + dn_rows) and max(up_rows + dn_rows) <= 1.5 and 0 <= press <= 0.2 and 1 <= bound <= 1.2 and 0 <= ramp <= 8
@@ -676,7 +680,8 @@ def p_shift_feel(img, prm, ctx):
     for a, nm in F['up'].items():
         scale(a, nm, up_rows, up_min, "up")
     for a, nm in F['dn'].items():
-        scale(a, nm, dn_rows, dn_min, "down")
+        if skip or a not in F['skip']:
+            scale(a, nm, dn_rows, dn_min, "down")
     for a, nm in F['press'].items():
         t, xs, ys, data = img.table(a, "2D8", 8, 10)
         for r in range(10):

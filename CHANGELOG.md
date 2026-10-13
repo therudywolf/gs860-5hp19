@@ -2,6 +2,16 @@
 
 Newest first. Each entry: date and title, then **EN** and **RU** with the same facts. Older entries are not rewritten: what turned out wrong is corrected in a newer entry.
 
+## 2026-10-13 (2): `shift-feel` middle row and skip downshifts
+
+**EN**
+
+- `shift-feel` takes `up_mid` / `dn_mid` (the middle torque row, default 1) and `skip=0` (keeps the skip downshifts 3>1, 4>2, 5>3 at the factory times, as on the repo owner's E39). Defaults unchanged: an earlier build reproduces byte for byte.
+
+**RU**
+
+- `shift-feel` принимает `up_mid` / `dn_mid` (средняя строка момента, по умолчанию 1) и `skip=0` (понижения через передачу 3>1, 4>2, 5>3 остаются заводскими, как на E39 владельца репо). Умолчания прежние: прежняя сборка воспроизводится побайтно.
+
 ## 2026-10-13: first road test of the 20C0 patches
 
 **EN**
