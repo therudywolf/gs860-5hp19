@@ -545,8 +545,8 @@ def p_tcc_lock(img, prm, ctx):
     turbine (default 1600), slip from rpm - 385, open below rpm - 512 (the WOLF4X v25 values), never later than
     the factory at any pedal. modes=S+M (default), M or D+S+M (D gets gears 3-5, d_gears=2-5 for all four).
     gears=3-5 leaves 2nd gear of S and M as it is (default 2-5). coast=0 keeps the factory "never" in the pedal-0 row
-    (the converter opens on the overrun with the pedal released, as the factory does in 3rd and 4th); default coast=1
-    locks at any pedal. 19x0 uses groups 6-9 (factory: only PB and PD), 20C0 groups 5, 8, 9, 10 (factory: only PB). Docs 13 §2."""
+    (the converter opens on the overrun with the pedal released, as the factory does in 3rd and 4th; where the factory
+    locks at pedal 0, as in 5th, the row gets the same thresholds as the other rows); default coast=1 locks at any pedal. 19x0 uses groups 6-9 (factory: only PB and PD), 20C0 groups 5, 8, 9, 10 (factory: only PB). Docs 13 §2."""
     modes = parse_modes(prm.get("modes", "S+M"))
     rpm = int(prm.get("rpm", 1600))
     if not 1300 <= rpm <= 3500:
@@ -578,7 +578,10 @@ def p_tcc_lock(img, prm, ctx):
             raise PatchError(f"tcc-lock: thresholds {trip} for gear {gear} break the order open < slip <= lock")
         new = [trip] * len(ys)
         if not coast:
-            new = [(GROUP_NEVER,) * 3 if y == 0 else trip for y in ys]      # the factory "never" row is pedal 0 only
+            # pedal-0 row as the factory has it for this gear in M (PB): "never" in 3rd and 4th, a lock in 5th
+            gm = img.groups(0xB).get(gear, 0)
+            fac = img.group_rows(gm)[1][0] if gm else (GROUP_NEVER,) * 3
+            new = [(fac if fac[2] >= 200 else trip) if y == 0 else trip for y in ys]
         plan[g] = (gear, new)
     for g, (gear, new) in plan.items():
         trip = new[-1]

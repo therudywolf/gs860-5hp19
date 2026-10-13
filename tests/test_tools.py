@@ -654,11 +654,13 @@ class TestPatches20C0(unittest.TestCase):
         self.assertEqual(sb.groups(3)[2], sa.groups(3)[2])                     # 2nd gear of S untouched (gears=3-5)
         self.assertEqual(sb.groups(0xB)[2], sa.groups(0xB)[2])                 # and of M
         self.assertEqual([sb.groups(3)[c] for c in (3, 4, 5)], [8, 9, 10])     # 3rd-5th on the lock groups
-        for g in (8, 9, 10):
+        for g, gear in ((8, 3), (9, 4), (10, 5)):
             ys, rows = sb.group_rows(g)
-            self.assertEqual(rows[0], (202, 202, 202), g)                      # pedal 0: never (coast=0)
+            fac = sa.group_rows(sa.groups(0xB)[gear])[1][0]                   # the factory pedal-0 row of M in this gear
+            self.assertEqual(rows[0], fac if fac[2] >= 200 else rows[1], g)   # coast=0: factory "never" kept, a factory lock follows the row
             self.assertLess(rows[1][2], 202)                                   # pedal 5: locks
             self.assertEqual(rows[1], rows[-1])                                 # flat above
+        self.assertGreaterEqual(sb.group_rows(8)[1][0][2], 200)               # 3rd: never at pedal 0 on this file
         self.assertEqual(a[0x7B712:0x7B712 + 9], b[0x7B712:0x7B712 + 9])     # hydraulics untouched
 
     def test_shift_feel_mid_and_skip(self):
