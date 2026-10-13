@@ -91,6 +91,9 @@ Result on the reference images (turbine rpm, open / slip / lock): 2nd 1087 / 121
 
 What it gives: in S and M the car drives "direct", without converter slip, and the ATF runs cooler (document 03 §3: in town the E39 D almost never locks). The price: at low rpm under load the engine vibration comes through. On 20C0 the addition `0x70B98` to the upshift threshold acts while the converter is locked (§5); manual shift points must allow for it.
 
+**Field note 13.10.2026 (first road test on 20C0, E46 330i, straight-through exhaust).** `tcc-lock:modes=D+S+M,rpm=1500,d_gears=2-5` on the Alpina 20C0 file gave a drone at 1450-1850 rpm under load and a lazy D. From the log: in 2nd under throttle the clutch, which the Alpina file keeps open in normal driving, worked in regulated slip of 220-420 rpm; in 3rd-5th the clutch held the engine low (lock at ~1470 instead of ~1920-2880). Do not put D into `tcc-lock` with a low threshold on cars with a loud exhaust; for S and M a threshold of 2000-2200 turbine rpm is a sensible start.
+
+
 ## 3. Warm-up program (`no-warmup`)
 
 **What it is (proven by code on 06.10.2026).** After power-on the ECU runs a warm-up program: 19x0 `0x28D50`, flag `[0xFFFF90EE]` (set at `0x15F82`); 20C0 `0x25182`, flag `[0xFFFF9088]` (set at `0x10994`). While the flag is set:

@@ -2,6 +2,16 @@
 
 Newest first. Each entry: date and title, then **EN** and **RU** with the same facts. Older entries are not rewritten: what turned out wrong is corrected in a newer entry.
 
+## 2026-10-13: first road test of the 20C0 patches
+
+**EN**
+
+- Document 13 §2, field note: `tcc-lock` with D at 1500 rpm on the Alpina 20C0 file gave a drone at 1450-1850 rpm under load and a lazy D (regulated slip of the converter clutch in 2nd, engine held low in 3rd-5th). Keep D out of a low `tcc-lock` on cars with a loud exhaust; 2000-2200 for S and M.
+
+**RU**
+
+- Документ 13 §2, полевая заметка: `tcc-lock` с D на 1500 на файле Alpina 20C0 дал гул на 1450-1850 об/мин под нагрузкой и вялую D (регулируемое проскальзывание муфты во 2-й, мотор на низах в 3-5-й). Не включать D в низкий `tcc-lock` на машинах с громким выпуском; для S и M 2000-2200.
+
 ## 2026-10-08 (4): 19x0 also checks the sums in the background
 
 **EN**
