@@ -8,9 +8,20 @@ Frame: `<address> <length> <data…> <XOR>`; the length counts the whole frame i
 
 ## 2. Commands that exist in the firmware
 
-Dispatcher (doc 01 §6): `0x00` identification, **`0x06` memory read**, `0x07` write, `0x0A` checksum, `0x0D`, `0x90/0x91` flash, `0x9E/0x9F`. Anything else gets `0xFF`. Commands `0x04` (faults), `0x05` (clear), `0x0B 0x03` (status) are **absent** from table 0x3E54: what testers show as the "0B 03 frame" (24-byte body) is a tester job that gathers values by reading RAM through 0x06. Some of these bytes the ECU assembles in RAM itself, with a known bit layout: bytes 18 / 20 / 22 are `0xFFFF91BE` / `0xFFFF91C0` / `0xFFFF91C1` (0x1EDCA, §3). For bytes 12 and 17 the layout was derived from logs and RAM (doc 04 §13).
+Dispatcher of the running program (doc 01 §6, table `0x10E58`): 17 commands, among them `0x00` identification, `0x04` / `0x05` fault memory, **`0x06` memory read**, `0x07` write, `0x0A` checksums, **`0x0B` status** (handler 0x190AE) and `0x90/0x91` flash. Sub-function `0B 03` returns the 24-byte status body (§3). Some of its bytes the ECU assembles in RAM with a known bit layout: bytes 18 / 20 / 22 are `0xFFFF91BE` / `0xFFFF91C0` / `0xFFFF91C1` (0x1EDCA, §3). For bytes 12 and 17 the layout was derived from logs and RAM (doc 04 §13).
 
-RAM read: command `0x06`, **segment 4**, range `0xFF8000–0xFF9E00` (table `0x3E8A`). The exact argument format of `0x06` (segment, address, length) is not documented in these notes — capture it from a factory tester (INPA/DIS) running the status jobs and replay; the reply format is the RAM bytes themselves.
+> **Correction 14.10.2026.** Until this date this section said that `0x04`, `0x05` and `0x0B 0x03` are absent and that the "0B 03 frame" is a tester job over 0x06. That was the boot-loader table `0x3E54`. The running program has all three.
+
+A status exchange, E39 with 19D0 calibration KA20, 3rd gear at about 93 km/h:
+
+```
+TX  32 05 0B 03 3F
+RX  32 1C A0 71 6F 4F 60 22 82 6B AF 31 31 31 31 6C B6 FF 8A FF 00 2C 09 60 A4 00 69 03
+```
+
+Length `0x1C` = 28 bytes with address and checksum, `A0` = OK, 24 body bytes, last byte = XOR. Body bytes 0-2: 3616 / 3552 / 2528 rpm (engine / turbine / output, ratio 1.405 = 3rd), byte 5 `0x82` = 82 °C (the DME showed 82.0), byte 18 `0x2C` = D, byte 20 `0x60` = 3rd gear, byte 22 `0x00` = P0 (layout §3).
+
+RAM read: command `0x06`, **segment 4**, range `0xFF8000–0xFF9E00` (table `0x10EBE`). Request `32 09 06 04 <A23..16> <A15..8> <A7..0> <N> <XOR>`, reply `32 <len> A0 <N bytes> <XOR>`; `32 09 06 04 FF 91 A0 01 F6` reads one byte at `0xFFFF91A0`. The format comes from the code (parser 0x19A4E) and is not yet checked on a car. Keep N ≤ 0xFB (the reply length is one byte), and never send `0x07`, `0x90` or `0x91` to the gearbox.
 
 ## 3. Body of the "0B 03 frame" (24 bytes) — what logs have decoded
 
@@ -37,7 +48,7 @@ Limitation of the status frame: when alternating with DME polling the EGS frame 
 
 ## 4. What to read from RAM for hydraulic A/B
 
-Command 0x06, segment 4, period 10–20 ms. Addresses and meaning from the execution-module reverse (doc 04):
+Command 0x06, segment 4 (format in §2). At 9600 baud a short read takes several tens of ms: 9 request bytes and 4 + N reply bytes at about 1.15 ms each, plus the answer delay and the bus gap. A 10–20 ms resolution needs a recorder inside the ECU. Addresses and meaning from the execution-module reverse (doc 04):
 
 | RAM | What | Metric |
 |---|---|---|
@@ -49,10 +60,10 @@ Command 0x06, segment 4, period 10–20 ms. Addresses and meaning from the execu
 | `0xFFFF96AE`, `0xFFFF9666` | controller correction, slip-time deviation | if 96AE is constantly large — the target is unrealistic |
 | `0xFFFF965E`, `0xFFFF9668`, `0xFFFF9480/9482/9484` | adaptations | drift after flashing |
 | `0xFFFF958C` | EDS1 pressure (/50) | output check |
-| `0xFFFF97A0` (u16) | turbine torque, Nm: 97A4 × 97F4 / 100 (0x2DFBA) | link to the Y axis of the maps (Y = 97A0 / 4 + 25, written at 0x397CA) |
+| `0xFFFF97A0` (u16) | turbine torque, Nm: 97A4 × 97F4 / 100 (0x2DFBA); 97F4 = converter torque ratio %, table 0xE38E (doc 04 §3) | link to the Y axis of the maps (Y = 97A0 / 4 + 25, written at 0x397CA) |
 | `0xFFFF9725` | turbine/32 at start | X axis of the pressure maps |
 | `0xFFFF971A`, `0xFFFF971B` | transition type, kind | which record was active |
-| `0xFFFF9182`, `0xFFFF918F`, `0xFFFF91A0`, `0xFFFF91B0`, `0xFFFF91CB`, `0xFFFF91F3`, `0xFFFF90CD` | pedal, n_out / 32 (filtered, doc 02 §3), active program, forced program (0 / 4 / 5), S flag, M flag, 90CD step | program and gear selection (doc 01 §5). Not related to the TCC |
+| `0xFFFF9182`, `0xFFFF918F`, `0xFFFF91A0`, `0xFFFF91B0` / `0xFFFF91B7`, `0xFFFF91CB`, `0xFFFF91F3`, `0xFFFF90CD` | pedal, n_out / 32 (filtered, doc 02 §3), active program, substitute request / resolved substitute (doc 01 §5), S flag, M flag, 90CD step | program and gear selection (doc 01 §5). Not related to the TCC |
 | `0xFFFF91AC`, `0xFFFF9216` | AGS level, AGS points | adaptive program selection (doc 03 §7), not the TCC |
 | `0xFFFF91F9`, `0xFFFF9632`, `0xFFFF95BA` | TCC request (0 / 1 / 2), clutch state (0-8), clutch PWM (0…8000) | TCC lockup (doc 03 §2, §4) |
 | `0xFFFF9634`, `0xFFFF964B`, `0xFFFF97F5` | full-lock permission, shift phase for the TCC, brake | why the clutch does not lock or opens (doc 03 §4) |

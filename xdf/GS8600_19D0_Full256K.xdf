@@ -2,8 +2,8 @@
 <XDFFORMAT version="1.60">
   <XDFHEADER>
     <flags>0x1</flags>
-    <deftitle>GS8600 19D0 Full 256K - WOLF4X v3.2 (2026-10-07)</deftitle>
-    <description>Bosch GS8.60.0 (ZF 5HP19, ПО 19C0/19D0, 256 КБ), Motorola 68k CPU32. Таблицы: [u16 nx][u16 ny][X][Y][данные], big-endian. Файл сгенерирован из catalog/gs8600_19d0.json скриптом tools/make_xdf.py, руками не правится. v3 25.09.2026: исправлены роли по разбору кода 23-25.09: таблицы 0x888C, 0x88B0, 0x901E-0x915E и функция 0x1DEBC это AGS (адаптивный выбор программы), а не блокировка ГДТ. Настоящая блокировка: функция 0x29056, пороги 0x993A, группы 0x897E, нижний уровень 0xB0D4-0xB140. Карты 0xAB0C-0xAE40 это опорное скольжение регулятора ГДТ, а не снятие момента. Номера матриц это индекс k, программа выбирает матрицу через 0x24BA4. Добавлены порог монитора турбины 0x8B44, таблица минимальной передачи 0x8AE2, поля f24 и f27 повышений под нагрузкой, маски реакции на ошибки 0x8366. Категории в TunerPro больше не съезжают на одну (в v2.1 номера шли с 0). Значения матриц и порогов ГДТ: обороты выходного вала / 32. После правки в TunerPro пересчитать суммы: python3 tools/gs860_crc.py fix edited.bin fixed.bin. EN: v3: roles corrected from code (AGS vs torque-converter lockup, reference slip maps, program to matrix mapping), turbine monitor threshold 0x8B44, minimum-gear table 0x8AE2, shift-record fields f24 and f27, error reaction masks. Categories fixed (1-based). After editing, recompute the checksums with tools/gs860_crc.py fix. v3.1 27.09.2026: поля f21 записей переключения это слова u16, а не таблицы (пересечения убраны), три ложные таблицы сканера 0xDA8A / 0xDADE / 0xDB16 внутри объектов f06 удалены, единицы констант проставлены (мВ у блока напряжений, остальное «сырое», где не доказано). v3.2 07.10.2026: программа прогрева разобрана кодом (0x28D50: 0x8142, 0x9A6E, 0x9A78, 0x8141, 0x81CC, 0x8B48; 0x9A6E это не «термодерейт»), источник и порог кикдауна 0x8D1A / 0x8246, кулиса 0x8975 (BMW 0xFE, Alpina 0x0B), датчик ATF 0x9A82 (шкала в °C не доказана). Патчи из них: tools/egs_patch.py, документ 13.</description>
+    <deftitle>GS8600 19D0 Full 256K - WOLF4X v3.3 (2026-10-14)</deftitle>
+    <description>Bosch GS8.60.0 (ZF 5HP19, ПО 19C0/19D0, 256 КБ), Motorola 68k CPU32. Таблицы: [u16 nx][u16 ny][X][Y][данные], big-endian. Файл сгенерирован из catalog/gs8600_19d0.json скриптом tools/make_xdf.py, руками не правится. v3 25.09.2026: исправлены роли по разбору кода 23-25.09: таблицы 0x888C, 0x88B0, 0x901E-0x915E и функция 0x1DEBC это AGS (адаптивный выбор программы), а не блокировка ГДТ. Настоящая блокировка: функция 0x29056, пороги 0x993A, группы 0x897E, нижний уровень 0xB0D4-0xB140. Карты 0xAB0C-0xAE40 это опорное скольжение регулятора ГДТ, а не снятие момента. Номера матриц это индекс k, программа выбирает матрицу через 0x24BA4. Добавлены порог монитора турбины 0x8B44, таблица минимальной передачи 0x8AE2, поля f24 и f27 повышений под нагрузкой, маски реакции на ошибки 0x8366. Категории в TunerPro больше не съезжают на одну (в v2.1 номера шли с 0). Значения матриц и порогов ГДТ: обороты выходного вала / 32. После правки в TunerPro пересчитать суммы: python3 tools/gs860_crc.py fix edited.bin fixed.bin. EN: v3: roles corrected from code (AGS vs torque-converter lockup, reference slip maps, program to matrix mapping), turbine monitor threshold 0x8B44, minimum-gear table 0x8AE2, shift-record fields f24 and f27, error reaction masks. Categories fixed (1-based). After editing, recompute the checksums with tools/gs860_crc.py fix. v3.1 27.09.2026: поля f21 записей переключения это слова u16, а не таблицы (пересечения убраны), три ложные таблицы сканера 0xDA8A / 0xDADE / 0xDB16 внутри объектов f06 удалены, единицы констант проставлены (мВ у блока напряжений, остальное «сырое», где не доказано). v3.2 07.10.2026: программа прогрева разобрана кодом (0x28D50: 0x8142, 0x9A6E, 0x9A78, 0x8141, 0x81CC, 0x8B48; 0x9A6E это не «термодерейт»), источник и порог кикдауна 0x8D1A / 0x8246, кулиса 0x8975 (BMW 0xFE, Alpina 0x0B), датчик ATF 0x9A82 (шкала в °C не доказана). Патчи из них: tools/egs_patch.py, документ 13. v3.3 14.10.2026: читатели 36 объектов, у которых стояло «читателей нет» (через слоты каталога указателей 0x9ADC и прямые адреса); девять объектов сканера переописаны по коду как массивы и списки порогов (0x80D0, 0x831A, 0x8338, 0x88EA, 0x88FC, 0x8A9C, 0x8F76, 0x8FAA, 0xE48A); 17 добавлены, среди них константы 0x80DA-0x80E9, атрибуты запроса 0xFFFF91B0 (0x88F2) и коэффициент трансформации ГДТ muGDT 0xE38E. EN: v3.3: readers for 36 objects, nine scanner objects remodelled from code, 17 added including the converter torque ratio 0xE38E.</description>
     <author>rudywolf (WOLF4X)</author>
     <baseoffset>0</baseoffset>
     <REGION type="0xFFFFFFFF" startaddress="0x0" size="0x40000" regionflags="0x0" name="Binary File" desc="" />
@@ -20,16 +20,23 @@
     <CATEGORY index="0xA" name="11 Не расшифровано" />
   </XDFHEADER>
   <XDFTABLE uniqueid="0x1000" flags="0x0">
-    <title>Не расшифровано 080D0 (1D8 7×1)</title>
-    <description>Таблица из нарезки: 1D8, 7×1, 16 байт. Диапазон X 5..255, Y 0..0, Z 0..187. Читателей в коде 19D0 анализатором не найдено (08.10.2026); непрямое чтение (через смещение от базы) анализатор мог не увидеть.</description>
-    <CATEGORYMEM index="0" category="11" />
+    <title>Ступень 0xFFFF90CD: 7 порогов зон × [0xFFFF918A] / 100 против [0xFFFF8D04] (0x80D0)</title>
+    <description>Не таблица: [u16 7] и семь порогов 0x80D2-0x80D8. Функция 0x1651E перебирает i = 0…7: порог[i] × [0xFFFF918A] / 100 (0x15CA4, 0x15CF6) сравнивается с [0xFFFF8D04]; цикл останавливается на первом i, где результат не меньше [0xFFFF8D04], или на 7. По номеру зоны ROM-таблица 0x10CE4 задаёт ступень [0xFFFF90CD] (программы P4/P5/P6, документ 01 §5). Счётчик 7 задан в коде, заголовок не читается. [0xFFFF918A] даёт таблица 0x98C0 (по [0xFFFF9189]), [0xFFFF8D04] = f([0xFFFF8D9C], [0xFFFF8D06]) (0x164AE), в цепочке и таблица 0x98E0 по скорости. Что это ступени подъёма или сопротивления движению, гипотеза. До 14.10.2026 объект описывался как таблица 1D8 7×1 с данными 0x80D9-0x80DF; этих байт код здесь не читает, это отдельные константы 0x80DA, 0x80DC, 0x80DE (UID 5003-5005) (так его выделил сканер таблиц: счётчик и растущая ось), код читает его иначе.</description>
+    <CATEGORYMEM index="0" category="2" />
     <XDFAXIS id="x" uniqueid="0x0">
-      <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x80D2" mmedelementsizebits="8" mmedcolcount="7" mmedmajorstridebits="0" mmedminorstridebits="0" />
-      <units>X</units>
+      <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
+      <units>номер зоны</units>
       <indexcount>7</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
       <DALINK index="0" />
+      <LABEL index="0" value="0" />
+      <LABEL index="1" value="1" />
+      <LABEL index="2" value="2" />
+      <LABEL index="3" value="3" />
+      <LABEL index="4" value="4" />
+      <LABEL index="5" value="5" />
+      <LABEL index="6" value="6" />
       <MATH equation="X">
         <VAR id="X" />
       </MATH>
@@ -47,9 +54,9 @@
       </MATH>
     </XDFAXIS>
     <XDFAXIS id="z">
-      <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x80D9" mmedelementsizebits="8" mmedrowcount="1" mmedcolcount="7" mmedmajorstridebits="0" mmedminorstridebits="0" />
-      <decimalpl>1</decimalpl>
-      <units>сырое</units>
+      <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x80D2" mmedelementsizebits="8" mmedrowcount="1" mmedcolcount="7" mmedmajorstridebits="0" mmedminorstridebits="0" />
+      <decimalpl>0</decimalpl>
+      <units>порог (× [0xFFFF918A] / 100)</units>
       <outputtype>1</outputtype>
       <MATH equation="X">
         <VAR id="X" />
@@ -167,7 +174,7 @@
   </XDFTABLE>
   <XDFTABLE uniqueid="0x1004" flags="0x0">
     <title>Порог 0x81B2 (парный к 0x81A0, список 0x9AE0[3])</title>
-    <description>Та же структура, сток 15×8, читается тем же модулем 0x1F4xx. Читателей в коде 19D0 анализатором не найдено (08.10.2026); непрямое чтение (через смещение от базы) анализатор мог не увидеть.</description>
+    <description>Та же структура, сток 15×8, читается тем же модулем 0x1F4xx. Читают 0x1F5DA и 0x1F7D6 (pea.l $9AE4, слот 2 каталога 0x9ADC, 0x1E848): X = обороты ДВС/32 [0xFFFF9197], Y = ветка [0xFFFF91CB], результат сравнивается с [0xFFFF9176], как у пары 0x81A0. (Читатели найдены 14.10.2026, раньше здесь стояла пометка, что их нет.)</description>
     <CATEGORYMEM index="0" category="2" />
     <XDFAXIS id="x" uniqueid="0x0">
       <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x81B6" mmedelementsizebits="8" mmedcolcount="4" mmedmajorstridebits="0" mmedminorstridebits="0" />
@@ -202,8 +209,8 @@
     </XDFAXIS>
   </XDFTABLE>
   <XDFTABLE uniqueid="0x1005" flags="0x0">
-    <title>Не расшифровано 08226 (2D8 4×4)</title>
-    <description>Таблица из нарезки: 2D8, 4×4, 28 байт. Диапазон X 0..20, Y 1..4, Z 0..179. Читателей в коде 19D0 анализатором не найдено (08.10.2026); непрямое чтение (через смещение от базы) анализатор мог не увидеть.</description>
+    <title>Не расшифровано 08226 (2D8 4×4): X [0xFFFF90CA], Y [0xFFFF91AA] → [0xFFFF917B]</title>
+    <description>Таблица из нарезки: 2D8, 4×4, 28 байт. Диапазон X 0..20, Y 1..4, Z 0..179. Читает 0x16C26 (pea.l $9AE8, слот 3 каталога 0x9ADC, 0x1E848): X = [0xFFFF90CA], Y = [0xFFFF91AA], результат в [0xFFFF917B], с ним сравнивается педаль коробки [0xFFFF9182]. Смысл не установлен. (Читатели найдены 14.10.2026, раньше здесь стояла пометка, что их нет.)</description>
     <CATEGORYMEM index="0" category="11" />
     <XDFAXIS id="x" uniqueid="0x0">
       <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x822A" mmedelementsizebits="8" mmedcolcount="4" mmedmajorstridebits="0" mmedminorstridebits="0" />
@@ -238,8 +245,8 @@
     </XDFAXIS>
   </XDFTABLE>
   <XDFTABLE uniqueid="0x1006" flags="0x0">
-    <title>Не расшифровано 0824A (2D16 6×6)</title>
-    <description>Таблица из нарезки: 2D16, 6×6, 100 байт. Диапазон X 0..300, Y 400..5000, Z 153..153. Читателей в коде 19D0 анализатором не найдено (08.10.2026); непрямое чтение (через смещение от базы) анализатор мог не увидеть.</description>
+    <title>Не расшифровано 0824A (2D16 6×6): педаль [0xFFFF9182] из момента и оборотов мотора</title>
+    <description>Таблица из нарезки: 2D16, 6×6, 100 байт. Диапазон X 0..300, Y 400..5000, Z 153..153. Читает 0x21620 (pea.l $9AEC, слот 4 каталога 0x9ADC, 0x1EB18): X = момент мотора [0xFFFF8D96], Y = обороты мотора [0xFFFF8DB2] (оба с CAN), результат становится педалью коробки [0xFFFF9182] в ветке, где она не берётся из [0xFFFF9181] (0x21616). Похоже на замену педали по моменту и оборотам, условие ветки не разобрано. (Читатели найдены 14.10.2026, раньше здесь стояла пометка, что их нет.)</description>
     <CATEGORYMEM index="0" category="11" />
     <XDFAXIS id="x" uniqueid="0x0">
       <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x824E" mmedelementsizebits="16" mmedcolcount="6" mmedmajorstridebits="0" mmedminorstridebits="0" />
@@ -274,16 +281,20 @@
     </XDFAXIS>
   </XDFTABLE>
   <XDFTABLE uniqueid="0x1007" flags="0x0">
-    <title>Не расшифровано 0831A (1D8 4×1)</title>
-    <description>Таблица из нарезки: 1D8, 4×1, 10 байт. Диапазон X 32..176, Y 0..0, Z 0..192. Читателей в коде 19D0 анализатором не найдено (08.10.2026); непрямое чтение (через смещение от базы) анализатор мог не увидеть.</description>
+    <title>Не расшифровано: массив 4 по [0xFFFF91A1] (0x831A)</title>
+    <description>Не таблица: [u16 4] и 4 байта 0x831C-0x831F. Читает 0x16816: элемент [[0xFFFF91A1] − 1] → d7 (дальше не разобрано); там же парный массив 0x8322 (UID 5012) пишется в [0xFFFF921B]. В другой ветке (0x167AC) вместо них берутся константы 0x8320 и 0x8328 (UID 5011, 5013). До 14.10.2026 объект описывался как таблица 1D8 4×1 с данными 0x8320-0x8323 (так его выделил сканер таблиц: счётчик и растущая ось), код читает его иначе.</description>
     <CATEGORYMEM index="0" category="11" />
     <XDFAXIS id="x" uniqueid="0x0">
-      <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x831C" mmedelementsizebits="8" mmedcolcount="4" mmedmajorstridebits="0" mmedminorstridebits="0" />
-      <units>X</units>
+      <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
+      <units>[0xFFFF91A1]</units>
       <indexcount>4</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
       <DALINK index="0" />
+      <LABEL index="0" value="1" />
+      <LABEL index="1" value="2" />
+      <LABEL index="2" value="3" />
+      <LABEL index="3" value="4" />
       <MATH equation="X">
         <VAR id="X" />
       </MATH>
@@ -301,8 +312,8 @@
       </MATH>
     </XDFAXIS>
     <XDFAXIS id="z">
-      <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x8320" mmedelementsizebits="8" mmedrowcount="1" mmedcolcount="4" mmedmajorstridebits="0" mmedminorstridebits="0" />
-      <decimalpl>1</decimalpl>
+      <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x831C" mmedelementsizebits="8" mmedrowcount="1" mmedcolcount="4" mmedmajorstridebits="0" mmedminorstridebits="0" />
+      <decimalpl>0</decimalpl>
       <units>сырое</units>
       <outputtype>1</outputtype>
       <MATH equation="X">
@@ -311,34 +322,40 @@
     </XDFAXIS>
   </XDFTABLE>
   <XDFTABLE uniqueid="0x1008" flags="0x0">
-    <title>Не расшифровано 08338 (2D8 4×2)</title>
-    <description>Таблица из нарезки: 2D8, 4×2, 18 байт. Диапазон X 16..64, Y 16..24, Z 0..86. Читателей в коде 19D0 анализатором не найдено (08.10.2026); непрямое чтение (через смещение от базы) анализатор мог не увидеть.</description>
+    <title>Не расшифровано: матрица 2×4 по ветке и [0xFFFF91A2] → [0xFFFF921D] (0x8338)</title>
+    <description>Не таблица с осями: [u16 4][u16 2] и 8 байт 0x833C-0x8343. Читает 0x17662 (функция 0x175F8): элемент [ветка [0xFFFF91CB] × 4 + [0xFFFF91A2] − 1] пишется в [0xFFFF921D]. До 14.10.2026 объект описывался как таблица 2D8 4×2 с осями в 0x833C и 0x8340 (так его выделил сканер таблиц: счётчик и растущая ось), код читает его иначе.</description>
     <CATEGORYMEM index="0" category="11" />
     <XDFAXIS id="x" uniqueid="0x0">
-      <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x833C" mmedelementsizebits="8" mmedcolcount="4" mmedmajorstridebits="0" mmedminorstridebits="0" />
-      <units>X</units>
+      <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
+      <units>[0xFFFF91A2]</units>
       <indexcount>4</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
       <DALINK index="0" />
+      <LABEL index="0" value="1" />
+      <LABEL index="1" value="2" />
+      <LABEL index="2" value="3" />
+      <LABEL index="3" value="4" />
       <MATH equation="X">
         <VAR id="X" />
       </MATH>
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
-      <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x8340" mmedelementsizebits="8" mmedcolcount="2" mmedmajorstridebits="0" mmedminorstridebits="0" />
-      <units>Y</units>
+      <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
+      <units>ветка [0xFFFF91CB]</units>
       <indexcount>2</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
       <DALINK index="0" />
+      <LABEL index="0" value="D (0)" />
+      <LABEL index="1" value="S (1)" />
       <MATH equation="X">
         <VAR id="X" />
       </MATH>
     </XDFAXIS>
     <XDFAXIS id="z">
-      <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x8342" mmedelementsizebits="8" mmedrowcount="2" mmedcolcount="4" mmedmajorstridebits="0" mmedminorstridebits="0" />
-      <decimalpl>1</decimalpl>
+      <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x833C" mmedelementsizebits="8" mmedrowcount="2" mmedcolcount="4" mmedmajorstridebits="0" mmedminorstridebits="0" />
+      <decimalpl>0</decimalpl>
       <units>сырое</units>
       <outputtype>1</outputtype>
       <MATH equation="X">
@@ -421,16 +438,20 @@
     </XDFAXIS>
   </XDFTABLE>
   <XDFTABLE uniqueid="0x100B" flags="0x0">
-    <title>Не расшифровано 088EA (1D8 4×1)</title>
-    <description>Таблица из нарезки: 1D8, 4×1, 10 байт. Диапазон X 16..64, Y 0..0, Z 0..7. Читателей в коде 19D0 анализатором не найдено (08.10.2026); непрямое чтение (через смещение от базы) анализатор мог не увидеть.</description>
+    <title>Не расшифровано: массив 4 по [0xFFFF91C4] → [0xFFFF922B] (0x88EA)</title>
+    <description>Не таблица: [u16 4] и 4 байта 0x88EC-0x88EF. Читает 0x1F100: элемент [[0xFFFF91C4] − 1] пишется в [0xFFFF922B]. До 14.10.2026 объект описывался как таблица 1D8 4×1 с данными 0x88F0-0x88F3; там лежит заголовок массива 0x88F0 (атрибуты запроса [0xFFFF91B0], UID 5014) (так его выделил сканер таблиц: счётчик и растущая ось), код читает его иначе.</description>
     <CATEGORYMEM index="0" category="11" />
     <XDFAXIS id="x" uniqueid="0x0">
-      <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x88EC" mmedelementsizebits="8" mmedcolcount="4" mmedmajorstridebits="0" mmedminorstridebits="0" />
-      <units>X</units>
+      <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
+      <units>[0xFFFF91C4]</units>
       <indexcount>4</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
       <DALINK index="0" />
+      <LABEL index="0" value="1" />
+      <LABEL index="1" value="2" />
+      <LABEL index="2" value="3" />
+      <LABEL index="3" value="4" />
       <MATH equation="X">
         <VAR id="X" />
       </MATH>
@@ -448,8 +469,8 @@
       </MATH>
     </XDFAXIS>
     <XDFAXIS id="z">
-      <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x88F0" mmedelementsizebits="8" mmedrowcount="1" mmedcolcount="4" mmedmajorstridebits="0" mmedminorstridebits="0" />
-      <decimalpl>1</decimalpl>
+      <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x88EC" mmedelementsizebits="8" mmedrowcount="1" mmedcolcount="4" mmedmajorstridebits="0" mmedminorstridebits="0" />
+      <decimalpl>0</decimalpl>
       <units>сырое</units>
       <outputtype>1</outputtype>
       <MATH equation="X">
@@ -458,35 +479,40 @@
     </XDFAXIS>
   </XDFTABLE>
   <XDFTABLE uniqueid="0x100C" flags="0x0">
-    <title>Не расшифровано 088FC (1D8 4×1)</title>
-    <description>Таблица из нарезки: 1D8, 4×1, 10 байт. Диапазон X 0..32, Y 0..0, Z 16..32. Читателей в коде 19D0 анализатором не найдено (08.10.2026); непрямое чтение (через смещение от базы) анализатор мог не увидеть.</description>
+    <title>Не расшифровано: матрица 2×4 по ветке и [0xFFFF91AA] → [0xFFFF922D] (0x88FC)</title>
+    <description>Не таблица с осями: [u16 4][u16 2] и 8 байт 0x8900-0x8907. Читает 0x22096 (функция 0x22038): элемент [ветка [0xFFFF91CB] × 4 + [0xFFFF91AA] − 1] пишется в [0xFFFF922D]. До 14.10.2026 объект описывался как таблица 1D8 4×1 с осью 0x88FE (так его выделил сканер таблиц: счётчик и растущая ось), код читает его иначе.</description>
     <CATEGORYMEM index="0" category="11" />
     <XDFAXIS id="x" uniqueid="0x0">
-      <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x88FE" mmedelementsizebits="8" mmedcolcount="4" mmedmajorstridebits="0" mmedminorstridebits="0" />
-      <units>X</units>
+      <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
+      <units>[0xFFFF91AA]</units>
       <indexcount>4</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
       <DALINK index="0" />
+      <LABEL index="0" value="1" />
+      <LABEL index="1" value="2" />
+      <LABEL index="2" value="3" />
+      <LABEL index="3" value="4" />
       <MATH equation="X">
         <VAR id="X" />
       </MATH>
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
       <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units>Y</units>
-      <indexcount>1</indexcount>
+      <units>ветка [0xFFFF91CB]</units>
+      <indexcount>2</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
       <DALINK index="0" />
-      <LABEL index="0" value="0" />
+      <LABEL index="0" value="D (0)" />
+      <LABEL index="1" value="S (1)" />
       <MATH equation="X">
         <VAR id="X" />
       </MATH>
     </XDFAXIS>
     <XDFAXIS id="z">
-      <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x8902" mmedelementsizebits="8" mmedrowcount="1" mmedcolcount="4" mmedmajorstridebits="0" mmedminorstridebits="0" />
-      <decimalpl>1</decimalpl>
+      <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x8900" mmedelementsizebits="8" mmedrowcount="2" mmedcolcount="4" mmedmajorstridebits="0" mmedminorstridebits="0" />
+      <decimalpl>0</decimalpl>
       <units>сырое</units>
       <outputtype>1</outputtype>
       <MATH equation="X">
@@ -495,16 +521,20 @@
     </XDFAXIS>
   </XDFTABLE>
   <XDFTABLE uniqueid="0x100D" flags="0x0">
-    <title>Не расшифровано 08A9C (1D8 4×1)</title>
-    <description>Таблица из нарезки: 1D8, 4×1, 10 байт. Диапазон X 46..188, Y 0..0, Z 0..94. Читателей в коде 19D0 анализатором не найдено (08.10.2026); непрямое чтение (через смещение от базы) анализатор мог не увидеть.</description>
+    <title>Пороги n_вых/32 → зона [0xFFFF91A3], ветка D (0x8A9C)</title>
+    <description>Не таблица: [u16 4] и 4 порога 0x8A9E-0x8AA1 в единицах n_вых/32. Функция 0x175F8 (0x176D8-0x17768): в ветке D ([0xFFFF91CB] = 0) берётся этот набор, в S набор 0x8AA2 (UID 5016). Зона = 1 + наибольший i, при котором n_вых/32 [0xFFFF918F] не ниже порога[i] (0x17756), с учётом прошлой зоны; номер пишется в [0xFFFF91A3]. Завод BMW KA20: 46/69/94/188 (1472/2208/3008/6016 об/мин вых. вала). Смысл зоны не установлен. До 14.10.2026 объект описывался как таблица 1D8 4×1 (так его выделил сканер таблиц: счётчик и растущая ось), код читает его иначе.</description>
     <CATEGORYMEM index="0" category="11" />
     <XDFAXIS id="x" uniqueid="0x0">
-      <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x8A9E" mmedelementsizebits="8" mmedcolcount="4" mmedmajorstridebits="0" mmedminorstridebits="0" />
-      <units>X</units>
+      <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
+      <units>номер порога</units>
       <indexcount>4</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
       <DALINK index="0" />
+      <LABEL index="0" value="1" />
+      <LABEL index="1" value="2" />
+      <LABEL index="2" value="3" />
+      <LABEL index="3" value="4" />
       <MATH equation="X">
         <VAR id="X" />
       </MATH>
@@ -522,9 +552,9 @@
       </MATH>
     </XDFAXIS>
     <XDFAXIS id="z">
-      <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x8AA2" mmedelementsizebits="8" mmedrowcount="1" mmedcolcount="4" mmedmajorstridebits="0" mmedminorstridebits="0" />
-      <decimalpl>1</decimalpl>
-      <units>сырое</units>
+      <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x8A9E" mmedelementsizebits="8" mmedrowcount="1" mmedcolcount="4" mmedmajorstridebits="0" mmedminorstridebits="0" />
+      <decimalpl>0</decimalpl>
+      <units>n_вых/32</units>
       <outputtype>1</outputtype>
       <MATH equation="X">
         <VAR id="X" />
@@ -532,8 +562,8 @@
     </XDFAXIS>
   </XDFTABLE>
   <XDFTABLE uniqueid="0x100E" flags="0x0">
-    <title>Не расшифровано 08EAC (2D8 4×5)</title>
-    <description>Таблица из нарезки: 2D8, 4×5, 33 байт. Диапазон X 26..230, Y 1..5, Z 0..80. Читателей в коде 19D0 анализатором не найдено (08.10.2026); непрямое чтение (через смещение от базы) анализатор мог не увидеть.</description>
+    <title>Не расшифровано 08EAC (2D8 4×5): X педаль [0xFFFF9182], Y [0xFFFF91BB]</title>
+    <description>Таблица из нарезки: 2D8, 4×5, 33 байт. Диапазон X 26..230, Y 1..5, Z 0..80. Читает 0x258F2 (pea.l $9AF0, слот 5 каталога 0x9ADC, 0x1E848): X = педаль коробки [0xFFFF9182], Y = [0xFFFF91BB], результат сравнивается с [0xFFFF920A]. Смысл не установлен. (Читатели найдены 14.10.2026, раньше здесь стояла пометка, что их нет.)</description>
     <CATEGORYMEM index="0" category="11" />
     <XDFAXIS id="x" uniqueid="0x0">
       <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x8EB0" mmedelementsizebits="8" mmedcolcount="4" mmedmajorstridebits="0" mmedminorstridebits="0" />
@@ -568,16 +598,25 @@
     </XDFAXIS>
   </XDFTABLE>
   <XDFTABLE uniqueid="0x100F" flags="0x0">
-    <title>Не расшифровано 08F76 (1D8 9×1)</title>
-    <description>Таблица из нарезки: 1D8, 9×1, 20 байт. Диапазон X 93..191, Y 0..0, Z 0..36. Читателей в коде 19D0 анализатором не найдено (08.10.2026); непрямое чтение (через смещение от базы) анализатор мог не увидеть.</description>
+    <title>Пороги [0xFFFF9218] → зона [0xFFFF919D], 9 штук (0x8F76)</title>
+    <description>Не таблица: [u16 9] и 9 порогов 0x8F78-0x8F80. Функция 0x1F2DE-0x1F312 перебирает i = 0…8 и останавливается на первом пороге, который не ниже [0xFFFF9218]; номер пишется в [0xFFFF919D]. Смысл не установлен. До 14.10.2026 объект описывался как таблица 1D8 9×1 с данными 0x8F81-0x8F89; байт 0x8F81 отдельная константа (UID 5018) (так его выделил сканер таблиц: счётчик и растущая ось), код читает его иначе.</description>
     <CATEGORYMEM index="0" category="11" />
     <XDFAXIS id="x" uniqueid="0x0">
-      <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x8F78" mmedelementsizebits="8" mmedcolcount="9" mmedmajorstridebits="0" mmedminorstridebits="0" />
-      <units>X</units>
+      <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
+      <units>номер зоны</units>
       <indexcount>9</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
       <DALINK index="0" />
+      <LABEL index="0" value="0" />
+      <LABEL index="1" value="1" />
+      <LABEL index="2" value="2" />
+      <LABEL index="3" value="3" />
+      <LABEL index="4" value="4" />
+      <LABEL index="5" value="5" />
+      <LABEL index="6" value="6" />
+      <LABEL index="7" value="7" />
+      <LABEL index="8" value="8" />
       <MATH equation="X">
         <VAR id="X" />
       </MATH>
@@ -595,8 +634,8 @@
       </MATH>
     </XDFAXIS>
     <XDFAXIS id="z">
-      <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x8F81" mmedelementsizebits="8" mmedrowcount="1" mmedcolcount="9" mmedmajorstridebits="0" mmedminorstridebits="0" />
-      <decimalpl>1</decimalpl>
+      <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x8F78" mmedelementsizebits="8" mmedrowcount="1" mmedcolcount="9" mmedmajorstridebits="0" mmedminorstridebits="0" />
+      <decimalpl>0</decimalpl>
       <units>сырое</units>
       <outputtype>1</outputtype>
       <MATH equation="X">
@@ -605,35 +644,58 @@
     </XDFAXIS>
   </XDFTABLE>
   <XDFTABLE uniqueid="0x1010" flags="0x0">
-    <title>Не расшифровано 08FAC (1D16 21×1)</title>
-    <description>Таблица из нарезки: 1D16, 21×1, 86 байт. Диапазон X 1542..4883, Y 0..0, Z 0..5630. Читателей в коде 19D0 анализатором не найдено (08.10.2026); непрямое чтение (через смещение от базы) анализатор мог не увидеть.</description>
+    <title>Не расшифровано: матрица 21×3 по [0xFFFF91C7] и [0xFFFF91F0] → [0xFFFF919F] (0x8FAA)</title>
+    <description>Не таблица с осями: [u16 3][u16 21] и 63 байта 0x8FAE-0x8FEC. Читает 0x1E4F0 (функция 0x1E442): элемент [([0xFFFF91C7] − 1) × 3 + [0xFFFF91F0]] пишется в [0xFFFF919F]. В KA20 строки 1-15 = 6…20, 16-20 = 0, 21 = 21, столбцы одинаковые. Смысл не установлен. До 14.10.2026 объект описывался как таблица 1D16 21×1 с началом 0x8FAC (на 2 байта позже настоящего) (так его выделил сканер таблиц: счётчик и растущая ось), код читает его иначе.</description>
     <CATEGORYMEM index="0" category="11" />
     <XDFAXIS id="x" uniqueid="0x0">
-      <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x8FAE" mmedelementsizebits="16" mmedcolcount="21" mmedmajorstridebits="0" mmedminorstridebits="0" />
-      <units>X</units>
-      <indexcount>21</indexcount>
+      <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
+      <units>[0xFFFF91F0]</units>
+      <indexcount>3</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
       <DALINK index="0" />
+      <LABEL index="0" value="0" />
+      <LABEL index="1" value="1" />
+      <LABEL index="2" value="2" />
       <MATH equation="X">
         <VAR id="X" />
       </MATH>
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
-      <EMBEDDEDDATA mmedelementsizebits="16" mmedmajorstridebits="-32" mmedminorstridebits="0" />
-      <units>Y</units>
-      <indexcount>1</indexcount>
+      <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
+      <units>[0xFFFF91C7]</units>
+      <indexcount>21</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
       <DALINK index="0" />
-      <LABEL index="0" value="0" />
+      <LABEL index="0" value="1" />
+      <LABEL index="1" value="2" />
+      <LABEL index="2" value="3" />
+      <LABEL index="3" value="4" />
+      <LABEL index="4" value="5" />
+      <LABEL index="5" value="6" />
+      <LABEL index="6" value="7" />
+      <LABEL index="7" value="8" />
+      <LABEL index="8" value="9" />
+      <LABEL index="9" value="10" />
+      <LABEL index="10" value="11" />
+      <LABEL index="11" value="12" />
+      <LABEL index="12" value="13" />
+      <LABEL index="13" value="14" />
+      <LABEL index="14" value="15" />
+      <LABEL index="15" value="16" />
+      <LABEL index="16" value="17" />
+      <LABEL index="17" value="18" />
+      <LABEL index="18" value="19" />
+      <LABEL index="19" value="20" />
+      <LABEL index="20" value="21" />
       <MATH equation="X">
         <VAR id="X" />
       </MATH>
     </XDFAXIS>
     <XDFAXIS id="z">
-      <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x8FD8" mmedelementsizebits="16" mmedrowcount="1" mmedcolcount="21" mmedmajorstridebits="0" mmedminorstridebits="0" />
-      <decimalpl>1</decimalpl>
+      <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x8FAE" mmedelementsizebits="8" mmedrowcount="21" mmedcolcount="3" mmedmajorstridebits="0" mmedminorstridebits="0" />
+      <decimalpl>0</decimalpl>
       <units>сырое</units>
       <outputtype>1</outputtype>
       <MATH equation="X">
@@ -642,8 +704,8 @@
     </XDFAXIS>
   </XDFTABLE>
   <XDFTABLE uniqueid="0x1011" flags="0x0">
-    <title>Не расшифровано 09008 (1D8 6×1)</title>
-    <description>Таблица из нарезки: 1D8, 6×1, 14 байт. Диапазон X 0..255, Y 0..0, Z 0..255. Читателей в коде 19D0 анализатором не найдено (08.10.2026); непрямое чтение (через смещение от базы) анализатор мог не увидеть.</description>
+    <title>Не расшифровано 09008 (1D8 6×1): по педали [0xFFFF9182] → [0xFFFF90D7]</title>
+    <description>Таблица из нарезки: 1D8, 6×1, 14 байт. Диапазон X 0..255, Y 0..0, Z 0..255. Читает 0x2447E (pea.l $9AF8, слот 7 каталога 0x9ADC, 0x1E680): X = педаль коробки [0xFFFF9182], результат в [0xFFFF90D7]. Смысл не установлен. (Читатели найдены 14.10.2026, раньше здесь стояла пометка, что их нет.)</description>
     <CATEGORYMEM index="0" category="11" />
     <XDFAXIS id="x" uniqueid="0x0">
       <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x900A" mmedelementsizebits="8" mmedcolcount="6" mmedmajorstridebits="0" mmedminorstridebits="0" />
@@ -1069,8 +1131,8 @@
     </XDFAXIS>
   </XDFTABLE>
   <XDFTABLE uniqueid="0x101C" flags="0x0">
-    <title>Не расшифровано 0917E (6×6) рядом с парами AGS D/S</title>
-    <description>Лежит в диапазоне 0x901E-0x91B1 таблиц AGS, роль отдельно не разобрана. К блокировке ГДТ ничем не привязана. Читателей в коде 19D0 анализатором не найдено (08.10.2026); непрямое чтение (через смещение от базы) анализатор мог не увидеть.</description>
+    <title>Не расшифровано 0917E (6×6) рядом с парами AGS D/S: X [0xFFFF918B], Y n_вых/32</title>
+    <description>Лежит в диапазоне 0x901E-0x91B1 таблиц AGS, роль отдельно не разобрана. К блокировке ГДТ ничем не привязана. Читает 0x29002 (pea.l $9B28, слот 19 каталога 0x9ADC, 0x1E848): X = [0xFFFF918B], Y = n_вых/32 [0xFFFF918F], результат × 4 (0x15CA4) идёт дальше. Смысл не установлен. (Читатели найдены 14.10.2026, раньше здесь стояла пометка, что их нет.)</description>
     <CATEGORYMEM index="0" category="11" />
     <XDFAXIS id="x" uniqueid="0x0">
       <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x9182" mmedelementsizebits="8" mmedcolcount="6" mmedmajorstridebits="0" mmedminorstridebits="0" />
@@ -1985,8 +2047,8 @@
     </XDFAXIS>
   </XDFTABLE>
   <XDFTABLE uniqueid="0x102D" flags="0x0">
-    <title>Не расшифровано 098B2 (1D8 6×1)</title>
-    <description>Таблица из нарезки: 1D8, 6×1, 14 байт. Диапазон X 0..156, Y 0..0, Z 51..255. Читателей в коде 19D0 анализатором не найдено (08.10.2026); непрямое чтение (через смещение от базы) анализатор мог не увидеть.</description>
+    <title>Не расшифровано 098B2 (1D8 6×1): по n_вых/32 → [0xFFFF917F]</title>
+    <description>Таблица из нарезки: 1D8, 6×1, 14 байт. Диапазон X 0..156, Y 0..0, Z 51..255. Читает 0x1D9F2 (pea.l $9B6C, слот 36 каталога 0x9ADC, 0x1E680): X = n_вых/32 [0xFFFF918F], результат в [0xFFFF917F]. Смысл не установлен. (Читатели найдены 14.10.2026, раньше здесь стояла пометка, что их нет.)</description>
     <CATEGORYMEM index="0" category="11" />
     <XDFAXIS id="x" uniqueid="0x0">
       <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x98B4" mmedelementsizebits="8" mmedcolcount="6" mmedmajorstridebits="0" mmedminorstridebits="0" />
@@ -2022,8 +2084,8 @@
     </XDFAXIS>
   </XDFTABLE>
   <XDFTABLE uniqueid="0x102E" flags="0x0">
-    <title>Не расшифровано 098C0 (1D8 6×1)</title>
-    <description>Таблица из нарезки: 1D8, 6×1, 14 байт. Диапазон X 0..100, Y 0..0, Z 0..100. Читателей в коде 19D0 анализатором не найдено (08.10.2026); непрямое чтение (через смещение от базы) анализатор мог не увидеть.</description>
+    <title>Не расшифровано 098C0 (1D8 6×1): X [0xFFFF9189] → масштаб [0xFFFF918A] ступени 90CD</title>
+    <description>Таблица из нарезки: 1D8, 6×1, 14 байт. Диапазон X 0..100, Y 0..0, Z 0..100. Читают 0x1F4D4 и 0x1F516 (pea.l $9B70, слот 37 каталога 0x9ADC, 0x1E680): X = [0xFFFF9189] (при сбросе 100, 0x1F512), результат в [0xFFFF918A]. [0xFFFF918A] масштабирует пороги 0x80D2 ступени [0xFFFF90CD] (функция 0x1651E). Смысл не установлен. (Читатели найдены 14.10.2026, раньше здесь стояла пометка, что их нет.)</description>
     <CATEGORYMEM index="0" category="11" />
     <XDFAXIS id="x" uniqueid="0x0">
       <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x98C2" mmedelementsizebits="8" mmedcolcount="6" mmedmajorstridebits="0" mmedminorstridebits="0" />
@@ -2059,8 +2121,8 @@
     </XDFAXIS>
   </XDFTABLE>
   <XDFTABLE uniqueid="0x102F" flags="0x0">
-    <title>Не расшифровано 098CE (2D8 4×2)</title>
-    <description>Таблица из нарезки: 2D8, 4×2, 18 байт. Диапазон X 0..255, Y 0..1, Z 0..255. Читателей в коде 19D0 анализатором не найдено (08.10.2026); непрямое чтение (через смещение от базы) анализатор мог не увидеть.</description>
+    <title>Не расшифровано 098CE (2D8 4×2): X [0xFFFF9226], Y ветка, против очков AGS</title>
+    <description>Таблица из нарезки: 2D8, 4×2, 18 байт. Диапазон X 0..255, Y 0..1, Z 0..255. Читают 0x1DBFC и 0x277AE (pea.l $9B74, слот 38 каталога 0x9ADC, 0x1E848): X = [0xFFFF9226], Y = ветка [0xFFFF91CB]; результат сравнивается с очками AGS [0xFFFF9216], в 0x1DBFC пишется в [0xFFFF9188]. Смысл не установлен. (Читатели найдены 14.10.2026, раньше здесь стояла пометка, что их нет.)</description>
     <CATEGORYMEM index="0" category="11" />
     <XDFAXIS id="x" uniqueid="0x0">
       <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x98D2" mmedelementsizebits="8" mmedcolcount="4" mmedmajorstridebits="0" mmedminorstridebits="0" />
@@ -2095,12 +2157,12 @@
     </XDFAXIS>
   </XDFTABLE>
   <XDFTABLE uniqueid="0x1030" flags="0x0">
-    <title>Не расшифровано 098E0 (1D8 7×1)</title>
-    <description>Таблица из нарезки: 1D8, 7×1, 16 байт. Диапазон X 0..192, Y 0..0, Z 30..230. Читателей в коде 19D0 анализатором не найдено (08.10.2026); непрямое чтение (через смещение от базы) анализатор мог не увидеть.</description>
+    <title>Не расшифровано 098E0 (1D8 7×1): по n_вых/32 → [0xFFFF8D9E]</title>
+    <description>Таблица из нарезки: 1D8, 7×1, 16 байт. Диапазон X 0..192, Y 0..0, Z 30..230. Читает 0x22754 (pea.l $9B78, слот 39 каталога 0x9ADC, 0x1E680): X = n_вых/32 [0xFFFF918F] (0…192 = 0…6144 об/мин вых. вала); результат через 0x15C48 и 0x15C68 вместе с [0xFFFF8DA2] даёт [0xFFFF8D9E]. Значения зависят от калибровки (Alpina 620P 23…160, BMW KA20 30…230). Гипотеза: опорное сопротивление движению по скорости для ступени [0xFFFF90CD]. (Читатели найдены 14.10.2026, раньше здесь стояла пометка, что их нет.)</description>
     <CATEGORYMEM index="0" category="11" />
     <XDFAXIS id="x" uniqueid="0x0">
       <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x98E2" mmedelementsizebits="8" mmedcolcount="7" mmedmajorstridebits="0" mmedminorstridebits="0" />
-      <units>X</units>
+      <units>n_вых/32</units>
       <indexcount>7</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
@@ -2132,8 +2194,8 @@
     </XDFAXIS>
   </XDFTABLE>
   <XDFTABLE uniqueid="0x1031" flags="0x0">
-    <title>Не расшифровано 098F0 (2D8 9×6)</title>
-    <description>Таблица из нарезки: 2D8, 9×6, 73 байт. Диапазон X 0..255, Y 34..184, Z 0..41. Читателей в коде 19D0 анализатором не найдено (08.10.2026); непрямое чтение (через смещение от базы) анализатор мог не увидеть.</description>
+    <title>Не расшифровано 098F0 (2D8 9×6): X [0xFFFF9173], Y обороты ДВС/32</title>
+    <description>Таблица из нарезки: 2D8, 9×6, 73 байт. Диапазон X 0..255, Y 34..184, Z 0..41. Читает 0x1F3BC (pea.l $9B7C, слот 40 каталога 0x9ADC, 0x1E848): X = [0xFFFF9173], Y = обороты ДВС/32 [0xFFFF9197]; результат × 8 идёт дальше. Смысл не установлен. (Читатели найдены 14.10.2026, раньше здесь стояла пометка, что их нет.)</description>
     <CATEGORYMEM index="0" category="11" />
     <XDFAXIS id="x" uniqueid="0x0">
       <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x98F4" mmedelementsizebits="8" mmedcolcount="9" mmedmajorstridebits="0" mmedminorstridebits="0" />
@@ -2169,7 +2231,7 @@
   </XDFTABLE>
   <XDFTABLE uniqueid="0x1032" flags="0x0">
     <title>ГДТ: пороги блокировки 30×7 (0x993A)</title>
-    <description>Функция блокировки 0x29056 (указатель 0x9B80). X = номер порога 0-29: группа g даёт столбцы 3g-3, 3g-2, 3g-1 = размыкание ниже, скольжение выше, замкнута выше. Y = педаль коробки 0xFFFF9182 (0, 5, 46, 59, 72, 97, 122). Значения: обороты выходного вала / 32. Группа = [0x897E + 4 × программа + передача - 2]. Запрос блокировки 0/1/2 идёт в 0xFFFF91F9.</description>
+    <description>Функция блокировки 0x29056 (указатель 0x9B80). X = номер порога 0-29: группа g даёт столбцы 3g-3, 3g-2, 3g-1 = размыкание ниже, скольжение выше, замкнута выше. Y = педаль коробки 0xFFFF9182 (точки зависят от калибровки: BMW KA20 0, 5, 46, 59, 72, 97, 122; Alpina 620P 0, 5, 46, 59, 72, 224, 230). Значения: обороты выходного вала / 32. Группа = [0x897E + 4 × программа + передача - 2]. Запрос блокировки 0/1/2 идёт в 0xFFFF91F9.</description>
     <CATEGORYMEM index="0" category="3" />
     <XDFAXIS id="x" uniqueid="0x0">
       <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x993E" mmedelementsizebits="8" mmedcolcount="30" mmedmajorstridebits="0" mmedminorstridebits="0" />
@@ -2204,8 +2266,8 @@
     </XDFAXIS>
   </XDFTABLE>
   <XDFTABLE uniqueid="0x1033" flags="0x0">
-    <title>Не расшифровано 09A36 (1D16 6×1)</title>
-    <description>Таблица из нарезки: 1D16, 6×1, 26 байт. Диапазон X 0..60, Y 0..0, Z 0..160. Читателей в коде 19D0 анализатором не найдено (08.10.2026); непрямое чтение (через смещение от базы) анализатор мог не увидеть.</description>
+    <title>Не расшифровано 09A36 (1D16 6×1): по [0xFFFF8DCE]</title>
+    <description>Таблица из нарезки: 1D16, 6×1, 26 байт. Диапазон X 0..60, Y 0..0, Z 0..160. Читает 0x24E2E (pea.l $9B84, слот 42 каталога 0x9ADC, 0x1E710): X = [0xFFFF8DCE]; результат объединяется (0x15BF6) с результатом таблицы 0x9A50. Смысл не установлен. (Читатели найдены 14.10.2026, раньше здесь стояла пометка, что их нет.)</description>
     <CATEGORYMEM index="0" category="11" />
     <XDFAXIS id="x" uniqueid="0x0">
       <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x9A38" mmedelementsizebits="16" mmedcolcount="6" mmedmajorstridebits="0" mmedminorstridebits="0" />
@@ -2241,8 +2303,8 @@
     </XDFAXIS>
   </XDFTABLE>
   <XDFTABLE uniqueid="0x1034" flags="0x0">
-    <title>Не расшифровано 09A50 (1D16 7×1)</title>
-    <description>Таблица из нарезки: 1D16, 7×1, 30 байт. Диапазон X 0..7328, Y 0..0, Z 24..192. Читателей в коде 19D0 анализатором не найдено (08.10.2026); непрямое чтение (через смещение от базы) анализатор мог не увидеть.</description>
+    <title>Не расшифровано 09A50 (1D16 7×1): по [0xFFFF8DA4]</title>
+    <description>Таблица из нарезки: 1D16, 7×1, 30 байт. Диапазон X 0..7328, Y 0..0, Z 24..192. Читает 0x24E1A (pea.l $9B88, слот 43 каталога 0x9ADC, 0x1E710): X = [0xFFFF8DA4]; результат объединяется (0x15BF6) с результатом таблицы 0x9A36. Смысл не установлен. (Читатели найдены 14.10.2026, раньше здесь стояла пометка, что их нет.)</description>
     <CATEGORYMEM index="0" category="11" />
     <XDFAXIS id="x" uniqueid="0x0">
       <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x9A52" mmedelementsizebits="16" mmedcolcount="7" mmedmajorstridebits="0" mmedminorstridebits="0" />
@@ -2389,8 +2451,8 @@
     </XDFAXIS>
   </XDFTABLE>
   <XDFTABLE uniqueid="0x1038" flags="0x0">
-    <title>Не расшифровано 09AA8 (2D16 4×4)</title>
-    <description>Таблица из нарезки: 2D16, 4×4, 52 байт. Диапазон X 5..1000, Y 6000..15000, Z 115..250. Читателей в коде 19D0 анализатором не найдено (08.10.2026); непрямое чтение (через смещение от базы) анализатор мог не увидеть.</description>
+    <title>Не расшифровано 09AA8 (2D16 4×4): в мониторе напряжения 0x265F4</title>
+    <description>Таблица из нарезки: 2D16, 4×4, 52 байт. Диапазон X 5..1000, Y 6000..15000, Z 115..250. Читает 0x26796 (pea.l $9B98, слот 47 каталога 0x9ADC, интерполятор 0x1E99C) в мониторе напряжения 0x265F4: X = [0xFFFF8FB4], Y = напряжение питания [0xFFFF906E] (мВ, документ 05 §1); результат × [0xFFFF8D80] / 255. Смысл не установлен. (Читатели найдены 14.10.2026, раньше здесь стояла пометка, что их нет.)</description>
     <CATEGORYMEM index="0" category="11" />
     <XDFAXIS id="x" uniqueid="0x0">
       <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x9AAC" mmedelementsizebits="16" mmedcolcount="4" mmedmajorstridebits="0" mmedminorstridebits="0" />
@@ -31183,22 +31245,30 @@
     </XDFAXIS>
   </XDFTABLE>
   <XDFTABLE uniqueid="0x134E" flags="0x0">
-    <title>Не расшифровано 0E490 (1D16 4×1)</title>
-    <description>Таблица из нарезки: 1D16, 4×1, 18 байт. Диапазон X 5..8, Y 0..0, Z 65535..65535. Читателей в коде 19D0 анализатором не найдено (08.10.2026); непрямое чтение (через смещение от базы) анализатор мог не увидеть.</description>
+    <title>Не расшифровано: слова 0xE48A-0xE498, пишутся по очереди в [0xFFFF9508] (0xE48A)</title>
+    <description>Не таблица: функция 0x2DD4C пишет в [0xFFFF9508] по очереди слово 0x9F50, слова 0xE48A, 0xE48C … 0xE498, затем 0xA056, 0xA976, 0xE170 и дальше. В KA20 слова 0xE48A-0xE498 = 1…8. Назначение не установлено. До 14.10.2026 объект описывался как таблица 1D16 4×1 с началом 0xE490 (так его выделил сканер таблиц: счётчик и растущая ось), код читает его иначе.</description>
     <CATEGORYMEM index="0" category="11" />
     <XDFAXIS id="x" uniqueid="0x0">
-      <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0xE492" mmedelementsizebits="16" mmedcolcount="4" mmedmajorstridebits="0" mmedminorstridebits="0" />
-      <units>X</units>
-      <indexcount>4</indexcount>
+      <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
+      <units>номер слова</units>
+      <indexcount>8</indexcount>
       <datatype>0</datatype>
       <unittype>0</unittype>
       <DALINK index="0" />
+      <LABEL index="0" value="0" />
+      <LABEL index="1" value="1" />
+      <LABEL index="2" value="2" />
+      <LABEL index="3" value="3" />
+      <LABEL index="4" value="4" />
+      <LABEL index="5" value="5" />
+      <LABEL index="6" value="6" />
+      <LABEL index="7" value="7" />
       <MATH equation="X">
         <VAR id="X" />
       </MATH>
     </XDFAXIS>
     <XDFAXIS id="y" uniqueid="0x0">
-      <EMBEDDEDDATA mmedelementsizebits="16" mmedmajorstridebits="-32" mmedminorstridebits="0" />
+      <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
       <units>Y</units>
       <indexcount>1</indexcount>
       <datatype>0</datatype>
@@ -31210,8 +31280,8 @@
       </MATH>
     </XDFAXIS>
     <XDFAXIS id="z">
-      <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0xE49A" mmedelementsizebits="16" mmedrowcount="1" mmedcolcount="4" mmedmajorstridebits="0" mmedminorstridebits="0" />
-      <decimalpl>1</decimalpl>
+      <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0xE48A" mmedelementsizebits="16" mmedrowcount="1" mmedcolcount="8" mmedmajorstridebits="0" mmedminorstridebits="0" />
+      <decimalpl>0</decimalpl>
       <units>сырое</units>
       <outputtype>1</outputtype>
       <MATH equation="X">
@@ -31376,7 +31446,7 @@
   </XDFCONSTANT>
   <XDFCONSTANT uniqueid="0x1354" flags="0x0">
     <title>AGS: параметр 0x88C1, завод 3 (роль не разобрана)</title>
-    <description>Лежит в блоке параметров AGS 0x888C-0x88C1. Роль отдельно не разобрана, к ГДТ не относится. Читателей в коде 19D0 анализатором не найдено (08.10.2026); непрямое чтение (через смещение от базы) анализатор мог не увидеть.</description>
+    <description>Лежит в блоке параметров AGS 0x888C-0x88C1. Роль отдельно не разобрана, к ГДТ не относится. Читает 0x1E130 (move.b $88C1, d5) в функции AGS. (Читатели найдены 14.10.2026, раньше здесь стояла пометка, что их нет.)</description>
     <CATEGORYMEM index="0" category="2" />
     <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x88C1" mmedelementsizebits="8" mmedmajorstridebits="0" mmedminorstridebits="0" />
     <units>сырое</units>
@@ -31436,7 +31506,7 @@
   </XDFCONSTANT>
   <XDFCONSTANT uniqueid="0x1359" flags="0x0">
     <title>Флаг 0x82B1 (сток 1) (0x82B1)</title>
-    <description>Читателей в коде 19D0 анализатором не найдено (08.10.2026); непрямое чтение (через смещение от базы) анализатор мог не увидеть.</description>
+    <description>Читают 0x16840, 0x1E166, 0x1E182, 0x1E200, 0x27618 (cmp.b $82B1). (Читатели найдены 14.10.2026, раньше здесь стояла пометка, что их нет.)</description>
     <CATEGORYMEM index="0" category="2" />
     <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x82B1" mmedelementsizebits="8" mmedmajorstridebits="0" mmedminorstridebits="0" />
     <units>сырое</units>
@@ -31460,7 +31530,7 @@
   </XDFCONSTANT>
   <XDFCONSTANT uniqueid="0x135B" flags="0x0">
     <title>Монитор напряжения 0x265F4: [0xFFFF906E] ≥ X в флаг «канал B ≥ 9.0 В» (сток 9000 мВ). 906C/906E пишет 0x20D78 как АЦП×25250/1024. НЕ обороты турбины. Не менять, см. docs 05 (0x8EE8)</title>
-    <description>Единица: docs/ru/05 §1. Читателей в коде 19D0 анализатором не найдено (08.10.2026); непрямое чтение (через смещение от базы) анализатор мог не увидеть.</description>
+    <description>Единица: docs/ru/05 §1. Читает код 19D0: 0x26640 (cmp.w $8EE8). (Читатели найдены 14.10.2026, раньше здесь стояла пометка, что их нет.)</description>
     <CATEGORYMEM index="0" category="7" />
     <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x8EE8" mmedelementsizebits="16" mmedmajorstridebits="0" mmedminorstridebits="0" />
     <units>мВ</units>
@@ -31472,7 +31542,7 @@
   </XDFCONSTANT>
   <XDFCONSTANT uniqueid="0x135C" flags="0x0">
     <title>Монитор напряжения 0x265F4: [0xFFFF906E] ≥ X в флаг «канал B ≥ 7.0 В» (сток 7000 мВ). Ранее ошибочно «защита турбины 7000 об/мин» (v17 ставил 7300, в v18 возвращён сток). Не менять, см. docs 05 (0x8EEA)</title>
-    <description>Единица: docs/ru/05 §1. Читателей в коде 19D0 анализатором не найдено (08.10.2026); непрямое чтение (через смещение от базы) анализатор мог не увидеть.</description>
+    <description>Единица: docs/ru/05 §1. Читает код 19D0: 0x26650 (cmp.w $8EEA). (Читатели найдены 14.10.2026, раньше здесь стояла пометка, что их нет.)</description>
     <CATEGORYMEM index="0" category="7" />
     <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x8EEA" mmedelementsizebits="16" mmedmajorstridebits="0" mmedminorstridebits="0" />
     <units>мВ</units>
@@ -31484,7 +31554,7 @@
   </XDFCONSTANT>
   <XDFCONSTANT uniqueid="0x135D" flags="0x0">
     <title>Монитор напряжения 0x265F4: допуск |[906C]−[906E]| между каналами питания, мВ (сток 1500 = 1.5 В). Не менять: см. docs 05 (0x8EF0)</title>
-    <description>Единица: docs/ru/05 §1. Читателей в коде 19D0 анализатором не найдено (08.10.2026); непрямое чтение (через смещение от базы) анализатор мог не увидеть.</description>
+    <description>Единица: docs/ru/05 §1. Читает код 19D0: 0x26636 (cmp.w $8EF0). (Читатели найдены 14.10.2026, раньше здесь стояла пометка, что их нет.)</description>
     <CATEGORYMEM index="0" category="7" />
     <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x8EF0" mmedelementsizebits="16" mmedmajorstridebits="0" mmedminorstridebits="0" />
     <units>мВ</units>
@@ -31496,7 +31566,7 @@
   </XDFCONSTANT>
   <XDFCONSTANT uniqueid="0x135E" flags="0x0">
     <title>Допуск разницы двух линий питания, мВ (0x8EFA)</title>
-    <description>Единица: docs/ru/05 §1, 03 §5. Читателей в коде 19D0 анализатором не найдено (08.10.2026); непрямое чтение (через смещение от базы) анализатор мог не увидеть.</description>
+    <description>Единица: docs/ru/05 §1, 03 §5. Читает код 19D0: 0x26EF2 (sub.w $8EFA). (Читатели найдены 14.10.2026, раньше здесь стояла пометка, что их нет.)</description>
     <CATEGORYMEM index="0" category="8" />
     <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x8EFA" mmedelementsizebits="16" mmedmajorstridebits="0" mmedminorstridebits="0" />
     <units>мВ</units>
@@ -31508,7 +31578,7 @@
   </XDFCONSTANT>
   <XDFCONSTANT uniqueid="0x135F" flags="0x0">
     <title>Верх окна напряжения питания, В (сток 16.0): НЕ температура (0x8EFC)</title>
-    <description>Единица: docs/ru/05 §1, 03 §5. Читателей в коде 19D0 анализатором не найдено (08.10.2026); непрямое чтение (через смещение от базы) анализатор мог не увидеть.</description>
+    <description>Единица: docs/ru/05 §1, 03 §5. Читает код 19D0: 0x1FB58 (cmp.w $8EFC). (Читатели найдены 14.10.2026, раньше здесь стояла пометка, что их нет.)</description>
     <CATEGORYMEM index="0" category="8" />
     <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x8EFC" mmedelementsizebits="16" mmedmajorstridebits="0" mmedminorstridebits="0" />
     <units>мВ</units>
@@ -31520,7 +31590,7 @@
   </XDFCONSTANT>
   <XDFCONSTANT uniqueid="0x1360" flags="0x0">
     <title>Порог 2.5 В канала 906E (0x8EFE)</title>
-    <description>Единица: docs/ru/05 §1. Читателей в коде 19D0 анализатором не найдено (08.10.2026); непрямое чтение (через смещение от базы) анализатор мог не увидеть.</description>
+    <description>Единица: docs/ru/05 §1. Читает код 19D0: 0x26F00, 0x26FAA, 0x26FBA, 0x27034, 0x27058 (movea.l #$8EFE, cmp.w $8EFE). (Читатели найдены 14.10.2026, раньше здесь стояла пометка, что их нет.)</description>
     <CATEGORYMEM index="0" category="8" />
     <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x8EFE" mmedelementsizebits="16" mmedmajorstridebits="0" mmedminorstridebits="0" />
     <units>мВ</units>
@@ -31532,7 +31602,7 @@
   </XDFCONSTANT>
   <XDFCONSTANT uniqueid="0x1361" flags="0x0">
     <title>Низ окна напряжения питания, В (сток 9.0): НЕ «90 °C» (0x8F00)</title>
-    <description>Единица: docs/ru/05 §1. Читателей в коде 19D0 анализатором не найдено (08.10.2026); непрямое чтение (через смещение от базы) анализатор мог не увидеть.</description>
+    <description>Единица: docs/ru/05 §1. Читает код 19D0: 0x1FB50 (cmp.w $8F00). (Читатели найдены 14.10.2026, раньше здесь стояла пометка, что их нет.)</description>
     <CATEGORYMEM index="0" category="8" />
     <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x8F00" mmedelementsizebits="16" mmedmajorstridebits="0" mmedminorstridebits="0" />
     <units>мВ</units>
@@ -31544,7 +31614,7 @@
   </XDFCONSTANT>
   <XDFCONSTANT uniqueid="0x1362" flags="0x0">
     <title>Плаузибилити датчика: верх, В (сток 2.7): НЕ «27 °C» (0x8F08)</title>
-    <description>Единица: docs/ru/03 §5. Читателей в коде 19D0 анализатором не найдено (08.10.2026); непрямое чтение (через смещение от базы) анализатор мог не увидеть.</description>
+    <description>Единица: docs/ru/03 §5. Читает код 19D0: 0x273B2, 0x273C8 (cmp.w $8F08). (Читатели найдены 14.10.2026, раньше здесь стояла пометка, что их нет.)</description>
     <CATEGORYMEM index="0" category="8" />
     <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x8F08" mmedelementsizebits="16" mmedmajorstridebits="0" mmedminorstridebits="0" />
     <units>мВ</units>
@@ -31556,7 +31626,7 @@
   </XDFCONSTANT>
   <XDFCONSTANT uniqueid="0x1363" flags="0x0">
     <title>Плаузибилити датчика: низ, В (сток 2.3): НЕ «23 °C» (0x8F0A)</title>
-    <description>Единица: docs/ru/03 §5. Читателей в коде 19D0 анализатором не найдено (08.10.2026); непрямое чтение (через смещение от базы) анализатор мог не увидеть.</description>
+    <description>Единица: docs/ru/03 §5. Читает код 19D0: 0x273BA, 0x273D0 (cmp.w $8F0A). (Читатели найдены 14.10.2026, раньше здесь стояла пометка, что их нет.)</description>
     <CATEGORYMEM index="0" category="8" />
     <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x8F0A" mmedelementsizebits="16" mmedmajorstridebits="0" mmedminorstridebits="0" />
     <units>мВ</units>
@@ -31568,7 +31638,7 @@
   </XDFCONSTANT>
   <XDFCONSTANT uniqueid="0x1364" flags="0x0">
     <title>Порог 2.504 В (0x8F0C)</title>
-    <description>Единица: docs/ru/05 §1 (блок 0x8EE0-0x8F0E). Читателей в коде 19D0 анализатором не найдено (08.10.2026); непрямое чтение (через смещение от базы) анализатор мог не увидеть.</description>
+    <description>Единица: docs/ru/05 §1 (блок 0x8EE0-0x8F0E). Читает код 19D0: 0x20F48 (cmp.w $8F0C). (Читатели найдены 14.10.2026, раньше здесь стояла пометка, что их нет.)</description>
     <CATEGORYMEM index="0" category="8" />
     <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x8F0C" mmedelementsizebits="16" mmedmajorstridebits="0" mmedminorstridebits="0" />
     <units>мВ</units>
@@ -31580,7 +31650,7 @@
   </XDFCONSTANT>
   <XDFCONSTANT uniqueid="0x1365" flags="0x0">
     <title>Порог 4.5 В (0x8F0E)</title>
-    <description>Единица: docs/ru/05 §1 (блок 0x8EE0-0x8F0E). Читателей в коде 19D0 анализатором не найдено (08.10.2026); непрямое чтение (через смещение от базы) анализатор мог не увидеть.</description>
+    <description>Единица: docs/ru/05 §1 (блок 0x8EE0-0x8F0E). Читает код 19D0: 0x2734C, 0x2736E, 0x27390 (cmp.w $8F0E). (Читатели найдены 14.10.2026, раньше здесь стояла пометка, что их нет.)</description>
     <CATEGORYMEM index="0" category="8" />
     <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x8F0E" mmedelementsizebits="16" mmedmajorstridebits="0" mmedminorstridebits="0" />
     <units>мВ</units>
@@ -32267,4 +32337,386 @@
         <VAR id="X" />
       </MATH>
   </XDFCONSTANT>
+  <XDFCONSTANT uniqueid="0x138B" flags="0x0">
+    <title>Не расшифровано: порог [0xFFFF8D06], завод 2 (0x80DA)</title>
+    <description>Сравнивается с [0xFFFF8D06] в 0x1D77C (cmp.w, ветка при [0xFFFF91AF] = d6). [0xFFFF8D06] входит в [0xFFFF8D04] ступени [0xFFFF90CD]. До 14.10.2026 байты считались данными объекта 0x80D0.</description>
+    <CATEGORYMEM index="0" category="11" />
+    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x80DA" mmedelementsizebits="16" mmedmajorstridebits="0" mmedminorstridebits="0" />
+    <units>сырое</units>
+    <decimalpl>0</decimalpl>
+    <outputtype>1</outputtype>
+    <MATH equation="X">
+        <VAR id="X" />
+      </MATH>
+  </XDFCONSTANT>
+  <XDFCONSTANT uniqueid="0x138C" flags="0x0">
+    <title>Не расшифровано: масштаб [0xFFFF8D08], завод 443 (0x80DC)</title>
+    <description>В 0x21FC6: [0xFFFF8D08] = f([0xFFFF8DCE], 0x80DC) (0x15CB4, 0x15D26), если [0xFFFF8DA4] не выше 0x80E2.</description>
+    <CATEGORYMEM index="0" category="11" />
+    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x80DC" mmedelementsizebits="16" mmedmajorstridebits="0" mmedminorstridebits="0" />
+    <units>сырое</units>
+    <decimalpl>0</decimalpl>
+    <outputtype>1</outputtype>
+    <MATH equation="X">
+        <VAR id="X" />
+      </MATH>
+  </XDFCONSTANT>
+  <XDFCONSTANT uniqueid="0x138D" flags="0x0">
+    <title>Не расшифровано: поправка к порогу 0x80E0, завод 10 (0x80DE)</title>
+    <description>В 0x21F40-0x21F52 из 0x80E0 и 0x80DE (0x15C3E) получается второй порог для [0xFFFF8D0A].</description>
+    <CATEGORYMEM index="0" category="11" />
+    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x80DE" mmedelementsizebits="16" mmedmajorstridebits="0" mmedminorstridebits="0" />
+    <units>сырое</units>
+    <decimalpl>0</decimalpl>
+    <outputtype>1</outputtype>
+    <MATH equation="X">
+        <VAR id="X" />
+      </MATH>
+  </XDFCONSTANT>
+  <XDFCONSTANT uniqueid="0x138E" flags="0x0">
+    <title>Не расшифровано: порог [0xFFFF8D0A], завод 35 (0x80E0)</title>
+    <description>В 0x21F16 (функция 0x21EA4): [0xFFFF8D0A] выше 35 → [0xFFFF9118] = 1; в 0x21F40 вместе с 0x80DE даёт второй порог.</description>
+    <CATEGORYMEM index="0" category="11" />
+    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x80E0" mmedelementsizebits="16" mmedmajorstridebits="0" mmedminorstridebits="0" />
+    <units>сырое</units>
+    <decimalpl>0</decimalpl>
+    <outputtype>1</outputtype>
+    <MATH equation="X">
+        <VAR id="X" />
+      </MATH>
+  </XDFCONSTANT>
+  <XDFCONSTANT uniqueid="0x138F" flags="0x0">
+    <title>Не расшифровано: порог [0xFFFF8DA4], завод 3000 (0x80E2)</title>
+    <description>В 0x21FAC: при [0xFFFF8DA4] не выше 3000 пересчитывается [0xFFFF8D08] (константа 0x80DC).</description>
+    <CATEGORYMEM index="0" category="11" />
+    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x80E2" mmedelementsizebits="16" mmedmajorstridebits="0" mmedminorstridebits="0" />
+    <units>сырое</units>
+    <decimalpl>0</decimalpl>
+    <outputtype>1</outputtype>
+    <MATH equation="X">
+        <VAR id="X" />
+      </MATH>
+  </XDFCONSTANT>
+  <XDFTABLE uniqueid="0x1390" flags="0x0">
+    <title>Не расшифровано: 6 нижних пределов [0xFFFF90CC] (0x80E4)</title>
+    <description>Каждый байт читает своя пара cmp.b / move.b в функции 0x16336: 0x80E4 (0x163CA), 0x80E5 (0x16422), 0x80E6 (0x1643C), 0x80E7 (0x16404), 0x80E8 (0x163E2), 0x80E9 (0x16456). Если [0xFFFF90CC] меньше байта, он поднимается до байта. Условия выбора (0x163C0-0x16454) не разобраны. Завод KA20 и Alpina: 30/30/30/20/30/30.</description>
+    <CATEGORYMEM index="0" category="11" />
+    <XDFAXIS id="x" uniqueid="0x0">
+      <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
+      <units>байт</units>
+      <indexcount>6</indexcount>
+      <datatype>0</datatype>
+      <unittype>0</unittype>
+      <DALINK index="0" />
+      <LABEL index="0" value="0x80E4" />
+      <LABEL index="1" value="0x80E5" />
+      <LABEL index="2" value="0x80E6" />
+      <LABEL index="3" value="0x80E7" />
+      <LABEL index="4" value="0x80E8" />
+      <LABEL index="5" value="0x80E9" />
+      <MATH equation="X">
+        <VAR id="X" />
+      </MATH>
+    </XDFAXIS>
+    <XDFAXIS id="y" uniqueid="0x0">
+      <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
+      <units>Y</units>
+      <indexcount>1</indexcount>
+      <datatype>0</datatype>
+      <unittype>0</unittype>
+      <DALINK index="0" />
+      <LABEL index="0" value="0" />
+      <MATH equation="X">
+        <VAR id="X" />
+      </MATH>
+    </XDFAXIS>
+    <XDFAXIS id="z">
+      <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x80E4" mmedelementsizebits="8" mmedrowcount="1" mmedcolcount="6" mmedmajorstridebits="0" mmedminorstridebits="0" />
+      <decimalpl>0</decimalpl>
+      <units>сырое</units>
+      <outputtype>1</outputtype>
+      <MATH equation="X">
+        <VAR id="X" />
+      </MATH>
+    </XDFAXIS>
+  </XDFTABLE>
+  <XDFTABLE uniqueid="0x1391" flags="0x0">
+    <title>Не расшифровано: флаг по передаче [0xFFFF91AE] → [0xFFFF90F8] (0x80EA)</title>
+    <description>[u16 7] и 7 байт 0x80EC-0x80F2. В 0x164FE (функция 0x16336): если байт [[0xFFFF91AE] − 1] не 0, [0xFFFF90F8] = 1. [0xFFFF91AE] это передача, которую покидают (копия [0xFFFF9716], 0x39CA0). Завод KA20 и Alpina: 1 для передач 1-6, 0 для 7.</description>
+    <CATEGORYMEM index="0" category="11" />
+    <XDFAXIS id="x" uniqueid="0x0">
+      <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
+      <units>передача [0xFFFF91AE]</units>
+      <indexcount>7</indexcount>
+      <datatype>0</datatype>
+      <unittype>0</unittype>
+      <DALINK index="0" />
+      <LABEL index="0" value="1" />
+      <LABEL index="1" value="2" />
+      <LABEL index="2" value="3" />
+      <LABEL index="3" value="4" />
+      <LABEL index="4" value="5" />
+      <LABEL index="5" value="6" />
+      <LABEL index="6" value="7" />
+      <MATH equation="X">
+        <VAR id="X" />
+      </MATH>
+    </XDFAXIS>
+    <XDFAXIS id="y" uniqueid="0x0">
+      <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
+      <units>Y</units>
+      <indexcount>1</indexcount>
+      <datatype>0</datatype>
+      <unittype>0</unittype>
+      <DALINK index="0" />
+      <LABEL index="0" value="0" />
+      <MATH equation="X">
+        <VAR id="X" />
+      </MATH>
+    </XDFAXIS>
+    <XDFAXIS id="z">
+      <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x80EC" mmedelementsizebits="8" mmedrowcount="1" mmedcolcount="7" mmedmajorstridebits="0" mmedminorstridebits="0" />
+      <decimalpl>0</decimalpl>
+      <units>сырое</units>
+      <outputtype>1</outputtype>
+      <MATH equation="X">
+        <VAR id="X" />
+      </MATH>
+    </XDFAXIS>
+  </XDFTABLE>
+  <XDFCONSTANT uniqueid="0x1392" flags="0x0">
+    <title>Не расшифровано: порог 150 в функции 0x284AE (0x8318)</title>
+    <description>В 0x28560: величина из [0xFFFF8D84] (через 0x15C3E) больше 150 → флаг (d3 = 1). Функция 0x284AE стоит в списке задач 0x124F8.</description>
+    <CATEGORYMEM index="0" category="11" />
+    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x8318" mmedelementsizebits="16" mmedmajorstridebits="0" mmedminorstridebits="0" />
+    <units>сырое</units>
+    <decimalpl>0</decimalpl>
+    <outputtype>1</outputtype>
+    <MATH equation="X">
+        <VAR id="X" />
+      </MATH>
+  </XDFCONSTANT>
+  <XDFCONSTANT uniqueid="0x1393" flags="0x0">
+    <title>Не расшифровано: значение вместо массива 0x831A, завод 192 (0x8320)</title>
+    <description>В 0x167AC в ветке без индекса [0xFFFF91A1] берётся вместо элемента массива 0x831A (d7).</description>
+    <CATEGORYMEM index="0" category="11" />
+    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x8320" mmedelementsizebits="8" mmedmajorstridebits="0" mmedminorstridebits="0" />
+    <units>сырое</units>
+    <decimalpl>0</decimalpl>
+    <outputtype>1</outputtype>
+    <MATH equation="X">
+        <VAR id="X" />
+      </MATH>
+  </XDFCONSTANT>
+  <XDFTABLE uniqueid="0x1394" flags="0x0">
+    <title>Не расшифровано: массив 4 по [0xFFFF91A1] → [0xFFFF921B] (0x8322)</title>
+    <description>[u16 4] и 4 байта 0x8324-0x8327. В 0x1682A: элемент [[0xFFFF91A1] − 1] пишется в [0xFFFF921B]; в другой ветке (0x167B2) вместо него константа 0x8328.</description>
+    <CATEGORYMEM index="0" category="11" />
+    <XDFAXIS id="x" uniqueid="0x0">
+      <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
+      <units>[0xFFFF91A1]</units>
+      <indexcount>4</indexcount>
+      <datatype>0</datatype>
+      <unittype>0</unittype>
+      <DALINK index="0" />
+      <LABEL index="0" value="1" />
+      <LABEL index="1" value="2" />
+      <LABEL index="2" value="3" />
+      <LABEL index="3" value="4" />
+      <MATH equation="X">
+        <VAR id="X" />
+      </MATH>
+    </XDFAXIS>
+    <XDFAXIS id="y" uniqueid="0x0">
+      <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
+      <units>Y</units>
+      <indexcount>1</indexcount>
+      <datatype>0</datatype>
+      <unittype>0</unittype>
+      <DALINK index="0" />
+      <LABEL index="0" value="0" />
+      <MATH equation="X">
+        <VAR id="X" />
+      </MATH>
+    </XDFAXIS>
+    <XDFAXIS id="z">
+      <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x8324" mmedelementsizebits="8" mmedrowcount="1" mmedcolcount="4" mmedmajorstridebits="0" mmedminorstridebits="0" />
+      <decimalpl>0</decimalpl>
+      <units>сырое</units>
+      <outputtype>1</outputtype>
+      <MATH equation="X">
+        <VAR id="X" />
+      </MATH>
+    </XDFAXIS>
+  </XDFTABLE>
+  <XDFCONSTANT uniqueid="0x1395" flags="0x0">
+    <title>Не расшифровано: значение [0xFFFF921B] вместо массива 0x8322, завод 160 (0x8328)</title>
+    <description>В 0x167B2 пишется в [0xFFFF921B].</description>
+    <CATEGORYMEM index="0" category="11" />
+    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x8328" mmedelementsizebits="8" mmedmajorstridebits="0" mmedminorstridebits="0" />
+    <units>сырое</units>
+    <decimalpl>0</decimalpl>
+    <outputtype>1</outputtype>
+    <MATH equation="X">
+        <VAR id="X" />
+      </MATH>
+  </XDFCONSTANT>
+  <XDFTABLE uniqueid="0x1396" flags="0x0">
+    <title>Атрибуты запроса подмены [0xFFFF91B0]: аварийный режим и два флага (0x88F0)</title>
+    <description>[u16 7] и 7 байт 0x88F2-0x88F8, индекс [0xFFFF91B0] (функция 0x220E8). Бит 0 ставит флаг аварийного режима [0xFFFF90C1] = 1 (0x2229A), бит 1 ставит [0xFFFF90C3] = 0 (0x222C4), бит 2 ставит [0xFFFF90C2] = 5 (0x222E2). Те же выходы дают биты 3, 0x1C, 0x1D длинного слова реакций [0xFFFF8FA2] (проверка 0x1A3D8). Завод KA20 и Alpina: все нули. Семь записей по [0xFFFF91B0] говорят за то, что 0xFFFF91B0 номер передачи (0-6), а не программы (документ 01 §5).</description>
+    <CATEGORYMEM index="0" category="7" />
+    <XDFAXIS id="x" uniqueid="0x0">
+      <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
+      <units>[0xFFFF91B0]</units>
+      <indexcount>7</indexcount>
+      <datatype>0</datatype>
+      <unittype>0</unittype>
+      <DALINK index="0" />
+      <LABEL index="0" value="0" />
+      <LABEL index="1" value="1" />
+      <LABEL index="2" value="2" />
+      <LABEL index="3" value="3" />
+      <LABEL index="4" value="4" />
+      <LABEL index="5" value="5" />
+      <LABEL index="6" value="6" />
+      <MATH equation="X">
+        <VAR id="X" />
+      </MATH>
+    </XDFAXIS>
+    <XDFAXIS id="y" uniqueid="0x0">
+      <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
+      <units>Y</units>
+      <indexcount>1</indexcount>
+      <datatype>0</datatype>
+      <unittype>0</unittype>
+      <DALINK index="0" />
+      <LABEL index="0" value="0" />
+      <MATH equation="X">
+        <VAR id="X" />
+      </MATH>
+    </XDFAXIS>
+    <XDFAXIS id="z">
+      <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x88F2" mmedelementsizebits="8" mmedrowcount="1" mmedcolcount="7" mmedmajorstridebits="0" mmedminorstridebits="0" />
+      <decimalpl>0</decimalpl>
+      <units>биты</units>
+      <outputtype>1</outputtype>
+      <MATH equation="X">
+        <VAR id="X" />
+      </MATH>
+    </XDFAXIS>
+  </XDFTABLE>
+  <XDFCONSTANT uniqueid="0x1397" flags="0x0">
+    <title>Не расшифровано: порог [0xFFFF8DB0] → [0xFFFF91E5], завод 10 (0x88FA)</title>
+    <description>В 0x21EC4 (функция 0x21EA4): [0xFFFF8DB0] выше 10 → [0xFFFF91E5] = 1.</description>
+    <CATEGORYMEM index="0" category="11" />
+    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x88FA" mmedelementsizebits="16" mmedmajorstridebits="0" mmedminorstridebits="0" />
+    <units>сырое</units>
+    <decimalpl>0</decimalpl>
+    <outputtype>1</outputtype>
+    <MATH equation="X">
+        <VAR id="X" />
+      </MATH>
+  </XDFCONSTANT>
+  <XDFTABLE uniqueid="0x1398" flags="0x0">
+    <title>Пороги n_вых/32 → зона [0xFFFF91A3], ветка S (0x8AA2)</title>
+    <description>[u16 4] и 4 порога 0x8AA4-0x8AA7, набор ветки S ([0xFFFF91CB] = 1), пара к набору 0x8A9C (UID 4109). Сравнение с n_вых/32 [0xFFFF918F] в 0x17714. Завод BMW KA20: 39/94/141/188 (1248/3008/4512/6016 об/мин вых. вала).</description>
+    <CATEGORYMEM index="0" category="11" />
+    <XDFAXIS id="x" uniqueid="0x0">
+      <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
+      <units>номер порога</units>
+      <indexcount>4</indexcount>
+      <datatype>0</datatype>
+      <unittype>0</unittype>
+      <DALINK index="0" />
+      <LABEL index="0" value="1" />
+      <LABEL index="1" value="2" />
+      <LABEL index="2" value="3" />
+      <LABEL index="3" value="4" />
+      <MATH equation="X">
+        <VAR id="X" />
+      </MATH>
+    </XDFAXIS>
+    <XDFAXIS id="y" uniqueid="0x0">
+      <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
+      <units>Y</units>
+      <indexcount>1</indexcount>
+      <datatype>0</datatype>
+      <unittype>0</unittype>
+      <DALINK index="0" />
+      <LABEL index="0" value="0" />
+      <MATH equation="X">
+        <VAR id="X" />
+      </MATH>
+    </XDFAXIS>
+    <XDFAXIS id="z">
+      <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x8AA4" mmedelementsizebits="8" mmedrowcount="1" mmedcolcount="4" mmedmajorstridebits="0" mmedminorstridebits="0" />
+      <decimalpl>0</decimalpl>
+      <units>n_вых/32</units>
+      <outputtype>1</outputtype>
+      <MATH equation="X">
+        <VAR id="X" />
+      </MATH>
+    </XDFAXIS>
+  </XDFTABLE>
+  <XDFCONSTANT uniqueid="0x1399" flags="0x0">
+    <title>Не расшифровано: значение [0xFFFF9219], KA20 107, Alpina 164 (0x8F74)</title>
+    <description>В 0x1F1EC (функция 0x1F168) пишется в [0xFFFF9219]. Завод BMW KA20 107, Alpina 620P 164.</description>
+    <CATEGORYMEM index="0" category="11" />
+    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x8F74" mmedelementsizebits="8" mmedmajorstridebits="0" mmedminorstridebits="0" />
+    <units>сырое</units>
+    <decimalpl>0</decimalpl>
+    <outputtype>1</outputtype>
+    <MATH equation="X">
+        <VAR id="X" />
+      </MATH>
+  </XDFCONSTANT>
+  <XDFCONSTANT uniqueid="0x139A" flags="0x0">
+    <title>Не расшифровано: множитель [0xFFFF8DEE] → [0xFFFF8D98], завод 16 (0x8F81)</title>
+    <description>В 0x2178E (функция 0x20FAC): [0xFFFF8D98] = слово [0xFFFF8DEE] × байт 0x8F81 (0x15CA4). До 14.10.2026 байт считался данными объекта 0x8F76.</description>
+    <CATEGORYMEM index="0" category="11" />
+    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x8F81" mmedelementsizebits="8" mmedmajorstridebits="0" mmedminorstridebits="0" />
+    <units>сырое</units>
+    <decimalpl>0</decimalpl>
+    <outputtype>1</outputtype>
+    <MATH equation="X">
+        <VAR id="X" />
+      </MATH>
+  </XDFCONSTANT>
+  <XDFTABLE uniqueid="0x139B" flags="0x0">
+    <title>ГДТ: коэффициент трансформации момента muGDT, % по проскальзыванию (0xE38E)</title>
+    <description>1D8 3×1, поле +0x7C записи 0x3CD18 (корень [0xFFFF94FC] из директории 0x3CDA4, оба варианта). Функция 0x2E0F6: X = clamp0_255(255 − 255 × [0xFFFF97B4] / ([0xFFFF97B0] + 1)), то есть проскальзывание ГДТ по оборотам турбины и мотора; поиск 0x2D0B4; результат пишется в [0xFFFF97F4] (0x3978E). Момент турбины [0xFFFF97A0] = [0xFFFF97A4] × [0xFFFF97F4] / 100 (0x2DFBA), из него ось Y карт давления [0xFFFF97DF] = 97A0 / 4 + 25 (документ 04 §3). Завод BMW KA20: 38/204/255 → 100/175/191 %; Alpina 620P: 34/128/255 → 100/132/168 %. Пара в 20C0: UID 8331 (0x781D6).</description>
+    <CATEGORYMEM index="0" category="5" />
+    <XDFAXIS id="x" uniqueid="0x0">
+      <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0xE390" mmedelementsizebits="8" mmedcolcount="3" mmedmajorstridebits="0" mmedminorstridebits="0" />
+      <units>проскальзывание 0..255</units>
+      <indexcount>3</indexcount>
+      <datatype>0</datatype>
+      <unittype>0</unittype>
+      <DALINK index="0" />
+      <MATH equation="X">
+        <VAR id="X" />
+      </MATH>
+    </XDFAXIS>
+    <XDFAXIS id="y" uniqueid="0x0">
+      <EMBEDDEDDATA mmedelementsizebits="8" mmedmajorstridebits="-32" mmedminorstridebits="0" />
+      <units>Y</units>
+      <indexcount>1</indexcount>
+      <datatype>0</datatype>
+      <unittype>0</unittype>
+      <DALINK index="0" />
+      <LABEL index="0" value="0" />
+      <MATH equation="X">
+        <VAR id="X" />
+      </MATH>
+    </XDFAXIS>
+    <XDFAXIS id="z">
+      <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0xE393" mmedelementsizebits="8" mmedrowcount="1" mmedcolcount="3" mmedmajorstridebits="0" mmedminorstridebits="0" />
+      <decimalpl>0</decimalpl>
+      <units>%</units>
+      <outputtype>1</outputtype>
+      <MATH equation="X">
+        <VAR id="X" />
+      </MATH>
+    </XDFAXIS>
+  </XDFTABLE>
 </XDFFORMAT>

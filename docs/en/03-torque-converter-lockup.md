@@ -36,7 +36,7 @@ Stock: 0x8B4C = 3 (n_out / 32 units), dwell [0x8ED7 + gear] = 6 ticks. During th
 
 ## 3. Threshold table 0x993A and groups 0x897E
 
-Table 0x993A (pointer 0x9B80), 2D8 30 × 7: `[u16 30][u16 7]`, X axis 30 bytes (threshold number 0…29), Y axis 7 bytes (transmission pedal `0xFFFF9182`, stock 0 / 5 / 46 / 59 / 72 / 97 / 122), 210 data bytes from 0x9963, rows of 30 bytes. Group g uses columns 3g-3 (threshold0, "open below"), 3g-2 (threshold1, "slip above") and 3g-1 (threshold2, "locked above"). Values in n_out / 32, turbine rpm at a threshold = value × 32 × i (2nd-5th: 1.999 / 1.407 / 1.000 / 0.742).
+Table 0x993A (pointer 0x9B80), 2D8 30 × 7: `[u16 30][u16 7]`, X axis 30 bytes (threshold number 0…29), Y axis 7 bytes (transmission pedal `0xFFFF9182`, calibration-specific: BMW KA20 0 / 5 / 46 / 59 / 72 / 97 / 122, Alpina 620P 0 / 5 / 46 / 59 / 72 / 224 / 230), 210 data bytes from 0x9963, rows of 30 bytes. Group g uses columns 3g-3 (threshold0, "open below"), 3g-2 (threshold1, "slip above") and 3g-1 (threshold2, "locked above"). Values in n_out / 32, turbine rpm at a threshold = value × 32 × i (2nd-5th: 1.999 / 1.407 / 1.000 / 0.742).
 
 Group = byte `[0x897E + 4 × program + gear - 2]`, 16 programs × 4 bytes (gears 2-5). Factory:
 

@@ -54,7 +54,7 @@ The module **does not read** the branch flag `0xFFFF91CB`: the hydraulics are th
 |---|---|---|
 | `0xFFFF97B4` | filter of `0xFFFF8DE2` | turbine speed; `0xFFFF97E2` = /32 (byte) |
 | `0xFFFF97B2` | filter of `0xFFFF8DA8` | output shaft speed n_out; `0xFFFF97E4` = /32 |
-| `0xFFFF97A0 / 97A4` | `0xFFFF8D96` via 0x2DFBA / 0x2DFE0 | 97A0 = turbine torque = 97A4 × 97F4 / 100 (0x2DFBA), Nm. **Y axis of the maps** `0xFFFF97DF = 97A0/4 + 25` (written at 0x397CA), `0xFFFF97E0 = 97A4/4 + 25` |
+| `0xFFFF97A0 / 97A4` | `0xFFFF8D96` via 0x2DFBA / 0x2DFE0 | 97A0 = turbine torque = 97A4 × 97F4 / 100 (0x2DFBA), Nm. 97F4 = converter torque ratio in % (muGDT, 0x2E0F6, written at 0x3978E): table 0xE38E by the converter slip 255 − 255 × 97B4 / (97B0 + 1); BMW KA20 100 → 191 %, Alpina 620P 100 → 168 % at stall. 20C0 pair: `[0xFFFF92CD]`, table 0x781D6 (doc 11 §10). **Y axis of the maps** `0xFFFF97DF = 97A0/4 + 25` (written at 0x397CA), `0xFFFF97E0 = 97A4/4 + 25` |
 | `0xFFFF97E5` | `0xFFFF90D0` | ATF, raw (axis of many 1D curves, 10…170) |
 | `0xFFFF97E9` | `0xFFFF9182` | pedal |
 | `0xFFFF97E8 / 97EA` | `0xFFFF9173` → 0x2E082 | load (Zug/Schub class) |

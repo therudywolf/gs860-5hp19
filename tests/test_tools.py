@@ -231,6 +231,29 @@ class CatalogChecks:
                 with open(p, encoding="utf-8") as f:
                     self.assertIsNone(VIN_LIKE.search(f.read()), p)
 
+    def test_english_field_placement(self):
+        # English goes only into these fields; everything else of the catalog stays as it is (CONTRIBUTING)
+        allowed = {"root": {"title_en", "description_en", "categories_en"}, "entry": {"title_en", "description_en"},
+                   "axis": {"units_en"}}
+        cyr = re.compile("[а-яА-ЯёЁ]")
+
+        def check(obj, level, where):
+            for k, v in obj.items():
+                if k.endswith("_en"):
+                    self.assertIn(k, allowed[level], f"{where}: {k} is not an English field of a {level}")
+                    vals = v if isinstance(v, list) else [v]
+                    self.assertTrue(vals and all(isinstance(s, str) and s.strip() for s in vals), f"{where}: {k}")
+                    self.assertTrue(all(not cyr.search(s) for s in vals), f"{where}: Cyrillic in {k}")
+
+        check(self.cat, "root", "catalog")
+        if "categories_en" in self.cat:
+            self.assertEqual(len(self.cat["categories_en"]), len(self.cat["categories"]))
+        for e in self.cat["entries"]:
+            check(e, "entry", f"0x{e['uid']:X}")
+            for ax in ("x", "y", "z"):
+                if ax in e:
+                    check(e[ax], "axis", f"0x{e['uid']:X}.{ax}")
+
 
 class TestCatalog19D0(CatalogChecks, unittest.TestCase):
     path = CATALOG_19D0
@@ -250,6 +273,24 @@ class TestCatalog19D0(CatalogChecks, unittest.TestCase):
         f21 = [e for e in self.cat["entries"] if e["title"].startswith("[k") and " f21]" in e["title"]]
         self.assertEqual(len(f21), 9)
         self.assertTrue(all(e["kind"] == "constant" and e["z"]["bits"] == 16 for e in f21))
+
+    def test_corrections_of_14_10_2026(self):
+        u = {e["uid"]: e for e in self.cat["entries"]}
+        # 0x80D0 is a list of seven zone thresholds read by 0x1651E, not a 1D table: its old "data row" holds constants
+        e = u[0x1000]
+        self.assertIsNone(e["x"]["addr"])
+        self.assertEqual((e["z"]["addr"], e["z"]["cols"]), (0x80D2, 7))
+        for a in (0x80DA, 0x80DC, 0x80DE):
+            self.assertTrue(any(c["kind"] == "constant" and c["z"]["addr"] == a for c in self.cat["entries"]), hex(a))
+        # converter torque ratio muGDT (pair of the 20C0 entry 0x781D6)
+        mu = [c for c in self.cat["entries"] if c["z"]["addr"] == 0xE393]
+        self.assertEqual(len(mu), 1)
+        self.assertEqual((mu[0]["x"]["addr"], mu[0]["confidence"]), (0xE390, "proven"))
+        self.assertIn("224, 230", u[0x1032]["description"])            # TCC pedal axis differs per calibration
+        # readers found through the pointer slots of 0x9ADC: the "no reader" note must be gone there
+        for uid in (0x102D, 0x102E, 0x102F, 0x1030, 0x1031, 0x1033, 0x1034, 0x1038):
+            self.assertNotIn("не найдено", u[uid]["proof"] + u[uid]["description"], hex(uid))
+            self.assertIn("pea.l $9B", u[uid]["proof"], hex(uid))
 
 
 class TestCatalog20C0(CatalogChecks, unittest.TestCase):
@@ -378,6 +419,22 @@ class TestWithStock(unittest.TestCase):
                     top = 1 << a["bits"]
                     vals = [v - top if v >= top // 2 else v for v in vals]
                 self.assertEqual(vals, sorted(set(vals)), f"0x{e['uid']:X} {e['title'][:40]} axis {ax}")
+
+    def test_arrays_and_converter_ratio_in_the_image(self):
+        b = self.stock
+        u16 = lambda a: int.from_bytes(b[a:a + 2], "big")
+        # [u16 count] headers of the arrays the code indexes as base + 2 + index (or + 4 for two counts)
+        self.assertEqual((u16(0x80D0), u16(0x80EA), u16(0x88F0), u16(0x831A), u16(0x8322)), (7, 7, 7, 4, 4))
+        self.assertEqual((u16(0x8FAA), u16(0x8FAC)), (3, 21))
+        thr = list(b[0x80D2:0x80D9])
+        self.assertEqual(thr, sorted(set(thr)))
+        self.assertEqual(thr[-1], 255)
+        # muGDT 0xE38E: [u16 3], slip axis ending at 255, 100 % at the coupling point, rising to the stall value
+        self.assertEqual(u16(0xE38E), 3)
+        x, z = list(b[0xE390:0xE393]), list(b[0xE393:0xE396])
+        self.assertEqual((x, x[-1]), (sorted(set(x)), 255))
+        self.assertEqual(z[0], 100)
+        self.assertEqual(z, sorted(z))
 
     def test_recipes(self):
         cal_sha = hashlib.sha256(self.stock[0x8000:0x10000]).hexdigest()

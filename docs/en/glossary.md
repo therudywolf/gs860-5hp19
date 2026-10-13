@@ -8,7 +8,7 @@
 | **Stock** | the stock calibration the recipes are relative to (label `19C0KA20`) |
 | **Recipe** | a JSON diff stock → tune: addresses, axes, old and new data; axes never change (doc 08) |
 | **Branch 0 / branch 1** | D / S. Switched by the S flag `0xFFFF91CB` (doc 01 §4): 1 in the gate before a +/- tap. The branch is read by the AGS functions and by table 0x81A0, it has nothing to do with the TCC or the hydraulics. M is a separate flag `0xFFFF91F3`. Early notes called them "normal" / "aggressive" |
-| **Program (P0…PF)** | one of the 16 shift programs, the active one is held in `0xFFFF91A0`. The matrix for it is chosen by the table in function 0x24BA4: P0 = k14, P1 = k6, P2 = k11, P3 = k15, P4 = k0, P5 = k1, P6 = k2, P7 = k13, P8 = k9, P9 = k12, PA = k5, PB = k10, PC = k7, PD = k8, PE = k4, PF = k3. `0xFFFF91B0` is the forced program (0 / 4 / 5), doc 01 §5 |
+| **Program (P0…PF)** | one of the 16 shift programs, the active one is held in `0xFFFF91A0`. The matrix for it is chosen by the table in function 0x24BA4: P0 = k14, P1 = k6, P2 = k11, P3 = k15, P4 = k0, P5 = k1, P6 = k2, P7 = k13, P8 = k9, P9 = k12, PA = k5, PB = k10, PC = k7, PD = k8, PE = k4, PF = k3. `0xFFFF91B0` is not a program: a substitute request of the execution module, probably a gear (doc 01 §5) |
 | **Zug / Schub** | German "pull" / "coast": shift under load (class 1) or without load (class 0), flag `0xFFFF9722` |
 | **Hochschaltung / Rückschaltung** | upshift / downshift |
 | **kind (0…3)** | record set of the execution automaton: 0 Schub-Hoch, 1 Zug-Hoch, 2 Schub-Rück, 3 Zug-Rück; `0xFFFF971B` |
@@ -27,7 +27,7 @@
 | **TCC stage** | an obsolete term of this repository. The "ladder" `0x888C` (32/96/160/224 stock) holds the "home" points of the AGS levels, not clutch stages (doc 03 §7). The clutch has the request 0 / 1 / 2 and the states 0-8 |
 | **Turbine** | speed of the converter turbine = transmission input shaft (`0xFFFF97B4`); equals engine speed with the clutch locked |
 | **n_out** | output shaft speed (`0xFFFF97B2`), 27.11 rpm per km/h on the reference car. The shift matrices, the speed axes of the AGS tables and the TCC thresholds 0x993A hold n_out / 32 (`0xFFFF918F`), doc 02 §3 |
-| **Torque** | `0xFFFF97A0`: turbine torque, Nm, 97A4 × 97F4 / 100 (0x2DFBA). Map Y axis `0xFFFF97DF` = 97A0/4 + 25 |
+| **Torque** | `0xFFFF97A0`: turbine torque, Nm, 97A4 × 97F4 / 100 (0x2DFBA), 97F4 = converter torque ratio % (table 0xE38E). Map Y axis `0xFFFF97DF` = 97A0/4 + 25 |
 | **ATF** | transmission fluid; raw sensor byte `0xFFFF8435`; in the frame °C = byte − 48 |
 | **Warm-up program** | after power-on, while the engine is cold, the matrices see at least 40 % pedal (P0, P1, P7) and the arbiter holds P0; it ends by speed (`0x8B48` / `0x70BAC` = 48), time or engine temperature (doc 05 §2, doc 13 §3). Until 06.10.2026 the table `0x9A6E` was wrongly called an "ATF thermal derate" |
 | **Torque reduction** | request to the DME to cut torque during a shift. One channel: byte 3 of the EGS1 frame, `0xFFFF90C0` from `0xFFFF918D` = max(`0xFFFF958D`, `0xFFFF97E1`), 958D is written only by 0x2E3C6 (doc 04 §9). The maps `0xAB0C…0xAE40` are the reference slip of the TCC regulator, not torque reduction |

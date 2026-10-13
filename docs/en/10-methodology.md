@@ -50,12 +50,13 @@ One step — one build — one log. Do not combine in a first build steps that c
 - Closed on 23.09.2026: the cause of limp mode at the limiter is the turbine monitor 0x26C84, threshold [0x8B44] = 6720, fault 0x25 (doc 05 §6).
 - Which PWM channel / register corresponds to which solenoid (EDS1…5, MV1…3). Partly closed: the converter clutch is PWM `0xFFFF95BA` and output `0xFFFFFF34` (by the third-party reverse accepted on 23.09.2026, doc 03 §4).
 - Semantics of fields kind1 f70 (4×4) and kind3 f65 (6×6), of tables `0xA066…0xA20A`, `0x917E`, `0x8142`, `0x824A`, of slots 0…11 of the descriptors `0x3AA60`.
-- The argument format of DS2 command `0x06` (segment/address/length) — to be captured from a factory tester.
+- Closed 14.10.2026 by code: the argument format of DS2 command `0x06` is `06 <segment> <A23..16> <A15..8> <A7..0> <N>` (handler 0x18A70, parser 0x19A4E, doc 01 §6); a live exchange is not recorded yet.
 - Closed 23.09.2026: `0xFFFF918F` is the filtered output shaft rpm shifted right by 5, not road speed (doc 02 §3).
 - Purpose of `0xFFFF90C2` and of bytes 21 / 13 / 19 of the status frame.
 - Mapping of internal fault numbers (6–9 at `0x12640`) to DS2 codes (e.g. 0x95).
 - Disputed and not checked in code: the input of the filter `0xFFFF8DA4` (`0xFFFF8DA6` or `0xFFFF8DA8`, doc 02 §3), what 0x8EEA is compared with (doc 05 §1).
-- The meaning of `0xFFFF91CA` (replacements PE / PF), the roles of matrices k5 (PA), k12 (P9), k13 (P7), whether the `0xFFFF90CD` steps are hill steps (hypothesis).
+- The meaning of `0xFFFF91CA` (replacements PE / PF), the roles of matrices k5 (PA), k12 (P9), k13 (P7), whether the `0xFFFF90CD` steps are hill steps (hypothesis; since 14.10.2026 the chain is traced: zone thresholds 0x80D2 × `[0xFFFF918A]` / 100 against `[0xFFFF8D04]`, tables 0x98C0 and 0x98E0, catalog 19D0).
+- What `0xFFFF91B0` / `0xFFFF91B7` substitute, a gear or a program, and how the execution module uses `0xFFFF97EE` (doc 01 §5).
 - The conditions of the full-lock permission 0x32150 and the role of state 5 of the TCC lower state machine.
 - Which clutch the slip-time controller drives (19D0 `0xFFFF974B`; 20C0 has no such cell, the pair is `[0xFFFF93CF]`, closed 08.10.2026, document 11 §15) in each downshift kind, the kind-0 records, the adaptation 0x2AE10.
 - Check the code at 0x21522: if the DME2 buffer is contiguous, `0xFFFF8435` is byte 1 of the DME2 frame, not the ADC of the ATF sensor (doc 03 §6).
@@ -65,3 +66,9 @@ One step — one build — one log. Do not combine in a first build steps that c
 From 16.09 to 23.09.2026 doc 03 described the AGS functions, the adaptive program selection, as the TCC lockup: the "ladder" 0x888C, the value `0xFFFF9216`, the tables 0x901E-0x915E. The role was inferred from the shape (four stages, thresholds by pedal and speed) and from the fact that the function reads pedal and speed. Step 4 of §2 was done only half-way here: nobody followed where the result goes. Every access to `0xFFFF9216` turned out to be a ramp, a minimum or a comparison in the program arbitration, the value never reaches an output. The real clutch chain ends at the output `0xFFFFFF34` (doc 03 §1). The same mistake was behind the readings "0xFFFF91B0 = active program" and "matrices 01 / 02 = sport": the role was assigned by shape without checking what selects the matrix (table 0x24BA4).
 
 Rule added to §2: for every value given a physical role, follow the code to an output (a PWM register, a CAN frame, a gear or program decision). Until the path to an output is found, the role stays a hypothesis.
+
+## 9. Lesson of 14.10.2026: scanner tables and indirect readers
+
+The 19D0 catalog marked 63 objects "no readers found". A two-step search finds readers for 36 of them: first the 32-bit pointers to the start of the object, then the instructions that reference the pointer (`pea.l <slot>` of the pointer catalog 0x9ADC, doc 01 §2-3), or a direct `movea.l #<object>`. The analyzer that wrote the notes did not follow pointer slots. The same pass showed that the table scanner (`egs_tables.py scan`: a count followed by a strictly increasing run of bytes) turned axis-less arrays, threshold lists and runs of separate constants into tables with axes. Nine objects were remodelled and 17 added; for example 0x80D0 is a list of seven zone thresholds, and its "data row" is three separate constants.
+
+Rule added to §2: before trusting a scanner table, find its reader and check how the code indexes it. A call to an interpolator (0x1E680, 0x1E710, 0x1E848, 0x1EB18) means a table with axes. `base + 2 + index` or `base + 4 + index` means an array, and a byte read by its own address is a constant.

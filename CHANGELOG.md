@@ -2,6 +2,28 @@
 
 Newest first. Each entry: date and title, then **EN** and **RU** with the same facts. Older entries are not rewritten: what turned out wrong is corrected in a newer entry.
 
+## 2026-10-14: 19D0 catalog readers, scanner objects remodelled, DS2 0x0B and 0x06
+
+**EN**
+
+- **DS2:** the running 19D0 program has its own dispatcher table `0x10E58` with 17 commands, including `0x0B` (handler `0x190AE`) and `0x04` / `0x05`. Documents 01 §6 and 06 §2 said there is no `0x0B` and that the "0B 03 frame" is a tester job; that was only the boot-loader table `0x3E54`. The `0x06` request format is now taken from the code: `32 09 06 <segment> <A23..16> <A15..8> <A7..0> <N> <XOR>` (parser `0x19A4E`, segment table `0x10EBE`), not yet checked on a car. Document 06 §2 has a real `0B 03` exchange with every byte explained. Document 06 §4 no longer promises a 10-20 ms period at 9600 baud.
+- **19D0 catalog, readers:** 63 objects said "no readers found". A two-step search (pointer to the object, then the code that references the pointer slot of `0x9ADC`, or a direct `movea.l`) finds readers for 36, now named in `proof` with their inputs and outputs. 27 remain; they sit in automaton records and need the record-root path.
+- **19D0 catalog, models:** the table scanner had turned axis-less arrays, threshold lists and runs of constants into tables with axes. Remodelled: `0x80D0` (seven zone thresholds of the `0xFFFF90CD` step, function `0x1651E`), `0x831A`, `0x8338`, `0x88EA`, `0x88FC`, `0x8A9C`, `0x8F76`, `0x8FAA` (was `0x8FAC`), `0xE48A` (was `0xE490`). 17 objects added, among them the constants `0x80DA`-`0x80E9`, the array `0x88F2` (attributes of `0xFFFF91B0`: limp-mode flag and two more) and the **converter torque ratio muGDT `0xE38E`** (pair of the 20C0 entry `0x781D6`): BMW KA20 191 %, Alpina 620P 168 % at stall. 921 entries.
+- `0xFFFF91B0` is no longer called the "forced program": it is a substitute request of the execution module, merged with fault-reaction bits into `0xFFFF91B7`; a gear is more likely than a program, not proven (document 01 §5).
+- The TCC pedal axis of `0x993A` depends on the calibration (Alpina 620P ends with 224 / 230, KA20 with 97 / 122): documents 03 §3 and the catalog.
+- `CONTRIBUTING.md`: how collaborators with write access work (branches, pull requests, where English goes). New tests: English field placement for both catalogs, the corrections above, the array headers and muGDT in a stock image. 59 tests.
+- Found while answering questions from Jason King (@KingAiCodeForge) about the 19D0 axes.
+
+**RU**
+
+- **DS2:** у работающей программы 19D0 своя таблица диспетчера `0x10E58` на 17 команд, среди них `0x0B` (обработчик `0x190AE`) и `0x04` / `0x05`. Документы 01 §6 и 06 §2 утверждали, что `0x0B` нет и «кадр 0B 03» это job тестера; это была только таблица загрузчика `0x3E54`. Формат запроса `0x06` теперь взят из кода: `32 09 06 <сегмент> <A23..16> <A15..8> <A7..0> <N> <XOR>` (разбор `0x19A4E`, таблица сегментов `0x10EBE`), на машине ещё не проверен. В документе 06 §2 настоящий обмен `0B 03` с разбором каждого байта. Документ 06 §4 больше не обещает период 10-20 мс на 9600 бод.
+- **Каталог 19D0, читатели:** у 63 объектов стояло «читателей не найдено». Поиск в два шага (указатель на объект, затем код, который ссылается на слот каталога указателей `0x9ADC`, или прямой `movea.l`) находит читателей у 36; они названы в `proof` вместе со входами и выходами. Осталось 27, они лежат в записях автомата, к ним нужен путь через корни записей.
+- **Каталог 19D0, модели:** сканер таблиц превращал массивы без осей, списки порогов и ряды констант в таблицы с осями. Переописаны: `0x80D0` (семь порогов зон ступени `0xFFFF90CD`, функция `0x1651E`), `0x831A`, `0x8338`, `0x88EA`, `0x88FC`, `0x8A9C`, `0x8F76`, `0x8FAA` (было `0x8FAC`), `0xE48A` (было `0xE490`). Добавлено 17 объектов, среди них константы `0x80DA`-`0x80E9`, массив `0x88F2` (атрибуты `0xFFFF91B0`: флаг аварийного режима и ещё два) и **коэффициент трансформации ГДТ muGDT `0xE38E`** (пара записи 20C0 `0x781D6`): на стопе BMW KA20 191 %, Alpina 620P 168 %. 921 запись.
+- `0xFFFF91B0` больше не называется «принудительной программой»: это запрос подмены от модуля исполнения, который вместе с битами реакций на ошибки сводится в `0xFFFF91B7`; скорее передача, чем программа, не доказано (документ 01 §5).
+- Ось педали в таблице ГДТ `0x993A` зависит от калибровки (у Alpina 620P конец 224 / 230, у KA20 97 / 122): документ 03 §3 и каталог.
+- `CONTRIBUTING.md`: как работают участники с правом записи (ветки, pull request, куда идёт английский). Новые тесты: размещение английских полей в обоих каталогах, исправления выше, заголовки массивов и muGDT в стоковом образе. 59 тестов.
+- Найдено при ответе на вопросы Jason King (@KingAiCodeForge) об осях 19D0.
+
 ## 2026-10-13 (3): `tcc-lock` coast and gears options
 
 **EN**

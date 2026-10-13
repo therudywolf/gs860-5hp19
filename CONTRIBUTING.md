@@ -55,6 +55,14 @@ The 20C0 catalog itself is generated from a 20C0 image by the generator of the W
 
 Same as the docs: addresses in hex with `0x`, RAM as `0xFFFFxxxx`, units for every number, and a confidence label for every claim about semantics (doc 10 §6 in the documents, the `confidence` levels in the catalogs). What is not established is called not established. Russian and English versions of a document must say the same thing: if you change one, change the other or mark it `TODO translate`.
 
+### Collaborators with write access
+
+- Work on a branch of this repository named `<name>/<topic>` and open a pull request into `main`. The maintainer reviews and merges; nobody pushes to `main` directly.
+- One topic per pull request. Paste the output of `make_xdf.py check` and `tests/test_tools.py` (with `GS860_STOCK` / `GS8604_STOCK` when you have the images) into the description; receipts and run logs belong there, not in the tree.
+- Scripts go into `tools/` with tests in `tests/`, documents into `docs/en` and `docs/ru`. There are no per-contributor folders: authorship is the commit author and a line in `CHANGELOG.md`.
+- English for the 19D0 catalog goes into `catalog/gs8600_19d0.json` as `title_en` / `description_en` (entries and the catalog), `units_en` (axes and data) and `categories_en`, and nothing else changes (`test_english_field_placement`). A description is translated in full, with every address, RAM cell, factory value and caveat. Comparisons with private images that nobody else can repeat stay out of the catalog.
+- The 20C0 catalog is generated (see above), so a correction to it comes as an issue with the evidence.
+
 <a name="русский"></a>
 ## Русский
 
@@ -107,3 +115,11 @@ python3 tools/make_xdf.py build catalog/gs8604_20c0.json xdf/GS8604_20C0_Full512
 ### Стиль
 
 Как в документах: адреса в hex с `0x`, RAM как `0xFFFFxxxx`, единицы у каждого числа и метка уверенности у каждого утверждения о смысле (в документах по документу 10 §6, в каталогах уровни `confidence`). Неустановленное называется неустановленным. Русская и английская версии документа должны говорить одно и то же: меняете одну, меняйте другую или ставьте `TODO translate`.
+
+### Участникам с правом записи
+
+- Работа идёт в ветке этого репозитория с именем `<имя>/<тема>` и pull request в `main`. Проверяет и сливает владелец; напрямую в `main` никто не пушит.
+- Одна тема на один pull request. В описание вставляется вывод `make_xdf.py check` и `tests/test_tools.py` (с `GS860_STOCK` / `GS8604_STOCK`, если образы есть); квитанции и журналы прогонов идут туда, а не в дерево.
+- Скрипты кладутся в `tools/` с тестами в `tests/`, документы в `docs/en` и `docs/ru`. Отдельных папок участников нет: авторство это автор коммита и строка в `CHANGELOG.md`.
+- Английский к каталогу 19D0 добавляется в `catalog/gs8600_19d0.json` полями `title_en` / `description_en` (записи и каталог), `units_en` (оси и данные) и `categories_en`, остальное не меняется (`test_english_field_placement`). Описание переводится целиком, со всеми адресами, ячейками RAM, заводскими значениями и оговорками. Сравнения с закрытыми образами, которые никто не может повторить, в каталог не идут.
+- Каталог 20C0 генерируется (см. выше), поэтому исправление к нему присылается issue с доказательством.
