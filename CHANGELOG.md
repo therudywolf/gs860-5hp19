@@ -2,6 +2,16 @@
 
 Newest first. Each entry: date and title, then **EN** and **RU** with the same facts. Older entries are not rewritten: what turned out wrong is corrected in a newer entry.
 
+## 2026-10-13 (3): `tcc-lock` coast and gears options
+
+**EN**
+
+- `tcc-lock` takes `gears=3-5` (2nd gear of S and M untouched) and `coast=0` (pedal-0 row stays "never": the clutch opens on the overrun, as the factory does in 3rd and 4th). Defaults unchanged: an earlier build reproduces byte for byte. 55 tests.
+
+**RU**
+
+- `tcc-lock` принимает `gears=3-5` (2-я передача S и M не трогается) и `coast=0` (строка «педаль 0» остаётся «никогда»: на накате муфта размыкается, как у завода в 3-й и 4-й). Умолчания прежние: прежняя сборка воспроизводится побайтно. 55 тестов.
+
 ## 2026-10-13 (2): `shift-feel` middle row and skip downshifts
 
 **EN**

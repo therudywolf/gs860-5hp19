@@ -544,13 +544,18 @@ def p_tcc_lock(img, prm, ctx):
     """tcc-lock - lock the torque converter early and keep it locked with any pedal in gears 2-5: lock from rpm
     turbine (default 1600), slip from rpm - 385, open below rpm - 512 (the WOLF4X v25 values), never later than
     the factory at any pedal. modes=S+M (default), M or D+S+M (D gets gears 3-5, d_gears=2-5 for all four).
-    19x0 uses groups 6-9 (factory: only PB and PD), 20C0 groups 5, 8, 9, 10 (factory: only PB). Docs 13 §2."""
+    gears=3-5 leaves 2nd gear of S and M as it is (default 2-5). coast=0 keeps the factory "never" in the pedal-0 row
+    (the converter opens on the overrun with the pedal released, as the factory does in 3rd and 4th); default coast=1
+    locks at any pedal. 19x0 uses groups 6-9 (factory: only PB and PD), 20C0 groups 5, 8, 9, 10 (factory: only PB). Docs 13 §2."""
     modes = parse_modes(prm.get("modes", "S+M"))
     rpm = int(prm.get("rpm", 1600))
     if not 1300 <= rpm <= 3500:
         raise PatchError("tcc-lock: rpm between 1300 and 3500")
     d_gears = (2, 3, 4, 5) if prm.get("d_gears", "3-5") == "2-5" else (3, 4, 5)
+    sm_gears = (3, 4, 5) if prm.get("gears", "2-5") == "3-5" else (2, 3, 4, 5)
+    coast = str(prm.get("coast", "1")) == "1"
     target = {2: 6, 3: 7, 4: 8, 5: 9} if img.key == "19x0" else {2: 5, 3: 8, 4: 9, 5: 10}
+    target = {gear: g for gear, g in target.items() if gear in sm_gears}
     own = (0xB, 0xD) if img.key == "19x0" else (0xB,)
     sel = programs(modes)
     users = {g: sorted(p for p in range(16) for c, gg in img.groups(p).items() if gg == g) for g in target.values()}
@@ -571,14 +576,20 @@ def p_tcc_lock(img, prm, ctx):
         trip = (o, sl, lk)
         if not (o < sl <= lk and lk - hyst > o):
             raise PatchError(f"tcc-lock: thresholds {trip} for gear {gear} break the order open < slip <= lock")
-        plan[g] = (gear, [trip] * len(ys))
+        new = [trip] * len(ys)
+        if not coast:
+            new = [(GROUP_NEVER,) * 3 if y == 0 else trip for y in ys]      # the factory "never" row is pedal 0 only
+        plan[g] = (gear, new)
     for g, (gear, new) in plan.items():
-        img.set_group_rows(g, new, f"tcc-lock: group {g} = gear {gear}, lock from {turbine(new[0][2], gear)} rpm turbine "
-                                   f"(slip {turbine(new[0][1], gear)}, open below {turbine(new[0][0], gear)})")
+        trip = new[-1]
+        img.set_group_rows(g, new, f"tcc-lock: group {g} = gear {gear}, lock from {turbine(trip[2], gear)} rpm turbine "
+                                   f"(slip {turbine(trip[1], gear)}, open below {turbine(trip[0], gear)})"
+                                   + ("" if coast else ", pedal released: never"))
     for p in sel + [q for q in own if q not in sel]:
-        gears = d_gears if p in MODES["D"] else (2, 3, 4, 5)
+        gears = d_gears if p in MODES["D"] else sm_gears
         for gear in gears:
-            img.set_group(p, gear, target[gear], f"tcc-lock: P{p:X} gear {gear} -> group {target[gear]}")
+            if gear in target:
+                img.set_group(p, gear, target[gear], f"tcc-lock: P{p:X} gear {gear} -> group {target[gear]}")
 
 
 # s-sport: weight of the way from the factory point to the full-throttle point of the same S matrix, by pedal

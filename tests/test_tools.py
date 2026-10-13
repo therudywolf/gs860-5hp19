@@ -645,6 +645,22 @@ class TestPatches20C0(unittest.TestCase):
     def tearDownClass(cls):
         cls.tmp.cleanup()
 
+    def test_tcc_lock_coast_and_gears(self):
+        out = os.path.join(self.tmp.name, "lock_coast.bin")
+        r = run(os.path.join(TOOLS, "egs_patch.py"), "apply", STOCK20, "-o", out, "tcc-lock:modes=S+M,rpm=2000,gears=3-5,coast=0")
+        self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
+        a, b = patch_checks(self, STOCK20, out, egs_patch.PLAT["20C0"])
+        sa, sb = egs_patch.Image(STOCK20), egs_patch.Image(out)
+        self.assertEqual(sb.groups(3)[2], sa.groups(3)[2])                     # 2nd gear of S untouched (gears=3-5)
+        self.assertEqual(sb.groups(0xB)[2], sa.groups(0xB)[2])                 # and of M
+        self.assertEqual([sb.groups(3)[c] for c in (3, 4, 5)], [8, 9, 10])     # 3rd-5th on the lock groups
+        for g in (8, 9, 10):
+            ys, rows = sb.group_rows(g)
+            self.assertEqual(rows[0], (202, 202, 202), g)                      # pedal 0: never (coast=0)
+            self.assertLess(rows[1][2], 202)                                   # pedal 5: locks
+            self.assertEqual(rows[1], rows[-1])                                 # flat above
+        self.assertEqual(a[0x7B712:0x7B712 + 9], b[0x7B712:0x7B712 + 9])     # hydraulics untouched
+
     def test_shift_feel_mid_and_skip(self):
         out = os.path.join(self.tmp.name, "feel_mid.bin")
         r = run(os.path.join(TOOLS, "egs_patch.py"), "apply", STOCK20, "-o", out,

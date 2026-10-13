@@ -91,6 +91,8 @@ Result on the reference images (turbine rpm, open / slip / lock): 2nd 1087 / 121
 
 What it gives: in S and M the car drives "direct", without converter slip, and the ATF runs cooler (document 03 §3: in town the E39 D almost never locks). The price: at low rpm under load the engine vibration comes through. On 20C0 the addition `0x70B98` to the upshift threshold acts while the converter is locked (§5); manual shift points must allow for it.
 
+**Options (13.10.2026).** `gears=3-5` leaves 2nd gear of S and M as it is (the Alpina 20C0 has its own group 5 for 2nd in M, lock at ~2620 rpm; in D and S 2nd stays open in normal driving). `coast=0` keeps the factory "never" in the pedal-0 row: with the pedal released the clutch opens, as the factory does in 3rd and 4th; the default (`coast=1`) keeps it locked at any pedal, on the overrun too. On a car with weak hardware and a loud exhaust `coast=0` is gentler on the power-to-overrun transition and keeps the converter damping on lift-off.
+
 **Field note 13.10.2026 (first road test on 20C0, E46 330i, straight-through exhaust).** `tcc-lock:modes=D+S+M,rpm=1500,d_gears=2-5` on the Alpina 20C0 file gave a drone at 1450-1850 rpm under load and a lazy D. From the log: in 2nd under throttle the clutch, which the Alpina file keeps open in normal driving, worked in regulated slip of 220-420 rpm; in 3rd-5th the clutch held the engine low (lock at ~1470 instead of ~1920-2880). Do not put D into `tcc-lock` with a low threshold on cars with a loud exhaust; for S and M a threshold of 2000-2200 turbine rpm is a sensible start.
 
 
