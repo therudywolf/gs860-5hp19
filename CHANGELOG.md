@@ -2,6 +2,18 @@
 
 Newest first. Each entry: date and title, then **EN** and **RU** with the same facts. Older entries are not rewritten: what turned out wrong is corrected in a newer entry.
 
+## 2026-10-14 (3): `s-sport` cruising rows and D, `converter` curve
+
+**EN**
+
+- `s-sport` takes `light=` (a weight for the rows of pedal 0-46, 0..0.20) and `modes=D` / `D+S` (the same shaping for the D matrices with its own strength). Defaults unchanged: an earlier build reproduces byte for byte. Reason: on the Alpina 20C0 file S at light pedal takes 5th at 55 km/h and comes back only below 54-59, which on a 3.91 final drive uphill gave 2100-2400 rpm with the converter open (document 13 §9).
+- New patch `converter`: the torque ratio curve of the converter (19x0 `0xE38E`, 20C0 `0x781D6`, 3 points by slip), `curve=bmw` / `bmw25` / `alpina` or explicit points, written only over a known factory curve. An Alpina calibration on a BMW converter underestimates the turbine torque at high slip by up to 17 % (document 13 §12). 62 tests.
+
+**RU**
+
+- `s-sport` принимает `light=` (вес строк педали 0-46, 0..0,20) и `modes=D` / `D+S` (то же для матриц D со своей силой). Умолчания прежние: старая сборка воспроизводится байт в байт. Причина: на файле Alpina 20C0 S на лёгкой педали берёт 5-ю с 55 км/ч и возвращается только ниже 54-59, что на редукторе 3.91 в горку дало 2100-2400 об/мин с разомкнутым ГДТ (документ 13 §9).
+- Новый патч `converter`: кривая коэффициента трансформации ГДТ (19x0 `0xE38E`, 20C0 `0x781D6`, 3 точки по проскальзыванию), `curve=bmw` / `bmw25` / `alpina` или точки явно, пишется только поверх известной заводской кривой. Калибровка Alpina на трансформаторе BMW занижает момент турбины при большом проскальзывании до 17 % (документ 13 §12). 62 теста.
+
 ## 2026-10-14 (2): tests on every pull request, protected `main`
 
 **EN**

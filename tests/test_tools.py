@@ -594,6 +594,11 @@ class TestPatchesOffline(unittest.TestCase):
         self.assertEqual([w(y) for y in (0, 46, 60, 243, 255)], [0.0] * 5)
         self.assertEqual([round(w(y), 2) for y in (83, 121, 160, 198, 203)], [0.20, 0.35, 0.50, 0.65, 0.67])
         self.assertTrue(0.20 < w(100) < 0.35 and w(242) > w(203))
+        # light: the cruising rows get a weight of their own, the curve runs from it to the 0.20 of pedal 83
+        self.assertEqual([w(y, 0.2) for y in (0, 46, 60, 83)], [0.2] * 4)
+        self.assertTrue(0.1 < w(70, 0.1) < 0.2 and w(243, 0.2) == 0.0 and w(121, 0.2) == w(121))
+        for x, z in egs_patch.CONVERTER_CURVES.values():
+            self.assertTrue(x[0] < x[1] < x[2] == 255 and z[0] == 100 <= z[1] <= z[2] <= 255, (x, z))
 
     def test_presets_and_parsing(self):
         for name, pr in egs_patch.PRESETS.items():
@@ -661,6 +666,9 @@ class TestPatches19x0(unittest.TestCase):
         self.assertEqual(r.returncode, 2, "the factory monitor 6720 leaves no room above 6592: must stop")
         a, b = self.apply("manual-hold:monitor=auto", extra=("--cut", "6592"))
         self.assertEqual((b[0x8B44] << 8) | b[0x8B45], 6912)
+        a, b = self.apply("converter:curve=alpina")
+        self.assertEqual((list(a[0xE390:0xE396]), list(b[0xE390:0xE396])), ([38, 204, 255, 100, 175, 191], [34, 128, 255, 100, 132, 168]))
+        self.assertEqual(a[0xE38E:0xE390], b[0xE38E:0xE390])                       # the count stays
 
     def test_s_sport_and_no_shift_feel(self):
         stock = egs_tables.FW(STOCK)
@@ -765,6 +773,47 @@ class TestPatches20C0(unittest.TestCase):
         self.assertEqual([f for f in found if not f[8]], [])
         # parameters are checked
         r = run(os.path.join(TOOLS, "egs_patch.py"), "apply", STOCK20, "-o", os.path.join(self.tmp.name, "bad.bin"), "shift-feel:up_hard=0.2")
+        self.assertEqual(r.returncode, 2)
+
+    def test_converter_and_s_sport_light_and_d(self):
+        out = os.path.join(self.tmp.name, "conv.bin")
+        r = run(os.path.join(TOOLS, "egs_patch.py"), "apply", STOCK20, "-o", out, "converter:curve=bmw")
+        self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
+        a, b = patch_checks(self, STOCK20, out, egs_patch.PLAT["20C0"])
+        self.assertEqual((list(a[0x781D6:0x781DE]), list(b[0x781D6:0x781DE])),
+                         ([0, 3, 34, 128, 255, 100, 132, 168], [0, 3, 44, 204, 255, 100, 178, 196]))
+        self.assertEqual(len([i for i in range(0x70000, 0x7FFCE) if a[i] != b[i]]), 4)      # nothing else (255 and 100 % stay)
+        out2 = os.path.join(self.tmp.name, "conv2.bin")
+        r = run(os.path.join(TOOLS, "egs_patch.py"), "apply", STOCK20, "-o", out2, "converter:x=44/204/255,z=100/178/196")
+        self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
+        with open(out2, "rb") as f:
+            self.assertEqual(f.read(), b)
+        for bad in ("converter:curve=alpina", "converter:x=44/204/250,z=100/178/196", "converter:curve=zf"):
+            r = run(os.path.join(TOOLS, "egs_patch.py"), "apply", STOCK20, "-o", os.path.join(self.tmp.name, "bad.bin"), bad)
+            self.assertEqual(r.returncode, 2, bad)                                           # already the factory curve / not a curve
+        # s-sport: light= lifts the cruising rows of S, modes=D makes D livelier below full throttle
+        out = os.path.join(self.tmp.name, "light.bin")
+        r = run(os.path.join(TOOLS, "egs_patch.py"), "apply", STOCK20, "-o", out, "--spark", "6560", "--cut", "6720",
+                "gate:mode=S", "shift-wot:modes=S", "s-sport:strength=1.25,down=0.5,light=0.2", "s-sport:modes=D,strength=0.25,down=0.3")
+        self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
+        a, b = patch_checks(self, STOCK20, out, egs_patch.PLAT["20C0"])
+        rows = lambda d, base: [list(d[base + r_ * 8:base + r_ * 8 + 8]) for r_ in range(11)]
+        sa, sb = rows(a, 0x716F5), rows(b, 0x716F5)                                           # S = k11
+        self.assertEqual(sb[0], sb[1])                                                        # pedal 0 and 46 alike
+        self.assertEqual(sb[0][:4], sb[2][:4])                                                # light 0.20 x 1.25 = the weight of pedal 83
+        self.assertTrue(all(sb[0][c] > sa[0][c] and sb[0][4 + c] > sa[0][4 + c] for c in range(4)))
+        self.assertTrue(all(sb[0][4 + c] <= sb[0][c] - 6 for c in range(4)))                   # downshifts under upshifts
+        self.assertTrue(all(sb[r_][c] <= sb[r_ + 1][c] for r_ in range(6) for c in range(4)))   # rising with the pedal
+        da, db = rows(a, 0x71845), rows(b, 0x71845)                                           # D = k14
+        self.assertEqual((da[0], da[1], da[7:]), (db[0], db[1], db[7:]))                      # cruising and full-throttle rows of D untouched
+        for r_ in range(2, 7):
+            for c in range(4):
+                self.assertTrue(da[r_][c] < db[r_][c] <= db[7][c], (r_, c))
+                self.assertTrue(da[r_][4 + c] <= db[r_][4 + c], (r_, c))
+                self.assertTrue(db[r_][4 + c] <= db[r_][c] - 6 or db[r_][4 + c] == da[r_][4 + c], (r_, c))   # a factory gap under 6 is kept
+        found = egs_tables.verify_shift(egs_tables.FW(out), 6560, 6720, stock=egs_tables.FW(STOCK20))
+        self.assertEqual([f for f in found if not f[8]], [])
+        r = run(os.path.join(TOOLS, "egs_patch.py"), "apply", STOCK20, "-o", os.path.join(self.tmp.name, "bad.bin"), "s-sport:light=0.3")
         self.assertEqual(r.returncode, 2)
 
     def test_presets_and_recipes(self):

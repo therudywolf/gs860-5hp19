@@ -18,6 +18,7 @@ TCC below is the torque converter clutch (lock-up, document 03).
 | a sporty S on the part throttle | `s-sport` | k11, k15 (pedal 60-242) | k11, k15 (pedal 60-242) | 9 |
 | hard / gentle shifts by load | `shift-feel` | records of kinds 1 and 3 (`0x0BF9C…0x0C0F0`, `0x0B656…`, `0x0DEC3…`) | target slip times and on-coming pressure of the records `9824`, `9834`, `0x7B94D` | 10 |
 | gate: S first or M at once | `gate` | `0x8975` | `0x70966` | 8 |
+| torque ratio curve of the converter | `converter` | `0xE38E` | `0x781D6` | 12 |
 
 ```
 python3 tools/egs_patch.py list                          # what each patch does, the presets, the reference engines
@@ -203,6 +204,8 @@ Order in a chain: after `shift-wot` and `s-no5`. Works on both platforms. On a f
 
 Example on the 20C0 file of Alpina B3S (turbine rpm, converter open): pedal 160, 1>2 / 2>3 / 3>4 = 2228 / 2751 / 2927 in D, 3518 / 4286 / 4412 in S.
 
+**Cruising rows and D (14.10.2026).** `light=` gives the rows of pedal 0-46 a weight of their own (0..0.20, never above the 0.20 of pedal 83; the curve then runs from it). On the Alpina file S at light pedal otherwise takes 5th at 55 km/h and comes back to 4th only below 54-59 km/h: on a 3.91 final drive uphill at 60-75 km/h with a quarter pedal the engine turned 2100-2400 rpm with the converter open. With `strength=1.25,light=0.2` the 4>5 of the cruising rows is at 88 km/h and the 5>4 at 68. `modes=D` (or `D+S`) does the same to the D matrices (k14, k6) with its own `strength`: `s-sport:modes=D,strength=0.25,down=0.3` lifts the D upshifts by 120-400 rpm at pedal 83-203 and leaves the cruising and full-throttle rows of D as they are.
+
 ## 10. Shift hardness by load (`shift-feel`, 20C0 and 19x0)
 
 **What decides the hardness.** The hydraulic records (pressure, times, slip controller) are chosen by the shift type and the load class; the selector `0x41842` does not read the program D / S / M, and the variant byte `[0xFFFF93C0]` comes from the shift state, not from the program (document 11 §9). So "hard M, sporty S, gentle D" cannot be made by separate tables; the same tables apply to every program. What differs is the load: D shifts at light load, S and M near the limiter at full throttle. The patch makes the tables follow the load.
@@ -221,3 +224,11 @@ Example on the 20C0 file of Alpina B3S (turbine rpm, converter open): pedal 160,
 - They do not raise the turbine monitor above 7232 and do not touch the voltage monitor (`0x8EE8…`, `0x70F32…`: those are millivolts, document 05 §1).
 - They do not work on other software (15C0 and the rest): other addresses, the tool refuses.
 - The presets as a whole are not road-tested (document 14). On 19x0 the counterparts of `tcc-lock`, `tcc-first`, `s-no5` and `manual-hold` are flashed on the reference E39 (WOLF4X builds v24-v44), the converter lock-up in 1st is not confirmed by a log yet. Check with a log (document 06).
+
+## 12. Torque ratio curve of the converter (`converter`)
+
+**Why.** The box does not measure the turbine torque. It takes the engine torque from CAN and multiplies it by the torque ratio of the converter, a 3-point curve by the converter slip `255 - 255 x turbine / engine` (0 = locked, 255 = stall): 19x0 table `0xE38E` (function `0x2E0F6`, root `[0xFFFF94FC]` + `0x7C`, result `[0xFFFF97F4]`, then `[0xFFFF97A0]` = `[97A4]` x `[97F4]` / 100, document 04 §3), 20C0 table `0x781D6` (function `0x40F6E`, root `[0xFFFF9840]` + `0x84`, result `[0xFFFF92CD]`, then `[0xFFFF9262]`, document 11 §10). That turbine torque is the torque axis of the pressure maps and goes into the load. Every calibration carries the curve of its own converter: Alpina B3 and B3S 34 / 128 / 255 -> 100 / 132 / 168 %, BMW 19C0 KA20 (E39 M52TU 2.5) 38 / 204 / 255 -> 100 / 175 / 191 %, BMW 22C0 (E46 M54) 44 / 204 / 255 -> 100 / 178 / 196 %, BMW 15C0 43 / 204 / 255 -> 100 / 179 / 198 %. An Alpina calibration on a car with a BMW converter (a 2.2 or 2.5 unit, for example the converter C51 of the M54B25) underestimates the turbine torque at high slip, in launches and kickdowns at low speed, by up to 17 % and takes a lower pressure row for the shift.
+
+**What it does.** `converter:curve=bmw` (the 22C0 values), `curve=bmw25` (19C0 KA20), `curve=alpina`, or `x=44/204/255,z=100/178/196` writes the three slip points and the three percentages. It writes only when the file holds one of the known factory curves (the count 3, a slip axis rising to 255, 100 % at the first point). Both platforms.
+
+**What it changes on the road.** Nothing while the converter is locked or nearly so (slip under 44 of 255, the first point: 100 % on every curve). With the converter slipping hard the box sees more turbine torque and takes a higher row of the pressure maps: the on-coming element is clamped harder in launches and low-speed kickdowns. The curve of the fitted converter is the right one physically; which part is fitted is for the owner to check (the number on the converter or in the parts catalog by the VIN).

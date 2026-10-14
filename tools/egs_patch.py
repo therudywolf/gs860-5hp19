@@ -599,10 +599,15 @@ def p_tcc_lock(img, prm, ctx):
 S_SPORT_W = ((60, 0.0), (83, 0.20), (121, 0.35), (160, 0.50), (198, 0.65), (203, 0.67), (243, 0.75))
 
 
-def s_sport_weight(y):
-    if y >= 243 or y <= S_SPORT_W[0][0]:
+def s_sport_weight(y, light=0.0):
+    """Weight of the way to the full-throttle point at pedal y; light = the weight of the cruising rows (pedal 0-60),
+    from which the curve runs to the 0.20 of pedal 83 (so light never exceeds that point)."""
+    if y >= 243:
         return 0.0
-    for (y0, w0), (y1, w1) in zip(S_SPORT_W, S_SPORT_W[1:]):
+    if y <= S_SPORT_W[0][0]:
+        return light
+    pts = ((S_SPORT_W[0][0], light),) + S_SPORT_W[1:]
+    for (y0, w0), (y1, w1) in zip(pts, pts[1:]):
         if y <= y1:
             return w0 + (w1 - w0) * (y - y0) / (y1 - y0)
     return 0.0
@@ -612,14 +617,21 @@ def p_s_sport(img, prm, ctx):
     """s-sport - a sporty S: below full throttle (pedal 60-242) the upshift points of the S matrices (P2 = k11, P3 = k15)
     move from the factory point toward the full-throttle point of the same matrix (20 % of the way at pedal 83, 50 % at
     160, 67 % at 203) and the downshift points toward its full-throttle downshifts (down=0.35 of that way), each downshift
-    kept at least 6 units under its upshift. The rows 0-46 (cruising) and 243-255 are not touched. Use after shift-wot
-    (the full-throttle row is then under the limiter) and s-no5. Meant for a file whose S is the same as D (the Alpina
-    20C0 file: the Alpina box has no sport program in its gate); strength=1 (default) scales the weights. Docs 13 §9."""
+    kept at least 6 units under its upshift. The rows 0-46 (cruising) are touched only with light= (their weight, 0..0.20,
+    default 0: on the Alpina file S at light pedal otherwise goes to 5th at 55 km/h and comes back only below 54-59),
+    243-255 never. Use after shift-wot (the full-throttle row is then under the limiter) and s-no5. Meant for a file
+    whose S is the same as D (the Alpina 20C0 file: the Alpina box has no sport program in its gate); strength=1 (default)
+    scales the weights. modes=D (or D+S) does the same to the D matrices (k14, k6): a livelier D with a small strength,
+    its full-throttle rows stay as they are. Docs 13 §9."""
     strength = float(prm.get("strength", "1"))
     dn_k = float(prm.get("down", "0.35"))
+    light = float(prm.get("light", "0"))
+    modes = parse_modes(prm.get("modes", "S"), allowed=("S", "D", "D+S"))
     if not 0 < strength <= 1.5 or not 0 <= dn_k <= 1:
         raise PatchError("s-sport: strength 0..1.5 (default 1), down 0..1 (default 0.35)")
-    for p in MODES["S"]:
+    if not 0 <= light <= S_SPORT_W[1][1]:
+        raise PatchError(f"s-sport: light 0..{S_SPORT_W[1][1]:.2f} (the weight of pedal 0-60, never above the one of pedal 83)")
+    for p in programs(modes):
         k = PROG2K[p]
         t, ys, data = img.matrix(k)
         tops = [r for r, y in enumerate(ys) if y >= 243]
@@ -627,7 +639,7 @@ def p_s_sport(img, prm, ctx):
             raise PatchError(f"s-sport k{k:02d}: no full-throttle row")
         up_lim, dn_top = data[tops[0]][:4], data[tops[0]][4:]
         for r, y in enumerate(ys):
-            w = s_sport_weight(y) * strength
+            w = s_sport_weight(y, light) * strength
             if w <= 0:
                 continue
             new_up = []
@@ -710,6 +722,50 @@ def p_shift_feel(img, prm, ctx):
 
 
 
+# converter: the torque ratio curve of the torque converter (muGDT), % of engine torque by converter slip, 3 points
+CONVERTER = {
+    "20C0": dict(table=0x781D6, reader="0x40F6E: root [0xFFFF9840] + 0x84 (0x40F9E), lookup 0x52196 (0x40FA8), result [0xFFFF92CD]"),
+    "19x0": dict(table=0x0E38E, reader="0x2E0F6: root [0xFFFF94FC] + 0x7C (0x2E126), lookup 0x2D0B4 (0x2E130), result [0xFFFF97F4]"),
+}
+CONVERTER_CURVES = {        # (slip axis 0..255, ratio in %) as the factory files have them
+    "alpina": ((34, 128, 255), (100, 132, 168)),    # Alpina B3 19D0 620P and B3S 20C0: the Alpina converter
+    "bmw25": ((38, 204, 255), (100, 175, 191)),     # BMW 19C0 KA20 (E39 M52TU 2.5)
+    "bmw": ((44, 204, 255), (100, 178, 196)),       # BMW 22C0 (E46 M54); 15C0 3Z16 has 43 / 204 / 255 -> 100 / 179 / 198
+}
+
+
+def p_converter(img, prm, ctx):
+    """converter - the torque ratio curve of the torque converter (muGDT): the box multiplies the engine torque from CAN
+    by this percentage, by the converter slip 255 - 255 x turbine / engine (0 = locked, 255 = stall), and uses the result
+    as the turbine torque: the torque axis of the pressure maps and the load (docs 04 §3, 11 §10). A calibration carries
+    the curve of its own converter: Alpina 168 % at stall, the BMW 2.2 / 2.5 converters 191-198 %. With the Alpina file on
+    a BMW converter the box underestimates the turbine torque at high slip (launch, kickdown at low speed) by up to
+    17 % and picks a lower pressure row. curve=bmw (22C0 values), bmw25 (19C0 KA20), alpina, or x=44/204/255,z=100/178/196.
+    Writes only if the file holds one of the known factory curves. Docs 13 §12."""
+    C = CONVERTER[img.key]
+    a = C["table"]
+    name = prm.get("curve")
+    if name:
+        if name not in CONVERTER_CURVES:
+            raise PatchError(f"converter: curve={name}: use one of {', '.join(CONVERTER_CURVES)}")
+        x, z = CONVERTER_CURVES[name]
+    else:
+        try:
+            x = tuple(int(v) for v in prm["x"].split("/"))
+            z = tuple(int(v) for v in prm["z"].split("/"))
+        except (KeyError, ValueError):
+            raise PatchError("converter: curve=bmw | bmw25 | alpina, or x=a/b/255,z=100/b/c (3 points each)")
+    if not (len(x) == len(z) == 3 and x[0] > 0 and x[0] < x[1] < x[2] == 255 and z[0] == 100 and z[0] <= z[1] <= z[2] <= 255):
+        raise PatchError("converter: the slip axis rises to 255, the ratio starts at 100 % and does not fall")
+    have = (tuple(img.u8(a + 2 + i) for i in range(3)), tuple(img.u8(a + 5 + i) for i in range(3)))
+    if img.u16(a) != 3 or have not in CONVERTER_CURVES.values():
+        raise PatchError(f"converter: 0x{a:05X} holds {have[0]} -> {have[1]}, not a known factory curve - stop")
+    why = f"converter: torque ratio {x} -> {z} % (was {have[0]} -> {have[1]}), read by {C['reader']}"
+    for i in range(3):
+        img.set8(a + 2 + i, x[i], why)
+        img.set8(a + 5 + i, z[i], why)
+
+
 PATCHES = {
     "tcc-first": p_tcc_first,
     "tcc-lock": p_tcc_lock,
@@ -721,6 +777,7 @@ PATCHES = {
     "gate": p_gate,
     "s-sport": p_s_sport,
     "shift-feel": p_shift_feel,
+    "converter": p_converter,
 }
 
 # Group texts of the recipes built from presets (make_recipe annotations)
@@ -763,6 +820,10 @@ PATCH_TEXT = {
                    "включаемого в фазах скольжения до +10 % на верхних строках момента, его верхняя граница +10 %."),
     "no-warmup": ("Warm-up program off: it ends on the first cycle after power-on.",
                   "Режим прогрева выключен: заканчивается на первом такте после включения."),
+    "converter": ("Torque ratio curve of the converter (muGDT, % by slip) of the converter actually fitted: the turbine "
+                  "torque the box computes for the pressure maps and the load follows it.",
+                  "Кривая коэффициента трансформации ГДТ (muGDT, % по проскальзыванию) под установленный трансформатор: "
+                  "по ней блок считает момент турбины для карт давления и нагрузки."),
 }
 
 # Presets: chains of patches. The engine limits come from --spark / --cut or the reference engine of the platform.
