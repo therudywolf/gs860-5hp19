@@ -2,6 +2,18 @@
 
 Newest first. Each entry: date and title, then **EN** and **RU** with the same facts. Older entries are not rewritten: what turned out wrong is corrected in a newer entry.
 
+## 2026-10-14 (2): tests on every pull request, protected `main`
+
+**EN**
+
+- GitHub Actions runs both catalog checks and `tests/test_tools.py` on every pull request and on every push to `main` (`.github/workflows/tests.yml`, read-only token). The image tests are skipped there: no firmware is stored in the repository.
+- `main` is protected: pull request with the `tests` check and the maintainer's approval (`.github/CODEOWNERS`), no force pushes, no deletion, squash merges only. `CONTRIBUTING.md` says so.
+
+**RU**
+
+- GitHub Actions запускает обе проверки каталогов и `tests/test_tools.py` на каждый pull request и каждый push в `main` (`.github/workflows/tests.yml`, токен только на чтение). Тесты с образами там пропускаются: прошивок в репозитории нет.
+- `main` защищён: pull request с проверкой `tests` и одобрением владельца (`.github/CODEOWNERS`), без force push и удаления, слияние только squash. Это записано в `CONTRIBUTING.md`.
+
 ## 2026-10-14: 19D0 catalog readers, scanner objects remodelled, DS2 0x0B and 0x06
 
 **EN**

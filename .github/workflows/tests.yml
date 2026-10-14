@@ -1,0 +1,25 @@
+name: tests
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Catalog checks
+        run: |
+          python3 tools/make_xdf.py check catalog/gs8600_19d0.json
+          python3 tools/make_xdf.py check catalog/gs8604_20c0.json
+      - name: Tests (without firmware images; the image tests are skipped)
+        run: python3 tests/test_tools.py
