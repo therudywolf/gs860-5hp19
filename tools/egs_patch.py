@@ -21,6 +21,7 @@ Usage:
 PATCH is name[:key=value[,key=value...]], for example
   tcc-first:modes=S+M,rpm=1760   tcc-lock:modes=D+S+M,rpm=1600   no-warmup   s-no5
   shift-wot:modes=S   no-kickdown:scope=M   manual-hold   gate:mode=S   s-sport   shift-feel
+  s-sport:strength=1.25,light=0.2   s-sport:modes=D,strength=0.25   converter:curve=bmw
 
 Engine limits (turbine rpm = engine rpm when the converter is locked):
   --spark RPM   the lower engine limiter (spark or soft cut); used by shift-wot

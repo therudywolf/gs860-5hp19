@@ -16,6 +16,6 @@ Documents 01–10 are about the GS8.60.0 (program 19C0 / 19D0, 256 KB image), do
 | [10 · Methodology](10-methodology.md) | tools, what counts as proven, confidence scale, refuted readings, open questions |
 | [11 · GS8.60.4 (20C0)](11-gs8604-20c0.md) | the 512 KB image: map, checksums, matrices, lockup, AGS, protections, the 20 record roots and the field roles proven by code, execution-module RAM, `0B 03` frame, what is proven and what is not |
 | [12 · GS8.60.0 and GS8.60.4](12-gs8600-vs-gs8604.md) | how 19D0 and 20C0 differ, side by side with addresses in both images; stock against stock: why GS8.60.4 feels faster (§10) |
-| [13 · Patches](13-patches.md) | TCC in 1st, early TCC lockup, no warm-up, no 5th in S, shift rpm, no kick-down, manual mode, gate: for 19x0 and 20C0 |
+| [13 · Patches](13-patches.md) | TCC in 1st, early TCC lockup, no warm-up, no 5th in S, shift rpm, no kick-down, manual mode, gate, sporty S and D, shift hardness by load, converter torque ratio: for 19x0 and 20C0 |
 | [14 · Presets](14-presets.md) | sport-daily, street-hard, track-hard for both units, recipes and status |
 | [Glossary](glossary.md) | terms and abbreviations |

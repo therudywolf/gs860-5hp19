@@ -53,7 +53,7 @@ One step — one build — one log. Do not combine in a first build steps that c
 - Closed 14.10.2026 by code: the argument format of DS2 command `0x06` is `06 <segment> <A23..16> <A15..8> <A7..0> <N>` (handler 0x18A70, parser 0x19A4E, doc 01 §6); a live exchange is not recorded yet.
 - Closed 23.09.2026: `0xFFFF918F` is the filtered output shaft rpm shifted right by 5, not road speed (doc 02 §3).
 - Purpose of `0xFFFF90C2` and of bytes 21 / 13 / 19 of the status frame.
-- Mapping of internal fault numbers (6–9 at `0x12640`) to DS2 codes (e.g. 0x95).
+- Partly closed 08.10.2026: the DS2 code tables are 20C0 `0x707A0` and 19D0 `0x87A8` / `0x87B0` (the turbine monitor fault 0x25 gives DS2 0x21, the fault 0x24 gives 0x95, document 05 §6). Still open: the internal numbers 6–9 at `0x12640`.
 - Disputed and not checked in code: the input of the filter `0xFFFF8DA4` (`0xFFFF8DA6` or `0xFFFF8DA8`, doc 02 §3), what 0x8EEA is compared with (doc 05 §1).
 - The meaning of `0xFFFF91CA` (replacements PE / PF), the roles of matrices k5 (PA), k12 (P9), k13 (P7), whether the `0xFFFF90CD` steps are hill steps (hypothesis; since 14.10.2026 the chain is traced: zone thresholds 0x80D2 × `[0xFFFF918A]` / 100 against `[0xFFFF8D04]`, tables 0x98C0 and 0x98E0, catalog 19D0).
 - What `0xFFFF91B0` / `0xFFFF91B7` substitute, a gear or a program, and how the execution module uses `0xFFFF97EE` (doc 01 §5).

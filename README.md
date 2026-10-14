@@ -16,9 +16,10 @@
   <a href="https://github.com/therudywolf/gs860-5hp19/releases/latest"><img src="https://img.shields.io/github/v/release/therudywolf/gs860-5hp19?label=release&color=0066B1" alt="Latest release"></a>
   <img src="https://img.shields.io/badge/ECU-Bosch%20GS8.60.0%20%2F%20GS8.60.4-0066B1" alt="ECU">
   <img src="https://img.shields.io/badge/gearbox-ZF%205HP19%20%2F%20A5S%20325Z-1f6feb" alt="Gearbox">
-  <img src="https://img.shields.io/badge/XDF%2019D0-843%20tables%20%2B%2061%20constants-2ea44f" alt="XDF 19D0">
+  <img src="https://img.shields.io/badge/XDF%2019D0-849%20tables%20%2B%2072%20constants-2ea44f" alt="XDF 19D0">
   <img src="https://img.shields.io/badge/XDF%2020C0-1069%20tables%20%2B%20710%20constants-2ea44f" alt="XDF 20C0">
-  <img src="https://img.shields.io/badge/patches-8%20for%20both%20units-8957e5" alt="Patches">
+  <img src="https://img.shields.io/badge/patches-11%20for%20both%20units-8957e5" alt="Patches">
+  <a href="https://github.com/therudywolf/gs860-5hp19/actions/workflows/tests.yml"><img src="https://github.com/therudywolf/gs860-5hp19/actions/workflows/tests.yml/badge.svg" alt="tests"></a>
   <img src="https://img.shields.io/badge/docs-EN%20%7C%20RU-brightgreen" alt="Docs">
   <img src="https://img.shields.io/badge/docs%20%26%20XDF-CC%20BY--SA%204.0-blue" alt="Licence docs">
   <img src="https://img.shields.io/badge/tools-MIT-blue" alt="Licence code">
@@ -43,13 +44,15 @@ The **Bosch GS8.60.0** and **GS8.60.4** (ZF 5HP19 / A5S 325Z) are the transmissi
 
 This repository is the missing description: what each table does **in code**, which ones are safe, which ones are not, ready-made patches for the most wanted changes, and a way to apply them to your own dump that you can repeat and undo. Everything comes from disassembling the firmware (capstone m68k), diffing factory calibrations of BMW and Alpina, and DS2 logs from running cars. No Bosch or ZF documentation was used.
 
-### What's new (07.10.2026)
+### What's new (14.10.2026)
 
-- **Ready-made patches for both units** ([document 13](docs/en/13-patches.md)): converter lock-up in 1st gear, early lock-up with any pedal, no warm-up program, S without 5th, full-throttle shift rpm by your engine limiter, no kick-down, manual mode that holds the gear, gate S or M. One tool, `tools/egs_patch.py`, checks the image, writes, recomputes the checksums and logs every byte.
-- **Presets for GS8.60.4 as well as GS8.60.0** ([document 14](docs/en/14-presets.md)): `sport-daily`, `street-hard`, `track-hard`, built from the patches for your engine, or as ready recipes.
-- **Why GS8.60.4 feels faster in stock form** ([document 12 §10](docs/en/12-gs8600-vs-gs8604.md)): four factory calibrations side by side. It is the Alpina calibration, not the unit: BMW's own GS8.60.4 is as calm as the GS8.60.0.
-- **20C0 reverse completed where it matters**: D / S / M matrix roles, warm-up program, kick-down source, the lower TCC level gate, all proven by code ([document 11](docs/en/11-gs8604-20c0.md)).
-- Corrections: the "ATF thermal derate" was the warm-up program; frame byte 5 is the engine temperature, byte 6 the raw ATF ([document 03 §6](docs/en/03-torque-converter-lockup.md)).
+- **New patch `converter`** ([document 13 §12](docs/en/13-patches.md)): the torque ratio curve of the torque converter. Every calibration carries the curve of its own converter (Alpina 168 % at stall, the BMW 2.2 / 2.5 converters 191-198 %); an Alpina file on a BMW converter underestimates the turbine torque in launches by up to 17 % and picks a lower pressure row.
+- **`s-sport` for the cruising rows and for D** (document 13 §9): `light=` lifts the light-pedal rows of S (the Alpina S otherwise takes 5th at 55 km/h), `modes=D` makes D a little livelier and leaves its full-throttle rows alone.
+- **19D0 catalog v3.3**: readers found for 36 objects marked "no reader", nine scanner "tables" remodelled as the arrays and threshold lists the code really indexes, 17 objects added, among them the converter ratio `0xE38E` ([document 10 §9](docs/en/10-methodology.md)).
+- **DS2 corrected** ([document 06 §2](docs/en/06-logging-ds2.md)): the running 19D0 program does answer `0B 03` (its own dispatcher `0x10E58`); the `0x06` memory-read format comes from the code; a real status exchange is decoded byte by byte.
+- **`shift-feel`** (08.10, document 13 §10): shift hardness by load on both units. The 19x0 also checks its checksums in the background (documents 01, 07).
+- **Every pull request is tested** by GitHub Actions, `main` is protected ([CONTRIBUTING](CONTRIBUTING.md)).
+- 07.10.2026: ready-made patches and presets for both units (documents 13, 14), why the GS8.60.4 feels faster in stock form (document 12 §10), the 20C0 reverse (document 11). All changes: [CHANGELOG](CHANGELOG.md).
 
 ### What is covered
 
@@ -86,10 +89,11 @@ The XDF files open in TunerPro: `xdf/GS8600_19D0_Full256K.xdf` for a 256 KB dump
 | `s-no5` | S never shifts into 5th, AGS held on level 4 | k11, k15 | k11, k15 |
 | `shift-wot` | full-throttle upshifts right under your engine limiter | k11, k15 (+ k14, k6) | the same, minus the lock-up addition |
 | `no-kickdown` | kick-down off (or only in M) | `0x8D1A`, `0x8246` | `0x70D6A`, `0x70232` |
-| `s-sport` | a sporty S on the part throttle (the Alpina 20C0 file has S = D) | matrices k11, k15 | matrices k11, k15 |
+| `s-sport` | a sporty S on the part throttle (the Alpina 20C0 file has S = D); `light=` also the cruising rows, `modes=D` a livelier D | matrices k11, k15 (k14, k6) | matrices k11, k15 (k14, k6) |
 | `shift-feel` | hard / gentle shifts by load | kinds 1 and 3 of the records | target slip times, on-coming pressure, `0x7B94D` |
 | `manual-hold` | M holds the gear on the limiter, upshifts only on the overrun | k10, k8, monitor | k10, k8 |
 | `gate` | left gate: S first (BMW) or M at once (Alpina) | `0x8975` | `0x70966` |
+| `converter` | torque ratio curve of the converter actually fitted (Alpina or BMW) | `0xE38E` | `0x781D6` |
 
 ### Presets
 
@@ -132,7 +136,7 @@ How to rebuild the XDF and run the tests: [CONTRIBUTING.md](CONTRIBUTING.md).
 | [10 · Methodology](docs/en/10-methodology.md) | how the reverse was done, what counts as proven, refuted readings |
 | [11 · GS8.60.4 (20C0)](docs/en/11-gs8604-20c0.md) | the 512 KB image: map, checksums, matrices and roles, lockup, AGS, warm-up, kick-down, record roots, the `0B 03` frame |
 | [12 · GS8.60.0 and GS8.60.4](docs/en/12-gs8600-vs-gs8604.md) | the two programs side by side, and stock against stock: why GS8.60.4 feels faster (§10) |
-| [13 · Patches](docs/en/13-patches.md) | TCC in 1st, early lockup, warm-up, no 5th in S, shift rpm, kick-down, manual mode, gate |
+| [13 · Patches](docs/en/13-patches.md) | TCC in 1st, early lockup, warm-up, no 5th in S, shift rpm, kick-down, manual mode, gate, sporty S and D, shift hardness, converter curve |
 | [14 · Presets](docs/en/14-presets.md) | sport-daily, street-hard, track-hard for both units |
 | [Glossary](docs/en/glossary.md) | terms |
 
@@ -183,13 +187,15 @@ Want a custom tune for **MS42 / MS43**, a custom tune of the **5HP19** gearbox (
 
 Здесь то самое описание: что каждая таблица делает **в коде**, какие трогать можно, какие нельзя, готовые патчи для самых нужных правок и способ внести их в свой дамп так, чтобы это можно было повторить и откатить. Всё получено дизассемблированием прошивки (capstone m68k), сравнением заводских калибровок BMW и Alpina и логами DS2 с живых машин. Документация Bosch и ZF не использовалась.
 
-### Что нового (07.10.2026)
+### Что нового (14.10.2026)
 
-- **Готовые патчи для обоих блоков** ([документ 13](docs/ru/13-patches.md)): ГДТ на 1-й передаче, ранняя блокировка ГДТ при любой педали, без режима прогрева, S без 5-й, обороты переключения в пол под ограничитель вашего мотора, без кикдауна, ручной режим, который держит передачу, кулиса S или сразу M. Один инструмент `tools/egs_patch.py` проверяет образ, пишет, пересчитывает суммы и записывает в журнал каждый байт.
-- **Пресеты для GS8.60.4, как и для GS8.60.0** ([документ 14](docs/ru/14-presets.md)): `sport-daily`, `street-hard`, `track-hard`, собранные из патчей под ваш мотор или готовыми рецептами.
-- **Почему GS8.60.4 в стоке кажется быстрее** ([документ 12 §10](docs/ru/12-gs8600-vs-gs8604.md)): четыре заводских калибровки рядом. Дело в калибровке Alpina, а не в блоке: собственная GS8.60.4 от BMW такая же спокойная, как GS8.60.0.
-- **Реверс 20C0 доведён там, где это важно**: роли матриц D / S / M, программа прогрева, источник кикдауна, ворота нижнего уровня ГДТ, всё доказано кодом ([документ 11](docs/ru/11-gs8604-20c0.md)).
-- Поправки: «термодерейт по ATF» оказался программой прогрева; байт 5 кадра это температура мотора, байт 6 сырая ATF ([документ 03 §6](docs/ru/03-torque-converter-lockup.md)).
+- **Новый патч `converter`** ([документ 13 §12](docs/ru/13-patches.md)): кривая коэффициента трансформации ГДТ. В каждой калибровке кривая своего трансформатора (Alpina 168 % на стопе, трансформаторы BMW 2.2 / 2.5 191-198 %); файл Alpina на трансформаторе BMW занижает момент турбины на старте до 17 % и берёт строку давления ниже.
+- **`s-sport` для строк наката и для D** (документ 13 §9): `light=` поднимает строки лёгкой педали S (иначе S Alpina включает 5-ю с 55 км/ч), `modes=D` делает D чуть живее и не трогает его строки в пол.
+- **Каталог 19D0 v3.3**: найдены читатели у 36 объектов с пометкой «читателей нет», девять «таблиц» сканера переописаны как массивы и списки порогов, которые на самом деле индексирует код, добавлено 17 объектов, среди них коэффициент ГДТ `0xE38E` ([документ 10 §9](docs/ru/10-methodology.md)).
+- **Исправлено по DS2** ([документ 06 §2](docs/ru/06-logging-ds2.md)): работающая программа 19D0 отвечает на `0B 03` (свой диспетчер `0x10E58`); формат чтения памяти `0x06` взят из кода; настоящий обмен статусом разобран по байтам.
+- **`shift-feel`** (08.10, документ 13 §10): жёсткость переключений по нагрузке на обоих блоках. 19x0 тоже проверяет суммы в фоне (документы 01, 07).
+- **Каждый pull request проверяется** GitHub Actions, `main` защищён ([CONTRIBUTING](CONTRIBUTING.md)).
+- 07.10.2026: готовые патчи и пресеты для обоих блоков (документы 13, 14), почему GS8.60.4 в стоке кажется быстрее (документ 12 §10), реверс 20C0 (документ 11). Все изменения: [CHANGELOG](CHANGELOG.md).
 
 ### Что покрыто
 
@@ -226,10 +232,11 @@ XDF открывается в TunerPro: `xdf/GS8600_19D0_Full256K.xdf` для д
 | `s-no5` | S никогда не включает 5-ю, AGS держит уровень 4 | k11, k15 | k11, k15 |
 | `shift-wot` | повышения в пол сразу под ограничитель вашего мотора | k11, k15 (+ k14, k6) | то же, с вычетом прибавки при замкнутой ГДТ |
 | `no-kickdown` | кикдаун выключен (или только в M) | `0x8D1A`, `0x8246` | `0x70D6A`, `0x70232` |
-| `s-sport` | спортивная S на частичной педали (в файле Alpina 20C0 S = D) | матрицы k11, k15 | матрицы k11, k15 |
+| `s-sport` | спортивная S на частичной педали (в файле Alpina 20C0 S = D); `light=` ещё и строки наката, `modes=D` живее D | матрицы k11, k15 (k14, k6) | матрицы k11, k15 (k14, k6) |
 | `shift-feel` | жёсткие / нежные переключения по нагрузке | записи видов 1 и 3 | целевое время скольжения, давление включаемого, `0x7B94D` |
 | `manual-hold` | M держит передачу на отсечке, повышает только на накате | k10, k8, монитор | k10, k8 |
 | `gate` | левая кулиса: сначала S (BMW) или сразу M (Alpina) | `0x8975` | `0x70966` |
+| `converter` | кривая коэффициента трансформации под установленный ГДТ (Alpina или BMW) | `0xE38E` | `0x781D6` |
 
 ### Пресеты
 
@@ -272,7 +279,7 @@ Python 3, только стандартная библиотека. Каждый
 | [10 · Методика](docs/ru/10-methodology.md) | как делался реверс, что считается доказанным, опровергнутые трактовки |
 | [11 · GS8.60.4 (20C0)](docs/ru/11-gs8604-20c0.md) | образ 512 КБ: карта, суммы, матрицы и роли, блокировка, AGS, прогрев, кикдаун, корни записей, кадр `0B 03` |
 | [12 · GS8.60.0 и GS8.60.4](docs/ru/12-gs8600-vs-gs8604.md) | две программы рядом и сток против стока: почему GS8.60.4 кажется быстрее (§10) |
-| [13 · Патчи](docs/ru/13-patches.md) | ГДТ на 1-й, ранняя блокировка, прогрев, S без 5-й, обороты, кикдаун, ручной режим, кулиса |
+| [13 · Патчи](docs/ru/13-patches.md) | ГДТ на 1-й, ранняя блокировка, прогрев, S без 5-й, обороты, кикдаун, ручной режим, кулиса, спортивные S и D, жёсткость переключений, кривая ГДТ |
 | [14 · Пресеты](docs/ru/14-presets.md) | sport-daily, street-hard, track-hard для обоих блоков |
 | [Глоссарий](docs/ru/glossary.md) | термины |
 
