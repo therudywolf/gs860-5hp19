@@ -2,6 +2,20 @@
 
 Newest first. Each entry: date and title, then **EN** and **RU** with the same facts. Older entries are not rewritten: what turned out wrong is corrected in a newer entry.
 
+## 2026-10-28 (4): English axis labels in both catalogs
+
+**EN**
+
+- The English 20C0 XDF showed 132 Russian axis labels on 36 axes. The 20C0 generator now writes `labels_en` for them: the gear records (`down to`, `up to`, `down column`, `up column`, `down program`, `up program`), the groups of the second TCC check (`g1 t0` ... `g2 t2`), `sel. 1-4`, `level 1-4`, `branch 0-1` and the one-label axes (`threshold`, `points`, `ticks`, `offset`, `value`, `mask`, `pedal`, `pressure units`). The English XDF has no Russian label left; apart from `labels_en` the regenerated catalog is byte for byte the previous one.
+- 19D0: the 13 axes with Russian labels get `labels_en` (`step 1-2`, `step 2-3`, `step 3-4` of the AGS pedal thresholds, `ticks`, `mask`, `pedal`).
+- CONTRIBUTING: `labels_en` joins the list of English fields of the 19D0 catalog. Tests: without `labels_en` the English file carries the labels of the Russian one (before, the test compared a render with itself); every Russian axis label of 20C0 has an English one and the English XDF shows none. The Russian XDF files, the addresses and the data do not change.
+
+**RU**
+
+- Английский XDF 20C0 показывал 132 русские подписи на 36 осях. Генератор 20C0 теперь пишет для них `labels_en`: записи передач (`down to`, `up to`, `down column`, `up column`, `down program`, `up program`), группы второй проверки ГДТ (`g1 t0` ... `g2 t2`), `sel. 1-4`, `level 1-4`, `branch 0-1` и оси с одной подписью (`threshold`, `points`, `ticks`, `offset`, `value`, `mask`, `pedal`, `pressure units`). Русских подписей в английском XDF не осталось; кроме `labels_en`, пересобранный каталог байт в байт прежний.
+- 19D0: 13 осей с русскими подписями получили `labels_en` (`step 1-2`, `step 2-3`, `step 3-4` у порогов педали AGS, `ticks`, `mask`, `pedal`).
+- CONTRIBUTING: `labels_en` вошло в список английских полей каталога 19D0. Тесты: без `labels_en` английский файл несёт подписи русского (раньше тест сравнивал сборку саму с собой); у каждой русской подписи осей 20C0 есть английская, и английский XDF не показывает ни одной русской. Русские XDF, адреса и данные не меняются.
+
 ## 2026-10-28 (3): optional English axis labels (KingAiCodeForge)
 
 **EN**

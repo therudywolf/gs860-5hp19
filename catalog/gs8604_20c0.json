@@ -1064,7 +1064,15 @@
     "lsb_first": false,
     "major": -32,
     "minor": 0,
-    "units_en": "record byte"
+    "units_en": "record byte",
+    "labels_en": [
+     "down to",
+     "up to",
+     "down column",
+     "up column",
+     "down program",
+     "up program"
+    ]
    },
    "y": {
     "addr": null,
@@ -1131,7 +1139,15 @@
     "lsb_first": false,
     "major": -32,
     "minor": 0,
-    "units_en": "record byte"
+    "units_en": "record byte",
+    "labels_en": [
+     "down to",
+     "up to",
+     "down column",
+     "up column",
+     "down program",
+     "up program"
+    ]
    },
    "y": {
     "addr": null,
@@ -1198,7 +1214,15 @@
     "lsb_first": false,
     "major": -32,
     "minor": 0,
-    "units_en": "record byte"
+    "units_en": "record byte",
+    "labels_en": [
+     "down to",
+     "up to",
+     "down column",
+     "up column",
+     "down program",
+     "up program"
+    ]
    },
    "y": {
     "addr": null,
@@ -1265,7 +1289,15 @@
     "lsb_first": false,
     "major": -32,
     "minor": 0,
-    "units_en": "record byte"
+    "units_en": "record byte",
+    "labels_en": [
+     "down to",
+     "up to",
+     "down column",
+     "up column",
+     "down program",
+     "up program"
+    ]
    },
    "y": {
     "addr": null,
@@ -1332,7 +1364,15 @@
     "lsb_first": false,
     "major": -32,
     "minor": 0,
-    "units_en": "record byte"
+    "units_en": "record byte",
+    "labels_en": [
+     "down to",
+     "up to",
+     "down column",
+     "up column",
+     "down program",
+     "up program"
+    ]
    },
    "y": {
     "addr": null,
@@ -1399,7 +1439,15 @@
     "lsb_first": false,
     "major": -32,
     "minor": 0,
-    "units_en": "record byte"
+    "units_en": "record byte",
+    "labels_en": [
+     "down to",
+     "up to",
+     "down column",
+     "up column",
+     "down program",
+     "up program"
+    ]
    },
    "y": {
     "addr": null,
@@ -1466,7 +1514,15 @@
     "lsb_first": false,
     "major": -32,
     "minor": 0,
-    "units_en": "record byte"
+    "units_en": "record byte",
+    "labels_en": [
+     "down to",
+     "up to",
+     "down column",
+     "up column",
+     "down program",
+     "up program"
+    ]
    },
    "y": {
     "addr": null,
@@ -1533,7 +1589,15 @@
     "lsb_first": false,
     "major": -32,
     "minor": 0,
-    "units_en": "record byte"
+    "units_en": "record byte",
+    "labels_en": [
+     "down to",
+     "up to",
+     "down column",
+     "up column",
+     "down program",
+     "up program"
+    ]
    },
    "y": {
     "addr": null,
@@ -1600,7 +1664,15 @@
     "lsb_first": false,
     "major": -32,
     "minor": 0,
-    "units_en": "record byte"
+    "units_en": "record byte",
+    "labels_en": [
+     "down to",
+     "up to",
+     "down column",
+     "up column",
+     "down program",
+     "up program"
+    ]
    },
    "y": {
     "addr": null,
@@ -1667,7 +1739,15 @@
     "lsb_first": false,
     "major": -32,
     "minor": 0,
-    "units_en": "record byte"
+    "units_en": "record byte",
+    "labels_en": [
+     "down to",
+     "up to",
+     "down column",
+     "up column",
+     "down program",
+     "up program"
+    ]
    },
    "y": {
     "addr": null,
@@ -1734,7 +1814,15 @@
     "lsb_first": false,
     "major": -32,
     "minor": 0,
-    "units_en": "record byte"
+    "units_en": "record byte",
+    "labels_en": [
+     "down to",
+     "up to",
+     "down column",
+     "up column",
+     "down program",
+     "up program"
+    ]
    },
    "y": {
     "addr": null,
@@ -1801,7 +1889,15 @@
     "lsb_first": false,
     "major": -32,
     "minor": 0,
-    "units_en": "record byte"
+    "units_en": "record byte",
+    "labels_en": [
+     "down to",
+     "up to",
+     "down column",
+     "up column",
+     "down program",
+     "up program"
+    ]
    },
    "y": {
     "addr": null,
@@ -1868,7 +1964,15 @@
     "lsb_first": false,
     "major": -32,
     "minor": 0,
-    "units_en": "record byte"
+    "units_en": "record byte",
+    "labels_en": [
+     "down to",
+     "up to",
+     "down column",
+     "up column",
+     "down program",
+     "up program"
+    ]
    },
    "y": {
     "addr": null,
@@ -1935,7 +2039,15 @@
     "lsb_first": false,
     "major": -32,
     "minor": 0,
-    "units_en": "record byte"
+    "units_en": "record byte",
+    "labels_en": [
+     "down to",
+     "up to",
+     "down column",
+     "up column",
+     "down program",
+     "up program"
+    ]
    },
    "y": {
     "addr": null,
@@ -2002,7 +2114,15 @@
     "lsb_first": false,
     "major": -32,
     "minor": 0,
-    "units_en": "record byte"
+    "units_en": "record byte",
+    "labels_en": [
+     "down to",
+     "up to",
+     "down column",
+     "up column",
+     "down program",
+     "up program"
+    ]
    },
    "y": {
     "addr": null,
@@ -2069,7 +2189,15 @@
     "lsb_first": false,
     "major": -32,
     "minor": 0,
-    "units_en": "record byte"
+    "units_en": "record byte",
+    "labels_en": [
+     "down to",
+     "up to",
+     "down column",
+     "up column",
+     "down program",
+     "up program"
+    ]
    },
    "y": {
     "addr": null,
@@ -2419,7 +2547,15 @@
     "lsb_first": false,
     "major": -32,
     "minor": 0,
-    "units_en": "group, threshold"
+    "units_en": "group, threshold",
+    "labels_en": [
+     "g1 t0",
+     "g1 t1",
+     "g1 t2",
+     "g2 t0",
+     "g2 t1",
+     "g2 t2"
+    ]
    },
    "y": {
     "addr": null,
@@ -2434,7 +2570,10 @@
     "lsb_first": false,
     "major": -32,
     "minor": 0,
-    "units_en": "row"
+    "units_en": "row",
+    "labels_en": [
+     "threshold"
+    ]
    },
    "z": {
     "addr": 461746,
@@ -2542,7 +2681,10 @@
     "lsb_first": false,
     "major": -32,
     "minor": 0,
-    "units_en": "row"
+    "units_en": "row",
+    "labels_en": [
+     "ticks"
+    ]
    },
    "z": {
     "addr": 462624,
@@ -3183,7 +3325,10 @@
     "lsb_first": false,
     "major": -32,
     "minor": 0,
-    "units_en": "row"
+    "units_en": "row",
+    "labels_en": [
+     "points"
+    ]
    },
    "z": {
     "addr": 460942,
@@ -3264,7 +3409,10 @@
     "lsb_first": false,
     "major": -32,
     "minor": 0,
-    "units_en": "row"
+    "units_en": "row",
+    "labels_en": [
+     "points"
+    ]
    },
    "z": {
     "addr": 460944,
@@ -3324,7 +3472,10 @@
     "lsb_first": false,
     "major": -32,
     "minor": 0,
-    "units_en": "row"
+    "units_en": "row",
+    "labels_en": [
+     "points"
+    ]
    },
    "z": {
     "addr": 460952,
@@ -3384,7 +3535,10 @@
     "lsb_first": false,
     "major": -32,
     "minor": 0,
-    "units_en": "row"
+    "units_en": "row",
+    "labels_en": [
+     "points"
+    ]
    },
    "z": {
     "addr": 460956,
@@ -3710,7 +3864,13 @@
     "lsb_first": false,
     "major": -32,
     "minor": 0,
-    "units_en": "selector"
+    "units_en": "selector",
+    "labels_en": [
+     "sel. 1",
+     "sel. 2",
+     "sel. 3",
+     "sel. 4"
+    ]
    },
    "z": {
     "addr": 462290,
@@ -3772,7 +3932,10 @@
     "lsb_first": false,
     "major": -32,
     "minor": 0,
-    "units_en": "row"
+    "units_en": "row",
+    "labels_en": [
+     "offset"
+    ]
    },
    "z": {
     "addr": 461720,
@@ -3834,7 +3997,10 @@
     "lsb_first": false,
     "major": -32,
     "minor": 0,
-    "units_en": "row"
+    "units_en": "row",
+    "labels_en": [
+     "threshold"
+    ]
    },
    "z": {
     "addr": 461600,
@@ -4001,7 +4167,13 @@
     "lsb_first": false,
     "major": -32,
     "minor": 0,
-    "units_en": "AGS level"
+    "units_en": "AGS level",
+    "labels_en": [
+     "level 1",
+     "level 2",
+     "level 3",
+     "level 4"
+    ]
    },
    "y": {
     "addr": null,
@@ -4102,7 +4274,10 @@
     "lsb_first": false,
     "major": -32,
     "minor": 0,
-    "units_en": "row"
+    "units_en": "row",
+    "labels_en": [
+     "value"
+    ]
    },
    "z": {
     "addr": 461034,
@@ -4145,7 +4320,11 @@
     "lsb_first": false,
     "major": -32,
     "minor": 0,
-    "units_en": "branch"
+    "units_en": "branch",
+    "labels_en": [
+     "branch 0",
+     "branch 1"
+    ]
    },
    "y": {
     "addr": null,
@@ -4160,7 +4339,10 @@
     "lsb_first": false,
     "major": -32,
     "minor": 0,
-    "units_en": "row"
+    "units_en": "row",
+    "labels_en": [
+     "threshold"
+    ]
    },
    "z": {
     "addr": 459422,
@@ -4203,7 +4385,11 @@
     "lsb_first": false,
     "major": -32,
     "minor": 0,
-    "units_en": "branch"
+    "units_en": "branch",
+    "labels_en": [
+     "branch 0",
+     "branch 1"
+    ]
    },
    "y": {
     "addr": null,
@@ -4218,7 +4404,10 @@
     "lsb_first": false,
     "major": -32,
     "minor": 0,
-    "units_en": "row"
+    "units_en": "row",
+    "labels_en": [
+     "threshold"
+    ]
    },
    "z": {
     "addr": 459424,
@@ -4372,7 +4561,13 @@
     "lsb_first": false,
     "major": -32,
     "minor": 0,
-    "units_en": "selector"
+    "units_en": "selector",
+    "labels_en": [
+     "sel. 1",
+     "sel. 2",
+     "sel. 3",
+     "sel. 4"
+    ]
    },
    "z": {
     "addr": 462268,
@@ -4630,7 +4825,10 @@
     "lsb_first": false,
     "major": -32,
     "minor": 0,
-    "units_en": "row"
+    "units_en": "row",
+    "labels_en": [
+     "mask"
+    ]
    },
    "z": {
     "addr": 459580,
@@ -4966,7 +5164,10 @@
     "lsb_first": false,
     "major": -32,
     "minor": 0,
-    "units_en": "row"
+    "units_en": "row",
+    "labels_en": [
+     "pedal"
+    ]
    },
    "z": {
     "addr": 459198,
@@ -70957,7 +71158,10 @@
     "lsb_first": false,
     "major": -32,
     "minor": 0,
-    "units_en": "row"
+    "units_en": "row",
+    "labels_en": [
+     "pressure units"
+    ]
    },
    "z": {
     "addr": 511968,

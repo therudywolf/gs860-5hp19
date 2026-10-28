@@ -742,12 +742,12 @@ Licence / Лицензия: CC BY-SA 4.0, https://creativecommons.org/licenses/b
       <datatype>0</datatype>
       <unittype>0</unittype>
       <DALINK index="0" />
-      <LABEL index="0" value="вниз в" />
-      <LABEL index="1" value="вверх в" />
-      <LABEL index="2" value="столбец вниз" />
-      <LABEL index="3" value="столбец вверх" />
-      <LABEL index="4" value="программа вниз" />
-      <LABEL index="5" value="программа вверх" />
+      <LABEL index="0" value="down to" />
+      <LABEL index="1" value="up to" />
+      <LABEL index="2" value="down column" />
+      <LABEL index="3" value="up column" />
+      <LABEL index="4" value="down program" />
+      <LABEL index="5" value="up program" />
       <MATH equation="X">
         <VAR id="X" />
       </MATH>
@@ -790,12 +790,12 @@ Licence / Лицензия: CC BY-SA 4.0, https://creativecommons.org/licenses/b
       <datatype>0</datatype>
       <unittype>0</unittype>
       <DALINK index="0" />
-      <LABEL index="0" value="вниз в" />
-      <LABEL index="1" value="вверх в" />
-      <LABEL index="2" value="столбец вниз" />
-      <LABEL index="3" value="столбец вверх" />
-      <LABEL index="4" value="программа вниз" />
-      <LABEL index="5" value="программа вверх" />
+      <LABEL index="0" value="down to" />
+      <LABEL index="1" value="up to" />
+      <LABEL index="2" value="down column" />
+      <LABEL index="3" value="up column" />
+      <LABEL index="4" value="down program" />
+      <LABEL index="5" value="up program" />
       <MATH equation="X">
         <VAR id="X" />
       </MATH>
@@ -838,12 +838,12 @@ Licence / Лицензия: CC BY-SA 4.0, https://creativecommons.org/licenses/b
       <datatype>0</datatype>
       <unittype>0</unittype>
       <DALINK index="0" />
-      <LABEL index="0" value="вниз в" />
-      <LABEL index="1" value="вверх в" />
-      <LABEL index="2" value="столбец вниз" />
-      <LABEL index="3" value="столбец вверх" />
-      <LABEL index="4" value="программа вниз" />
-      <LABEL index="5" value="программа вверх" />
+      <LABEL index="0" value="down to" />
+      <LABEL index="1" value="up to" />
+      <LABEL index="2" value="down column" />
+      <LABEL index="3" value="up column" />
+      <LABEL index="4" value="down program" />
+      <LABEL index="5" value="up program" />
       <MATH equation="X">
         <VAR id="X" />
       </MATH>
@@ -886,12 +886,12 @@ Licence / Лицензия: CC BY-SA 4.0, https://creativecommons.org/licenses/b
       <datatype>0</datatype>
       <unittype>0</unittype>
       <DALINK index="0" />
-      <LABEL index="0" value="вниз в" />
-      <LABEL index="1" value="вверх в" />
-      <LABEL index="2" value="столбец вниз" />
-      <LABEL index="3" value="столбец вверх" />
-      <LABEL index="4" value="программа вниз" />
-      <LABEL index="5" value="программа вверх" />
+      <LABEL index="0" value="down to" />
+      <LABEL index="1" value="up to" />
+      <LABEL index="2" value="down column" />
+      <LABEL index="3" value="up column" />
+      <LABEL index="4" value="down program" />
+      <LABEL index="5" value="up program" />
       <MATH equation="X">
         <VAR id="X" />
       </MATH>
@@ -934,12 +934,12 @@ Licence / Лицензия: CC BY-SA 4.0, https://creativecommons.org/licenses/b
       <datatype>0</datatype>
       <unittype>0</unittype>
       <DALINK index="0" />
-      <LABEL index="0" value="вниз в" />
-      <LABEL index="1" value="вверх в" />
-      <LABEL index="2" value="столбец вниз" />
-      <LABEL index="3" value="столбец вверх" />
-      <LABEL index="4" value="программа вниз" />
-      <LABEL index="5" value="программа вверх" />
+      <LABEL index="0" value="down to" />
+      <LABEL index="1" value="up to" />
+      <LABEL index="2" value="down column" />
+      <LABEL index="3" value="up column" />
+      <LABEL index="4" value="down program" />
+      <LABEL index="5" value="up program" />
       <MATH equation="X">
         <VAR id="X" />
       </MATH>
@@ -982,12 +982,12 @@ Licence / Лицензия: CC BY-SA 4.0, https://creativecommons.org/licenses/b
       <datatype>0</datatype>
       <unittype>0</unittype>
       <DALINK index="0" />
-      <LABEL index="0" value="вниз в" />
-      <LABEL index="1" value="вверх в" />
-      <LABEL index="2" value="столбец вниз" />
-      <LABEL index="3" value="столбец вверх" />
-      <LABEL index="4" value="программа вниз" />
-      <LABEL index="5" value="программа вверх" />
+      <LABEL index="0" value="down to" />
+      <LABEL index="1" value="up to" />
+      <LABEL index="2" value="down column" />
+      <LABEL index="3" value="up column" />
+      <LABEL index="4" value="down program" />
+      <LABEL index="5" value="up program" />
       <MATH equation="X">
         <VAR id="X" />
       </MATH>
@@ -1030,12 +1030,12 @@ Licence / Лицензия: CC BY-SA 4.0, https://creativecommons.org/licenses/b
       <datatype>0</datatype>
       <unittype>0</unittype>
       <DALINK index="0" />
-      <LABEL index="0" value="вниз в" />
-      <LABEL index="1" value="вверх в" />
-      <LABEL index="2" value="столбец вниз" />
-      <LABEL index="3" value="столбец вверх" />
-      <LABEL index="4" value="программа вниз" />
-      <LABEL index="5" value="программа вверх" />
+      <LABEL index="0" value="down to" />
+      <LABEL index="1" value="up to" />
+      <LABEL index="2" value="down column" />
+      <LABEL index="3" value="up column" />
+      <LABEL index="4" value="down program" />
+      <LABEL index="5" value="up program" />
       <MATH equation="X">
         <VAR id="X" />
       </MATH>
@@ -1078,12 +1078,12 @@ Licence / Лицензия: CC BY-SA 4.0, https://creativecommons.org/licenses/b
       <datatype>0</datatype>
       <unittype>0</unittype>
       <DALINK index="0" />
-      <LABEL index="0" value="вниз в" />
-      <LABEL index="1" value="вверх в" />
-      <LABEL index="2" value="столбец вниз" />
-      <LABEL index="3" value="столбец вверх" />
-      <LABEL index="4" value="программа вниз" />
-      <LABEL index="5" value="программа вверх" />
+      <LABEL index="0" value="down to" />
+      <LABEL index="1" value="up to" />
+      <LABEL index="2" value="down column" />
+      <LABEL index="3" value="up column" />
+      <LABEL index="4" value="down program" />
+      <LABEL index="5" value="up program" />
       <MATH equation="X">
         <VAR id="X" />
       </MATH>
@@ -1126,12 +1126,12 @@ Licence / Лицензия: CC BY-SA 4.0, https://creativecommons.org/licenses/b
       <datatype>0</datatype>
       <unittype>0</unittype>
       <DALINK index="0" />
-      <LABEL index="0" value="вниз в" />
-      <LABEL index="1" value="вверх в" />
-      <LABEL index="2" value="столбец вниз" />
-      <LABEL index="3" value="столбец вверх" />
-      <LABEL index="4" value="программа вниз" />
-      <LABEL index="5" value="программа вверх" />
+      <LABEL index="0" value="down to" />
+      <LABEL index="1" value="up to" />
+      <LABEL index="2" value="down column" />
+      <LABEL index="3" value="up column" />
+      <LABEL index="4" value="down program" />
+      <LABEL index="5" value="up program" />
       <MATH equation="X">
         <VAR id="X" />
       </MATH>
@@ -1174,12 +1174,12 @@ Licence / Лицензия: CC BY-SA 4.0, https://creativecommons.org/licenses/b
       <datatype>0</datatype>
       <unittype>0</unittype>
       <DALINK index="0" />
-      <LABEL index="0" value="вниз в" />
-      <LABEL index="1" value="вверх в" />
-      <LABEL index="2" value="столбец вниз" />
-      <LABEL index="3" value="столбец вверх" />
-      <LABEL index="4" value="программа вниз" />
-      <LABEL index="5" value="программа вверх" />
+      <LABEL index="0" value="down to" />
+      <LABEL index="1" value="up to" />
+      <LABEL index="2" value="down column" />
+      <LABEL index="3" value="up column" />
+      <LABEL index="4" value="down program" />
+      <LABEL index="5" value="up program" />
       <MATH equation="X">
         <VAR id="X" />
       </MATH>
@@ -1222,12 +1222,12 @@ Licence / Лицензия: CC BY-SA 4.0, https://creativecommons.org/licenses/b
       <datatype>0</datatype>
       <unittype>0</unittype>
       <DALINK index="0" />
-      <LABEL index="0" value="вниз в" />
-      <LABEL index="1" value="вверх в" />
-      <LABEL index="2" value="столбец вниз" />
-      <LABEL index="3" value="столбец вверх" />
-      <LABEL index="4" value="программа вниз" />
-      <LABEL index="5" value="программа вверх" />
+      <LABEL index="0" value="down to" />
+      <LABEL index="1" value="up to" />
+      <LABEL index="2" value="down column" />
+      <LABEL index="3" value="up column" />
+      <LABEL index="4" value="down program" />
+      <LABEL index="5" value="up program" />
       <MATH equation="X">
         <VAR id="X" />
       </MATH>
@@ -1270,12 +1270,12 @@ Licence / Лицензия: CC BY-SA 4.0, https://creativecommons.org/licenses/b
       <datatype>0</datatype>
       <unittype>0</unittype>
       <DALINK index="0" />
-      <LABEL index="0" value="вниз в" />
-      <LABEL index="1" value="вверх в" />
-      <LABEL index="2" value="столбец вниз" />
-      <LABEL index="3" value="столбец вверх" />
-      <LABEL index="4" value="программа вниз" />
-      <LABEL index="5" value="программа вверх" />
+      <LABEL index="0" value="down to" />
+      <LABEL index="1" value="up to" />
+      <LABEL index="2" value="down column" />
+      <LABEL index="3" value="up column" />
+      <LABEL index="4" value="down program" />
+      <LABEL index="5" value="up program" />
       <MATH equation="X">
         <VAR id="X" />
       </MATH>
@@ -1318,12 +1318,12 @@ Licence / Лицензия: CC BY-SA 4.0, https://creativecommons.org/licenses/b
       <datatype>0</datatype>
       <unittype>0</unittype>
       <DALINK index="0" />
-      <LABEL index="0" value="вниз в" />
-      <LABEL index="1" value="вверх в" />
-      <LABEL index="2" value="столбец вниз" />
-      <LABEL index="3" value="столбец вверх" />
-      <LABEL index="4" value="программа вниз" />
-      <LABEL index="5" value="программа вверх" />
+      <LABEL index="0" value="down to" />
+      <LABEL index="1" value="up to" />
+      <LABEL index="2" value="down column" />
+      <LABEL index="3" value="up column" />
+      <LABEL index="4" value="down program" />
+      <LABEL index="5" value="up program" />
       <MATH equation="X">
         <VAR id="X" />
       </MATH>
@@ -1366,12 +1366,12 @@ Licence / Лицензия: CC BY-SA 4.0, https://creativecommons.org/licenses/b
       <datatype>0</datatype>
       <unittype>0</unittype>
       <DALINK index="0" />
-      <LABEL index="0" value="вниз в" />
-      <LABEL index="1" value="вверх в" />
-      <LABEL index="2" value="столбец вниз" />
-      <LABEL index="3" value="столбец вверх" />
-      <LABEL index="4" value="программа вниз" />
-      <LABEL index="5" value="программа вверх" />
+      <LABEL index="0" value="down to" />
+      <LABEL index="1" value="up to" />
+      <LABEL index="2" value="down column" />
+      <LABEL index="3" value="up column" />
+      <LABEL index="4" value="down program" />
+      <LABEL index="5" value="up program" />
       <MATH equation="X">
         <VAR id="X" />
       </MATH>
@@ -1414,12 +1414,12 @@ Licence / Лицензия: CC BY-SA 4.0, https://creativecommons.org/licenses/b
       <datatype>0</datatype>
       <unittype>0</unittype>
       <DALINK index="0" />
-      <LABEL index="0" value="вниз в" />
-      <LABEL index="1" value="вверх в" />
-      <LABEL index="2" value="столбец вниз" />
-      <LABEL index="3" value="столбец вверх" />
-      <LABEL index="4" value="программа вниз" />
-      <LABEL index="5" value="программа вверх" />
+      <LABEL index="0" value="down to" />
+      <LABEL index="1" value="up to" />
+      <LABEL index="2" value="down column" />
+      <LABEL index="3" value="up column" />
+      <LABEL index="4" value="down program" />
+      <LABEL index="5" value="up program" />
       <MATH equation="X">
         <VAR id="X" />
       </MATH>
@@ -1462,12 +1462,12 @@ Licence / Лицензия: CC BY-SA 4.0, https://creativecommons.org/licenses/b
       <datatype>0</datatype>
       <unittype>0</unittype>
       <DALINK index="0" />
-      <LABEL index="0" value="вниз в" />
-      <LABEL index="1" value="вверх в" />
-      <LABEL index="2" value="столбец вниз" />
-      <LABEL index="3" value="столбец вверх" />
-      <LABEL index="4" value="программа вниз" />
-      <LABEL index="5" value="программа вверх" />
+      <LABEL index="0" value="down to" />
+      <LABEL index="1" value="up to" />
+      <LABEL index="2" value="down column" />
+      <LABEL index="3" value="up column" />
+      <LABEL index="4" value="down program" />
+      <LABEL index="5" value="up program" />
       <MATH equation="X">
         <VAR id="X" />
       </MATH>
@@ -1710,12 +1710,12 @@ Licence / Лицензия: CC BY-SA 4.0, https://creativecommons.org/licenses/b
       <datatype>0</datatype>
       <unittype>0</unittype>
       <DALINK index="0" />
-      <LABEL index="0" value="г1 п0" />
-      <LABEL index="1" value="г1 п1" />
-      <LABEL index="2" value="г1 п2" />
-      <LABEL index="3" value="г2 п0" />
-      <LABEL index="4" value="г2 п1" />
-      <LABEL index="5" value="г2 п2" />
+      <LABEL index="0" value="g1 t0" />
+      <LABEL index="1" value="g1 t1" />
+      <LABEL index="2" value="g1 t2" />
+      <LABEL index="3" value="g2 t0" />
+      <LABEL index="4" value="g2 t1" />
+      <LABEL index="5" value="g2 t2" />
       <MATH equation="X">
         <VAR id="X" />
       </MATH>
@@ -1727,7 +1727,7 @@ Licence / Лицензия: CC BY-SA 4.0, https://creativecommons.org/licenses/b
       <datatype>0</datatype>
       <unittype>0</unittype>
       <DALINK index="0" />
-      <LABEL index="0" value="порог" />
+      <LABEL index="0" value="threshold" />
       <MATH equation="X">
         <VAR id="X" />
       </MATH>
@@ -1794,7 +1794,7 @@ Licence / Лицензия: CC BY-SA 4.0, https://creativecommons.org/licenses/b
       <datatype>0</datatype>
       <unittype>0</unittype>
       <DALINK index="0" />
-      <LABEL index="0" value="такты" />
+      <LABEL index="0" value="ticks" />
       <MATH equation="X">
         <VAR id="X" />
       </MATH>
@@ -2229,7 +2229,7 @@ Licence / Лицензия: CC BY-SA 4.0, https://creativecommons.org/licenses/b
       <datatype>0</datatype>
       <unittype>0</unittype>
       <DALINK index="0" />
-      <LABEL index="0" value="очки" />
+      <LABEL index="0" value="points" />
       <MATH equation="X">
         <VAR id="X" />
       </MATH>
@@ -2280,7 +2280,7 @@ Licence / Лицензия: CC BY-SA 4.0, https://creativecommons.org/licenses/b
       <datatype>0</datatype>
       <unittype>0</unittype>
       <DALINK index="0" />
-      <LABEL index="0" value="очки" />
+      <LABEL index="0" value="points" />
       <MATH equation="X">
         <VAR id="X" />
       </MATH>
@@ -2321,7 +2321,7 @@ Licence / Лицензия: CC BY-SA 4.0, https://creativecommons.org/licenses/b
       <datatype>0</datatype>
       <unittype>0</unittype>
       <DALINK index="0" />
-      <LABEL index="0" value="очки" />
+      <LABEL index="0" value="points" />
       <MATH equation="X">
         <VAR id="X" />
       </MATH>
@@ -2362,7 +2362,7 @@ Licence / Лицензия: CC BY-SA 4.0, https://creativecommons.org/licenses/b
       <datatype>0</datatype>
       <unittype>0</unittype>
       <DALINK index="0" />
-      <LABEL index="0" value="очки" />
+      <LABEL index="0" value="points" />
       <MATH equation="X">
         <VAR id="X" />
       </MATH>
@@ -2562,10 +2562,10 @@ Licence / Лицензия: CC BY-SA 4.0, https://creativecommons.org/licenses/b
       <datatype>0</datatype>
       <unittype>0</unittype>
       <DALINK index="0" />
-      <LABEL index="0" value="сел. 1" />
-      <LABEL index="1" value="сел. 2" />
-      <LABEL index="2" value="сел. 3" />
-      <LABEL index="3" value="сел. 4" />
+      <LABEL index="0" value="sel. 1" />
+      <LABEL index="1" value="sel. 2" />
+      <LABEL index="2" value="sel. 3" />
+      <LABEL index="3" value="sel. 4" />
       <MATH equation="X">
         <VAR id="X" />
       </MATH>
@@ -2608,7 +2608,7 @@ Licence / Лицензия: CC BY-SA 4.0, https://creativecommons.org/licenses/b
       <datatype>0</datatype>
       <unittype>0</unittype>
       <DALINK index="0" />
-      <LABEL index="0" value="прибавка" />
+      <LABEL index="0" value="offset" />
       <MATH equation="X">
         <VAR id="X" />
       </MATH>
@@ -2651,7 +2651,7 @@ Licence / Лицензия: CC BY-SA 4.0, https://creativecommons.org/licenses/b
       <datatype>0</datatype>
       <unittype>0</unittype>
       <DALINK index="0" />
-      <LABEL index="0" value="порог" />
+      <LABEL index="0" value="threshold" />
       <MATH equation="X">
         <VAR id="X" />
       </MATH>
@@ -2758,10 +2758,10 @@ Licence / Лицензия: CC BY-SA 4.0, https://creativecommons.org/licenses/b
       <datatype>0</datatype>
       <unittype>0</unittype>
       <DALINK index="0" />
-      <LABEL index="0" value="ур. 1" />
-      <LABEL index="1" value="ур. 2" />
-      <LABEL index="2" value="ур. 3" />
-      <LABEL index="3" value="ур. 4" />
+      <LABEL index="0" value="level 1" />
+      <LABEL index="1" value="level 2" />
+      <LABEL index="2" value="level 3" />
+      <LABEL index="3" value="level 4" />
       <MATH equation="X">
         <VAR id="X" />
       </MATH>
@@ -2829,7 +2829,7 @@ Licence / Лицензия: CC BY-SA 4.0, https://creativecommons.org/licenses/b
       <datatype>0</datatype>
       <unittype>0</unittype>
       <DALINK index="0" />
-      <LABEL index="0" value="значение" />
+      <LABEL index="0" value="value" />
       <MATH equation="X">
         <VAR id="X" />
       </MATH>
@@ -2855,8 +2855,8 @@ Licence / Лицензия: CC BY-SA 4.0, https://creativecommons.org/licenses/b
       <datatype>0</datatype>
       <unittype>0</unittype>
       <DALINK index="0" />
-      <LABEL index="0" value="ветка 0" />
-      <LABEL index="1" value="ветка 1" />
+      <LABEL index="0" value="branch 0" />
+      <LABEL index="1" value="branch 1" />
       <MATH equation="X">
         <VAR id="X" />
       </MATH>
@@ -2868,7 +2868,7 @@ Licence / Лицензия: CC BY-SA 4.0, https://creativecommons.org/licenses/b
       <datatype>0</datatype>
       <unittype>0</unittype>
       <DALINK index="0" />
-      <LABEL index="0" value="порог" />
+      <LABEL index="0" value="threshold" />
       <MATH equation="X">
         <VAR id="X" />
       </MATH>
@@ -2894,8 +2894,8 @@ Licence / Лицензия: CC BY-SA 4.0, https://creativecommons.org/licenses/b
       <datatype>0</datatype>
       <unittype>0</unittype>
       <DALINK index="0" />
-      <LABEL index="0" value="ветка 0" />
-      <LABEL index="1" value="ветка 1" />
+      <LABEL index="0" value="branch 0" />
+      <LABEL index="1" value="branch 1" />
       <MATH equation="X">
         <VAR id="X" />
       </MATH>
@@ -2907,7 +2907,7 @@ Licence / Лицензия: CC BY-SA 4.0, https://creativecommons.org/licenses/b
       <datatype>0</datatype>
       <unittype>0</unittype>
       <DALINK index="0" />
-      <LABEL index="0" value="порог" />
+      <LABEL index="0" value="threshold" />
       <MATH equation="X">
         <VAR id="X" />
       </MATH>
@@ -2995,10 +2995,10 @@ Licence / Лицензия: CC BY-SA 4.0, https://creativecommons.org/licenses/b
       <datatype>0</datatype>
       <unittype>0</unittype>
       <DALINK index="0" />
-      <LABEL index="0" value="сел. 1" />
-      <LABEL index="1" value="сел. 2" />
-      <LABEL index="2" value="сел. 3" />
-      <LABEL index="3" value="сел. 4" />
+      <LABEL index="0" value="sel. 1" />
+      <LABEL index="1" value="sel. 2" />
+      <LABEL index="2" value="sel. 3" />
+      <LABEL index="3" value="sel. 4" />
       <MATH equation="X">
         <VAR id="X" />
       </MATH>
@@ -3185,7 +3185,7 @@ Licence / Лицензия: CC BY-SA 4.0, https://creativecommons.org/licenses/b
       <datatype>0</datatype>
       <unittype>0</unittype>
       <DALINK index="0" />
-      <LABEL index="0" value="маска" />
+      <LABEL index="0" value="mask" />
       <MATH equation="X">
         <VAR id="X" />
       </MATH>
@@ -3409,7 +3409,7 @@ Licence / Лицензия: CC BY-SA 4.0, https://creativecommons.org/licenses/b
       <datatype>0</datatype>
       <unittype>0</unittype>
       <DALINK index="0" />
-      <LABEL index="0" value="педаль" />
+      <LABEL index="0" value="pedal" />
       <MATH equation="X">
         <VAR id="X" />
       </MATH>
@@ -45580,7 +45580,7 @@ Licence / Лицензия: CC BY-SA 4.0, https://creativecommons.org/licenses/b
       <datatype>0</datatype>
       <unittype>0</unittype>
       <DALINK index="0" />
-      <LABEL index="0" value="ед. давления" />
+      <LABEL index="0" value="pressure units" />
       <MATH equation="X">
         <VAR id="X" />
       </MATH>
