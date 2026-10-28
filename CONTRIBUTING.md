@@ -7,6 +7,7 @@
 
 ### What is welcome
 
+- Dangerous errors (a patch or a table reading that can damage a gearbox): report them privately first, see [`SECURITY.md`](SECURITY.md).
 - Corrections with evidence: a disassembly excerpt, a table dump, a log, anything that lets somebody else re-check it. "I think X is Y" without a code reference goes into an issue as a hypothesis, not into the docs.
 - Logs of shifts (RAM read via DS2 0x06, doc 06 §4) before/after a recipe, with the recipe named.
 - Recipes for other engines / final drives, with annotations (group, name, EN+RU comment for every table) and the base calibration label. For the patches of document 13 the easiest way is `egs_patch.py recipe NAME stock.bin -o recipe.json --spark RPM --cut RPM`: the recipe carries the chain and the engine limits in `built_with`.
@@ -73,6 +74,7 @@ A pull request is accepted under the licences of this repository: code (`tools/`
 
 ### Что приветствуется
 
+- Опасные ошибки (патч или трактовка таблицы, которые могут повредить коробку): сначала лично, см. [`SECURITY.md`](SECURITY.md).
 - Исправления с доказательством: фрагмент дизассемблера, распечатка таблицы, лог, то, что позволит другому перепроверить. «Я думаю, что X это Y» без ссылки на код идёт в issue как гипотеза, а не в документацию.
 - Логи переключений (чтение RAM через DS2 0x06, документ 06 §4) до/после рецепта с указанием рецепта.
 - Рецепты под другие моторы / главные пары с аннотациями (группа, имя, комментарий EN+RU для каждой таблицы) и меткой базовой калибровки. Для патчей документа 13 проще всего `egs_patch.py recipe ИМЯ stock.bin -o recipe.json --spark ОБ/МИН --cut ОБ/МИН`: рецепт несёт цепочку и обороты мотора в `built_with`.

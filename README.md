@@ -44,7 +44,12 @@ The **Bosch GS8.60.0** and **GS8.60.4** (ZF 5HP19 / A5S 325Z) are the transmissi
 
 This repository is the missing description: what each table does **in code**, which ones are safe, which ones are not, ready-made patches for the most wanted changes, and a way to apply them to your own dump that you can repeat and undo. Everything comes from disassembling the firmware (capstone m68k), diffing factory calibrations of BMW and Alpina, and DS2 logs from running cars. No Bosch or ZF documentation was used.
 
-### What's new (14.10.2026)
+### What's new (28.10.2026)
+
+- **Licence with attribution**: use, share and build on everything here, commercially too, on one condition: credit the author. Code under Apache-2.0 with [`NOTICE`](NOTICE), documents, catalogs, XDF and recipes under CC BY-SA 4.0; every XDF carries the licence and the credit in its header ([Licence](#licence)).
+- **Repository guard**: a test keeps firmware images, dumps and anything that looks like a VIN out of the tree; [`SECURITY.md`](SECURITY.md) says how to report a dangerous error privately.
+
+14.10.2026:
 
 - **New patch `converter`** ([document 13 §12](docs/en/13-patches.md)): the torque ratio curve of the torque converter. Every calibration carries the curve of its own converter (Alpina 168 % at stall, the BMW 2.2 / 2.5 converters 191-198 %); an Alpina file on a BMW converter underestimates the turbine torque in launches by up to 17 % and picks a lower pressure row.
 - **`s-sport` for the cruising rows and for D** (document 13 §9): `light=` lifts the light-pedal rows of S (the Alpina S otherwise takes 5th at 55 km/h), `modes=D` makes D a little livelier and leaves its full-throttle rows alone.
@@ -155,6 +160,7 @@ assets/              logo
 .github/             issue and pull request templates, funding link
 LICENSE, LICENSE-docs Apache-2.0 for the code, CC BY-SA 4.0 for documents, catalogs, XDF and recipes
 NOTICE, CITATION.cff  the credit to keep, a ready citation
+SECURITY.md          how to report a dangerous error privately
 ```
 
 ### Disclaimer
@@ -178,6 +184,8 @@ The WOLF4X name and logo are not licensed for reuse; firmware of Bosch, ZF, Siem
 
 The [MS4X wiki](https://www.ms4x.net): the reference for the engine side and the source of the factory reference files. [TunerPro RT](https://www.tunerpro.net): the calibration editor and the XDF format. Everyone who asked awkward questions and shared dumps: they forced the lockup module, the gate and the warm-up program to be read to the end.
 
+Jason King (KingAI, [@KingAiCodeForge](https://github.com/KingAiCodeForge)): his questions about the 19D0 axes and the RAM writers led to a mis-modelled object, wrong "no reader" notes and the converter torque ratio (19D0 catalog v3.3, document 13 §12); the hashes of his own Alpina B3 19C0 and SP-Daten 19C0 KA20 images confirmed the reference files independently; the field-placement part of his catalog guard became `test_english_field_placement`.
+
 AI tools were used for parts of the disassembly, cross-checking and writing. Every number in these documents was verified against the binaries.
 
 ### Support the work
@@ -198,7 +206,12 @@ Want a custom tune for **MS42 / MS43**, a custom tune of the **5HP19** gearbox (
 
 Здесь то самое описание: что каждая таблица делает **в коде**, какие трогать можно, какие нельзя, готовые патчи для самых нужных правок и способ внести их в свой дамп так, чтобы это можно было повторить и откатить. Всё получено дизассемблированием прошивки (capstone m68k), сравнением заводских калибровок BMW и Alpina и логами DS2 с живых машин. Документация Bosch и ZF не использовалась.
 
-### Что нового (14.10.2026)
+### Что нового (28.10.2026)
+
+- **Лицензия с указанием автора**: всё здесь можно использовать, распространять и дорабатывать, в том числе в коммерческих целях, при одном условии — указывать автора. Код под Apache-2.0 с [`NOTICE`](NOTICE), документы, каталоги, XDF и рецепты под CC BY-SA 4.0; в заголовке каждого XDF записаны лицензия и автор ([Лицензия](#лицензия)).
+- **Защита репозитория**: тест не пускает в дерево образы прошивок, дампы и всё, что похоже на VIN; [`SECURITY.md`](SECURITY.md) описывает, как лично сообщить об опасной ошибке.
+
+14.10.2026:
 
 - **Новый патч `converter`** ([документ 13 §12](docs/ru/13-patches.md)): кривая коэффициента трансформации ГДТ. В каждой калибровке кривая своего трансформатора (Alpina 168 % на стопе, трансформаторы BMW 2.2 / 2.5 191-198 %); файл Alpina на трансформаторе BMW занижает момент турбины на старте до 17 % и берёт строку давления ниже.
 - **`s-sport` для строк наката и для D** (документ 13 §9): `light=` поднимает строки лёгкой педали S (иначе S Alpina включает 5-ю с 55 км/ч), `modes=D` делает D чуть живее и не трогает его строки в пол.
@@ -309,6 +322,7 @@ assets/              логотип
 .github/             шаблоны issue и pull request, ссылка на поддержку
 LICENSE, LICENSE-docs Apache-2.0 на код, CC BY-SA 4.0 на документы, каталоги, XDF и рецепты
 NOTICE, CITATION.cff  указание автора, которое нужно сохранять, готовая ссылка для цитирования
+SECURITY.md          как лично сообщить об опасной ошибке
 ```
 
 ### Ответственность
@@ -331,6 +345,8 @@ NOTICE, CITATION.cff  указание автора, которое нужно �
 ### Благодарности
 
 [Wiki MS4X](https://www.ms4x.net): источник по моторной части и заводским эталонным файлам. [TunerPro RT](https://www.tunerpro.net): редактор калибровок и формат XDF. Все, кто задавал неудобные вопросы и делился дампами: они заставили дочитать до конца модуль блокировки, кулису и программу прогрева.
+
+Jason King (KingAI, [@KingAiCodeForge](https://github.com/KingAiCodeForge)): его вопросы об осях 19D0 и о том, кто пишет ячейки RAM, привели к неверно описанному объекту, ошибочным пометкам «читателей нет» и коэффициенту трансформации ГДТ (каталог 19D0 v3.3, документ 13 §12); хэши его собственных образов Alpina B3 19C0 и SP-Daten 19C0 KA20 независимо подтвердили эталонные файлы; проверка размещения полей из его сторожа каталога стала тестом `test_english_field_placement`.
 
 Часть дизассемблирования, перекрёстных проверок и текста сделана с помощью ИИ-инструментов. Каждое число в этих документах проверено по бинарникам.
 

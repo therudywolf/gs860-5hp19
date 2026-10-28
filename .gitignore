@@ -16,6 +16,12 @@ __pycache__/
 *.csv
 *.log
 out*.bin
+*.zip
+*.7z
+*.rar
+*.ols
+*.kp
+*.a2l
 
 # Temporary and backup files
 *.bak

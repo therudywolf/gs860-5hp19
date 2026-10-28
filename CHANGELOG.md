@@ -2,6 +2,24 @@
 
 Newest first. Each entry: date and title, then **EN** and **RU** with the same facts. Older entries are not rewritten: what turned out wrong is corrected in a newer entry.
 
+## 2026-10-28 (2): repository guard, `SECURITY.md`, credits; release 2026.10.28
+
+**EN**
+
+- Audit before the release: the tree, the whole git history, the pull requests and the release notes hold no firmware, no VIN, no unit serials, no private paths and no names of car owners. No webhooks, deploy keys or Actions secrets; secret scanning with push protection is on.
+- `test_nothing_private_in_the_tree`: no firmware images or dumps in any form (by extension and by the 32K / 256K / 512K image sizes), binary files only as pictures in `assets/`, nothing that looks like a VIN in any text file (62 tests). `.gitignore` also keeps archives (`*.zip`, `*.7z`, `*.rar`), WinOLS files and A2L out.
+- `SECURITY.md`: a dangerous error (one that can damage a gearbox) is reported privately first; CONTRIBUTING and the issue template point to it.
+- README: what is new on 28.10; credits to Jason King (KingAI) for the questions and cross-checks behind the 19D0 catalog v3.3 and the converter ratio.
+- `CITATION.cff` carries the release version.
+
+**RU**
+
+- Проверка перед релизом: в дереве, во всей истории git, в pull request и в описаниях релизов нет прошивок, VIN, серийных номеров, приватных путей и имён владельцев машин. Нет вебхуков, ключей развёртывания и секретов Actions; сканирование секретов с защитой при push включено.
+- `test_nothing_private_in_the_tree`: никаких образов прошивок и дампов ни в каком виде (по расширению и по размерам образов 32K / 256K / 512K), двоичные файлы только как картинки в `assets/`, ничего похожего на VIN ни в одном текстовом файле (62 теста). `.gitignore` теперь не пускает и архивы (`*.zip`, `*.7z`, `*.rar`), файлы WinOLS и A2L.
+- `SECURITY.md`: об опасной ошибке (такой, что может повредить коробку) сначала сообщают лично; CONTRIBUTING и шаблон issue ссылаются на него.
+- README: что нового на 28.10; благодарность Jason King (KingAI) за вопросы и сверки, стоящие за каталогом 19D0 v3.3 и коэффициентом ГДТ.
+- В `CITATION.cff` номер релиза.
+
 ## 2026-10-28: licence with attribution, credit in every XDF
 
 **EN**

@@ -4,7 +4,8 @@ about: A claim about the GS8.60 with evidence, or a question / Утвержде�
 ---
 
 <!-- Do not attach dumps, do not paste VIN or unit serials. Post the output of `egs_tables.py info` and `diff` instead (CONTRIBUTING).
-     Дамп не прикладывать, VIN и серийные номера не вставлять. Вместо дампа вывод `egs_tables.py info` и `diff` (CONTRIBUTING). -->
+     Дамп не прикладывать, VIN и серийные номера не вставлять. Вместо дампа вывод `egs_tables.py info` и `diff` (CONTRIBUTING).
+     A dangerous error (it can damage a gearbox)? Report it privately first: SECURITY.md. / Опасная ошибка? Сначала лично: SECURITY.md. -->
 
 **Unit and software / Блок и ПО:** GS8.60.0 19x0 (256K) | GS8.60.4 20C0 (512K), calibration label / метка калибровки:
 

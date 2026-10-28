@@ -147,6 +147,26 @@ class TestRepository(unittest.TestCase):
         back = make_xdf.import_xdf(make_xdf.render(cat)[0])
         self.assertEqual((back["description"], back["author"]), (cat["description"], cat["author"]))
 
+    def test_nothing_private_in_the_tree(self):
+        # no firmware images or dumps in any form (CONTRIBUTING, .gitignore); binary files only as pictures in
+        # assets/; nothing that looks like a VIN in any text file
+        firmware_ext = {".bin", ".hex", ".ori", ".mod", ".img", ".eep", ".s19", ".srec", ".zip", ".7z", ".rar",
+                        ".ols", ".kp", ".a2l"}
+        for d, dirs, files in os.walk(ROOT):
+            dirs[:] = [x for x in dirs if x not in (".git", "__pycache__")]
+            for n in files:
+                p = os.path.join(d, n)
+                rel = os.path.relpath(p, ROOT)
+                with self.subTest(file=rel):
+                    self.assertNotIn(os.path.splitext(n)[1].lower(), firmware_ext)
+                    self.assertNotIn(os.path.getsize(p), (0x8000, 0x40000, 0x80000))   # partial, 19x0, 20C0 image
+                    with open(p, "rb") as f:
+                        b = f.read()
+                    if b"\0" in b:
+                        self.assertTrue(rel.startswith("assets" + os.sep) and n.endswith(".png"), rel)
+                    else:
+                        self.assertIsNone(VIN_LIKE.search(b.decode("utf-8", "replace")))
+
 
 class TestShiftUnits(unittest.TestCase):
     def test_limits(self):
