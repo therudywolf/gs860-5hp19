@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+# SPDX-License-Identifier: Apache-2.0
 """
 gs860_crc.py - checksums of Bosch GS8.60 (ZF 5HP19) images: check and recompute.
-Part of the GS8.60.0 community repository. License: MIT.
+Part of the gs860-5hp19 repository. License: Apache-2.0 (LICENSE, NOTICE), credit: rudywolf, https://github.com/therudywolf/gs860-5hp19.
 
 Usage:
   gs860_crc.py check <image.bin> [<image.bin> ...]

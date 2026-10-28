@@ -3,8 +3,10 @@
   <XDFHEADER>
     <flags>0x1</flags>
     <deftitle>GS8600 19x0 Partial 32K - WOLF4X v3.3 (2026-10-14)</deftitle>
-    <description>Окно калибровки 0x8000-0xFFFF (Partial 32K) того же каталога: только записи, целиком лежащие в окне. Адрес в файле = адрес ЭБУ - 0x8000. Описание ролей см. в полном XDF и docs/. EN: calibration window only.</description>
-    <author>rudywolf (WOLF4X)</author>
+    <description>Окно калибровки 0x8000-0xFFFF (Partial 32K) того же каталога: только записи, целиком лежащие в окне. Адрес в файле = адрес ЭБУ - 0x8000. Описание ролей см. в полном XDF и docs/. EN: calibration window only.
+
+Licence / Лицензия: CC BY-SA 4.0, https://creativecommons.org/licenses/by-sa/4.0/ . Credit / Автор: rudywolf, https://github.com/therudywolf/gs860-5hp19. Keep this notice in copies and derived files and say what was changed / Сохраняйте это указание в копиях и производных файлах и указывайте, что изменено.</description>
+    <author>rudywolf (WOLF4X), https://github.com/therudywolf/gs860-5hp19</author>
     <baseoffset>0</baseoffset>
     <REGION type="0xFFFFFFFF" startaddress="0x0" size="0x8000" regionflags="0x0" name="Binary File" desc="" />
     <CATEGORY index="0x0" name="01 Точки переключения (матрицы k0-k15)" />

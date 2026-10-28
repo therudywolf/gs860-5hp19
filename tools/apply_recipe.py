@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+# SPDX-License-Identifier: Apache-2.0
 """
 apply_recipe.py - apply a recipe (JSON diff) to a stock GS8.60.0 256K or GS8.60.4 20C0 512K image.
-Part of the GS8.60 community repository. License: MIT.
+Part of the gs860-5hp19 repository. License: Apache-2.0 (LICENSE, NOTICE), credit: rudywolf, https://github.com/therudywolf/gs860-5hp19.
 
 Checks before writing anything:
   1. the input is a full image of the size the recipe was built for (256K 19x0 or 512K 20C0);

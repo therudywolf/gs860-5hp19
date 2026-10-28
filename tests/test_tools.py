@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+# SPDX-License-Identifier: Apache-2.0
 """
-Self-tests of the tools. Part of the GS8.60.0 community repository. License: MIT.
+Self-tests of the tools. Part of the gs860-5hp19 repository. License: Apache-2.0 (LICENSE, NOTICE), credit: rudywolf, https://github.com/therudywolf/gs860-5hp19.
 
   python3 tests/test_tools.py
   python3 -m unittest discover -s tests -v
@@ -121,6 +122,30 @@ class TestRepository(unittest.TestCase):
                 else:
                     self.assertIn("AGS", st["en"])
                     self.assertEqual(load(p[:-5] + ".annotations.json")["meta"].get("status"), st)
+
+    def test_licence_and_credit(self):
+        # code: Apache-2.0 with the credit in NOTICE; documents, catalogs, XDF and recipes: CC BY-SA 4.0 (NOTICE)
+        def read(*p):
+            with open(os.path.join(ROOT, *p), encoding="utf-8") as f:
+                return f.read()
+        self.assertTrue(read("LICENSE").lstrip().startswith("Apache License"))
+        self.assertIn("Attribution-ShareAlike 4.0 International Public License", read("LICENSE-docs"))
+        self.assertIn(make_xdf.CREDIT, read("NOTICE"))
+        for d in ("tools", "tests"):
+            for n in sorted(os.listdir(os.path.join(ROOT, d))):
+                if n.endswith(".py"):
+                    with self.subTest(file=f"{d}/{n}"):
+                        self.assertIn("SPDX-License-Identifier: Apache-2.0", read(d, n))
+        # every XDF carries the licence and the credit in its header, and import gives the catalog fields back
+        for n in sorted(os.listdir(XDF)):
+            with self.subTest(xdf=n):
+                text = read("xdf", n)
+                head = text.split("</XDFHEADER>")[0]
+                self.assertIn(make_xdf.LICENCE_NOTE, head)
+                self.assertIn(make_xdf.REPO_URL + "</author>", head)
+        cat = load(CATALOG_19D0)
+        back = make_xdf.import_xdf(make_xdf.render(cat)[0])
+        self.assertEqual((back["description"], back["author"]), (cat["description"], cat["author"]))
 
 
 class TestShiftUnits(unittest.TestCase):

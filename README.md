@@ -22,7 +22,7 @@
   <a href="https://github.com/therudywolf/gs860-5hp19/actions/workflows/tests.yml"><img src="https://github.com/therudywolf/gs860-5hp19/actions/workflows/tests.yml/badge.svg" alt="tests"></a>
   <img src="https://img.shields.io/badge/docs-EN%20%7C%20RU-brightgreen" alt="Docs">
   <img src="https://img.shields.io/badge/docs%20%26%20XDF-CC%20BY--SA%204.0-blue" alt="Licence docs">
-  <img src="https://img.shields.io/badge/tools-MIT-blue" alt="Licence code">
+  <img src="https://img.shields.io/badge/code-Apache%202.0-blue" alt="Licence code">
   <a href="https://boosty.to/therudywolf"><img src="https://img.shields.io/badge/support-Boosty-f15f2c" alt="Support on Boosty"></a>
 </p>
 
@@ -153,15 +153,26 @@ recipes/             presets as JSON diffs: gs8600_19x0_*, gs8604_20c0_* (and th
 tests/               python3 tests/test_tools.py (GS860_STOCK=stock19x0.bin GS8604_STOCK=stock20c0.bin for the full set)
 assets/              logo
 .github/             issue and pull request templates, funding link
+LICENSE, LICENSE-docs Apache-2.0 for the code, CC BY-SA 4.0 for documents, catalogs, XDF and recipes
+NOTICE, CITATION.cff  the credit to keep, a ready citation
 ```
 
 ### Disclaimer
 
-This is hobby reverse engineering of a safety-relevant control unit. It may be incomplete or wrong: several earlier readings **were** wrong and are listed as refuted in [document 10](docs/en/10-methodology.md) and in the corrections inside the documents. A bad calibration can damage the gearbox, drop the unit into limp mode or leave the car immobile. You flash at your own risk, only with your own full dump saved first, and you are responsible for compliance with the law where you live.
+This is hobby reverse engineering of a safety-relevant control unit. It may be incomplete or wrong: several earlier readings **were** wrong and are listed as refuted in [document 10](docs/en/10-methodology.md) and in the corrections inside the documents. A bad calibration can damage the gearbox, drop the unit into limp mode or leave the car immobile. You flash at your own risk, only with your own full dump saved first, and you are responsible for compliance with the law where you live. Bosch, ZF, Siemens, BMW and Alpina are trademarks of their owners; this project is not affiliated with them.
 
 ### Licence
 
-Documentation and XDF: **CC BY-SA 4.0** (`LICENSE-docs`). Scripts in `tools/`: **MIT** (`LICENSE-code`). Recipes are data and follow CC BY-SA 4.0. Attribution to **rudywolf** stays in forks and derivatives.
+Use, share and build on everything here, commercially too, **on one condition: credit the author**:
+
+> **rudywolf, https://github.com/therudywolf/gs860-5hp19**
+
+| What | Licence | What the credit means in practice |
+|---|---|---|
+| Code: `tools/`, `tests/` | [Apache License 2.0](LICENSE) | copies and derived tools keep [`NOTICE`](NOTICE) with the credit and say what was changed |
+| Documents, catalogs (`catalog/`), XDF (`xdf/`), recipes (`recipes/`) | [CC BY-SA 4.0](LICENSE-docs) | copies and adaptations credit the author, link the licence, say what was changed and stay under CC BY-SA 4.0; every XDF carries the licence and the credit in its header: keep them |
+
+The WOLF4X name and logo are not licensed for reuse; firmware of Bosch, ZF, Siemens and BMW is not part of this repository ([`NOTICE`](NOTICE)). GitHub offers a ready citation under "Cite this repository" ([`CITATION.cff`](CITATION.cff)). Releases up to v2026.10.14 shipped the tools under MIT; the code is Apache-2.0 from 28.10.2026.
 
 ### Credits
 
@@ -296,15 +307,26 @@ recipes/             пресеты как JSON-diff: gs8600_19x0_*, gs8604_20c0
 tests/               python3 tests/test_tools.py (GS860_STOCK=stock19x0.bin GS8604_STOCK=stock20c0.bin для полного набора)
 assets/              логотип
 .github/             шаблоны issue и pull request, ссылка на поддержку
+LICENSE, LICENSE-docs Apache-2.0 на код, CC BY-SA 4.0 на документы, каталоги, XDF и рецепты
+NOTICE, CITATION.cff  указание автора, которое нужно сохранять, готовая ссылка для цитирования
 ```
 
 ### Ответственность
 
-Это любительский реверс блока, отвечающего за безопасность. Он может быть неполным или ошибочным: несколько прежних трактовок **оказались неверными** и перечислены как опровергнутые в [документе 10](docs/ru/10-methodology.md) и в поправках внутри документов. Неудачная калибровка может повредить коробку, отправить блок в аварийный режим или оставить машину без хода. Вы прошиваете на свой риск, только сохранив собственный полный дамп, и сами отвечаете за соблюдение законов своей страны.
+Это любительский реверс блока, отвечающего за безопасность. Он может быть неполным или ошибочным: несколько прежних трактовок **оказались неверными** и перечислены как опровергнутые в [документе 10](docs/ru/10-methodology.md) и в поправках внутри документов. Неудачная калибровка может повредить коробку, отправить блок в аварийный режим или оставить машину без хода. Вы прошиваете на свой риск, только сохранив собственный полный дамп, и сами отвечаете за соблюдение законов своей страны. Bosch, ZF, Siemens, BMW и Alpina — товарные знаки их владельцев, проект с ними не связан.
 
 ### Лицензия
 
-Документация и XDF: **CC BY-SA 4.0** (`LICENSE-docs`). Скрипты в `tools/`: **MIT** (`LICENSE-code`). Рецепты это данные, на них распространяется CC BY-SA 4.0. Указание авторства **rudywolf** сохраняется в форках и производных работах.
+Всё здесь можно использовать, распространять и дорабатывать, в том числе в коммерческих целях, **при одном условии: указывать автора**:
+
+> **rudywolf, https://github.com/therudywolf/gs860-5hp19**
+
+| Что | Лицензия | Что значит указание автора на деле |
+|---|---|---|
+| Код: `tools/`, `tests/` | [Apache License 2.0](LICENSE) | копии и производные инструменты сохраняют [`NOTICE`](NOTICE) с указанием автора и сообщают, что изменено |
+| Документы, каталоги (`catalog/`), XDF (`xdf/`), рецепты (`recipes/`) | [CC BY-SA 4.0](LICENSE-docs) | копии и переработки указывают автора, дают ссылку на лицензию, сообщают, что изменено, и выходят под CC BY-SA 4.0; в заголовке каждого XDF записаны лицензия и автор, их не удалять |
+
+Имя и логотип WOLF4X для повторного использования не лицензируются; прошивок Bosch, ZF, Siemens и BMW в репозитории нет ([`NOTICE`](NOTICE)). Готовая ссылка для цитирования — кнопка «Cite this repository» на GitHub ([`CITATION.cff`](CITATION.cff)). Релизы до v2026.10.14 выходили с инструментами под MIT, с 28.10.2026 код под Apache-2.0.
 
 ### Благодарности
 

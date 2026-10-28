@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+# SPDX-License-Identifier: Apache-2.0
 """
 egs_tables.py - table scanner / dumper for Bosch GS8.60.0 (ZF 5HP19) firmware images.
-Part of the GS8.60.0 community repository. License: MIT.
+Part of the gs860-5hp19 repository. License: Apache-2.0 (LICENSE, NOTICE), credit: rudywolf, https://github.com/therudywolf/gs860-5hp19.
 
 Works on 256K full images of GS8.60.0 (19C0 / 19D0), on their 32K partial images
 (calibration window 0x8000-0x10000 saved as a separate file; addresses minus 0x8000)

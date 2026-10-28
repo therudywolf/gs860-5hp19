@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+# SPDX-License-Identifier: Apache-2.0
 """
 make_xdf.py - TunerPro XDF files of this repository are generated from a catalog, never edited by hand.
+Part of the gs860-5hp19 repository by rudywolf. License: Apache-2.0 (LICENSE, NOTICE).
 
 Usage:
   make_xdf.py build <catalog.json> <out_full.xdf> [--partial <out_partial.xdf>] [--en <out_full_en.xdf>]
@@ -32,6 +34,10 @@ Catalog (JSON, UTF-8):
 English: an entry may carry title_en, description_en and units_en on x / y / z, the catalog title_en,
 description_en and categories_en; "--en" writes a second XDF from them (RU text where EN is missing).
 
+Licence: every XDF gets LICENCE_NOTE (CC BY-SA 4.0 and the credit line) at the end of its header
+description and the repository link in its author field, so the credit travels with the file;
+"import" strips both again.
+
 check() refuses a catalog with: a byte span outside the image, two entries reading the same byte
 (data or axes), a repeated uid, a missing or unknown category, an empty units string on a constant,
 on table data or on an axis. "build" runs check() first and writes nothing when it fails.
@@ -55,6 +61,17 @@ import json
 import re
 import sys
 import xml.etree.ElementTree as ET
+
+REPO_URL = "https://github.com/therudywolf/gs860-5hp19"
+CREDIT = "rudywolf, " + REPO_URL
+LICENCE_NOTE = ("Licence / Лицензия: CC BY-SA 4.0, https://creativecommons.org/licenses/by-sa/4.0/ . "
+                "Credit / Автор: " + CREDIT + ". Keep this notice in copies and derived files and say what was "
+                "changed / Сохраняйте это указание в копиях и производных файлах и указывайте, что изменено.")
+
+
+def _author(cat):
+    a = cat.get("author", "")
+    return a if REPO_URL in a else (f"{a}, {REPO_URL}" if a else CREDIT)
 
 
 def _e(s):
@@ -169,9 +186,10 @@ def render(cat, partial=False, en=False):
         title, desc, shift = cat["title"], cat["description"], 0
         if en:
             title, desc = cat.get("title_en") or title, cat.get("description_en") or desc
+    desc = f"{desc}\n\n{LICENCE_NOTE}" if desc else LICENCE_NOTE
     head = ['<!DOCTYPE xdf>\n<XDFFORMAT version="1.60">\n  <XDFHEADER>\n    <flags>0x1</flags>\n',
             f'    <deftitle>{_e(title)}</deftitle>\n', f'    <description>{_e(desc)}</description>\n',
-            f'    <author>{_e(cat.get("author", ""))}</author>\n    <baseoffset>0</baseoffset>\n',
+            f'    <author>{_e(_author(cat))}</author>\n    <baseoffset>0</baseoffset>\n',
             f'    <REGION type="0xFFFFFFFF" startaddress="0x0" size="0x{size:X}" regionflags="0x0" '
             f'name="Binary File" desc="" />\n']
     for i, name in enumerate((cat.get("categories_en") if en else None) or cat["categories"]):
@@ -193,8 +211,11 @@ def import_xdf(text, zero_based=False):
     hdr = root.find("XDFHEADER")
     region = hdr.find("REGION")
     cats = [c.get("name") for c in sorted(hdr.findall("CATEGORY"), key=lambda c: _num(c.get("index")))]
-    cat = {"format": 1, "title": hdr.findtext("deftitle", ""), "description": hdr.findtext("description", ""),
-           "author": hdr.findtext("author", ""), "image_size": _num(region.get("size")),
+    desc, author = hdr.findtext("description", ""), hdr.findtext("author", "")
+    desc = desc[:-len(LICENCE_NOTE)].rstrip("\n") if desc.endswith(LICENCE_NOTE) else desc
+    author = author[:-len(", " + REPO_URL)] if author.endswith(", " + REPO_URL) else author
+    cat = {"format": 1, "title": hdr.findtext("deftitle", ""), "description": desc,
+           "author": author, "image_size": _num(region.get("size")),
            "categories": cats, "entries": []}
     for el in root:
         if el.tag not in ("XDFTABLE", "XDFCONSTANT"):

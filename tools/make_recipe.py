@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+# SPDX-License-Identifier: Apache-2.0
 """
 make_recipe.py - build a recipe (JSON diff) from two images of the same program: stock -> tuned.
 GS8.60.0 19C0/19D0 (256K) and GS8.60.4 20C0 (512K).
-Part of the GS8.60 community repository. License: MIT.
+Part of the gs860-5hp19 repository. License: Apache-2.0 (LICENSE, NOTICE), credit: rudywolf, https://github.com/therudywolf/gs860-5hp19.
 
 A recipe records, for every changed table, its address, format, both axes, the old
 and the new data; scalar / matrix changes outside tables are recorded as byte runs.

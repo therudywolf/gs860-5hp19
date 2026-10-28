@@ -55,6 +55,10 @@ The 20C0 catalog itself is generated from a 20C0 image by the generator of the W
 
 Same as the docs: addresses in hex with `0x`, RAM as `0xFFFFxxxx`, units for every number, and a confidence label for every claim about semantics (doc 10 §6 in the documents, the `confidence` levels in the catalogs). What is not established is called not established. Russian and English versions of a document must say the same thing: if you change one, change the other or mark it `TODO translate`.
 
+### Licence of contributions
+
+A pull request is accepted under the licences of this repository: code (`tools/`, `tests/`) under Apache-2.0, documents, catalogs, XDF and recipes under CC BY-SA 4.0 ([`NOTICE`](NOTICE)). Material taken from elsewhere comes with its source and a compatible licence; parts of other authors' XDF files are not copied in.
+
 ### Collaborators with write access
 
 - Work on a branch of this repository named `<name>/<topic>` and open a pull request into `main`. The maintainer reviews and merges; nobody pushes to `main` directly.
@@ -116,6 +120,10 @@ python3 tools/make_xdf.py build catalog/gs8604_20c0.json xdf/GS8604_20C0_Full512
 ### Стиль
 
 Как в документах: адреса в hex с `0x`, RAM как `0xFFFFxxxx`, единицы у каждого числа и метка уверенности у каждого утверждения о смысле (в документах по документу 10 §6, в каталогах уровни `confidence`). Неустановленное называется неустановленным. Русская и английская версии документа должны говорить одно и то же: меняете одну, меняйте другую или ставьте `TODO translate`.
+
+### Лицензия вклада
+
+Pull request принимается под лицензиями репозитория: код (`tools/`, `tests/`) под Apache-2.0, документы, каталоги, XDF и рецепты под CC BY-SA 4.0 ([`NOTICE`](NOTICE)). Взятое из других источников приходит с указанием источника и совместимой лицензией; части чужих XDF не переносятся.
 
 ### Участникам с правом записи
 

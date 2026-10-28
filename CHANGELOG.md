@@ -2,6 +2,22 @@
 
 Newest first. Each entry: date and title, then **EN** and **RU** with the same facts. Older entries are not rewritten: what turned out wrong is corrected in a newer entry.
 
+## 2026-10-28: licence with attribution, credit in every XDF
+
+**EN**
+
+- Code (`tools/`, `tests/`) moves from MIT to the **Apache License 2.0** with a [`NOTICE`](NOTICE) file: whoever redistributes the tools, or tools built on them, keeps the credit "rudywolf, https://github.com/therudywolf/gs860-5hp19". `LICENSE` holds the full text, GitHub recognises it now. Releases up to v2026.10.14 stay under MIT for those who downloaded them.
+- Documents, catalogs, XDF and recipes stay under **CC BY-SA 4.0**; `LICENSE-docs` now holds the full legal code, and `catalog/` is named explicitly (`NOTICE`).
+- Every XDF carries the licence and the credit at the end of its header description and the repository link in its author field (`tools/make_xdf.py`, `LICENCE_NOTE`); the four XDF files were regenerated, only their headers changed. `import` strips both again.
+- `CITATION.cff` for "Cite this repository"; an SPDX line in every script; a test checks the licence files, the SPDX lines and the XDF headers (61 tests).
+
+**RU**
+
+- Код (`tools/`, `tests/`) переходит с MIT на **Apache License 2.0** с файлом [`NOTICE`](NOTICE): кто распространяет инструменты или сделанные на их основе, сохраняет указание «rudywolf, https://github.com/therudywolf/gs860-5hp19». В `LICENSE` полный текст, GitHub его теперь распознаёт. Релизы до v2026.10.14 для тех, кто их скачал, остаются под MIT.
+- Документы, каталоги, XDF и рецепты остаются под **CC BY-SA 4.0**; в `LICENSE-docs` теперь полный юридический текст, `catalog/` назван явно (`NOTICE`).
+- Каждый XDF несёт лицензию и автора в конце описания заголовка и ссылку на репозиторий в поле автора (`tools/make_xdf.py`, `LICENCE_NOTE`); четыре XDF пересобраны, изменились только заголовки. `import` убирает и то и другое.
+- `CITATION.cff` для кнопки «Cite this repository»; строка SPDX в каждом скрипте; тест проверяет файлы лицензий, строки SPDX и заголовки XDF (61 тест).
+
 ## 2026-10-14 (3): `s-sport` cruising rows and D, `converter` curve
 
 **EN**
