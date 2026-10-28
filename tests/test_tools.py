@@ -279,7 +279,7 @@ class CatalogChecks:
     def test_english_field_placement(self):
         # English goes only into these fields; everything else of the catalog stays as it is (CONTRIBUTING)
         allowed = {"root": {"title_en", "description_en", "categories_en"}, "entry": {"title_en", "description_en"},
-                   "axis": {"units_en"}}
+                   "axis": {"units_en", "labels_en"}}
         cyr = re.compile("[а-яА-ЯёЁ]")
 
         def check(obj, level, where):
@@ -289,6 +289,9 @@ class CatalogChecks:
                     vals = v if isinstance(v, list) else [v]
                     self.assertTrue(vals and all(isinstance(s, str) and s.strip() for s in vals), f"{where}: {k}")
                     self.assertTrue(all(not cyr.search(s) for s in vals), f"{where}: Cyrillic in {k}")
+                    if k == "labels_en":
+                        self.assertIsInstance(v, list, f"{where}: labels_en must be a list")
+                        self.assertEqual(len(v), len(obj.get("labels") or []), where)
 
         check(self.cat, "root", "catalog")
         if "categories_en" in self.cat:
@@ -298,6 +301,114 @@ class CatalogChecks:
             for ax in ("x", "y", "z"):
                 if ax in e:
                     check(e[ax], "axis", f"0x{e['uid']:X}.{ax}")
+
+
+class TestEnglishAxisLabels(unittest.TestCase):
+    """Synthetic opt-in translations against real unchanged catalog geometry."""
+
+    def one_table(self, path, axis_name=None):
+        cat = load(path)
+        entry = next(e for e in cat["entries"]
+                     if e["kind"] == "table"
+                     and (e[axis_name].get("labels") if axis_name else
+                          any(e[a].get("labels") for a in ("x", "y"))))
+        cat["entries"] = [entry]
+        axis = axis_name or ("x" if entry["x"].get("labels") else "y")
+        return cat, entry[axis]
+
+    @staticmethod
+    def without_label_lines(xml):
+        return re.sub(r'^\s*<LABEL index="\d+" value="[^"]*" />\n', "", xml, flags=re.M)
+
+    def test_en_selects_translated_axis_labels_without_changing_ru_or_geometry(self):
+        for path in (CATALOG_19D0, CATALOG_20C0):
+            for axis_name in ("x", "y"):
+                with self.subTest(path=os.path.basename(path), axis=axis_name):
+                    cat, axis = self.one_table(path, axis_name)
+                    ru_before, n = make_xdf.render(cat)
+                    en_before, _ = make_xdf.render(cat, en=True)
+                    labels = axis["labels"]
+                    axis["labels_en"] = ['English "quote" & text'] + [
+                        f"English index {i}" for i in range(1, len(labels))]
+                    self.assertEqual(make_xdf.check(cat), [])
+                    ru_after, _ = make_xdf.render(cat)
+                    en_after, _ = make_xdf.render(cat, en=True)
+                    self.assertEqual(n, 1)
+                    self.assertEqual(ru_after, ru_before)
+                    self.assertNotEqual(en_after, en_before)
+                    self.assertIn('value="English &quot;quote&quot; &amp; text"', en_after)
+                    self.assertEqual(self.without_label_lines(en_after),
+                                     self.without_label_lines(en_before))
+                    self.assertNotIn('value="English &quot;quote&quot; &amp; text"', ru_after)
+                    imported = make_xdf.import_xdf(en_after)
+                    self.assertEqual(imported["entries"][0][axis_name]["labels"],
+                                     axis["labels_en"])
+
+    def test_fallback_without_labels_en_keeps_previous_render(self):
+        for path in (CATALOG_19D0, CATALOG_20C0):
+            cat, axis = self.one_table(path)
+            en_before, _ = make_xdf.render(cat, en=True)
+            self.assertNotIn("labels_en", axis)
+            self.assertEqual(make_xdf.render(cat, en=True)[0], en_before)
+
+    def test_refuse_malformed_translation_arrays(self):
+        cat, axis = self.one_table(CATALOG_19D0)
+        count = len(axis["labels"])
+        bad_cases = [
+            ["English"] * (count + 1),
+            [],
+            [""] + ["English"] * (count - 1),
+            [" \t"] + ["English"] * (count - 1),
+            ["маска"] + ["English"] * (count - 1),
+            [7] + ["English"] * (count - 1),
+            "English" * count,
+            None,
+            {"0": "English"},
+        ]
+        for bad in bad_cases:
+            with self.subTest(bad=repr(bad)[:60]):
+                axis["labels_en"] = bad
+                self.assertTrue(any("labels_en" in p for p in make_xdf.check(cat)),
+                                "Invalid English axis label metadata must fail closed")
+
+    def test_translation_requires_original_labels(self):
+        for original in (None, [], "not a label array"):
+            with self.subTest(original=original):
+                cat, axis = self.one_table(CATALOG_19D0)
+                axis["labels"] = original
+                axis["labels_en"] = ["English"]
+                self.assertTrue(any("labels_en" in p for p in make_xdf.check(cat)))
+
+    def test_partial_render_retains_geometry_and_russian_labels(self):
+        cat, axis = self.one_table(CATALOG_19D0)
+        ru_before, count = make_xdf.render(cat, partial=True)
+        en_before, _ = make_xdf.render(cat, partial=True, en=True)
+        self.assertEqual(count, 1)
+        axis["labels_en"] = [f"English {i}" for i in range(len(axis["labels"]))]
+        self.assertEqual(make_xdf.render(cat, partial=True)[0], ru_before)
+        en_after, _ = make_xdf.render(cat, partial=True, en=True)
+        self.assertNotEqual(en_after, en_before)
+        self.assertEqual(self.without_label_lines(en_after),
+                         self.without_label_lines(en_before))
+
+    def test_invalid_cli_input_preserves_existing_output_and_creates_no_en_file(self):
+        cat, axis = self.one_table(CATALOG_19D0)
+        axis["labels_en"] = ["English"] * (len(axis["labels"]) + 1)
+        with tempfile.TemporaryDirectory() as tmp:
+            source = os.path.join(tmp, "invalid.json")
+            output = os.path.join(tmp, "existing.xdf")
+            english = os.path.join(tmp, "absent_en.xdf")
+            with open(source, "w", encoding="utf-8") as f:
+                json.dump(cat, f, ensure_ascii=False)
+            with open(output, "wb") as f:
+                f.write(b"preserve existing output\n")
+            result = run(os.path.join(TOOLS, "make_xdf.py"), "build", source,
+                         output, "--en", english)
+            self.assertEqual(result.returncode, 1, result.stdout + result.stderr)
+            self.assertIn("labels_en", result.stdout)
+            with open(output, "rb") as f:
+                self.assertEqual(f.read(), b"preserve existing output\n")
+            self.assertFalse(os.path.exists(english))
 
 
 class TestCatalog19D0(CatalogChecks, unittest.TestCase):

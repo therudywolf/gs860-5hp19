@@ -2,6 +2,18 @@
 
 Newest first. Each entry: date and title, then **EN** and **RU** with the same facts. Older entries are not rewritten: what turned out wrong is corrected in a newer entry.
 
+## 2026-10-28 (3): optional English axis labels (KingAiCodeForge)
+
+**EN**
+
+- Optional `labels_en` on table X/Y axes is selected only by the English XDF renderer. Without it, original `labels` are used; Russian output is unchanged.
+- `check` rejects translations without original labels, mismatched counts, empty/non-string labels and Cyrillic text. Tests cover 19D0 and 20C0, preserving addresses, equations and dimensions. No catalog, generated XDF or firmware changed.
+
+**RU**
+
+- Необязательное поле `labels_en` для осей X/Y используется только при создании английского XDF. Если поля нет, остаются исходные `labels`; русский XDF не меняется.
+- Проверка `check` отклоняет переводы без исходных подписей, несовпадение количества, пустые или нестроковые подписи и кириллицу. Тесты охватывают 19D0 и 20C0 с сохранением адресов, формул и размеров. Каталоги, готовые XDF и прошивки не менялись.
+
 ## 2026-10-28 (2): repository guard, `SECURITY.md`, credits; release 2026.10.28
 
 **EN**

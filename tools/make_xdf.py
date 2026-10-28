@@ -31,8 +31,9 @@ Catalog (JSON, UTF-8):
   data: {"addr": int, "bits": 8|16|32, "rows": r, "cols": c, "signed": false, "lsb_first": false,
          "math": "X", "units": ..., "decimals": 1, "major": 0, "minor": 0}
 
-English: an entry may carry title_en, description_en and units_en on x / y / z, the catalog title_en,
-description_en and categories_en; "--en" writes a second XDF from them (RU text where EN is missing).
+English: entries may carry title_en and description_en; axes may carry units_en, and x/y axes
+may carry labels_en with exactly one English label per original label. The catalog may carry title_en,
+description_en and categories_en; "--en" falls back to RU text only where EN is missing.
 
 Licence: every XDF gets LICENCE_NOTE (CC BY-SA 4.0 and the credit line) at the end of its header
 description and the repository link in its author field, so the credit travels with the file;
@@ -107,7 +108,8 @@ def _axis_xml(name, ax, en=False):
     out.append(f'      <units>{_e(units)}</units>\n')
     out.append(f'      <indexcount>{ax["count"]}</indexcount>\n')
     out.append('      <datatype>0</datatype>\n      <unittype>0</unittype>\n      <DALINK index="0" />\n')
-    for i, lab in enumerate(ax.get("labels") or []):
+    labels = ax.get("labels_en") if en and "labels_en" in ax else ax.get("labels")
+    for i, lab in enumerate(labels or []):
         out.append(f'      <LABEL index="{i}" value="{_ea(lab)}" />\n')
     out.append(_math(ax.get("math", "X")))
     out.append('    </XDFAXIS>\n')
@@ -274,6 +276,20 @@ def check(cat):
         for name, u in units:
             if not u:
                 probs.append(f"0x{e['uid']:X} {e['title'][:40]}: no units on {name}")
+        if e["kind"] == "table":
+            for axis_name in ("x", "y"):
+                axis = e[axis_name]
+                if "labels_en" not in axis:
+                    continue
+                original = axis.get("labels") or []
+                translated = axis["labels_en"]
+                if (not isinstance(original, list) or not original
+                        or not isinstance(translated, list)
+                        or len(translated) != len(original)
+                        or not all(isinstance(value, str) and value.strip()
+                                   and not re.search(r"[а-яА-ЯёЁ]", value)
+                                   for value in translated)):
+                    probs.append(f"0x{e['uid']:X} {axis_name}: labels_en must translate each existing label")
     ivs.sort()
     for i in range(len(ivs)):
         for j in range(i + 1, len(ivs)):
