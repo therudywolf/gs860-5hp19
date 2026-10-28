@@ -48,6 +48,7 @@ This repository is the missing description: what each table does **in code**, wh
 
 - **Licence with attribution**: use, share and build on everything here, commercially too, on one condition: credit the author. Code under Apache-2.0 with [`NOTICE`](NOTICE), documents, catalogs, XDF and recipes under CC BY-SA 4.0; every XDF carries the licence and the credit in its header ([Licence](#licence)).
 - **Repository guard**: a test keeps firmware images, dumps and anything that looks like a VIN out of the tree; [`SECURITY.md`](SECURITY.md) says how to report a dangerous error privately.
+- **English axis labels**: the English 20C0 XDF labels every axis in English (132 labels were Russian), and the 19D0 catalog carries them too. The `labels_en` field came from Jason King.
 
 14.10.2026:
 
@@ -184,7 +185,7 @@ The WOLF4X name and logo are not licensed for reuse; firmware of Bosch, ZF, Siem
 
 The [MS4X wiki](https://www.ms4x.net): the reference for the engine side and the source of the factory reference files. [TunerPro RT](https://www.tunerpro.net): the calibration editor and the XDF format. Everyone who asked awkward questions and shared dumps: they forced the lockup module, the gate and the warm-up program to be read to the end.
 
-Jason King (KingAI, [@KingAiCodeForge](https://github.com/KingAiCodeForge)): his questions about the 19D0 axes and the RAM writers led to a mis-modelled object, wrong "no reader" notes and the converter torque ratio (19D0 catalog v3.3, document 13 §12); the hashes of his own Alpina B3 19C0 and SP-Daten 19C0 KA20 images confirmed the reference files independently; the field-placement part of his catalog guard became `test_english_field_placement`.
+Jason King (KingAI, [@KingAiCodeForge](https://github.com/KingAiCodeForge)): his questions about the 19D0 axes and the RAM writers led to a mis-modelled object, wrong "no reader" notes and the converter torque ratio (19D0 catalog v3.3, document 13 §12); the hashes of his own Alpina B3 19C0 and SP-Daten 19C0 KA20 images confirmed the reference files independently; the field-placement part of his catalog guard became `test_english_field_placement`; his pull request added `labels_en`, the English labels of table axes.
 
 AI tools were used for parts of the disassembly, cross-checking and writing. Every number in these documents was verified against the binaries.
 
@@ -210,6 +211,7 @@ Want a custom tune for **MS42 / MS43**, a custom tune of the **5HP19** gearbox (
 
 - **Лицензия с указанием автора**: всё здесь можно использовать, распространять и дорабатывать, в том числе в коммерческих целях, при одном условии — указывать автора. Код под Apache-2.0 с [`NOTICE`](NOTICE), документы, каталоги, XDF и рецепты под CC BY-SA 4.0; в заголовке каждого XDF записаны лицензия и автор ([Лицензия](#лицензия)).
 - **Защита репозитория**: тест не пускает в дерево образы прошивок, дампы и всё, что похоже на VIN; [`SECURITY.md`](SECURITY.md) описывает, как лично сообщить об опасной ошибке.
+- **Английские подписи осей**: английский XDF 20C0 подписывает все оси по-английски (132 подписи были русскими), в каталоге 19D0 они тоже есть. Поле `labels_en` предложил Jason King.
 
 14.10.2026:
 
@@ -346,7 +348,7 @@ SECURITY.md          как лично сообщить об опасной ош
 
 [Wiki MS4X](https://www.ms4x.net): источник по моторной части и заводским эталонным файлам. [TunerPro RT](https://www.tunerpro.net): редактор калибровок и формат XDF. Все, кто задавал неудобные вопросы и делился дампами: они заставили дочитать до конца модуль блокировки, кулису и программу прогрева.
 
-Jason King (KingAI, [@KingAiCodeForge](https://github.com/KingAiCodeForge)): его вопросы об осях 19D0 и о том, кто пишет ячейки RAM, привели к неверно описанному объекту, ошибочным пометкам «читателей нет» и коэффициенту трансформации ГДТ (каталог 19D0 v3.3, документ 13 §12); хэши его собственных образов Alpina B3 19C0 и SP-Daten 19C0 KA20 независимо подтвердили эталонные файлы; проверка размещения полей из его сторожа каталога стала тестом `test_english_field_placement`.
+Jason King (KingAI, [@KingAiCodeForge](https://github.com/KingAiCodeForge)): его вопросы об осях 19D0 и о том, кто пишет ячейки RAM, привели к неверно описанному объекту, ошибочным пометкам «читателей нет» и коэффициенту трансформации ГДТ (каталог 19D0 v3.3, документ 13 §12); хэши его собственных образов Alpina B3 19C0 и SP-Daten 19C0 KA20 независимо подтвердили эталонные файлы; проверка размещения полей из его сторожа каталога стала тестом `test_english_field_placement`; его pull request добавил `labels_en`, английские подписи осей таблиц.
 
 Часть дизассемблирования, перекрёстных проверок и текста сделана с помощью ИИ-инструментов. Каждое число в этих документах проверено по бинарникам.
 

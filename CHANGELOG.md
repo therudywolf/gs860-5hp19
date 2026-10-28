@@ -2,6 +2,18 @@
 
 Newest first. Each entry: date and title, then **EN** and **RU** with the same facts. Older entries are not rewritten: what turned out wrong is corrected in a newer entry.
 
+## 2026-10-28 (5): release 2026.10.28.2
+
+**EN**
+
+- Second release of the day: entries (3) and (4), the English axis labels. Apart from `labels_en` (`make_xdf.py`, both catalogs, the English 20C0 XDF) nothing changes against 2026.10.28: the patch tools, the Russian XDF files and the recipes are the same, and builds reproduce byte for byte.
+- README: what is new on 28.10 names the English axis labels, the credits to Jason King name his `labels_en`. `CITATION.cff` carries the release version.
+
+**RU**
+
+- Второй релиз за день: записи (3) и (4), английские подписи осей. Кроме `labels_en` (`make_xdf.py`, оба каталога, английский XDF 20C0) против 2026.10.28 ничего не меняется: инструменты патчей, русские XDF и рецепты те же, сборки воспроизводятся байт в байт.
+- README: в «Что нового» на 28.10 названы английские подписи осей, в благодарности Jason King — его `labels_en`. В `CITATION.cff` номер релиза.
+
 ## 2026-10-28 (4): English axis labels in both catalogs
 
 **EN**
