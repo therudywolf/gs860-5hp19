@@ -344,12 +344,19 @@ class TestEnglishAxisLabels(unittest.TestCase):
                     self.assertEqual(imported["entries"][0][axis_name]["labels"],
                                      axis["labels_en"])
 
-    def test_fallback_without_labels_en_keeps_previous_render(self):
+    def test_fallback_without_labels_en_keeps_original_labels(self):
+        # without labels_en the English file carries the labels of the Russian one, Russian text included
         for path in (CATALOG_19D0, CATALOG_20C0):
-            cat, axis = self.one_table(path)
-            en_before, _ = make_xdf.render(cat, en=True)
-            self.assertNotIn("labels_en", axis)
-            self.assertEqual(make_xdf.render(cat, en=True)[0], en_before)
+            with self.subTest(path=os.path.basename(path)):
+                cat = load(path)
+                entry = next(e for e in cat["entries"] if e["kind"] == "table" and any("labels_en" in e[a] for a in ("x", "y")))
+                for a in ("x", "y"):
+                    entry[a].pop("labels_en", None)
+                cat["entries"] = [entry]
+                ru = re.findall(r'<LABEL index="\d+" value="[^"]*" />', make_xdf.render(cat)[0])
+                en = re.findall(r'<LABEL index="\d+" value="[^"]*" />', make_xdf.render(cat, en=True)[0])
+                self.assertTrue(ru)
+                self.assertEqual(en, ru)
 
     def test_refuse_malformed_translation_arrays(self):
         cat, axis = self.one_table(CATALOG_19D0)
@@ -468,6 +475,15 @@ class TestCatalog20C0(CatalogChecks, unittest.TestCase):
                 if ax in e:
                     self.assertTrue(e[ax].get("units_en"), f"0x{e['uid']:X} {ax}")
                     self.assertIsNone(cyr.search(e[ax]["units_en"]), e[ax]["units_en"])
+            if e["kind"] == "table":
+                for ax in ("x", "y"):
+                    if any(cyr.search(s) for s in e[ax].get("labels") or []):
+                        self.assertTrue(e[ax].get("labels_en"), f"0x{e['uid']:X} {ax}: Russian labels without labels_en")
+        # the English XDF shows no Russian axis label
+        with open(self.en_xdf, encoding="utf-8") as f:
+            labels = re.findall(r'<LABEL index="\d+" value="([^"]*)" />', f.read())
+        self.assertTrue(labels)
+        self.assertEqual([s for s in labels if cyr.search(s)], [])
 
     def test_record_roles_by_code(self):
         # docs 11 §9: record fields of the 8 shift sets and of the root 0xFFFF9804 carry roles read by 20C0 code
