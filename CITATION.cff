@@ -2,8 +2,8 @@ cff-version: 1.2.0
 message: "If you use, share or build on this work, credit it as below (NOTICE)."
 title: "GS8.60.0 / GS8.60.4 · ZF 5HP19: reverse engineering, TunerPro XDF and tools"
 type: software
-version: "2026.10.28.2"
-date-released: "2026-10-28"
+version: "2026.10.29"
+date-released: "2026-10-29"
 authors:
   - given-names: Rudy
     family-names: Wolf

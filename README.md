@@ -45,7 +45,7 @@ This repository is the missing description: what each table does **in code**, wh
 
 ### What's new (29.10.2026)
 
-- **Patches, presets and recipes are withdrawn.** The repository is the reverse engineering, the XDF definitions and the checking tools; ready-made builds are not part of it any more (they are custom work, see below). The git history keeps the old files.
+- **Patches, presets and recipes are withdrawn.** The repository is the reverse engineering, the XDF definitions and the checking tools; ready-made builds are not part of it any more (they are custom work, see below). The releases up to 28.10.2026 are withdrawn with them; the git history keeps the old files.
 
 28.10.2026:
 
@@ -173,7 +173,7 @@ Want a custom tune for **MS42 / MS43**, a custom tune of the **5HP19** gearbox (
 
 ### Что нового (29.10.2026)
 
-- **Патчи, пресеты и рецепты убраны.** Репозиторий — это реверс, определения XDF и проверялки; готовых сборок в нём больше нет (это работа на заказ, см. ниже). История git хранит старые файлы.
+- **Патчи, пресеты и рецепты убраны.** Репозиторий — это реверс, определения XDF и проверялки; готовых сборок в нём больше нет (это работа на заказ, см. ниже). Вместе с ними сняты релизы по 28.10.2026; история git хранит старые файлы.
 
 28.10.2026:
 
