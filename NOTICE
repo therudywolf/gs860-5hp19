@@ -9,6 +9,8 @@ Licences
   Code (tools/, tests/, .github/workflows/): Apache License 2.0, see LICENSE.
   Documentation (docs/, README.md, CHANGELOG.md, CONTRIBUTING.md), catalogs (catalog/),
   XDF definitions (xdf/): CC BY-SA 4.0, see LICENSE-docs.
+  Documents about the author's own layer (docs/en/14-*, docs/ru/14-* and those that say so in
+  their header): CC BY-NC-SA 4.0, see LICENSE-docs-nc.
 
 Attribution
   Anyone who copies, publishes or builds on this work (a tool, an XDF file, a catalog,
