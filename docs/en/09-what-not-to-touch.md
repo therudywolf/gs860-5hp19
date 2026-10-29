@@ -7,14 +7,14 @@ The list of prohibitions. Every item has cost someone an undriveable box, a limp
 | What | Why |
 |---|---|
 | `0x0000–0x8000` | boot loader, identification, DS2 driver. Without it the ECU cannot be re-flashed |
-| `0x10000–0x40000` | code and record descriptors. Any edit = a code patch. The only code patch in this repository: `tcc-first` on 19x0 (52 bytes in the free area `0x3E3A0`, table `0x3E380`, call from `0x290A0`, byte for byte as the WOLF4X v41-v44 builds, doc 13 §1); after it flash the full image only. No other hooks |
-| tail `0x0FFCE–0x10000` | calibration label (leave it) and the calibration checksum at `0xFFFE`: not edited by hand, recomputed by `apply_recipe.py` or `gs860_crc.py fix` (doc 07 §6) |
+| `0x10000–0x40000` | code and record descriptors. Any edit = a code patch, and after one only the full image can be flashed. This repository ships no code patch and no hooks |
+| tail `0x0FFCE–0x10000` | calibration label (leave it) and the calibration checksum at `0xFFFE`: not edited by hand, recomputed by `gs860_crc.py fix` (doc 07 §6) |
 
-`apply_recipe.py` physically cannot write outside the calibration window (19x0 `0x8000–0x10000`, 20C0 `0x70000–0x80000`). `egs_patch.py` writes the calibration and, only for `tcc-first` on 19x0, the declared 52 bytes of code, and checks every other byte (doc 13 §0).
+Edit the calibration window only (19x0 `0x8000–0x10000`, 20C0 `0x70000–0x80000`) and, before flashing, check every other byte against your dump: `egs_tables.py diff dump.bin build.bin`.
 
 ## 2. Table axes — never
 
-The axes (`X`, `Y`) of all tables are never changed in recipes. Reason — doc 04 §11: a build that gave 118 tables the axes of another calibration with extrapolated data produced harsh 2→3 / 3→4, rpm flares on downshifts and random behaviour vs temperature. The code reads a cell through the axes; a shifted axis = shifted physics in every phase at once, and in a log this cannot be separated from "just bad data". Copying somebody else's table whole is allowed only when its axes match stock **byte for byte** (example — `0xB90E` from Alpina).
+The axes (`X`, `Y`) of all tables are never changed. Reason — doc 04 §11: a build that gave 118 tables the axes of another calibration with extrapolated data produced harsh 2→3 / 3→4, rpm flares on downshifts and random behaviour vs temperature. The code reads a cell through the axes; a shifted axis = shifted physics in every phase at once, and in a log this cannot be separated from "just bad data". Copying somebody else's table whole is allowed only when its axes match stock **byte for byte** (example — `0xB90E` from Alpina).
 
 ## 3. Hydraulics (doc 04 §12)
 
@@ -28,7 +28,7 @@ The axes (`X`, `Y`) of all tables are never changed in recipes. Reason — doc 0
 | kind1 f70: `B40E, B42A, B4AE, B532, B5B6` (4×4); kind3 f65: `B446 … B5D2` (6×6) | semantics not proven from code | Alpina changes them ×0.3–7 with other axes — all the more reason not to copy |
 | f11 (`D538`), adaptations in RAM | fill-time adaptation | after flashing — Reset Adaptation, not "fix it with a constant" |
 | `C206, C90C, C1FA …` | 1D tables 5×1 / 4×1 of fields f38 / f39 (zeros) | not structures; copying bytes into them "blind" is pointless |
-| kind3 f45 `BA78` upwards | off-going pressure on 4→3 | raising it = slower release; v10/v18 have ×1.15 there and that is the wrong direction |
+| kind3 f45 `BA78` upwards | off-going pressure on 4→3 | raising it = slower release; an earlier tune had ×1.15 there and that is the wrong direction |
 
 Also: the low-torque rows (Y ≤ 58, ≤ 132 Nm) of the pressure maps are town comfort; change Y ≥ 82 only.
 
@@ -51,7 +51,7 @@ Also: the low-torque rows (Y ≤ 58, ≤ 132 Nm) of the pressure maps are town c
 
 | What | Why |
 |---|---|
-| `0x8EE0–0x8F0E`, incl. `0x8EE8 / 0x8EEA / 0x8EF0`, `0x8EFC`, `0x8F00`, `0x8F08 / 0x8F0A` | voltage thresholds in mV (doc 03 §5, 05 §1). Not temperature and not turbine rpm (proven by the variable writes in 0x20D78). v17 mistakenly raised 0x8EEA to 7300, v18 restored it. Editing gains nothing and may disable/trigger the supply diagnostics |
+| `0x8EE0–0x8F0E`, incl. `0x8EE8 / 0x8EEA / 0x8EF0`, `0x8EFC`, `0x8F00`, `0x8F08 / 0x8F0A` | voltage thresholds in mV (doc 03 §5, 05 §1). Not temperature and not turbine rpm (proven by the variable writes in 0x20D78). An earlier tune mistakenly raised 0x8EEA to 7300 and had to restore it. Editing gains nothing and may disable/trigger the supply diagnostics |
 | `0x8B44` (u16, stock 6720) | threshold of the turbine monitor 0x26C84: a turbine speed at or above it for about a second sets fault 0x25 and limp mode (doc 05 §6). Raise only together with the engine rev limit. Do not disable the monitor: no other turbine over-speed protection was found in the code |
 
 ## 6. Method

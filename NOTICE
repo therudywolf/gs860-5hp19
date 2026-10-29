@@ -3,21 +3,21 @@ Copyright 2026 rudywolf (WOLF4X)
 https://github.com/therudywolf/gs860-5hp19
 
 Reverse engineering of the Bosch GS8.60.0 and GS8.60.4 transmission control units
-(ZF 5HP19): documents, catalogs, TunerPro XDF definitions, recipes and tools.
+(ZF 5HP19): documents, catalogs, TunerPro XDF definitions and tools.
 
 Licences
   Code (tools/, tests/, .github/workflows/): Apache License 2.0, see LICENSE.
   Documentation (docs/, README.md, CHANGELOG.md, CONTRIBUTING.md), catalogs (catalog/),
-  XDF definitions (xdf/) and recipes (recipes/): CC BY-SA 4.0, see LICENSE-docs.
+  XDF definitions (xdf/): CC BY-SA 4.0, see LICENSE-docs.
 
 Attribution
   Anyone who copies, publishes or builds on this work (a tool, an XDF file, a catalog,
-  a recipe, a document or a part of them) credits the author as
+  a document or a part of them) credits the author as
 
       rudywolf, https://github.com/therudywolf/gs860-5hp19
 
   keeps this NOTICE file with the code, keeps the licence and credit lines in the
-  documents, XDF files and recipes, and says what was changed.
+  documents and XDF files, and says what was changed.
 
 Not covered
   The WOLF4X name and logo (assets/) are not licensed for reuse.

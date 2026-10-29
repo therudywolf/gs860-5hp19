@@ -2515,7 +2515,7 @@ Licence / Лицензия: CC BY-SA 4.0, https://creativecommons.org/licenses/b
   </XDFCONSTANT>
   <XDFCONSTANT uniqueid="0x203D" flags="0x0">
     <title>Программа в левой кулисе при [0xFFFF918C] ≠ 2, завод 0x0B = PB (0x70966)</title>
-    <description>0x1EB88 cmp.b, 0x1EBE4 move.b: код 0x0B (PB, матрица k10, M) ставится сразу при рычаге в кулисе, без нажатия +/-. Пара 19D0 0x8975: у BMW 19C0 и BMW 15C0 0xFE (до первого нажатия +/- кулиса даёт S, P2/P3), у Alpina 19D0 620P 0x0B, как здесь. 0xFE ставит кулису в S до нажатия (патч gate:mode=S, документ 13). Также читают 0x1DB78-0x1DB8C, 0x1FE1C-0x1FE2C.</description>
+    <description>0x1EB88 cmp.b, 0x1EBE4 move.b: код 0x0B (PB, матрица k10, M) ставится сразу при рычаге в кулисе, без нажатия +/-. Пара 19D0 0x8975: у BMW 19C0 и BMW 15C0 0xFE (до первого нажатия +/- кулиса даёт S, P2/P3), у Alpina 19D0 620P 0x0B, как здесь. 0xFE ставит кулису в S до нажатия. Также читают 0x1DB78-0x1DB8C, 0x1FE1C-0x1FE2C.</description>
     <CATEGORYMEM index="0" category="2" />
     <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x70966" mmedelementsizebits="8" mmedmajorstridebits="0" mmedminorstridebits="0" />
     <units>код программы</units>
@@ -3426,7 +3426,7 @@ Licence / Лицензия: CC BY-SA 4.0, https://creativecommons.org/licenses/b
   </XDFTABLE>
   <XDFCONSTANT uniqueid="0x26F1" flags="0x0">
     <title>Кикдаун: источник, 1 = бит DME2 по CAN ([0xFFFF90BA]), 0 = контакт педали и педаль выше 0x70232, завод 1 (0x70D6A)</title>
-    <description>0x1BCA4 tst.b $70d6a: не 0 -&gt; [0xFFFF90B7] = [0xFFFF90BA] (0x1BD9C, бит 2 байта 6 DME2 по CAN); 0 -&gt; контакт бит 7 порта [0xFFFF8A0A] (активный 0, фильтр [0x70ED6] опросов) и педаль [0xFFFF912A] выше [0x70232] (0x1BCB4-0x1BD92). Ещё читает 0x1A16A. Пара 19D0 0x8D1A (E39 = 0, контакт). Убрать кикдаун: 0 сюда и 255 в 0x70232 (патч no-kickdown, документ 13). Кикдаун 0x1BC9C (пара 19D0 0x205FC, разбор 06.10.2026) -&gt; флаг [0xFFFF90B7]: при нём матрицы берут педаль 255 (0x206F8-0x20728), AGS не считается (0x1908C), ручная ветка M пропускается (0x2047E): в M с педалью в пол +/- не работают (документ 02 §5).</description>
+    <description>0x1BCA4 tst.b $70d6a: не 0 -&gt; [0xFFFF90B7] = [0xFFFF90BA] (0x1BD9C, бит 2 байта 6 DME2 по CAN); 0 -&gt; контакт бит 7 порта [0xFFFF8A0A] (активный 0, фильтр [0x70ED6] опросов) и педаль [0xFFFF912A] выше [0x70232] (0x1BCB4-0x1BD92). Ещё читает 0x1A16A. Пара 19D0 0x8D1A (E39 = 0, контакт). Убрать кикдаун: 0 сюда и 255 в 0x70232. Кикдаун 0x1BC9C (пара 19D0 0x205FC, разбор 06.10.2026) -&gt; флаг [0xFFFF90B7]: при нём матрицы берут педаль 255 (0x206F8-0x20728), AGS не считается (0x1908C), ручная ветка M пропускается (0x2047E): в M с педалью в пол +/- не работают (документ 02 §5).</description>
     <CATEGORYMEM index="0" category="14" />
     <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x70D6A" mmedelementsizebits="8" mmedmajorstridebits="0" mmedminorstridebits="0" />
     <units>флаг</units>

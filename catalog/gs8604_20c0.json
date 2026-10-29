@@ -3779,7 +3779,7 @@
   {
    "kind": "constant",
    "title": "Программа в левой кулисе при [0xFFFF918C] ≠ 2, завод 0x0B = PB (0x70966)",
-   "description": "0x1EB88 cmp.b, 0x1EBE4 move.b: код 0x0B (PB, матрица k10, M) ставится сразу при рычаге в кулисе, без нажатия +/-. Пара 19D0 0x8975: у BMW 19C0 и BMW 15C0 0xFE (до первого нажатия +/- кулиса даёт S, P2/P3), у Alpina 19D0 620P 0x0B, как здесь. 0xFE ставит кулису в S до нажатия (патч gate:mode=S, документ 13). Также читают 0x1DB78-0x1DB8C, 0x1FE1C-0x1FE2C.",
+   "description": "0x1EB88 cmp.b, 0x1EBE4 move.b: код 0x0B (PB, матрица k10, M) ставится сразу при рычаге в кулисе, без нажатия +/-. Пара 19D0 0x8975: у BMW 19C0 и BMW 15C0 0xFE (до первого нажатия +/- кулиса даёт S, P2/P3), у Alpina 19D0 620P 0x0B, как здесь. 0xFE ставит кулису в S до нажатия. Также читают 0x1DB78-0x1DB8C, 0x1FE1C-0x1FE2C.",
    "categories": [
     1
    ],
@@ -3797,7 +3797,7 @@
    },
    "uid": 8253,
    "title_en": "Program in the left gate when [0xFFFF918C] != 2, factory 0x0B = PB (0x70966)",
-   "description_en": "Code 0x0B (PB, matrix k10, M) is set as soon as the lever is in the gate, without +/-. 19D0 pair 0x8975: BMW 19C0 and BMW 15C0 have 0xFE (the gate gives S until the first +/- tap), Alpina 19D0 620P has 0x0B like this file. Patch gate:mode=S writes 0xFE (document 13)."
+   "description_en": "Code 0x0B (PB, matrix k10, M) is set as soon as the lever is in the gate, without +/-. 19D0 pair 0x8975: BMW 19C0 and BMW 15C0 have 0xFE (the gate gives S until the first +/- tap), Alpina 19D0 620P has 0x0B like this file. 0xFE gives S until the first tap."
   },
   {
    "kind": "constant",
@@ -5190,7 +5190,7 @@
   {
    "kind": "constant",
    "title": "Кикдаун: источник, 1 = бит DME2 по CAN ([0xFFFF90BA]), 0 = контакт педали и педаль выше 0x70232, завод 1 (0x70D6A)",
-   "description": "0x1BCA4 tst.b $70d6a: не 0 -> [0xFFFF90B7] = [0xFFFF90BA] (0x1BD9C, бит 2 байта 6 DME2 по CAN); 0 -> контакт бит 7 порта [0xFFFF8A0A] (активный 0, фильтр [0x70ED6] опросов) и педаль [0xFFFF912A] выше [0x70232] (0x1BCB4-0x1BD92). Ещё читает 0x1A16A. Пара 19D0 0x8D1A (E39 = 0, контакт). Убрать кикдаун: 0 сюда и 255 в 0x70232 (патч no-kickdown, документ 13). Кикдаун 0x1BC9C (пара 19D0 0x205FC, разбор 06.10.2026) -> флаг [0xFFFF90B7]: при нём матрицы берут педаль 255 (0x206F8-0x20728), AGS не считается (0x1908C), ручная ветка M пропускается (0x2047E): в M с педалью в пол +/- не работают (документ 02 §5).",
+   "description": "0x1BCA4 tst.b $70d6a: не 0 -> [0xFFFF90B7] = [0xFFFF90BA] (0x1BD9C, бит 2 байта 6 DME2 по CAN); 0 -> контакт бит 7 порта [0xFFFF8A0A] (активный 0, фильтр [0x70ED6] опросов) и педаль [0xFFFF912A] выше [0x70232] (0x1BCB4-0x1BD92). Ещё читает 0x1A16A. Пара 19D0 0x8D1A (E39 = 0, контакт). Убрать кикдаун: 0 сюда и 255 в 0x70232. Кикдаун 0x1BC9C (пара 19D0 0x205FC, разбор 06.10.2026) -> флаг [0xFFFF90B7]: при нём матрицы берут педаль 255 (0x206F8-0x20728), AGS не считается (0x1908C), ручная ветка M пропускается (0x2047E): в M с педалью в пол +/- не работают (документ 02 §5).",
    "categories": [
     13
    ],
@@ -5208,7 +5208,7 @@
    },
    "uid": 9969,
    "title_en": "Kick-down: source, 1 = DME2 bit over CAN ([0xFFFF90BA]), 0 = pedal switch and pedal above 0x70232, factory 1 (0x70D6A)",
-   "description_en": "0x1BCA4: not 0 -> kick-down flag [0xFFFF90B7] = [0xFFFF90BA] (bit 2 of byte 6 of DME2); 0 -> switch on bit 7 of port [0xFFFF8A0A] (active low, filtered over [0x70ED6] samples) and pedal above [0x70232]. With the flag the matrices use pedal 255 (0x206F8), AGS is not updated (0x1908C) and the manual M branch is skipped (0x2047E): in M +/- do not work with the pedal floored. 19D0 pair 0x8D1A (E39 = 0, switch). Kick-down off: 0 here and 255 in 0x70232 (patch no-kickdown, document 13)."
+   "description_en": "0x1BCA4: not 0 -> kick-down flag [0xFFFF90B7] = [0xFFFF90BA] (bit 2 of byte 6 of DME2); 0 -> switch on bit 7 of port [0xFFFF8A0A] (active low, filtered over [0x70ED6] samples) and pedal above [0x70232]. With the flag the matrices use pedal 255 (0x206F8), AGS is not updated (0x1908C) and the manual M branch is skipped (0x2047E): in M +/- do not work with the pedal floored. 19D0 pair 0x8D1A (E39 = 0, switch). Kick-down off: 0 here and 255 in 0x70232."
   },
   {
    "kind": "constant",

@@ -9,9 +9,7 @@
 
 - Dangerous errors (a patch or a table reading that can damage a gearbox): report them privately first, see [`SECURITY.md`](SECURITY.md).
 - Corrections with evidence: a disassembly excerpt, a table dump, a log, anything that lets somebody else re-check it. "I think X is Y" without a code reference goes into an issue as a hypothesis, not into the docs.
-- Logs of shifts (RAM read via DS2 0x06, doc 06 §4) before/after a recipe, with the recipe named.
-- Recipes for other engines / final drives, with annotations (group, name, EN+RU comment for every table) and the base calibration label. For the patches of document 13 the easiest way is `egs_patch.py recipe NAME stock.bin -o recipe.json --spark RPM --cut RPM`: the recipe carries the chain and the engine limits in `built_with`.
-- A new patch for `tools/egs_patch.py`: it must name the instruction that reads every address it writes, check the factory value or the table axes before writing, and come with a test in `tests/test_tools.py` and a section in document 13 (RU and EN).
+- Logs of shifts (RAM read via DS2 0x06, doc 06 §4) before/after an edit, with the edit named.
 - Information about **other 19x0 calibration revisions** (different `B22K4_04xxxx` label at 0x0FFCE): which tables differ from the `19C0KA20` base.
 - Translations and wording fixes.
 
@@ -19,7 +17,7 @@
 
 - **Firmware dumps in issues or pull requests, in any form** (full 256K or 512K, partial 32K, hex pastes). A full dump carries the unit serial and history, the EEPROM carries the VIN. If a comparison needs your dump, post the output of `tools/egs_tables.py info` and `tools/egs_tables.py diff <your dump> <reference>`, that is enough to see what differs, or agree on a private exchange with the maintainer directly. Issues that contain dumps are deleted.
 - **VIN, unit serial numbers and owner names** anywhere: in text, logs, screenshots and file names. Dump files are often named after the VIN, rename them before you paste a command line or its output. `egs_tables.py ids` prints the identification strings of the unit, do not post its output.
-- Anything that mixes GS8.60.0 and GS8.60.4 addresses. The 512 KB images (20C0) have their own catalog, XDF and document (doc 11). A 19x0 address, recipe or RAM cell does not apply to them, and the other way round.
+- Anything that mixes GS8.60.0 and GS8.60.4 addresses. The 512 KB images (20C0) have their own catalog, XDF and document (doc 11). A 19x0 address or RAM cell does not apply to them, and the other way round.
 - Anything about the engine ECU or vehicle anti-theft systems. This repository is about the gearbox only.
 - Copies of third-party AI-generated "findings" without verification against the binary. Several such lists have already been refuted (doc 10 §6).
 
@@ -27,7 +25,7 @@
 
 1. `python3 tools/egs_tables.py info dump.bin`: paste the output (size, hashes, label, table count). No bytes of the dump itself.
 2. `python3 tools/egs_tables.py diff reference.bin dump.bin --all` against a stock of the same label if you have one: paste the changed cells.
-3. For a log: CSV with a time column and the RAM addresses read (doc 06 §4), plus the recipe/build SHA-256 it was recorded with, engine, final drive, tyre size.
+3. For a log: CSV with a time column and the RAM addresses read (doc 06 §4), plus the build SHA-256 it was recorded with, engine, final drive, tyre size.
 4. Say what the car did (symptom) and what you expected.
 
 ### Tests
@@ -37,7 +35,7 @@ python3 tests/test_tools.py
 GS860_STOCK=stock19x0.bin GS8604_STOCK=stock20c0.bin python3 tests/test_tools.py
 ```
 
-Without images the tests check the tools, both catalogs and the XDF files (the image tests are skipped and say so). `GS860_STOCK` is a stock 256 KB 19x0 image, `GS8604_STOCK` a factory 512 KB 20C0 image. With them the recipes are applied and checked (when the image is the stock calibration they were built from), and the catalog tables are read from the image. Run both before a pull request that touches `tools/`, `catalog/`, `xdf/` or `recipes/`.
+Without images the tests check the tools, both catalogs and the XDF files (the image tests are skipped and say so). `GS860_STOCK` is a stock 256 KB 19x0 image, `GS8604_STOCK` a factory 512 KB 20C0 image. With them the catalog tables are read from the image. Run both before a pull request that touches `tools/`, `catalog/` or `xdf/`.
 
 ### XDF from the catalog
 
@@ -58,7 +56,7 @@ Same as the docs: addresses in hex with `0x`, RAM as `0xFFFFxxxx`, units for eve
 
 ### Licence of contributions
 
-A pull request is accepted under the licences of this repository: code (`tools/`, `tests/`) under Apache-2.0, documents, catalogs, XDF and recipes under CC BY-SA 4.0 ([`NOTICE`](NOTICE)). Material taken from elsewhere comes with its source and a compatible licence; parts of other authors' XDF files are not copied in.
+A pull request is accepted under the licences of this repository: code (`tools/`, `tests/`) under Apache-2.0, documents, catalogs and XDF under CC BY-SA 4.0 ([`NOTICE`](NOTICE)). Material taken from elsewhere comes with its source and a compatible licence; parts of other authors' XDF files are not copied in.
 
 ### Collaborators with write access
 
@@ -76,9 +74,7 @@ A pull request is accepted under the licences of this repository: code (`tools/`
 
 - Опасные ошибки (патч или трактовка таблицы, которые могут повредить коробку): сначала лично, см. [`SECURITY.md`](SECURITY.md).
 - Исправления с доказательством: фрагмент дизассемблера, распечатка таблицы, лог, то, что позволит другому перепроверить. «Я думаю, что X это Y» без ссылки на код идёт в issue как гипотеза, а не в документацию.
-- Логи переключений (чтение RAM через DS2 0x06, документ 06 §4) до/после рецепта с указанием рецепта.
-- Рецепты под другие моторы / главные пары с аннотациями (группа, имя, комментарий EN+RU для каждой таблицы) и меткой базовой калибровки. Для патчей документа 13 проще всего `egs_patch.py recipe ИМЯ stock.bin -o recipe.json --spark ОБ/МИН --cut ОБ/МИН`: рецепт несёт цепочку и обороты мотора в `built_with`.
-- Новый патч для `tools/egs_patch.py`: у каждого адреса, который он пишет, указана инструкция, которая его читает, перед записью проверяется заводское значение или оси таблицы, к патчу прилагается тест в `tests/test_tools.py` и параграф документа 13 (RU и EN).
+- Логи переключений (чтение RAM через DS2 0x06, документ 06 §4) до/после правки с указанием правки.
 - Сведения о **других ревизиях калибровки 19x0** (другая метка `B22K4_04xxxx` по 0x0FFCE): какие таблицы отличаются от базы `19C0KA20`.
 - Переводы и правки формулировок.
 
@@ -86,7 +82,7 @@ A pull request is accepted under the licences of this repository: code (`tools/`
 
 - **Дампы прошивок в issues и pull request'ах в любом виде** (полный 256K или 512K, партиал 32K, hex-вставки). Полный дамп содержит серийный номер блока и историю, EEPROM содержит VIN. Если для сравнения нужен ваш дамп, присылайте вывод `tools/egs_tables.py info` и `tools/egs_tables.py diff <ваш дамп> <эталон>`, этого достаточно, чтобы увидеть отличия, либо договаривайтесь о приватном обмене с мейнтейнером напрямую. Issues с дампами удаляются.
 - **VIN, серийные номера блоков и имена владельцев** нигде: ни в тексте, ни в логах, ни на снимках экрана, ни в именах файлов. Файлы дампов часто названы по VIN, переименуйте их, прежде чем вставлять командную строку или её вывод. `egs_tables.py ids` печатает идентификационные строки блока, его вывод не публикуйте.
-- Что-либо, где смешаны адреса GS8.60.0 и GS8.60.4. У образов 512 КБ (20C0) свой каталог, XDF и документ (документ 11). Адрес, рецепт или ячейка RAM 19x0 к ним не применимы, и наоборот.
+- Что-либо, где смешаны адреса GS8.60.0 и GS8.60.4. У образов 512 КБ (20C0) свой каталог, XDF и документ (документ 11). Адрес или ячейка RAM 19x0 к ним не применимы, и наоборот.
 - Что-либо про блок двигателя и штатные противоугонные системы. Этот репозиторий только про коробку.
 - Копии чужих «находок», сгенерированных AI, без проверки по бинарнику. Несколько таких списков уже опровергнуты (документ 10 §6).
 
@@ -94,7 +90,7 @@ A pull request is accepted under the licences of this repository: code (`tools/`
 
 1. `python3 tools/egs_tables.py info dump.bin`: вывод целиком (размер, хэши, метка, число таблиц). Байтов самого дампа не нужно.
 2. `python3 tools/egs_tables.py diff reference.bin dump.bin --all` против стока с той же меткой, если он у вас есть: изменённые ячейки.
-3. Для лога: CSV с колонкой времени и прочитанными адресами RAM (документ 06 §4), плюс SHA-256 рецепта/сборки, с которой он записан, мотор, главная пара, размер колёс.
+3. Для лога: CSV с колонкой времени и прочитанными адресами RAM (документ 06 §4), плюс SHA-256 сборки, с которой он записан, мотор, главная пара, размер колёс.
 4. Что делала машина (симптом) и что ожидалось.
 
 ### Тесты
@@ -104,7 +100,7 @@ python3 tests/test_tools.py
 GS860_STOCK=stock19x0.bin GS8604_STOCK=stock20c0.bin python3 tests/test_tools.py
 ```
 
-Без образов тесты проверяют инструменты, оба каталога и файлы XDF (тесты по образам пропускаются и пишут почему). `GS860_STOCK` это стоковый образ 19x0 на 256 КБ, `GS8604_STOCK` заводской образ 20C0 на 512 КБ. С ними рецепты применяются и проверяются (если образ это та стоковая калибровка, на которой они собраны), а таблицы каталога читаются по образу. Перед pull request, который трогает `tools/`, `catalog/`, `xdf/` или `recipes/`, запустите оба варианта.
+Без образов тесты проверяют инструменты, оба каталога и файлы XDF (тесты по образам пропускаются и пишут почему). `GS860_STOCK` это стоковый образ 19x0 на 256 КБ, `GS8604_STOCK` заводской образ 20C0 на 512 КБ. С ними таблицы каталога читаются по образу. Перед pull request, который трогает `tools/`, `catalog/` или `xdf/`, запустите оба варианта.
 
 ### XDF из каталога
 
@@ -125,7 +121,7 @@ python3 tools/make_xdf.py build catalog/gs8604_20c0.json xdf/GS8604_20C0_Full512
 
 ### Лицензия вклада
 
-Pull request принимается под лицензиями репозитория: код (`tools/`, `tests/`) под Apache-2.0, документы, каталоги, XDF и рецепты под CC BY-SA 4.0 ([`NOTICE`](NOTICE)). Взятое из других источников приходит с указанием источника и совместимой лицензией; части чужих XDF не переносятся.
+Pull request принимается под лицензиями репозитория: код (`tools/`, `tests/`) под Apache-2.0, документы, каталоги и XDF под CC BY-SA 4.0 ([`NOTICE`](NOTICE)). Взятое из других источников приходит с указанием источника и совместимой лицензией; части чужих XDF не переносятся.
 
 ### Участникам с правом записи
 

@@ -10,9 +10,8 @@ Self-tests of the tools. Part of the gs860-5hp19 repository. License: Apache-2.0
 
 Without images only the tests that need no firmware run (the repository holds no images): the
 CRC algorithm, the shift-point rules, both catalogs (catalog/gs8600_19d0.json, catalog/gs8604_20c0.json)
-and the XDF files generated from them. With GS860_STOCK (the stock calibration the recipes were built
-from, recipes/README) every recipe is applied to that image and the result is checked: checksums, the
-recipe's reference hashes, the shift-point rules of doc 02 §4 and a make_recipe round trip. With
+and the XDF files generated from them. With GS860_STOCK (a stock 256 KB 19x0 image) the 19x0 layout,
+the three sums and every table of the 19D0 catalog are checked against the image. With
 GS8604_STOCK (a factory 20C0 image) the 20C0 layout of egs_tables, the three sums and every table of
 the 20C0 catalog are checked against the image.
 """
@@ -20,7 +19,6 @@ import hashlib, json, os, re, subprocess, sys, tempfile, unittest
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 TOOLS = os.path.join(ROOT, "tools")
-RECIPES = os.path.join(ROOT, "recipes")
 CATALOG_19D0 = os.path.join(ROOT, "catalog", "gs8600_19d0.json")
 CATALOG_20C0 = os.path.join(ROOT, "catalog", "gs8604_20c0.json")
 XDF = os.path.join(ROOT, "xdf")
@@ -28,20 +26,11 @@ sys.path.insert(0, TOOLS)
 
 import gs860_crc                                    # noqa: E402
 import egs_tables                                   # noqa: E402
-import egs_patch                                    # noqa: E402
 import make_xdf                                     # noqa: E402
 
 STOCK = os.environ.get("GS860_STOCK")
 STOCK20 = os.environ.get("GS8604_STOCK")
-PRESET_SPARK, PRESET_CUT = 6656, 6784               # the engine the presets are built for (recipes/README)
 VIN_LIKE = re.compile(r"W(BA|BS|AP)[A-Z0-9]{14}")    # nothing that looks like a VIN may be in the repository
-
-
-def recipes(platform=None):
-    """Recipe files; platform '19x0' or '20C0' filters by the base image (old recipes carry no platform: 19x0)."""
-    out = sorted(os.path.join(RECIPES, n) for n in os.listdir(RECIPES)
-                 if n.endswith(".json") and not n.endswith(".annotations.json"))
-    return [p for p in out if platform is None or load(p)["base"].get("platform", "19x0") == platform]
 
 
 def run(*args):
@@ -86,16 +75,6 @@ class TestCRC(unittest.TestCase):
         for s, e, at, _ in regions:
             self.assertFalse(s <= at < e)
 
-    def test_recipes_never_carry_the_checksum(self):
-        for p in recipes():
-            rec = load(p)
-            self.assertIn(rec["schema"], ("gs860-recipe/1", "gs860-recipe/2"), p)
-            crc = 0x7FFFE if rec["base"].get("platform") == "20C0" else 0xFFFE
-            for e in rec.get("bytes", []):
-                a = int(e["addr"], 16)
-                end = a + e["count"] * e["width"] // 8
-                self.assertFalse(a < crc + 2 and end > crc, f"{p}: {e['addr']} covers 0x{crc:05X}")
-
 
 class TestRepository(unittest.TestCase):
     def test_every_tool_has_help(self):
@@ -106,25 +85,8 @@ class TestRepository(unittest.TestCase):
                     self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
                     self.assertIn("Example", r.stdout)
 
-    def test_recipes_carry_status(self):
-        # every preset says it is not road-tested; the old 19x0 presets (doc 08 §6) also what they really change,
-        # the presets built by egs_patch.py carry their patch chain (docs 13, 14)
-        for p in recipes():
-            with self.subTest(recipe=os.path.basename(p)):
-                rec = load(p)
-                st = rec.get("status", {})
-                self.assertTrue(st.get("en") and st.get("ru"), p)
-                self.assertIn("not road-tested", st["en"].lower().replace("not road-tested on", "not road-tested"))
-                if "built_with" in rec:
-                    chain = rec["built_with"]["chain"]
-                    self.assertTrue(chain and all(c.split(":")[0] in egs_patch.PATCHES for c in chain), chain)
-                    self.assertTrue(all("group" in e for e in rec["tables"] + rec["bytes"]), p)
-                else:
-                    self.assertIn("AGS", st["en"])
-                    self.assertEqual(load(p[:-5] + ".annotations.json")["meta"].get("status"), st)
-
     def test_licence_and_credit(self):
-        # code: Apache-2.0 with the credit in NOTICE; documents, catalogs, XDF and recipes: CC BY-SA 4.0 (NOTICE)
+        # code: Apache-2.0 with the credit in NOTICE; documents, catalogs and XDF: CC BY-SA 4.0 (NOTICE)
         def read(*p):
             with open(os.path.join(ROOT, *p), encoding="utf-8") as f:
                 return f.read()
@@ -170,7 +132,7 @@ class TestRepository(unittest.TestCase):
 
 class TestShiftUnits(unittest.TestCase):
     def test_limits(self):
-        up, down = egs_tables.shift_limits(egs_tables.RATIOS_19x0, PRESET_SPARK)
+        up, down = egs_tables.shift_limits(egs_tables.RATIOS_19x0, 6656)
         self.assertEqual(up, [47, 94, 136, 195])
         self.assertEqual(down, [52, 96, 136, 192])
         # 20C0: the locked addition comes off the upshift limits
@@ -181,7 +143,7 @@ class TestShiftUnits(unittest.TestCase):
         # M holds the gear: guard 150 rpm over the hard cut, under the turbine monitor - 100 (docs 13 §7)
         R = egs_tables.RATIOS_19x0
         self.assertEqual(egs_tables.manual_guard(R, 6720, 7232)[0], [59, 108, 153, 215])
-        # locked on the overrun in 2nd-4th (20C0 tcc-lock): still fits under 7232
+        # locked on the overrun in 2nd-4th (a 20C0 lock-up edit): still fits under 7232
         self.assertEqual(egs_tables.manual_guard(R, 6720, 7232, [0, 2, 2, 5, 0])[0], [59, 108, 153, 215])
         # 19x0 factory monitor 6720 with the factory cut 6592: no room, the monitor has to go up
         with self.assertRaises(ValueError):
@@ -189,7 +151,7 @@ class TestShiftUnits(unittest.TestCase):
         self.assertEqual(egs_tables.manual_guard(R, 6592, 6912)[0], [58, 106, 150, 211])
 
     def test_turbine(self):
-        # 66 units in 1st: 66 * 32 * 3.665 = 7740 rpm of the turbine (the 16.09 preset value)
+        # 66 units in 1st: 66 * 32 * 3.665 = 7740 rpm of the turbine (an early tune's value)
         self.assertEqual(egs_tables.turbine_rpm(66, 0, egs_tables.RATIOS_19x0), 7740)
         self.assertEqual(egs_tables.turbine_rpm(41, 4, egs_tables.RATIOS_19x0), 4808)
 
@@ -608,47 +570,6 @@ class TestWithStock(unittest.TestCase):
         self.assertEqual(z[0], 100)
         self.assertEqual(z, sorted(z))
 
-    def test_recipes(self):
-        cal_sha = hashlib.sha256(self.stock[0x8000:0x10000]).hexdigest()
-        for p in recipes("19x0"):
-            with self.subTest(recipe=os.path.basename(p)):
-                rec = load(p)
-                if cal_sha != rec["base"]["stock_calibration_sha256"]:
-                    self.skipTest("the image is not the stock calibration the recipes were built from "
-                                  f"(label {self.stock[0xFFCE:0xFFDE].decode('latin1')})")
-                out = os.path.join(self.tmp.name, os.path.basename(p)[:-5] + ".bin")
-                r = run(os.path.join(TOOLS, "apply_recipe.py"), p, STOCK, "-o", out)
-                self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
-                self.assertTrue(gs860_crc.check_file(out, verbose=False))
-                with open(out, "rb") as f:
-                    d = f.read()
-                self.assertEqual(d[:0x8000], self.stock[:0x8000])
-                self.assertEqual(d[0x10000:], self.stock[0x10000:])
-                if rec["schema"] == "gs860-recipe/2":
-                    self.assertEqual(hashlib.sha256(d).hexdigest(), rec["result"]["full_sha256"])
-                    self.assertEqual(hashlib.sha256(d[0x8000:0x10000]).hexdigest(), rec["result"]["partial_sha256"])
-                # shift points of the result against doc 02 §4, cells equal to stock are the factory's
-                fw, st = egs_tables.FW(out), egs_tables.FW(STOCK)
-                bw = rec.get("built_with")
-                spark, cut = (bw["spark"], bw["cut"]) if bw else (PRESET_SPARK, PRESET_CUT)
-                found = egs_tables.verify_shift(fw, spark, cut, stock=st)
-                errors = [f for f in found if f[0] == "ERROR" and not f[8]]
-                if bw:
-                    self.assertEqual(errors, [], f"{p}: {errors[:3]}")
-                else:
-                    # the old presets: only their manual thresholds 58/106/151/212 are known to sit above the
-                    # factory turbine monitor 6720 (doc 08 §6); nothing else may be an error
-                    self.assertEqual([f for f in errors if not (f[2] == "manual" and "turbine monitor" in f[7])], [],
-                                     f"{p}: {errors[:3]}")
-                # make_recipe round trip gives the same diff
-                again = out[:-4] + ".again.json"
-                r = run(os.path.join(TOOLS, "make_recipe.py"), STOCK, out, "-o", again)
-                self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
-                rec2 = load(again)
-                strip = lambda es: [{k: v for k, v in e.items() if k not in ("group", "name", "comment")} for e in es]
-                self.assertEqual(strip(rec2["tables"]), strip(rec["tables"]))
-                self.assertEqual(strip(rec2["bytes"]), strip(rec["bytes"]))
-
 
 @unittest.skipUnless(STOCK20 and os.path.isfile(STOCK20), "set GS8604_STOCK to a factory 20C0 512K image")
 class TestWithStock20C0(unittest.TestCase):
@@ -739,300 +660,6 @@ class TestWithStock20C0(unittest.TestCase):
         r = run(os.path.join(TOOLS, "egs_tables.py"), "info", STOCK20)
         self.assertIn("== 20C0 reference", r.stdout)
         self.assertIn("614 (ok)", r.stdout)
-
-
-class TestPatchesOffline(unittest.TestCase):
-    """egs_patch.py without images: the code it adds, the threshold rules, the preset chains."""
-
-    def test_first_gear_code_is_the_v41_routine(self):
-        code = egs_patch.first_gear_code(0x3E3A0, 0x3E380)
-        self.assertEqual(code.hex(), "207c0000897ad1c01c2800041039ffff91af0c00000167060c00000666141039ffff91a0"
-                                     "0240000f207c0003e3801c3000004e75")
-
-    def test_threshold_rules(self):
-        # tcc-lock: the WOLF4X v25 groups 6-9 (2nd-5th) before the factory cap
-        self.assertEqual([egs_patch.lock_trip(1600, g) for g in (2, 3, 4)], [(17, 19, 25), (24, 27, 36), (34, 38, 50)])
-        # tcc-first: the WOLF4X v41 rows for S/M (group 5) and D (group 10), pedal axis of 19x0, coast on
-        ys = [0, 5, 46, 59, 72, 97, 122]
-        self.assertEqual(egs_patch.first_rows(ys, 1760, True),
-                         [(11, 13, 15)] * 3 + [(12, 14, 16), (13, 15, 18), (14, 17, 20), (15, 18, 21)])
-        self.assertEqual(egs_patch.first_rows(ys, 2110, True, d=True),
-                         [(12, 15, 18)] * 3 + [(13, 16, 19), (14, 17, 21), (15, 18, 22), (16, 19, 23)])
-        # coast off: no lock with the pedal released
-        self.assertEqual(egs_patch.first_rows(ys, 1760, False)[:2], [(202, 202, 202)] * 2)
-
-    def test_s_sport_weight(self):
-        w = egs_patch.s_sport_weight
-        self.assertEqual([w(y) for y in (0, 46, 60, 243, 255)], [0.0] * 5)
-        self.assertEqual([round(w(y), 2) for y in (83, 121, 160, 198, 203)], [0.20, 0.35, 0.50, 0.65, 0.67])
-        self.assertTrue(0.20 < w(100) < 0.35 and w(242) > w(203))
-        # light: the cruising rows get a weight of their own, the curve runs from it to the 0.20 of pedal 83
-        self.assertEqual([w(y, 0.2) for y in (0, 46, 60, 83)], [0.2] * 4)
-        self.assertTrue(0.1 < w(70, 0.1) < 0.2 and w(243, 0.2) == 0.0 and w(121, 0.2) == w(121))
-        for x, z in egs_patch.CONVERTER_CURVES.values():
-            self.assertTrue(x[0] < x[1] < x[2] == 255 and z[0] == 100 <= z[1] <= z[2] <= 255, (x, z))
-
-    def test_presets_and_parsing(self):
-        for name, pr in egs_patch.PRESETS.items():
-            for c in pr["chain"]:
-                self.assertIn(egs_patch.parse_patch(c)[0], egs_patch.PATCHES, (name, c))
-            self.assertTrue(pr["en"] and pr["ru"])
-        self.assertEqual(egs_patch.parse_patch("tcc-first:modes=S+M,rpm=1800"), ("tcc-first", {"modes": "S+M", "rpm": "1800"}))
-        with self.assertRaises(egs_patch.PatchError):
-            egs_patch.parse_patch("no-such-patch")
-        with self.assertRaises(egs_patch.PatchError):
-            egs_patch.parse_modes("S")
-        self.assertEqual(set(egs_patch.PATCH_TEXT), set(egs_patch.PATCHES) - {"gate"} | {"gate"})
-
-
-def patch_checks(tc, src, out, P):
-    """Common checks of an egs_patch output: sums, loader, only calibration (and the declared 19x0 code) changed."""
-    with open(src, "rb") as f:
-        a = f.read()
-    with open(out, "rb") as f:
-        b = f.read()
-    tc.assertTrue(gs860_crc.check_file(out, verbose=False))
-    tc.assertEqual(a[:0x4400], b[:0x4400])
-    lo, hi = P["cal"]
-    code = set()
-    if P["first_hook"]:
-        H = P["first_hook"]
-        code = set(range(H["at"], H["at"] + 12)) | set(range(*H["free"]))
-    sums = {at + k for *_, at, _st, _c in gs860_crc.sums(b) for k in (0, 1)}
-    bad = [i for i in range(len(a)) if a[i] != b[i] and not (lo <= i < hi) and i not in code and i not in sums]
-    tc.assertEqual(bad, [], [hex(i) for i in bad[:5]])
-    return a, b
-
-
-@unittest.skipUnless(STOCK and os.path.isfile(STOCK), "set GS860_STOCK to a stock 19C0/19D0 256K image")
-class TestPatches19x0(unittest.TestCase):
-    @classmethod
-    def setUpClass(cls):
-        cls.tmp = tempfile.TemporaryDirectory()
-
-    @classmethod
-    def tearDownClass(cls):
-        cls.tmp.cleanup()
-
-    def apply(self, *patches, extra=()):
-        out = os.path.join(self.tmp.name, "p%d.bin" % len(os.listdir(self.tmp.name)))
-        r = run(os.path.join(TOOLS, "egs_patch.py"), "apply", STOCK, "-o", out, *extra, *patches)
-        self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
-        return patch_checks(self, STOCK, out, egs_patch.PLAT["19x0"])
-
-    def test_each_patch(self):
-        a, b = self.apply("no-warmup")
-        self.assertEqual(b[0x8B48], 0)
-        a, b = self.apply("no-kickdown")
-        self.assertEqual((b[0x8D1A], b[0x8246]), (0, 255))
-        a, b = self.apply("s-no5", extra=("--spark", "6496"))
-        self.assertEqual(b[0x887D], 0xC1)
-        a, b = self.apply("tcc-lock")
-        self.assertEqual([list(b[0x897E + 4 * p:0x897E + 4 * p + 4]) for p in (2, 3, 0xB, 0xD)], [[6, 7, 8, 9]] * 4)
-        a, b = self.apply("tcc-first:modes=D+S+M,coast=1")
-        self.assertEqual(b[0x8978:0x897A], b"\x00\x7e")
-        self.assertEqual(b[0x290A0:0x290AC].hex(), "4eb90003e3a04e714e714e71")
-        self.assertEqual(list(b[0x3E380:0x3E390]), [10, 10, 5, 5, 0, 0, 0, 0, 0, 0, 0, 5, 0, 5, 0, 0])
-        r = run(os.path.join(TOOLS, "egs_patch.py"), "apply", STOCK, "-o", os.path.join(self.tmp.name, "x.bin"),
-                "--cut", "6592", "manual-hold")
-        self.assertEqual(r.returncode, 2, "the factory monitor 6720 leaves no room above 6592: must stop")
-        a, b = self.apply("manual-hold:monitor=auto", extra=("--cut", "6592"))
-        self.assertEqual((b[0x8B44] << 8) | b[0x8B45], 6912)
-        a, b = self.apply("converter:curve=alpina")
-        self.assertEqual((list(a[0xE390:0xE396]), list(b[0xE390:0xE396])), ([38, 204, 255, 100, 175, 191], [34, 128, 255, 100, 132, 168]))
-        self.assertEqual(a[0xE38E:0xE390], b[0xE38E:0xE390])                       # the count stays
-
-    def test_s_sport_and_no_shift_feel(self):
-        stock = egs_tables.FW(STOCK)
-        r = run(os.path.join(TOOLS, "egs_patch.py"), "apply", STOCK, "-o", os.path.join(self.tmp.name, "ss.bin"),
-                "--spark", "6496", "--cut", "6592", "s-no5", "shift-wot:modes=S", "s-sport")
-        self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
-        fw = egs_tables.FW(os.path.join(self.tmp.name, "ss.bin"))
-        found = egs_tables.verify_shift(fw, 6496, 6592, stock=stock)
-        self.assertEqual([f for f in found if not f[8]], [])
-        a, b = self.apply("shift-feel")
-        self.assertEqual(b[0x0BFA6], round(a[0x0BFA6] * 1.2))                    # 1>2 upshift under load, light torque row x1.20
-        self.assertEqual(a[0x0BFB0:0x0BFB0 + 28], b[0x0BFB0:0x0BFB0 + 28])      # garage shift table untouched
-        self.assertGreater(sum(b[0x0DEC4:0x0DEC5]), sum(a[0x0DEC4:0x0DEC5]))    # upper bound of the on-coming pressure raised
-        for i in range(6, 9):                                                    # heavy row of 0x0C0DC (4>3, states 3/4): never longer
-            self.assertLessEqual(b[0x0C0E6 + i], a[0x0C0E6 + i])
-
-    def test_presets_pass_the_shift_rules(self):
-        st = egs_tables.FW(STOCK)
-        for name in egs_patch.PRESETS:
-            with self.subTest(preset=name):
-                out = os.path.join(self.tmp.name, name + ".bin")
-                r = run(os.path.join(TOOLS, "egs_patch.py"), "preset", name, STOCK, "-o", out)
-                self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
-                patch_checks(self, STOCK, out, egs_patch.PLAT["19x0"])
-                ref = egs_patch.PLAT["19x0"]["ref_engine"]
-                found = egs_tables.verify_shift(egs_tables.FW(out), ref["spark"], ref["cut"], stock=st)
-                self.assertEqual([f for f in found if not f[8]], [], name)
-
-
-@unittest.skipUnless(STOCK20 and os.path.isfile(STOCK20), "set GS8604_STOCK to a factory 20C0 512K image")
-class TestPatches20C0(unittest.TestCase):
-    @classmethod
-    def setUpClass(cls):
-        cls.tmp = tempfile.TemporaryDirectory()
-        with open(STOCK20, "rb") as f:
-            cls.stock = f.read()
-
-    @classmethod
-    def tearDownClass(cls):
-        cls.tmp.cleanup()
-
-    def test_tcc_lock_coast_and_gears(self):
-        out = os.path.join(self.tmp.name, "lock_coast.bin")
-        r = run(os.path.join(TOOLS, "egs_patch.py"), "apply", STOCK20, "-o", out, "tcc-lock:modes=S+M,rpm=2000,gears=3-5,coast=0")
-        self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
-        a, b = patch_checks(self, STOCK20, out, egs_patch.PLAT["20C0"])
-        sa, sb = egs_patch.Image(STOCK20), egs_patch.Image(out)
-        self.assertEqual(sb.groups(3)[2], sa.groups(3)[2])                     # 2nd gear of S untouched (gears=3-5)
-        self.assertEqual(sb.groups(0xB)[2], sa.groups(0xB)[2])                 # and of M
-        self.assertEqual([sb.groups(3)[c] for c in (3, 4, 5)], [8, 9, 10])     # 3rd-5th on the lock groups
-        for g, gear in ((8, 3), (9, 4), (10, 5)):
-            ys, rows = sb.group_rows(g)
-            fac = sa.group_rows(sa.groups(0xB)[gear])[1][0]                   # the factory pedal-0 row of M in this gear
-            self.assertEqual(rows[0], fac if fac[2] >= 200 else rows[1], g)   # coast=0: factory "never" kept, a factory lock follows the row
-            self.assertLess(rows[1][2], 202)                                   # pedal 5: locks
-            self.assertEqual(rows[1], rows[-1])                                 # flat above
-        self.assertGreaterEqual(sb.group_rows(8)[1][0][2], 200)               # 3rd: never at pedal 0 on this file
-        self.assertEqual(a[0x7B712:0x7B712 + 9], b[0x7B712:0x7B712 + 9])     # hydraulics untouched
-
-    def test_shift_feel_mid_and_skip(self):
-        out = os.path.join(self.tmp.name, "feel_mid.bin")
-        r = run(os.path.join(TOOLS, "egs_patch.py"), "apply", STOCK20, "-o", out,
-                "shift-feel:up_soft=1.0,up_mid=0.92,up_hard=0.75,dn_soft=1.0,dn_mid=0.85,dn_hard=0.78,skip=0")
-        self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
-        a, b = patch_checks(self, STOCK20, out, egs_patch.PLAT["20C0"])
-        self.assertEqual(a[0x7B712:0x7B715], b[0x7B712:0x7B715])                          # light row untouched (x1.0)
-        self.assertEqual(b[0x7B712 + 3], min(a[0x7B712 + 3], max(28, round(a[0x7B712 + 3] * 0.92))))   # middle row shorter
-        for h in egs_patch.FEEL["20C0"]["skip"]:                                              # skip downshifts kept
-            self.assertEqual(a[h + 10:h + 19], b[h + 10:h + 19])
-        self.assertNotEqual(a[0x7B7BC + 10 + 6:0x7B7BC + 19], b[0x7B7BC + 10 + 6:0x7B7BC + 19])  # 4>3 heavy row scaled
-
-    def test_s_sport_and_shift_feel(self):
-        out = os.path.join(self.tmp.name, "feel.bin")
-        r = run(os.path.join(TOOLS, "egs_patch.py"), "apply", STOCK20, "-o", out, "--spark", "6560", "--cut", "6720",
-                "gate:mode=S", "s-no5", "shift-wot:modes=S", "s-sport", "shift-feel")
-        self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
-        a, b = patch_checks(self, STOCK20, out, egs_patch.PLAT["20C0"])
-        # S (k11 = 0x716F5, 11 rows x 8) is livelier below full throttle, never above its own full-throttle row, downshifts under upshifts
-        for base in (0x716F5, 0x718B5):
-            for r_ in range(11):
-                ro = a[base + r_ * 8:base + r_ * 8 + 8]
-                rn = b[base + r_ * 8:base + r_ * 8 + 8]
-                y = (0, 46, 83, 121, 160, 198, 203, 243, 244, 254, 255)[r_]
-                if 83 <= y <= 203:
-                    for c in range(3):
-                        self.assertTrue(ro[c] <= rn[c] <= b[base + 7 * 8 + c], (hex(base), y, c))
-                        self.assertLessEqual(rn[4 + c], rn[c] - 6)
-                if y in (0, 46):
-                    self.assertEqual((ro[:3], ro[4:7]), (rn[:3], rn[4:7]))
-        # D (k14, 0x71845) is untouched
-        self.assertEqual(a[0x71845:0x71845 + 88], b[0x71845:0x71845 + 88])
-        # shift-feel: light row x1.20, heavy row x0.80 (not below 28), garage shifts (0x7B726 / 0x7B73A) untouched
-        self.assertEqual(list(b[0x7B712:0x7B712 + 3]), [round(a[0x7B712] * 1.2), round(a[0x7B713] * 1.2), round(a[0x7B714] * 1.2)])
-        self.assertEqual(b[0x7B712 + 6], max(28, round(a[0x7B712 + 6] * 0.8)))
-        self.assertEqual(a[0x7B726:0x7B726 + 9], b[0x7B726:0x7B726 + 9])
-        self.assertEqual(a[0x7B73A:0x7B73A + 9], b[0x7B73A:0x7B73A + 9])
-        # the on-coming pressure rises only on the upper torque rows; the first three rows are untouched
-        self.assertEqual(a[0x784DA:0x784DA + 24], b[0x784DA:0x784DA + 24])
-        self.assertGreater(sum(b[0x784DA + 24:0x784DA + 80]), sum(a[0x784DA + 24:0x784DA + 80]))
-        self.assertEqual(b[0x7B94D], round(a[0x7B94D] * 1.10))
-        found = egs_tables.verify_shift(egs_tables.FW(out), 6560, 6720, stock=egs_tables.FW(STOCK20))
-        self.assertEqual([f for f in found if not f[8]], [])
-        # parameters are checked
-        r = run(os.path.join(TOOLS, "egs_patch.py"), "apply", STOCK20, "-o", os.path.join(self.tmp.name, "bad.bin"), "shift-feel:up_hard=0.2")
-        self.assertEqual(r.returncode, 2)
-
-    def test_converter_and_s_sport_light_and_d(self):
-        out = os.path.join(self.tmp.name, "conv.bin")
-        r = run(os.path.join(TOOLS, "egs_patch.py"), "apply", STOCK20, "-o", out, "converter:curve=bmw")
-        self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
-        a, b = patch_checks(self, STOCK20, out, egs_patch.PLAT["20C0"])
-        self.assertEqual((list(a[0x781D6:0x781DE]), list(b[0x781D6:0x781DE])),
-                         ([0, 3, 34, 128, 255, 100, 132, 168], [0, 3, 44, 204, 255, 100, 178, 196]))
-        self.assertEqual(len([i for i in range(0x70000, 0x7FFCE) if a[i] != b[i]]), 4)      # nothing else (255 and 100 % stay)
-        out2 = os.path.join(self.tmp.name, "conv2.bin")
-        r = run(os.path.join(TOOLS, "egs_patch.py"), "apply", STOCK20, "-o", out2, "converter:x=44/204/255,z=100/178/196")
-        self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
-        with open(out2, "rb") as f:
-            self.assertEqual(f.read(), b)
-        for bad in ("converter:curve=alpina", "converter:x=44/204/250,z=100/178/196", "converter:curve=zf"):
-            r = run(os.path.join(TOOLS, "egs_patch.py"), "apply", STOCK20, "-o", os.path.join(self.tmp.name, "bad.bin"), bad)
-            self.assertEqual(r.returncode, 2, bad)                                           # already the factory curve / not a curve
-        # s-sport: light= lifts the cruising rows of S, modes=D makes D livelier below full throttle
-        out = os.path.join(self.tmp.name, "light.bin")
-        r = run(os.path.join(TOOLS, "egs_patch.py"), "apply", STOCK20, "-o", out, "--spark", "6560", "--cut", "6720",
-                "gate:mode=S", "shift-wot:modes=S", "s-sport:strength=1.25,down=0.5,light=0.2", "s-sport:modes=D,strength=0.25,down=0.3")
-        self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
-        a, b = patch_checks(self, STOCK20, out, egs_patch.PLAT["20C0"])
-        rows = lambda d, base: [list(d[base + r_ * 8:base + r_ * 8 + 8]) for r_ in range(11)]
-        sa, sb = rows(a, 0x716F5), rows(b, 0x716F5)                                           # S = k11
-        self.assertEqual(sb[0], sb[1])                                                        # pedal 0 and 46 alike
-        self.assertEqual(sb[0][:4], sb[2][:4])                                                # light 0.20 x 1.25 = the weight of pedal 83
-        self.assertTrue(all(sb[0][c] > sa[0][c] and sb[0][4 + c] > sa[0][4 + c] for c in range(4)))
-        self.assertTrue(all(sb[0][4 + c] <= sb[0][c] - 6 for c in range(4)))                   # downshifts under upshifts
-        self.assertTrue(all(sb[r_][c] <= sb[r_ + 1][c] for r_ in range(6) for c in range(4)))   # rising with the pedal
-        da, db = rows(a, 0x71845), rows(b, 0x71845)                                           # D = k14
-        self.assertEqual((da[0], da[1], da[7:]), (db[0], db[1], db[7:]))                      # cruising and full-throttle rows of D untouched
-        for r_ in range(2, 7):
-            for c in range(4):
-                self.assertTrue(da[r_][c] < db[r_][c] <= db[7][c], (r_, c))
-                self.assertTrue(da[r_][4 + c] <= db[r_][4 + c], (r_, c))
-                self.assertTrue(db[r_][4 + c] <= db[r_][c] - 6 or db[r_][4 + c] == da[r_][4 + c], (r_, c))   # a factory gap under 6 is kept
-        found = egs_tables.verify_shift(egs_tables.FW(out), 6560, 6720, stock=egs_tables.FW(STOCK20))
-        self.assertEqual([f for f in found if not f[8]], [])
-        r = run(os.path.join(TOOLS, "egs_patch.py"), "apply", STOCK20, "-o", os.path.join(self.tmp.name, "bad.bin"), "s-sport:light=0.3")
-        self.assertEqual(r.returncode, 2)
-
-    def test_presets_and_recipes(self):
-        st = egs_tables.FW(STOCK20)
-        ref = egs_patch.PLAT["20C0"]["ref_engine"]
-        for name in egs_patch.PRESETS:
-            with self.subTest(preset=name):
-                out = os.path.join(self.tmp.name, name + ".bin")
-                r = run(os.path.join(TOOLS, "egs_patch.py"), "preset", name, STOCK20, "-o", out)
-                self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
-                a, b = patch_checks(self, STOCK20, out, egs_patch.PLAT["20C0"])
-                found = egs_tables.verify_shift(egs_tables.FW(out), ref["spark"], ref["cut"], stock=st)
-                self.assertEqual([f for f in found if not f[8]], [], name)
-                self.assertEqual(b[0x70966], 0xFE)                       # gate: S first
-                # the recipe of the preset reproduces it byte for byte
-                rj = os.path.join(self.tmp.name, name + ".json")
-                r = run(os.path.join(TOOLS, "egs_patch.py"), "recipe", name, STOCK20, "-o", rj)
-                self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
-                ob = os.path.join(self.tmp.name, name + "_r.bin")
-                r = run(os.path.join(TOOLS, "apply_recipe.py"), rj, STOCK20, "-o", ob)
-                self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
-                with open(ob, "rb") as f:
-                    self.assertEqual(f.read(), b)
-
-    def test_published_recipes(self):
-        cal = hashlib.sha256(self.stock[0x70000:0x80000]).hexdigest()
-        for p in recipes("20C0"):
-            with self.subTest(recipe=os.path.basename(p)):
-                rec = load(p)
-                if cal != rec["base"]["stock_calibration_sha256"]:
-                    self.skipTest("the image is not the calibration the 20C0 recipes were built from")
-                out = os.path.join(self.tmp.name, os.path.basename(p)[:-5] + ".bin")
-                r = run(os.path.join(TOOLS, "apply_recipe.py"), p, STOCK20, "-o", out)
-                self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
-                with open(out, "rb") as f:
-                    d = f.read()
-                self.assertEqual(d[:0x70000], self.stock[:0x70000])
-                self.assertEqual(hashlib.sha256(d[0x70000:0x80000]).hexdigest(), rec["result"]["calibration_window_sha256"])
-                bw = rec["built_with"]
-                found = egs_tables.verify_shift(egs_tables.FW(out), bw["spark"], bw["cut"], stock=egs_tables.FW(STOCK20))
-                self.assertEqual([f for f in found if f[0] == "ERROR" and not f[8]], [])
-                again = out[:-4] + ".again.json"
-                r = run(os.path.join(TOOLS, "make_recipe.py"), STOCK20, out, "-o", again)
-                self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
-                strip = lambda es: [{k: v for k, v in e.items() if k not in ("group", "name", "comment")} for e in es]
-                self.assertEqual(strip(load(again)["tables"]), strip(rec["tables"]))
-                self.assertEqual(strip(load(again)["bytes"]), strip(rec["bytes"]))
 
 
 if __name__ == "__main__":

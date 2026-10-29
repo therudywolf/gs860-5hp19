@@ -1,6 +1,6 @@
 # 02 · Shift points
 
-> **Corrected 23.09.2026.** Until then this document read the matrix values as km/h. They are output shaft rpm / 32 (§3, proven by code). On the reference car one unit is 1.18 km/h, so every rpm figure derived the old way was 18 % too low, and the presets asked the box to shift at turbine speeds the engine never reaches (§4). The presets were recomputed the same day (doc 08).
+> **Corrected 23.09.2026.** Until then this document read the matrix values as km/h. They are output shaft rpm / 32 (§3, proven by code). On the reference car one unit is 1.18 km/h, so every rpm figure derived the old way was 18 % too low, and earlier tunes asked the box to shift at turbine speeds the engine never reaches (§4).
 
 ## 1. Where
 
@@ -79,7 +79,7 @@ Road speed, only to read the tables: `km/h = value × 32 / k`, with k the output
 
 ## 4. Computing a point against the rev limiter
 
-Rules the presets are checked with (`egs_tables.py verify-shift`, not by eye):
+Rules a build is checked with (`egs_tables.py verify-shift`, not by eye):
 
 1. **Upshift before the spark cut.** `value × 32 × i_g ≤ n_spark − margin_g`. At the moment of the command the turbine is below the engine by the converter slip, then the engine keeps rising while the filtered speed catches up and the shift executes. Default margins: **1120 / 610 / 490 / 400** rpm for 1>2 / 2>3 / 3>4 / 4>5. Source: the reference car (E39 2.5 with 5HP19), full load in 1st from logs: slip 280…350 rpm and about 1600 rpm/s of engine rise, the other gears are estimates. The factory kickdown rows leave 330…850 rpm to its own limiter, so these margins are more conservative than BMW's, change them with `--margin`. A value whose turbine rpm reaches the spark cut is **never reached under load**: the box hangs at the limiter. Which engine limiter acts first (spark or fuel) and where depends on the engine ECU, take the lower one as `n_spark`. 4>5 at full load needs 4th gear near the limiter, above the top speed of most cars. The factory uses 200 there as "practically never", so the tool only warns about it.
 2. **Downshift lands with room.** `value × 32 × i_(lower gear) ≤ n_spark − 500`. The value is the highest speed at which the downshift is allowed, so this is the worst case of where the engine lands. Landing above the spark cut means the wheels drive the engine past the limiter: no ECU can stop that.
@@ -88,7 +88,7 @@ Rules the presets are checked with (`egs_tables.py verify-shift`, not by eye):
 5. **All rows.** Edit all pedal rows, not just the top ones: an early build rewrote only rows 160…255, and at 16 % pedal the 3>2 line jumped from 28 to 78 while kickdown allowed 3>2 up to 100 against a 2>3 line at 112: "throws gears and hits the limiter".
 6. **Manual programs keep the overrun protection** (§5). This is how `verify-shift` checks, but the principle "upshift threshold at the fuel cut" was refuted on 23.09.2026, see the correction in §5.
 
-Example, the engine the presets are built for: fuel cut 6784, spark from about 6656.
+Example, the reference engine: fuel cut 6784, spark from about 6656.
 
 ```
 python3 tools/egs_tables.py verify-shift build.bin --spark 6656 --cut 6784 --stock stock.bin
@@ -100,13 +100,13 @@ Upshift at full load at most 47 / 94 / 136 = turbine 5512 / 6013 / 6123 rpm at t
 
 The line `manual overrun guard [58, 106, 151, 212]` is the manual upshift threshold at the fuel cut from rule 6. With the converter locked it is unsafe (§5): 58 / 106 / 151 / 212 are 6781-6802 turbine rpm, above the factory turbine monitor threshold [0x8B44] = 6720.
 
-What the old reading did: the 16.09 presets asked for `66 / 120 / 171` in the upper rows of the sport programs, meant as 6550 rpm at 99.6 rpm per km/h. In real units that is 7740 / 7676 / 7699 turbine rpm: the box never shifted up at full throttle in S and hung at the limiter. The manual kickdown row `59 / 108 / 154 / 217` landed at 6920 / 6909 / 6934 / 6944 rpm, above the spark cut.
+What the old reading did: an early tune (16.09) asked for `66 / 120 / 171` in the upper rows of the sport programs, meant as 6550 rpm at 99.6 rpm per km/h. In real units that is 7740 / 7676 / 7699 turbine rpm: the box never shifted up at full throttle in S and hung at the limiter. The manual kickdown row `59 / 108 / 154 / 217` landed at 6920 / 6909 / 6934 / 6944 rpm, above the spark cut.
 
 ## 5. Manual programs
 
 > **Corrected 25.09.2026.** The previous text of this section treated an upshift threshold at the fuel cut (`cut / (32 × i_g)`, 58 / 106 / 151 / 212 for 6784) as overrun protection: under load the engine was supposed to stop at the spark cut before the turbine reached the threshold, because the converter slips. This was refuted on 23.09.2026.
 
-Which matrices belong to M: the main M is matrix 10 (PB), with overheated ATF matrix 08 (PD). Matrix 09 is program P8 (gate without Steptronic logic), not M (doc 01 §5). Automatic upshifts in M use the same upshift columns: the threshold is compared with n_out (`0xFFFF918F`, 0x24A8E). In gear the turbine is n_out × i without slip, and with the converter locked the turbine equals the engine. The factory M locks the clutch in 3rd, 4th and 5th from 4592 / 3584 / 2659 turbine rpm (doc 03 §3). So a threshold at the cut makes the box shift up by itself on the limiter plateau. Also, a turbine speed at or above [0x8B44] = 6720 (factory) for about a second sets fault 0x25 and limp mode (doc 05 §6), and 58 / 106 / 151 / 212 are 6781-6802 turbine rpm, above that threshold. Stock values 49 / 95 / 137 / 200 shift up by themselves near the stock limiter. `255` removes the automatic upshift altogether: do not use it. How to choose the manual upshift threshold with a locked converter is not described here yet. Presets with a threshold at the cut will be revised separately (doc 08 §6).
+Which matrices belong to M: the main M is matrix 10 (PB), with overheated ATF matrix 08 (PD). Matrix 09 is program P8 (gate without Steptronic logic), not M (doc 01 §5). Automatic upshifts in M use the same upshift columns: the threshold is compared with n_out (`0xFFFF918F`, 0x24A8E). In gear the turbine is n_out × i without slip, and with the converter locked the turbine equals the engine. The factory M locks the clutch in 3rd, 4th and 5th from 4592 / 3584 / 2659 turbine rpm (doc 03 §3). So a threshold at the cut makes the box shift up by itself on the limiter plateau. Also, a turbine speed at or above [0x8B44] = 6720 (factory) for about a second sets fault 0x25 and limp mode (doc 05 §6), and 58 / 106 / 151 / 212 are 6781-6802 turbine rpm, above that threshold. Stock values 49 / 95 / 137 / 200 shift up by themselves near the stock limiter. `255` removes the automatic upshift altogether: do not use it. How to choose the manual upshift threshold with a locked converter is not described here yet.
 
 **The downshift columns in rows 0…254 set the automatic downshifts**: with `2>1 = 0` and `3>2 = 10` the ECU only forces a downshift near standstill. Protection against over-revving on a manual downshift comes from the minimum-gear table (below), not from the matrix. The kickdown row obeys rule 2. Stock kickdown-row downshifts of matrices 08 and 09: `33 / 70 / 112 / 183` (landing 3870 / 4478 / 5043 / 5856 rpm), of matrix 10 (PB): `41 / 86 / 129 / 189`.
 
@@ -116,12 +116,12 @@ A manual downshift request `0xFFFF91BC` is checked at 0x2497A-0x249DC: in the ne
 
 ## 6. 4>5>4 hunting in D
 
-Stock 03/04/07: 4>5 = 64, 5>4 = 56 (pedal rows 0…46), a gap of 8 units (9 km/h on the reference car), 5th engages at turbine 1520 rpm. The presets raise 4>5 to 75 in rows 0/10/46: a gap of 19 units (22 km/h), 5th at 1781 rpm.
+Stock 03/04/07: 4>5 = 64, 5>4 = 56 (pedal rows 0…46), a gap of 8 units (9 km/h on the reference car), 5th engages at turbine 1520 rpm. An earlier tune raised 4>5 to 75 in rows 0/10/46: a gap of 19 units (22 km/h), 5th at 1781 rpm.
 
 Matrices 03 / 04 / 07 are programs PF / PE / PC, the D replacements. The main D runs on matrices 14 (P0) and 06 (P1), so the 4>5 change in 03 / 04 / 07 does not act on it (doc 01 §5).
 
 ## 7. Relation to TCC lockup and torque reduction
 
-Two more mechanisms change the pedal input of the matrices: while the warm-up program runs the matrices see max(pedal, `0x8142`) (doc 05 §2), with kick-down row 255 (`0x24B34`, doc 13 §6). Ready patches for the full-throttle points and the manual mode: doc 13 §5, §7.
+Two more mechanisms change the pedal input of the matrices: while the warm-up program runs the matrices see max(pedal, `0x8142`) (doc 05 §2), with kick-down row 255 (`0x24B34`).
 
 The matrices are selected by the active program `0xFFFF91A0` through the table in function 0x24BA4 (doc 01 §5). D runs on matrices 14 (P0) and 06 (P1), S on 11 (P2) and 15 (P3), M on 10 (PB), with overheated ATF D on 07 (PC) and M on 08 (PD). The `0xFFFF90CD` steps (matrices 00 / 01 / 02) override D and S. The AGS level chooses between P0 and P1 in D and between P2 and P3 in S (doc 03 §7). The hydraulics (doc 04) are the same for D and S/M: the execution module does not read `0xFFFF91CB`. The TCC lockup thresholds also depend on the program, through the groups 0x897E (doc 03 §3). The 0xAB0C… maps (doc 04 §9) are the reference slip of the TCC regulator, not torque reduction.

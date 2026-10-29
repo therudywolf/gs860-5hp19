@@ -2,6 +2,18 @@
 
 Newest first. Each entry: date and title, then **EN** and **RU** with the same facts. Older entries are not rewritten: what turned out wrong is corrected in a newer entry.
 
+## 2026-10-29: patches, presets and recipes withdrawn
+
+**EN**
+
+- The repository is the reverse engineering, the XDF definitions and the checking tools; ready-made builds are not part of it any more. Removed: `tools/egs_patch.py`, `tools/apply_recipe.py`, `tools/make_recipe.py`, `recipes/`, documents 08, 13 and 14 (EN and RU) and their tests. The other documents, README, CONTRIBUTING, NOTICE, CITATION, the templates and both catalogs no longer refer to them; the notes on earlier tunes in the catalogs are gone, the XDF files are rebuilt from the catalogs. Older entries below are left as they were; the git history keeps the old files.
+- What stays: the catalogs and XDF of both programs, documents 01–07 and 09–12, `egs_tables.py` (scan, dump, shift, diff, verify-shift), `gs860_crc.py`, `make_xdf.py` and the tests on the stock images.
+
+**RU**
+
+- Репозиторий — это реверс, определения XDF и проверялки; готовых сборок в нём больше нет. Убраны `tools/egs_patch.py`, `tools/apply_recipe.py`, `tools/make_recipe.py`, `recipes/`, документы 08, 13 и 14 (EN и RU) и их тесты. Остальные документы, README, CONTRIBUTING, NOTICE, CITATION, шаблоны и оба каталога на них больше не ссылаются; заметки о ранних тюнах из каталогов убраны, XDF пересобраны из каталогов. Старые записи ниже оставлены как были; история git хранит старые файлы.
+- Остаётся: каталоги и XDF обеих программ, документы 01–07 и 09–12, `egs_tables.py` (scan, dump, shift, diff, verify-shift), `gs860_crc.py`, `make_xdf.py` и тесты на заводских образах.
+
 ## 2026-10-28 (5): release 2026.10.28.2
 
 **EN**

@@ -44,7 +44,7 @@ Who reads these variables:
 
 The whole scalar block `0x8EE0–0x8F0E` (2560, 1000, 9000, 11000, 9000, **7000**, 500, 9000, **1500**, 16000, 9000, 6500, 7000, 1000, 16000, 2500, 9000, 16000, 7000, 7000, 2700, 2300, 2504, 4500) holds thresholds in mV; the "temperature" myth of doc 03 §5 belongs to the same block.
 
-**History of the mistake.** In September 2026, based on an experiment (a series of revs in neutral: peak 6613 — fine, hitting the limiter at ~7008 → limp mode after 1.3 s and code 0x95 stored), the round constants 7000/9000/1500 in `0x265F4` were read as "turbine / engine rpm" and the function as "turbine over-speed protection". The write sites of the variables were not checked. On that basis preset **v17** raised `0x8EEA` to 7300 — i.e. it moved a 7.0 V threshold to 7.3 V, with no relation to rpm. **Fixed in v18: 0x8EEA = 7000 (stock).** Leave all three constants stock.
+**History of the mistake.** In September 2026, based on an experiment (a series of revs in neutral: peak 6613 — fine, hitting the limiter at ~7008 → limp mode after 1.3 s and code 0x95 stored), the round constants 7000/9000/1500 in `0x265F4` were read as "turbine / engine rpm" and the function as "turbine over-speed protection". The write sites of the variables were not checked. On that basis an earlier tune raised `0x8EEA` to 7300 — i.e. it moved a 7.0 V threshold to 7.3 V, with no relation to rpm. Leave all three constants stock.
 
 **Disputed, not re-checked in code.** The analysis of 23.09.2026 states that the calibrations with the value 7000 at 0x8EEA, 0x8EF8, 0x8F04, 0x8F06 are compared with values received over CAN. The listing above (analysis of 16.09.2026) shows 0x8EEA compared with `0xFFFF906E`, the supply voltage in mV written at 0x20D78. Both readings agree on one point: this is not turbine speed. What 0x8EF8 / 0x8F04 / 0x8F06 are compared with is not spelled out in either analysis.
 
@@ -56,7 +56,7 @@ What remains open:
 
 ## 2. Warm-up program (until 06.10.2026 this section said "thermal derate by ATF")
 
-> **Corrected 06.10.2026.** The former text called the table `0x9A6E` an ATF thermal derate: "the hotter the fluid, the smaller the time budget for full pedal, at 113 °C it is zero". The code disproves it. The table input `[0xFFFF90D5]` is the **engine** temperature at power-on: `0x15F92` copies `[0xFFFF90D3]` into it, and that is byte 1 of the DME2 frame × 3 / 4 (`0x21696`, °C + 48; when CAN is lost ATF + 8 is substituted, `0x21682–0x2168A`, document 03 §6). The axis 83 / 93 / 103 / 113 is 35 / 45 / 55 / 65 °C of the engine. The function `0x28D50` does not cap the pedal from above, it raises it from below: this is the warm-up program. Analysis with addresses in document 13 §3.
+> **Corrected 06.10.2026.** The former text called the table `0x9A6E` an ATF thermal derate: "the hotter the fluid, the smaller the time budget for full pedal, at 113 °C it is zero". The code disproves it. The table input `[0xFFFF90D5]` is the **engine** temperature at power-on: `0x15F92` copies `[0xFFFF90D3]` into it, and that is byte 1 of the DME2 frame × 3 / 4 (`0x21696`, °C + 48; when CAN is lost ATF + 8 is substituted, `0x21682–0x2168A`, document 03 §6). The axis 83 / 93 / 103 / 113 is 35 / 45 / 55 / 65 °C of the engine. The function `0x28D50` does not cap the pedal from above, it raises it from below: this is the warm-up program. The addresses are in §2 and in document 11.
 
 | Address | What |
 |---|---|
@@ -79,7 +79,7 @@ Observation from a log (not reverse): on entering limp mode five bytes of the "0
 
 ## 4. 0x81A0 / 0x81B2 — neither hydraulics nor "solenoid phases"
 
-Two 2D8 4×2 tables (`X = 0 / 166 / 167 / 194`, `Y = 0 / 1`), stock `0x81A0`: `30 30 255 255 / 15 15 30 30`; `0x81B2`: `15 × 8`. Early notes called them "shift phase durations" / "solenoid phases". The 16 Sep reverse: they are read through list `0x9AE0[2] / [3]` by `0x1E848(0x9AE0, X = 0xFFFF9197, Y = 0xFFFF91CB)` from the gear-selection module `0x1F4xx` and compared with `0xFFFF9176`. `0xFFFF9197` = **engine rpm / 32** (`0xFFFF8DB2` = CAN `0xFFFF842E` × 40/256, /32): X axis = 0 / 5312 / 5344 / 6208 rpm; Y = calibration branch. The meaning of the comparison is a hypothesis (holding/inhibiting the shift decision at high rpm; 255 = condition never met). It has nothing to do with shift execution; v10 changed the branch-1 row to 10/10/20/20 — v17 restored stock.
+Two 2D8 4×2 tables (`X = 0 / 166 / 167 / 194`, `Y = 0 / 1`), stock `0x81A0`: `30 30 255 255 / 15 15 30 30`; `0x81B2`: `15 × 8`. Early notes called them "shift phase durations" / "solenoid phases". The 16 Sep reverse: they are read through list `0x9AE0[2] / [3]` by `0x1E848(0x9AE0, X = 0xFFFF9197, Y = 0xFFFF91CB)` from the gear-selection module `0x1F4xx` and compared with `0xFFFF9176`. `0xFFFF9197` = **engine rpm / 32** (`0xFFFF8DB2` = CAN `0xFFFF842E` × 40/256, /32): X axis = 0 / 5312 / 5344 / 6208 rpm; Y = calibration branch. The meaning of the comparison is a hypothesis (holding/inhibiting the shift decision at high rpm; 255 = condition never met). It has nothing to do with shift execution; an earlier tune changed the branch-1 row to 10/10/20/20 and had to restore stock.
 
 ## 5. Limits that must not be touched
 
