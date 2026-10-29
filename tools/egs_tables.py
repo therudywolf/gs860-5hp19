@@ -454,8 +454,7 @@ def cmd_info(fw):
     print(f"tables in {', '.join(f'0x{lo:05X}-0x{hi:05X}' for lo, hi in fw.zones())}: {len(tabs)} "
           f"{'(ok)' if len(tabs) == L['tables'] else '(expected ' + str(L['tables']) + ')'}")
     if fw.is_20c0:
-        print("GS8.60.4 20C0: catalog/gs8604_20c0.json, docs 11 and the recipes recipes/gs8604_*.json apply; "
-              "the 19x0 recipes do not")
+        print("GS8.60.4 20C0: catalog/gs8604_20c0.json and docs 11 apply; the 19x0 addresses do not")
     try:
         import gs860_crc
         rows = gs860_crc.sums(bytes(fw.d))
@@ -503,7 +502,7 @@ def manual_guard(ratios, cut, monitor, adds=None):
         v = min(safe, want)
         if v * u < cut:
             raise ValueError(f"gear {g + 1}: the turbine monitor {monitor} leaves no room above the cut {cut} "
-                             f"(guard {round(v * u)} rpm); raise the monitor with egs_patch.py manual-hold:monitor=auto")
+                             f"(guard {round(v * u)} rpm); raise the monitor first")
         if v < want:
             notes.append(f"gear {g + 1}: guard {round(v * u)} rpm, less than {GUARD_ABOVE_CUT} rpm above the cut")
         vals.append(v)
@@ -544,7 +543,7 @@ def verify_shift(fw, spark, cut=None, margin=DEFAULT_MARGIN, down_margin=DEFAULT
                 if role == "manual":
                     if up >= NEVER:
                         add("WARN", r, [g], "never shifts up: no protection on the overrun, the wheels can drive the "
-                                            "engine past the cut (egs_patch.py manual-hold puts a guard instead)")
+                                            "engine past the cut (put a guard below the turbine monitor instead)")
                     else:
                         if monitor and round((up + oadds[g]) * UNIT_RPM * R[g]) > monitor - MONITOR_MARGIN:
                             add("ERROR", r, [g], f"guard {round((up + oadds[g]) * UNIT_RPM * R[g])} rpm"

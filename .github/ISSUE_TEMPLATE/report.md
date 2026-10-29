@@ -14,7 +14,7 @@ about: A claim about the GS8.60 with evidence, or a question / Утвержде�
 ```
 ```
 
-**What was changed / Что меняли:** (stock, recipe and its SHA-256, own edits / сток, рецепт и его SHA-256, свои правки)
+**What was changed / Что меняли:** (stock, own edits and the SHA-256 of the build / сток, свои правки и SHA-256 сборки)
 
 **What happened and what was expected / Что произошло и что ожидалось:**
 

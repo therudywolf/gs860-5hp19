@@ -2515,7 +2515,7 @@ Licence / Лицензия: CC BY-SA 4.0, https://creativecommons.org/licenses/b
   </XDFCONSTANT>
   <XDFCONSTANT uniqueid="0x203D" flags="0x0">
     <title>Program in the left gate when [0xFFFF918C] != 2, factory 0x0B = PB (0x70966)</title>
-    <description>Code 0x0B (PB, matrix k10, M) is set as soon as the lever is in the gate, without +/-. 19D0 pair 0x8975: BMW 19C0 and BMW 15C0 have 0xFE (the gate gives S until the first +/- tap), Alpina 19D0 620P has 0x0B like this file. Patch gate:mode=S writes 0xFE (document 13).</description>
+    <description>Code 0x0B (PB, matrix k10, M) is set as soon as the lever is in the gate, without +/-. 19D0 pair 0x8975: BMW 19C0 and BMW 15C0 have 0xFE (the gate gives S until the first +/- tap), Alpina 19D0 620P has 0x0B like this file. 0xFE gives S until the first tap.</description>
     <CATEGORYMEM index="0" category="2" />
     <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x70966" mmedelementsizebits="8" mmedmajorstridebits="0" mmedminorstridebits="0" />
     <units>program code</units>
@@ -3426,7 +3426,7 @@ Licence / Лицензия: CC BY-SA 4.0, https://creativecommons.org/licenses/b
   </XDFTABLE>
   <XDFCONSTANT uniqueid="0x26F1" flags="0x0">
     <title>Kick-down: source, 1 = DME2 bit over CAN ([0xFFFF90BA]), 0 = pedal switch and pedal above 0x70232, factory 1 (0x70D6A)</title>
-    <description>0x1BCA4: not 0 -&gt; kick-down flag [0xFFFF90B7] = [0xFFFF90BA] (bit 2 of byte 6 of DME2); 0 -&gt; switch on bit 7 of port [0xFFFF8A0A] (active low, filtered over [0x70ED6] samples) and pedal above [0x70232]. With the flag the matrices use pedal 255 (0x206F8), AGS is not updated (0x1908C) and the manual M branch is skipped (0x2047E): in M +/- do not work with the pedal floored. 19D0 pair 0x8D1A (E39 = 0, switch). Kick-down off: 0 here and 255 in 0x70232 (patch no-kickdown, document 13).</description>
+    <description>0x1BCA4: not 0 -&gt; kick-down flag [0xFFFF90B7] = [0xFFFF90BA] (bit 2 of byte 6 of DME2); 0 -&gt; switch on bit 7 of port [0xFFFF8A0A] (active low, filtered over [0x70ED6] samples) and pedal above [0x70232]. With the flag the matrices use pedal 255 (0x206F8), AGS is not updated (0x1908C) and the manual M branch is skipped (0x2047E): in M +/- do not work with the pedal floored. 19D0 pair 0x8D1A (E39 = 0, switch). Kick-down off: 0 here and 255 in 0x70232.</description>
     <CATEGORYMEM index="0" category="14" />
     <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x70D6A" mmedelementsizebits="8" mmedmajorstridebits="0" mmedminorstridebits="0" />
     <units>flag</units>

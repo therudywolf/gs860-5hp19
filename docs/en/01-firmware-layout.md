@@ -202,4 +202,4 @@ How to use this for logging — doc 06.
 
 ## 7. What "stock" means in this repository
 
-The stock calibration all recipes are relative to: program 19D0, calibration label `B22K4_0419C0KA20`, SHA-256 of window 0x8000–0x10000 `d3c2c3fdffb943f5bd848f672c6d3750a79986167c59c72dac367d386cbbdf51`. The dump itself is not published — it contains unit identifiers and, in EEPROM, may contain the VIN. You need **your own** dump; `tools/egs_tables.py info` shows whether the code and the label match.
+The reference stock calibration of this repository: program 19D0, calibration label `B22K4_0419C0KA20`, SHA-256 of window 0x8000–0x10000 `d3c2c3fdffb943f5bd848f672c6d3750a79986167c59c72dac367d386cbbdf51`. The dump itself is not published — it contains unit identifiers and, in EEPROM, may contain the VIN. You need **your own** dump; `tools/egs_tables.py info` shows whether the code and the label match.
