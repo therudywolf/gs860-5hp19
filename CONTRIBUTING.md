@@ -5,6 +5,8 @@
 <a name="english"></a>
 ## English
 
+**New material is paused** (README, Status). Corrections of errors with evidence are still welcome and will be answered.
+
 ### What is welcome
 
 - Dangerous errors (a patch or a table reading that can damage a gearbox): report them privately first, see [`SECURITY.md`](SECURITY.md).
@@ -69,6 +71,8 @@ A pull request is accepted under the licences of this repository: code (`tools/`
 
 <a name="русский"></a>
 ## Русский
+
+**Новое наполнение на паузе** (README, «Статус»). Исправления ошибок с доказательствами по-прежнему принимаются, на них отвечу.
 
 ### Что приветствуется
 

@@ -2,6 +2,18 @@
 
 Newest first. Each entry: date and title, then **EN** and **RU** with the same facts. Older entries are not rewritten: what turned out wrong is corrected in a newer entry.
 
+## 2026-10-30 (3): paused
+
+**EN**
+
+- New material is paused: there has been next to no demand or response, and this is unpaid work. What is here stays and is kept correct; error reports are answered. README and CONTRIBUTING say so; README links the engine-side tools in [MS4X](https://github.com/therudywolf/MS4X).
+- Small tidy-ups in the documents and the 19D0 catalog; the XDF files are rebuilt. Release 2026.10.30.
+
+**RU**
+
+- Новое наполнение на паузе: запроса и отклика почти нет, а это неоплачиваемая работа. То, что здесь есть, остаётся и поддерживается в верном виде; на сообщения об ошибках отвечаю. Это сказано в README и CONTRIBUTING; README даёт ссылку на инструменты для мотора в [MS4X](https://github.com/therudywolf/MS4X).
+- Мелкие правки в документах и каталоге 19D0; XDF пересобраны. Релиз 2026.10.30.
+
 ## 2026-10-30 (2): what the 20C0 frames show in logs
 
 **EN**
@@ -12,27 +24,15 @@ Newest first. Each entry: date and title, then **EN** and **RU** with the same f
 
 - Документ 11 §16: два факта из логов живой E46: биты 5–7 байта 2 кадра EGS1 — не надёжный признак «S» (около 7 % кадров и в S, и в D), а запрос снижения момента приходит на 0,15–0,5 с раньше смены номера передачи.
 
-## 2026-10-30: reverse is public, the product is not
+## 2026-10-29 to 2026-10-30: reverse only
 
 **EN**
 
-- Documents 13 (the edits as a description) and 14 (the engine link), published on 29.10, are withdrawn, with the CC BY-NC-SA licence that covered document 14 and the remaining notes of the author's tuning method in documents 03, 10 and 12. The repository is the reverse of the two programs, the catalogs and XDF, and the checking tools; what the author builds on them is paid work (README, "Custom work").
+- The patch tool, the presets and the recipes are withdrawn, with the releases that shipped them, and so is the material about the author's own work published on 29.10. The repository is the reverse of the two programs, the catalogs and XDF, and the checking tools; builds are paid work (README, Custom work).
 
 **RU**
 
-- Документы 13 (правки описанием) и 14 (связь с мотором), опубликованные 29.10, отозваны вместе с лицензией CC BY-NC-SA, которая покрывала документ 14, и остатками методики тюна автора в документах 03, 10 и 12. Репозиторий — реверс двух программ, каталоги и XDF, проверялки; то, что автор строит на них, — платная работа (README, «Работа на заказ»).
-
-## 2026-10-29: patches, presets and recipes withdrawn
-
-**EN**
-
-- The repository is the reverse engineering, the XDF definitions and the checking tools; ready-made builds are not part of it any more. Removed: `tools/egs_patch.py`, `tools/apply_recipe.py`, `tools/make_recipe.py`, `recipes/`, documents 08, 13 and 14 (EN and RU) and their tests. The other documents, README, CONTRIBUTING, NOTICE, CITATION, the templates and both catalogs no longer refer to them; the notes on earlier tunes in the catalogs are gone, the XDF files are rebuilt from the catalogs. Older entries below are left as they were; the git history keeps the old files. The releases 2026.10.07, 2026.10.14, 2026.10.28 and 2026.10.28.2 are withdrawn with their tags: they shipped the old tree. Release 2026.10.29 is this tree.
-- What stays: the catalogs and XDF of both programs, documents 01–07 and 09–12, `egs_tables.py` (scan, dump, shift, diff, verify-shift), `gs860_crc.py`, `make_xdf.py` and the tests on the stock images.
-
-**RU**
-
-- Репозиторий — это реверс, определения XDF и проверялки; готовых сборок в нём больше нет. Убраны `tools/egs_patch.py`, `tools/apply_recipe.py`, `tools/make_recipe.py`, `recipes/`, документы 08, 13 и 14 (EN и RU) и их тесты. Остальные документы, README, CONTRIBUTING, NOTICE, CITATION, шаблоны и оба каталога на них больше не ссылаются; заметки о ранних тюнах из каталогов убраны, XDF пересобраны из каталогов. Старые записи ниже оставлены как были; история git хранит старые файлы. Релизы 2026.10.07, 2026.10.14, 2026.10.28 и 2026.10.28.2 сняты вместе с тегами: они отдавали старое дерево. Релиз 2026.10.29 — это дерево.
-- Остаётся: каталоги и XDF обеих программ, документы 01–07 и 09–12, `egs_tables.py` (scan, dump, shift, diff, verify-shift), `gs860_crc.py`, `make_xdf.py` и тесты на заводских образах.
+- Патч-инструмент, пресеты и рецепты убраны вместе с релизами, в которых они лежали, как и материал о собственной работе автора, опубликованный 29.10. Репозиторий — реверс двух программ, каталоги и XDF, проверялки; сборки — платная работа (README, «Работа на заказ»).
 
 ## 2026-10-28 (5): release 2026.10.28.2
 
@@ -115,8 +115,7 @@ Newest first. Each entry: date and title, then **EN** and **RU** with the same f
 - 25.09: AGS separated from the TCC lockup, the program-to-matrix mapping, the turbine monitor; the documents corrected from the code.
 - 27.09 to 01.10: GS8.60.4 20C0 covered: catalog, XDF in Russian and English, the tools, documents 11 and 12; the record field roles proven by the 20C0 code, all 20 record roots.
 - 07.10 to 08.10: the 20C0 roles of D / S / M, warm-up and kick-down, stock against stock; 176 more table roles, AGS inactive in stock, read evidence for 19x0; the 22C0 described (document 12 §11); the 19x0 checks its sums in the background too.
-- 13.10 to 14.10: the first road test on a 20C0 (the field note in document 13 §2); readers found for the 19D0 catalog, scanner objects remodelled, DS2 `0x0B` and `0x06` corrected (document 06); tests on every pull request, `main` protected.
-- The entries of the same period about the patch tool, the presets and the recipes are withdrawn with them (29.10.2026) and remain in the git history.
+- 13.10 to 14.10: the first road test on a 20C0; readers found for the 19D0 catalog, scanner objects remodelled, DS2 `0x0B` and `0x06` corrected (document 06); tests on every pull request, `main` protected.
 
 **RU**
 
@@ -125,5 +124,4 @@ Newest first. Each entry: date and title, then **EN** and **RU** with the same f
 - 25.09: AGS отделён от блокировки ГДТ, соответствие программ и матриц, монитор турбины; документы исправлены по коду.
 - 27.09–01.10: покрыт GS8.60.4 20C0: каталог, XDF на русском и английском, инструменты, документы 11 и 12; роли полей записей доказаны кодом 20C0, все 20 корней записей.
 - 07.10–08.10: роли D / S / M у 20C0, прогрев и кикдаун, сток против стока; ещё 176 ролей таблиц, AGS в стоке не активен, доказательства чтения для 19x0; описан 22C0 (документ 12 §11); 19x0 тоже проверяет суммы в фоне.
-- 13.10–14.10: первый выезд на 20C0 (полевая заметка в документе 13 §2); найдены читатели каталога 19D0, объекты сканера переописаны, исправлены DS2 `0x0B` и `0x06` (документ 06); тесты на каждом pull request, `main` защищён.
-- Записи того же периода о патч-инструменте, пресетах и рецептах сняты вместе с ними (29.10.2026) и остаются в истории git.
+- 13.10–14.10: первый выезд на 20C0; найдены читатели каталога 19D0, объекты сканера переописаны, исправлены DS2 `0x0B` и `0x06` (документ 06); тесты на каждом pull request, `main` защищён.

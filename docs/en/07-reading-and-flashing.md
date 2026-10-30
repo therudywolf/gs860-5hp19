@@ -37,7 +37,7 @@ Original Full dump → Partial slice `0x8000–0x10000` (or Full) → Reset Adap
 
 ## 5. What a dump contains
 
-A full dump carries identifiers of the **specific unit**: block 0x5FB6 with a 12-character string of the form `BX…` (looks like a serial number), programming history records 0x6002–0x605B (hypothesis), and the ECU's EEPROM (DS2 segment 3, 256 bytes — not part of the flash dump but readable) may contain the VIN. **Do not post full dumps publicly**; for exchanging calibrations a Partial or a recipe is enough (doc 08, CONTRIBUTING).
+A full dump carries identifiers of the **specific unit**: block 0x5FB6 with a 12-character string of the form `BX…` (looks like a serial number), programming history records 0x6002–0x605B (hypothesis), and the ECU's EEPROM (DS2 segment 3, 256 bytes — not part of the flash dump but readable) may contain the VIN. **Do not post full dumps publicly**; for exchanging calibrations the addresses that differ are enough (CONTRIBUTING).
 
 ## 6. Checksum
 
@@ -51,12 +51,12 @@ Found 23.09.2026 in the handler of DS2 command `0x0A` (`0x1360`): three CRC-16 c
 
 Algorithm: CRC-16/XMODEM (polynomial 0x1021, initial value 0, MSB first, no final XOR), table of 256 big-endian words at `0x3EDA` in the image. The right bound of a region is not included, the sum is stored big-endian. The stock E39 image and the factory Alpina B3 match on all three (0x1851 is the Alpina calibration sum).
 
-The routine `0x221C` is called only from that handler (three calls at `0x13C4`, `0x1436`, `0x14AA`, no other reference in the image): the ECU computes the sums only when a tester asks. That is why edited calibrations with a stale sum were accepted and drove (every build of the project v1…v21). A tester or flasher that reads the sums sees the mismatch, so the tools keep the sum right:
+The routine `0x221C` is called only from that handler (three calls at `0x13C4`, `0x1436`, `0x14AA`, no other reference in the image): the ECU computes the sums only when a tester asks. That is why edited calibrations with a stale sum were accepted and drove (every early build of the project). A tester or flasher that reads the sums sees the mismatch, so the tools keep the sum right:
 
 - `gs860_crc.py check` checks all three sums of a file, `gs860_crc.py fix` recomputes them after an edit.
 - `python3 tools/gs860_crc.py check image.bin` checks full images (256 KB, 512 KB of GS8.60.4) and 32 KB partials.
 - `python3 tools/gs860_crc.py fix edited.bin fixed.bin` writes a new file with the sums recomputed, for an image edited by other means (TunerPro and the like). It refuses when the loader or program sum of the input does not match.
 
-**Correction 08.10.2026: there is a background check.** Besides the tester path the unit checks all three sums by itself: the task `0x26926` (pointers in the task tables `0x12246`, `0x1240C`) computes the CRC-16 in chunks of 150 bytes with the routine `0x1DA66` (table copy `0x1147E`) over the same three areas, state in `[0xFFFF8B44]`. On a mismatch it sets bit 0 / 1 / 2 (loader / program / calibration) in `[0xFFFF8B45]`, copies the byte to `[0xFFFF91D4]` and reports the internal fault `0x0D` (`0x26AB2`, fault intake `0x1A3FA`). 20C0 has the same task (`0x22BD2`, document 11 §2). Which reaction the fault `0x0D` has on 19x0 (on 20C0 it is limp mode) is not established; the builds v1…v21 with a stale calibration sum did not go into limp mode on the road. So the sentence above "the ECU computes the sums only when a tester asks" is wrong: keep the sums right in any case, not only for the tester.
+**Correction 08.10.2026: there is a background check.** Besides the tester path the unit checks all three sums by itself: the task `0x26926` (pointers in the task tables `0x12246`, `0x1240C`) computes the CRC-16 in chunks of 150 bytes with the routine `0x1DA66` (table copy `0x1147E`) over the same three areas, state in `[0xFFFF8B44]`. On a mismatch it sets bit 0 / 1 / 2 (loader / program / calibration) in `[0xFFFF8B45]`, copies the byte to `[0xFFFF91D4]` and reports the internal fault `0x0D` (`0x26AB2`, fault intake `0x1A3FA`). 20C0 has the same task (`0x22BD2`, document 11 §2). Which reaction the fault `0x0D` has on 19x0 (on 20C0 it is limp mode) is not established; the early builds with a stale calibration sum did not go into limp mode on the road. So the sentence above "the ECU computes the sums only when a tester asks" is wrong: keep the sums right in any case, not only for the tester.
 
 The label `0x0FFCE–0x0FFFD` is left as it is.

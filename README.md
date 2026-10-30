@@ -13,6 +13,7 @@
 </p>
 
 <p align="center">
+  <img src="https://img.shields.io/badge/status-paused-lightgrey" alt="Status: paused">
   <a href="https://github.com/therudywolf/gs860-5hp19/releases/latest"><img src="https://img.shields.io/github/v/release/therudywolf/gs860-5hp19?label=release&color=0066B1" alt="Latest release"></a>
   <img src="https://img.shields.io/badge/ECU-Bosch%20GS8.60.0%20%2F%20GS8.60.4-0066B1" alt="ECU">
   <img src="https://img.shields.io/badge/gearbox-ZF%205HP19%20%2F%20A5S%20325Z-1f6feb" alt="Gearbox">
@@ -43,6 +44,10 @@ The **Bosch GS8.60.0** and **GS8.60.4** (ZF 5HP19 / A5S 325Z) are the transmissi
 
 This repository is the missing description: what each table does **in code**, which ones are safe, which ones are not, and how to check your own edit before it goes into the car. Everything comes from disassembling the firmware (capstone m68k), diffing factory calibrations of BMW and Alpina, and DS2 logs from running cars. No Bosch or ZF documentation was used.
 
+### Status: paused
+
+As of 30 October 2026 I am not adding new material here. There has been next to no demand or response, and this is unpaid work that does not pay for itself. What is here stays up and stays correct: error reports are read and fixed, the tests keep running. Custom work goes on as usual, see [Custom work](#custom-work). If this repository is useful to you, a star, an issue with your results or support on [Boosty](https://boosty.to/therudywolf) is what tells me it is worth picking up again.
+
 ### What's new
 
 - **30.10.2026.** Two facts about the frames the 20C0 sends, read from logs of a running car: byte 2 of the EGS1 frame is no reliable "S" flag, and the torque reduction request comes 0.15–0.5 s before the gear number changes ([document 11 §16](docs/en/11-gs8604-20c0.md)).
@@ -58,7 +63,7 @@ All changes, with dates: [CHANGELOG](CHANGELOG.md).
 |---|---|
 | **GS8.60.0, program 19x0** (256 KB) | Addresses fully, roles partially. Verified on two factory dumps, BMW `19C0 KA20` (E39 2.5) and Alpina B3 3.3 `19D0 620P`, with byte-identical code: **one XDF fits both**. `catalog/gs8600_19d0.json`: 921 entries, 849 tables + 72 constants, every object the scanner finds (nine of them turned out to be arrays or threshold lists and are described from code); 87 roles proven by code, 636 carried over from XDF v2.1, 196 shape only, 2 hypotheses. |
 | **GS8.60.4, program 20C0** (512 KB) | `catalog/gs8604_20c0.json`: 1779 entries, 1069 tables + 710 constants, **1743 roles proven by the 20C0 code**, 36 shape only, none by structure. Image map and checksums, the 16 shift matrices with their roles, TCC lock-up (upper level, 1st gear, lower-level gate), AGS and gate, warm-up and kick-down, protections, the record fields of the shift automaton traced to the pressure channels and the CAN frame. Russian and English XDF. |
-| **Not covered** | Other GS8.60.4 software builds (BMW `15C0` is mapped for comparison only; BMW `22C0` has its own matrix and constant addresses, document 12 §11), the engine ECU (see the [MS4X wiki](https://www.ms4x.net)). |
+| **Not covered** | Other GS8.60.4 software builds (BMW `15C0` is mapped for comparison only; BMW `22C0` has its own matrix and constant addresses, document 12 §11), the engine ECU: the factory maps are on the [MS4X wiki](https://www.ms4x.net), a C167 disassembler, emulator and image checker in [MS4X](https://github.com/therudywolf/MS4X). |
 
 ### Quick start
 
@@ -163,6 +168,10 @@ Want a custom tune for **MS42 / MS43**, a custom tune of the **5HP19** gearbox (
 
 Здесь то самое описание: что каждая таблица делает **в коде**, какие трогать можно, какие нельзя, и как проверить свою правку до того, как она попадёт в машину. Всё получено дизассемблированием прошивки (capstone m68k), сравнением заводских калибровок BMW и Alpina и логами DS2 с живых машин. Документация Bosch и ZF не использовалась.
 
+### Статус: пауза
+
+С 30 октября 2026 года новое сюда не добавляю. Запроса и отклика почти нет, а это неоплачиваемая работа, которая себя не окупает. То, что здесь есть, остаётся и поддерживается в верном виде: сообщения об ошибках читаю и исправляю, тесты продолжают работать. Работа на заказ идёт как обычно, см. [Работа на заказ](#работа-на-заказ). Если репозиторий вам полезен, звезда, issue с вашими результатами или поддержка на [Boosty](https://boosty.to/therudywolf) — то, по чему я пойму, что к нему стоит вернуться.
+
 ### Что нового
 
 - **30.10.2026.** Два факта о кадрах, которые шлёт 20C0, прочитанные из логов живой машины: байт 2 кадра EGS1 — не надёжный признак «S», а запрос снижения момента приходит на 0,15–0,5 с раньше смены номера передачи ([документ 11 §16](docs/ru/11-gs8604-20c0.md)).
@@ -178,7 +187,7 @@ Want a custom tune for **MS42 / MS43**, a custom tune of the **5HP19** gearbox (
 |---|---|
 | **GS8.60.0, программа 19x0** (256 КБ) | Адреса полностью, роли частично. Проверено на двух заводских дампах, BMW `19C0 KA20` (E39 2.5) и Alpina B3 3.3 `19D0 620P`, код байт в байт одинаковый: **один XDF подходит обоим**. `catalog/gs8600_19d0.json`: 921 запись, 849 таблиц + 72 константы, все объекты, которые находит сканер (девять оказались массивами или списками порогов и описаны по коду); 87 ролей доказаны кодом, 636 перенесены из XDF v2.1, 196 только форма, 2 гипотезы. |
 | **GS8.60.4, программа 20C0** (512 КБ) | `catalog/gs8604_20c0.json`: 1779 записей, 1069 таблиц + 710 констант, **1743 роли доказаны кодом 20C0**, 36 только форма, по структуре нет. Карта образа и суммы, 16 матриц с ролями, блокировка ГДТ (верхний уровень, 1-я передача, ворота нижнего уровня), AGS и кулиса, прогрев и кикдаун, защиты, поля записей автомата переключения с путём до каналов давления и кадра CAN. XDF на русском и английском. |
-| **Не покрыто** | Другие сборки ПО GS8.60.4 (BMW `22C0` с другими адресами матриц и констант, документ 12 §11; BMW `15C0` сопоставлен только для сравнения), блок двигателя (смотрите [wiki MS4X](https://www.ms4x.net)). |
+| **Не покрыто** | Другие сборки ПО GS8.60.4 (BMW `22C0` с другими адресами матриц и констант, документ 12 §11; BMW `15C0` сопоставлен только для сравнения), блок двигателя: заводские карты — на [вики MS4X](https://www.ms4x.net), дизассемблер, эмулятор и проверялка образа для C167 — в [MS4X](https://github.com/therudywolf/MS4X). |
 
 ### Быстрый старт
 

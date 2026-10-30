@@ -199,11 +199,11 @@ Proven from the table data and their role in code:
 5. Fill time and fill pressure **untouched** (only the X axis of the pressure maps extended to 7000 for the Alpina engine).
 6. Phase 9 is **longer** on Alpina — speed comes from pressure and target time, not from cutting phases.
 
-## 11. Why the early build "v5" was undriveable
+## 11. Why an early build with foreign axes was undriveable
 
 118 tables were written with **Alpina axes** and data **stock + 2 × (Alpina − stock)** (extrapolation). Consequences per code:
 
-| What | Stock → v5 | What the code does | Symptom |
+| What | Stock → that build | What the code does | Symptom |
 |---|---|---|---|
 | 3×3 target time BFEC / C028 / C0C8 / C08C | ×0.30–0.68 at high torque, Y axis 85 → 95 | controller demands a 1.5–3× steeper gradient, pressure runs to f24 (max) | harsh 2→3 / 3→4 under throttle, jerk on 4→3 / 5→4 |
 | off-going pressure on downshifts B73E / B7A4 / B90E | ×0.19–0.47 | clutch releases almost immediately | rpm flare / hang, then engagement shock |
@@ -222,7 +222,7 @@ Touch (high-torque rows only, axes = stock):
 - **off-going pressure on upshifts (BCAE / BD14)** — up to +8…10 (Alpina level);
 - **off-going pressure on downshifts (B73E / B7A4 / B90E)** — down; B90E shares axes with Alpina, so its data can be taken whole. Raising BA78 goes the wrong way (slower 4→3).
 
-Do not touch: fill time f10, fill pressure f13, phase-4 (f27) and phase-9 (f43) durations — Alpina does not shorten them, and errors here = shock/flare (that is v5); ATF corrections (f15 / f29 / f41 / f42); min/max f23 / f24 (f24 is the shock fuse); 4×4 kind1 f70 and 6×6 kind3 f65 (semantics unproven); adaptations f11.
+Do not touch: fill time f10, fill pressure f13, phase-4 (f27) and phase-9 (f43) durations — Alpina does not shorten them, and errors here = shock/flare (that is what happened there); ATF corrections (f15 / f29 / f41 / f42); min/max f23 / f24 (f24 is the shock fuse); 4×4 kind1 f70 and 6×6 kind3 f65 (semantics unproven); adaptations f11.
 
 ## 13. Diagnostic frame: bytes 12 / 17 / 20
 
@@ -271,4 +271,3 @@ The §12 rule "do not touch f24" remains a precaution: f24 limits the shock, but
 - **Engine speed, DME1.** The box takes it into `0xFFFF8DB2`, the TCC lower level compares `0xFFFF97B0` with the 950 threshold (doc 03 §4).
 - **Pedal, CAN byte `0xFFFF8439`.** `0xFFFF9182` = min(254, CAN byte `0xFFFF8439` × 100 / [0x82B0]) (0x215DE-0x2163C). If the DME2 buffer is contiguous, `0xFFFF8439` is byte 5 of the DME2 frame: an inference, the analysis does not name the frame.
 - **Brake, DME2 byte 6, bit 0** (any of the brake switches pressed). In the box this is `0xFFFF97F5`. In stock form the box uses it to open the converter clutch only together with an engine speed below 950 and no full-lock permission (0x33024, doc 03 §4). No separate brake-downshift logic was found in the code, but the search was incomplete. That the adaptive logic and the clutch protection also use the brake is a hypothesis, not proven.
-- **DME2 byte 2 is not read by the stock software.** The DME2 receive buffer starts at `0xFFFF8434` (byte 0), byte 2 is at `0xFFFF8436`, and the code has no references to `0xFFFF8436`. The stock engine ECU sends 0 in this byte.
