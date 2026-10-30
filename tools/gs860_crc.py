@@ -41,7 +41,7 @@ Algorithm (found 23.09.2026 in the handler of DS2 command 0x0A):
 
 Checked 23.09.2026: stock 19D0, factory Alpina B3 19C0, factory Alpina 20C0 and a car
 dump of 20C0 match on all three sums. Edited calibrations with a stale calibration sum
-are accepted and drive (every WOLF4X build v1-v23); a tester reads the sums with 0x0A
+are accepted and drive (every build the author drove before that date); a tester reads the sums with 0x0A
 and sees the mismatch, so the tools keep the sum right.
 
 RU. Контрольные суммы образа GS8.60: check только читает, fix пишет новый файл с
