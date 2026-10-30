@@ -92,14 +92,6 @@ class TestRepository(unittest.TestCase):
                 return f.read()
         self.assertTrue(read("LICENSE").lstrip().startswith("Apache License"))
         self.assertIn("Attribution-ShareAlike 4.0 International Public License", read("LICENSE-docs"))
-        self.assertIn("Attribution-NonCommercial-ShareAlike 4.0 International Public License", read("LICENSE-docs-nc"))
-        for lang in ("en", "ru"):                     # the documents about the author's layer say their licence
-            for n in sorted(os.listdir(os.path.join(ROOT, "docs", lang))):
-                if n.startswith("14-"):
-                    with self.subTest(file=f"docs/{lang}/{n}"):
-                        head = read("docs", lang, n).split("\n## ")[0]
-                        self.assertIn("CC BY-NC-SA 4.0", head)
-                        self.assertIn("LICENSE-docs-nc", head)
         self.assertIn(make_xdf.CREDIT, read("NOTICE"))
         for d in ("tools", "tests"):
             for n in sorted(os.listdir(os.path.join(ROOT, d))):

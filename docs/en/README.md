@@ -1,6 +1,6 @@
 # Documents
 
-Documents 01–10 are about the GS8.60.0 (program 19C0 / 19D0, 256 KB image), document 11 is about the GS8.60.4 (program 20C0, 512 KB image), document 12 compares them, documents 13 and 14 cover both programs. The Russian versions are in [`../ru/`](../ru/README.md), with the same structure and facts.
+Documents 01–10 are about the GS8.60.0 (program 19C0 / 19D0, 256 KB image), document 11 is about the GS8.60.4 (program 20C0, 512 KB image), document 12 compares them. The Russian versions are in [`../ru/`](../ru/README.md), with the same structure and facts.
 
 | Document | In one line |
 |---|---|
@@ -15,6 +15,4 @@ Documents 01–10 are about the GS8.60.0 (program 19C0 / 19D0, 256 KB image), do
 | [10 · Methodology](10-methodology.md) | tools, what counts as proven, confidence scale, refuted readings, open questions |
 | [11 · GS8.60.4 (20C0)](11-gs8604-20c0.md) | the 512 KB image: map, checksums, matrices, lockup, AGS, protections, the 20 record roots and the field roles proven by code, execution-module RAM, `0B 03` frame, what is proven and what is not |
 | [12 · GS8.60.0 and GS8.60.4](12-gs8600-vs-gs8604.md) | how 19D0 and 20C0 differ, side by side with addresses in both images; stock against stock: why GS8.60.4 feels faster (§10) |
-| [13 · What to change, and where](13-what-to-change.md) | TCC in 1st, early TCC lockup, no warm-up, no 5th in S, shift rpm, no kick-down, manual mode, gate, sporty S and D, shift hardness by load, converter torque ratio: for 19x0 and 20C0, as a description with the reading instruction of every address and the checks |
-| [14 · The engine link](14-engine-link.md) | the author's layer on the gearbox side (CC BY-NC-SA 4.0): what the DME2 byte carries, reception and mixing into the lever dispatcher on the 19x0, the gate pins on the 20C0, protections, how to prove it |
 | [Glossary](glossary.md) | terms and abbreviations |
