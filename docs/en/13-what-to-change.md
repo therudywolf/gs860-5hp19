@@ -53,21 +53,11 @@ Read document 07 before flashing. Reset the adaptations after flashing.
 | Choice | Sensible | What |
 |---|---|---|
 | `modes` | `S+M` | `M`, `S+M` or `D+S+M` |
-| `rpm` | 1760 | lock turbine rpm in S and M on a light pedal |
-| `rpm_d` | `rpm` + 350 = 2110 | the same for D |
+| `rpm` | your own | lock turbine rpm in S and M on a light pedal |
+| `rpm_d` | above `rpm` | the same for D |
 | `coast` | 0 | 1: lock with the pedal released too |
 
-Thresholds in the pedal axis rows (open / slip / lock, turbine rpm in 1st, 1 unit = 117 rpm). The pedal axis is 0 / 5 / 46 / 59 / 72 / 97 / 122 on 19x0 and 0 / 5 / 46 / 59 / 72 / 224 / 230 / 240 / 255 on 20C0:
-
-| Pedal row | S and M (rpm 1760) | D (rpm_d 2110) |
-|---|---|---|
-| 0, 5 | never | never |
-| 46 | 1290 / 1525 / 1759 | 1407 / 1759 / 2111 |
-| 59 | 1407 / 1642 / 1876 | 1525 / 1876 / 2228 |
-| 72 | 1525 / 1759 / 2111 | 1642 / 1994 / 2463 |
-| 97 (19x0) | 1642 / 1994 / 2346 | 1759 / 2111 / 2580 |
-| 122 (19x0), 224 (20C0) | 1759 / 2111 / 2463 | 1876 / 2228 / 2697 |
-| 230, 240, 255 (20C0) | factory 1173 / 1290 / 1407 | factory 1173 / 1290 / 1407 |
+Thresholds in the pedal axis rows (open / slip / lock, turbine rpm in 1st, 1 unit = 117 rpm). The pedal axis is 0 / 5 / 46 / 59 / 72 / 97 / 122 on 19x0 and 0 / 5 / 46 / 59 / 72 / 224 / 230 / 240 / 255 on 20C0. Rows: with the pedal released, never; from there the thresholds rise with every row; the rows 230+ on 20C0 stay factory. The numbers themselves are a choice for the engine and the exhaust.
 
 - **20C0**: calibration only. S and M (P2, P3, PB, PD) are moved to group 12, which no factory program uses; its rows are written from the table above, the near-floor rows (230+) never later than the factory group 11. With `D` the rows of group 11 are rewritten for D, the near-floor rows stay factory. First make sure nothing in your calibration uses group 12.
 - **19x0**: mask `0x003C` → `0x007E`, one free factory group for S/M and one for D (5 and 10 are free in the factory calibration), a "1st-gear group per program" table and a small routine in the free area from `0x3E380` (filled with `0xFF` there). At `0x290A0` three factory instructions become a `jsr` into that routine and `nop`s: it does what the factory instructions did and takes the group from the table for 1st (and code 6). The code changes, so **flash the full image only**: a 32K partial would carry the mask without the code and 1st would read a wrong group. The routine itself is the work of whoever writes it; an assembler and capstone m68k to check it (document 10).
@@ -78,17 +68,16 @@ The lower level still keeps the clutch open when the clutch automaton says so: o
 
 **Factory behaviour.** The upper level compares n_out / 32 with the three thresholds of a group (document 03 §2-3): below "open" the clutch opens, above "slip" it slips under control, above "lock" it is locked. Each program and gear has its group, and the thresholds rise with the pedal. The factory D of the E39 locks 3rd from 4052 turbine rpm and 2nd from 5757; M has no lock-up in 2nd at all (document 03 §3, the table in document 12).
 
-**What to change.** In 2nd-5th the thresholds go flat over the pedal: lock from a chosen turbine rpm (1600, say), slip a little lower, open lower still, with a few hundred rpm between the thresholds (the author's build ends up lower). Pressing the pedal does not open the clutch. Never make the lock threshold later than the factory one of S (P3) and M (PB) at any pedal.
+**What to change.** In 2nd-5th the thresholds go flat over the pedal: lock from a chosen turbine rpm, slip a little lower, open lower still, with a few hundred rpm between the thresholds (the author's build ends up lower). Pressing the pedal does not open the clutch. Never make the lock threshold later than the factory one of S (P3) and M (PB) at any pedal.
 
 | Choice | Sensible | What |
 |---|---|---|
 | `modes` | `S+M` | `M`, `S+M`, `D+S+M` |
-| `rpm` | 1600 | lock turbine rpm, 1300-3500 |
+| `rpm` | your own | lock turbine rpm; a sensible range 1300-3500 |
 | `d_gears` | `3-5` | for D: `3-5` or `2-5` |
 
 Groups the edit writes: 6, 7, 8, 9 on 19x0 (only PB and PD use them in the factory calibration), 5, 8, 9, 10 on 20C0 (only PB). If another program uses them in your calibration, find out which one first.
 
-Result on the reference images (turbine rpm, open / slip / lock): 2nd 1087 / 1215 / 1599, 3rd 1081 / 1216 / 1621, 4th 1088 / 1216 / 1600, 5th 1092 / 1211 / 1543 (19x0, capped by the factory S) or 1591 (20C0).
 
 What it gives: in S and M the car drives "direct", without converter slip, and the ATF runs cooler (document 03 §3: in town the E39 D almost never locks). The price: at low rpm under load the engine vibration comes through. On 20C0 the addition `0x70B98` to the upshift threshold acts while the converter is locked (§5); manual shift points must allow for it.
 
@@ -143,7 +132,6 @@ Matrix k lives at `0x91B2 + k × 0x70` on 19x0 and `0x7120E + k × 0x70` on 20C0
 | `modes` | `S` | `S`, `D`, `D+S` (M: §7) |
 | `rpm` | by the rule | command turbine rpm of 1>2 / 2>3 / 3>4 directly, at least 200 under the spark cut |
 
-Result on the reference engines, turbine rpm at the command for 1>2 / 2>3 / 3>4: M52TUB25 (spark 6496) 5278 / 5885 / 5988; M54B30 (spark 6528) 5395 / 5885 / 6033 with the converter locked, 4926 / 5757 / 5943 with it open.
 
 **How.** Open the matrix in TunerPro (XDF from `xdf/`), compute the value by the formula above, then check:
 
@@ -181,7 +169,6 @@ With the flag the matrices use row 255 (19x0 `0x24B34`, 20C0 `0x206F8`), AGS is 
 | `up` | `guard` | `never`: 255, no overrun protection (the wheels can drive the engine past the cut): better not |
 | `kd` | 0 | 1: kick-down downshifts in M as in the factory |
 
-Result on the references, turbine rpm of the automatic upshift 1>2 / 2>3 / 3>4 / 4>5: M52TUB25 (cut 6592) 6802 / 6781 / 6754 / 6752, monitor `0x8B44` 6720 → 6912; M54B30 (cut 6720) 6920 / 6909 / 6889 / 6880, the 20C0 monitor 7232 unchanged.
 
 A trap right here: take the **highest** hard cut (on the M54 it depends on the gear). If a threshold lands under the real cut, M upshifts by itself on the limiter.
 
@@ -198,13 +185,12 @@ The edit is one byte: `0xFE` for "S first", `0x0B` for "M at once". 20C0 has a s
 
 **Why.** In the Alpina 20C0 file the matrices of S (P2 = k11, P3 = k15) are almost the same as D (k14, k6): the same points at pedal 83-203. The Alpina gate gives M at once (`0x0B`), so the file never needed a sport program. With the gate set to "S first" (§8) the S level would only differ from D by the edits `s-no5` and `shift-wot`, which touch the full-throttle rows. `s-sport` makes S sporty also on the part throttle.
 
-**What to change.** For pedal 60-242 the upshift points of the S matrices move from the factory point toward the full-throttle point of the same matrix (the row of pedal 243, which `shift-wot` has put under the limiter): 20 % of the way at pedal 83, 35 % at 121, 50 % at 160, 65 % at 198, 67 % at 203, interpolated between. The downshift points move toward the full-throttle downshifts by `down=0.35` of that way and stay at least 6 units under their upshift (no hunting). The rows 0-46 (cruising) and 243-255 are not touched, the 4>5 column stays 255 after `s-no5`. A factor `strength` scales the weights (1 = as described).
+**What to change.** For pedal 60-242 the upshift points of the S matrices move from the factory point toward the full-throttle point of the same matrix (the row of pedal 243, which `shift-wot` has put under the limiter): the share of the way grows with the pedal (from a small share at pedal 83 to a larger one at 203), interpolated between the anchor rows. The downshift points move toward the full-throttle downshifts by a fraction `down` of that way and stay at least 6 units under their upshift (no hunting). The rows 0-46 (cruising) and 243-255 are not touched, the 4>5 column stays 255 after `s-no5`. A factor `strength` scales the weights (1 = as described).
 
 Order: after `shift-wot` and `s-no5`. Both platforms. On a file whose S is already sporty (BMW factory) it would shift S even higher: lower `strength`.
 
-Example on the 20C0 file of Alpina B3S (turbine rpm, converter open): pedal 160, 1>2 / 2>3 / 3>4 = 2228 / 2751 / 2927 in D, 3518 / 4286 / 4412 in S.
 
-**Cruising rows and D (14.10.2026).** A weight `light` gives the rows of pedal 0-46 a shift of their own (0..0.20, never above the 0.20 of pedal 83; the curve then runs from it). On the Alpina file S at light pedal otherwise takes 5th at 55 km/h and comes back to 4th only below 54-59 km/h: on a 3.91 final drive uphill at 60-75 km/h with a quarter pedal the engine turned 2100-2400 rpm with the converter open. With `strength` 1.25 and `light` 0.2 the 4>5 of the cruising rows is at 88 km/h and the 5>4 at 68. The same can be done to the D matrices (k14, k6) with a smaller factor of their own: a quarter of the strength and `down` 0.3 lift the D upshifts by 120-400 rpm at pedal 83-203 and leave the cruising and full-throttle rows of D as they are.
+**Cruising rows and D (14.10.2026).** A weight `light` gives the rows of pedal 0-46 a shift of their own (0..0.20, never above the 0.20 of pedal 83; the curve then runs from it). On the Alpina file S at light pedal otherwise takes 5th at 55 km/h and comes back to 4th only below 54-59 km/h: on a 3.91 final drive uphill at 60-75 km/h with a quarter pedal the engine turned 2100-2400 rpm with the converter open. The same can be done to the D matrices (k14, k6) with a smaller factor of their own, leaving the cruising and full-throttle rows of D as they are.
 
 ## 10. Shift hardness by load (`shift-feel`, 20C0 and 19x0)
 
