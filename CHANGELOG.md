@@ -2,6 +2,16 @@
 
 Newest first. Each entry: date and title, then **EN** and **RU** with the same facts. Older entries are not rewritten: what turned out wrong is corrected in a newer entry.
 
+## 2026-10-30 (2): what the 20C0 frames show in logs
+
+**EN**
+
+- Document 11 §16: two facts from logs of a running E46: bits 5–7 of byte 2 of the EGS1 frame are no reliable "S" flag (about 7 % of the frames in S and in D alike), and the torque reduction request comes 0.15–0.5 s before the gear number changes.
+
+**RU**
+
+- Документ 11 §16: два факта из логов живой E46: биты 5–7 байта 2 кадра EGS1 — не надёжный признак «S» (около 7 % кадров и в S, и в D), а запрос снижения момента приходит на 0,15–0,5 с раньше смены номера передачи.
+
 ## 2026-10-30: reverse is public, the product is not
 
 **EN**
