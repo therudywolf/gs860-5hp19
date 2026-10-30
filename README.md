@@ -43,22 +43,14 @@ The **Bosch GS8.60.0** and **GS8.60.4** (ZF 5HP19 / A5S 325Z) are the transmissi
 
 This repository is the missing description: what each table does **in code**, which ones are safe, which ones are not, and how to check your own edit before it goes into the car. Everything comes from disassembling the firmware (capstone m68k), diffing factory calibrations of BMW and Alpina, and DS2 logs from running cars. No Bosch or ZF documentation was used.
 
-### What's new (29.10.2026)
+### What's new
 
-- **Patches, presets and recipes are withdrawn.** The repository is the reverse engineering, the XDF definitions and the checking tools; ready-made builds are not part of it any more (they are custom work, see below). The releases up to 28.10.2026 are withdrawn with them; the git history keeps the old files.
+- **30.10.2026.** Two facts about the frames the 20C0 sends, read from logs of a running car: byte 2 of the EGS1 frame is no reliable "S" flag, and the torque reduction request comes 0.15–0.5 s before the gear number changes ([document 11 §16](docs/en/11-gs8604-20c0.md)).
+- **29.10.2026.** Patches, presets and recipes are withdrawn, and the releases that shipped them with them: the repository is the reverse engineering, the XDF definitions and the checking tools. Ready-made builds are [custom work](#custom-work). The git history keeps the old files.
+- **28.10.2026.** Licence with attribution (Apache-2.0 for the code with [`NOTICE`](NOTICE), CC BY-SA 4.0 for documents, catalogs and XDF, the credit in every XDF header); a repository guard against firmware images and VINs, [`SECURITY.md`](SECURITY.md); English axis labels in the English 20C0 XDF and the 19D0 catalog, the `labels_en` field from Jason King.
+- **14.10.2026.** 19D0 catalog v3.3: readers found for 36 objects, nine scanner "tables" remodelled as the arrays and threshold lists the code indexes, 17 objects added ([document 10 §9](docs/en/10-methodology.md)); DS2 corrected, the running 19D0 does answer `0B 03` ([document 06 §2](docs/en/06-logging-ds2.md)); tests on every pull request, `main` protected.
 
-28.10.2026:
-
-- **Licence with attribution**: use, share and build on everything here, commercially too, on one condition: credit the author. Code under Apache-2.0 with [`NOTICE`](NOTICE), documents, catalogs and XDF under CC BY-SA 4.0; every XDF carries the licence and the credit in its header ([Licence](#licence)).
-- **Repository guard**: a test keeps firmware images, dumps and anything that looks like a VIN out of the tree; [`SECURITY.md`](SECURITY.md) says how to report a dangerous error privately.
-- **English axis labels**: the English 20C0 XDF labels every axis in English (132 labels were Russian), and the 19D0 catalog carries them too. The `labels_en` field came from Jason King.
-
-14.10.2026:
-
-- **19D0 catalog v3.3**: readers found for 36 objects marked "no reader", nine scanner "tables" remodelled as the arrays and threshold lists the code really indexes, 17 objects added, among them the converter ratio `0xE38E` ([document 10 §9](docs/en/10-methodology.md)).
-- **DS2 corrected** ([document 06 §2](docs/en/06-logging-ds2.md)): the running 19D0 program does answer `0B 03` (its own dispatcher `0x10E58`); the `0x06` memory-read format comes from the code; a real status exchange is decoded byte by byte.
-- **Every pull request is tested** by GitHub Actions, `main` is protected ([CONTRIBUTING](CONTRIBUTING.md)).
-- 07.10.2026: why the GS8.60.4 feels faster in stock form (document 12 §10), the 20C0 reverse (document 11). All changes: [CHANGELOG](CHANGELOG.md).
+All changes, with dates: [CHANGELOG](CHANGELOG.md).
 
 ### What is covered
 
@@ -143,7 +135,7 @@ Use, share and build on everything here, commercially too, **on one condition: c
 | Code: `tools/`, `tests/` | [Apache License 2.0](LICENSE) | copies and derived tools keep [`NOTICE`](NOTICE) with the credit and say what was changed |
 | Documents, catalogs (`catalog/`), XDF (`xdf/`) | [CC BY-SA 4.0](LICENSE-docs) | copies and adaptations credit the author, link the licence, say what was changed and stay under CC BY-SA 4.0; every XDF carries the licence and the credit in its header: keep them |
 
-The WOLF4X name and logo are not licensed for reuse; firmware of Bosch, ZF, Siemens and BMW is not part of this repository ([`NOTICE`](NOTICE)). GitHub offers a ready citation under "Cite this repository" ([`CITATION.cff`](CITATION.cff)). Releases up to v2026.10.14 shipped the tools under MIT; the code is Apache-2.0 from 28.10.2026.
+The WOLF4X name and logo are not licensed for reuse; firmware of Bosch, ZF, Siemens and BMW is not part of this repository ([`NOTICE`](NOTICE)). GitHub offers a ready citation under "Cite this repository" ([`CITATION.cff`](CITATION.cff)). Before 28.10.2026 the tools were under MIT; the code is Apache-2.0 since.
 
 ### Credits
 
@@ -171,22 +163,14 @@ Want a custom tune for **MS42 / MS43**, a custom tune of the **5HP19** gearbox (
 
 Здесь то самое описание: что каждая таблица делает **в коде**, какие трогать можно, какие нельзя, и как проверить свою правку до того, как она попадёт в машину. Всё получено дизассемблированием прошивки (capstone m68k), сравнением заводских калибровок BMW и Alpina и логами DS2 с живых машин. Документация Bosch и ZF не использовалась.
 
-### Что нового (29.10.2026)
+### Что нового
 
-- **Патчи, пресеты и рецепты убраны.** Репозиторий — это реверс, определения XDF и проверялки; готовых сборок в нём больше нет (это работа на заказ, см. ниже). Вместе с ними сняты релизы по 28.10.2026; история git хранит старые файлы.
+- **30.10.2026.** Два факта о кадрах, которые шлёт 20C0, прочитанные из логов живой машины: байт 2 кадра EGS1 — не надёжный признак «S», а запрос снижения момента приходит на 0,15–0,5 с раньше смены номера передачи ([документ 11 §16](docs/ru/11-gs8604-20c0.md)).
+- **29.10.2026.** Патчи, пресеты и рецепты убраны, а с ними и релизы, в которых они лежали: репозиторий — это реверс, определения XDF и проверялки. Готовые сборки — [работа на заказ](#работа-на-заказ). История git хранит старые файлы.
+- **28.10.2026.** Лицензия с указанием автора (Apache-2.0 на код с [`NOTICE`](NOTICE), CC BY-SA 4.0 на документы, каталоги и XDF, автор в заголовке каждого XDF); защита репозитория от образов прошивок и VIN, [`SECURITY.md`](SECURITY.md); английские подписи осей в английском XDF 20C0 и каталоге 19D0, поле `labels_en` от Jason King.
+- **14.10.2026.** Каталог 19D0 v3.3: найдены читатели у 36 объектов, девять «таблиц» сканера переописаны как массивы и списки порогов, которые индексирует код, добавлено 17 объектов ([документ 10 §9](docs/ru/10-methodology.md)); исправлено по DS2, работающая 19D0 отвечает на `0B 03` ([документ 06 §2](docs/ru/06-logging-ds2.md)); тесты на каждом pull request, `main` защищён.
 
-28.10.2026:
-
-- **Лицензия с указанием автора**: всё здесь можно использовать, распространять и дорабатывать, в том числе в коммерческих целях, при одном условии — указывать автора. Код под Apache-2.0 с [`NOTICE`](NOTICE), документы, каталоги и XDF под CC BY-SA 4.0; в заголовке каждого XDF записаны лицензия и автор ([Лицензия](#лицензия)).
-- **Защита репозитория**: тест не пускает в дерево образы прошивок, дампы и всё, что похоже на VIN; [`SECURITY.md`](SECURITY.md) описывает, как лично сообщить об опасной ошибке.
-- **Английские подписи осей**: английский XDF 20C0 подписывает все оси по-английски (132 подписи были русскими), в каталоге 19D0 они тоже есть. Поле `labels_en` предложил Jason King.
-
-14.10.2026:
-
-- **Каталог 19D0 v3.3**: найдены читатели у 36 объектов с пометкой «читателей нет», девять «таблиц» сканера переописаны как массивы и списки порогов, которые на самом деле индексирует код, добавлено 17 объектов, среди них коэффициент ГДТ `0xE38E` ([документ 10 §9](docs/ru/10-methodology.md)).
-- **Исправлено по DS2** ([документ 06 §2](docs/ru/06-logging-ds2.md)): работающая программа 19D0 отвечает на `0B 03` (свой диспетчер `0x10E58`); формат чтения памяти `0x06` взят из кода; настоящий обмен статусом разобран по байтам.
-- **Каждый pull request проверяется** GitHub Actions, `main` защищён ([CONTRIBUTING](CONTRIBUTING.md)).
-- 07.10.2026: почему GS8.60.4 в стоке кажется быстрее (документ 12 §10), реверс 20C0 (документ 11). Все изменения: [CHANGELOG](CHANGELOG.md).
+Все изменения с датами: [CHANGELOG](CHANGELOG.md).
 
 ### Что покрыто
 
@@ -271,7 +255,7 @@ SECURITY.md          как лично сообщить об опасной ош
 | Код: `tools/`, `tests/` | [Apache License 2.0](LICENSE) | копии и производные инструменты сохраняют [`NOTICE`](NOTICE) с указанием автора и сообщают, что изменено |
 | Документы, каталоги (`catalog/`), XDF (`xdf/`) | [CC BY-SA 4.0](LICENSE-docs) | копии и переработки указывают автора, дают ссылку на лицензию, сообщают, что изменено, и выходят под CC BY-SA 4.0; в заголовке каждого XDF записаны лицензия и автор, их не удалять |
 
-Имя и логотип WOLF4X для повторного использования не лицензируются; прошивок Bosch, ZF, Siemens и BMW в репозитории нет ([`NOTICE`](NOTICE)). Готовая ссылка для цитирования — кнопка «Cite this repository» на GitHub ([`CITATION.cff`](CITATION.cff)). Релизы до v2026.10.14 выходили с инструментами под MIT, с 28.10.2026 код под Apache-2.0.
+Имя и логотип WOLF4X для повторного использования не лицензируются; прошивок Bosch, ZF, Siemens и BMW в репозитории нет ([`NOTICE`](NOTICE)). Готовая ссылка для цитирования — кнопка «Cite this repository» на GitHub ([`CITATION.cff`](CITATION.cff)). До 28.10.2026 инструменты были под MIT, с тех пор код под Apache-2.0.
 
 ### Благодарности
 
