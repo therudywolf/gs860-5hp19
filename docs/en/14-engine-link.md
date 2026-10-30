@@ -2,7 +2,7 @@
 
 > This document is licensed under [CC BY-NC-SA 4.0](../../LICENSE-docs-nc), unlike the rest of the repository's documents (CC BY-SA 4.0): copy, translate and build on it with credit and under the same licence, but not commercially. It describes the author's own layer on the gearbox side; a finished build for a particular dump is the author's paid work (README, "Custom work").
 
-The engine side is in the MS4X repository, document 05 ("The mode layer", §12): the engine layer writes into the byte of the DME2 frame the factory sends as zero and nobody else reads, byte 2 on the MS42 (buffer 0xEFD9), byte 7 on the MS43 (0xEFDE). Here is what the gearbox does with that byte: how it reaches the lever dispatcher, where the hooks are, how it is protected. It drives two cars: an E39 (GS8.60.0 19D0, build v47) and an E46 (GS8.60.4 20C0, build v10). No code, no settings layout, no tuned numbers here; code addresses are file offsets, RAM cells absolute addresses `0xFFFFxxxx` as capstone writes them.
+The engine side is in the MS4X repository, document 05 ("The mode layer", §12): the engine layer writes into the byte of the DME2 frame the factory sends as zero and nobody else reads, byte 2 on the MS42 (buffer 0xEFD9), byte 7 on the MS43 (0xEFDE). Here is what the gearbox does with that byte: how it reaches the lever dispatcher, where the hooks are, how it is protected. It drives two cars: an E39 (GS8.60.0 19D0) and an E46 (GS8.60.4 20C0). No code, no settings layout, no tuned numbers here; code addresses are file offsets, RAM cells absolute addresses `0xFFFFxxxx` as capstone writes them.
 
 ## 1. What is sent
 
