@@ -93,7 +93,7 @@ What it gives: in S and M the car drives "direct", without converter slip, and t
 - the shift matrices see max(pedal, table) instead of the pedal (19x0 `0x24B66`, 20C0 `0x2072A`). The table `0x8142` / `0x7013A` is indexed by engine temperature and program: P0, P1 and P7 = 102 (40 % pedal) up to 55 °C, 0 from 65 °C. So on a cold engine D upshifts as if the pedal were at 40 %, that is later;
 - on 19x0 the program arbiter gets request 8, program P0 (`0x231F8`); in M the program code has a higher priority and the request does not act. AGS reads the flag too (`0x1DC1E`).
 
-The engine temperature comes from the DME over CAN (byte × 3 / 4 = °C + 48: 19x0 `0x21696`, 20C0 `0x1CE44`). The warm-up ends when n_out / 32 reaches `[0x8B48]` / `[0x70BAC]` = 48 (1536 output rpm, about 57 km/h on an E39 523i), on a DME signal over CAN, when a counter set by the temperature at power-on runs out (`0x9A6E` / `0x71B52`: 170 / 90 / 55 / 0 at 35 / 45 / 55 / 65 °C), or when the table gives 0. The data are the same on 19x0 and 20C0.
+The engine temperature comes from the DME over CAN (byte × 3 / 4 = °C + 48: 19x0 `0x21696`, 20C0 `0x1CE44`). The warm-up ends when n_out / 32 reaches `[0x8B48]` / `[0x70BAC]` = 48 (1536 output rpm, about 57 km/h on an E39 with a 3.23 final drive), on a DME signal over CAN, when a counter set by the temperature at power-on runs out (`0x9A6E` / `0x71B52`: 170 / 90 / 55 / 0 at 35 / 45 / 55 / 65 °C), or when the table gives 0. The data are the same on 19x0 and 20C0.
 
 Until 06.10.2026 the table `0x9A6E` was called an "ATF thermal derate" in document 05 and in the catalogs. That is wrong: its temperature is the engine temperature at power-on, and the table is the counter of the warm-up program.
 
