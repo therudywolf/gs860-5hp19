@@ -197,6 +197,5 @@ Stock values (columns 1 / 2 / 3):
 
 The earlier conclusions about the clutch drawn from these tables are withdrawn: "while cruising in 5th the clutch never leaves stage 1" and "the lockup limit at 114 km/h is the breakpoint of the 4th-gear axis" described AGS, not the lockup. The clutch thresholds are in 0x993A (§3).
 
-**How earlier tunes changed it.** Branch 0: column 1 lowered to 102 (40 %) from speed row 62 (2nd, 3rd), 113 (4th), 94 (5th). Branch 1: column 1 lowered to 26…38 (10-15 %) with a gentler entry in the lowest rows. The "home" points 0x888C became 32 / 128 / 176 / 240, the growth rate 0x88C0 became 7, the decrease step 0x88B0 -10 / -20 / -40. This was meant as an earlier and firmer clutch lock. In fact the edits change AGS: level 2 in D is pulled towards 128 instead of 96, the S levels towards 176 / 240 instead of 160 / 224, the points grow at 7 instead of 5. D at 40-60 % pedal holds level 2 (P1) longer and without 5th, S holds level 4 longer and drops from it more slowly. These edits do not touch the converter clutch.
 
 The measurement from the earlier §1 (manual mode, 3rd gear, pedal 225/255, 100-142 km/h: slip 128, 256, 160, 128, 96, 64, 0, 0 rpm "with the stage unchanged") shows the work of the real clutch (§2-§4), not an AGS level.

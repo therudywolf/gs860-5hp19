@@ -34,7 +34,7 @@ Every number in this documentation has been checked against the stock 19D0 dump 
 
 ## 5. Order of changes and A/B
 
-One step — one build — one log. Do not combine in a first build steps that cannot later be separated (e.g. target slip time and on-coming pressure). A workable order: (a) revert the excess firmness of B974 in the low-torque rows + upshift target times 3×3; (b) on-coming pressure 2→3 + downshift target times; (c) off-going pressure 3→2 from Alpina. Log evaluation criteria — doc 06 §4.
+One step — one build — one log. Do not combine in a first build steps that cannot later be separated (e.g. target slip time and on-coming pressure). Log evaluation criteria — doc 06 §4.
 
 ## 6. Confidence scale used in the documents
 

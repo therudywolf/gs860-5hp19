@@ -2,17 +2,15 @@
 
 Newest first. Each entry: date and title, then **EN** and **RU** with the same facts. Older entries are not rewritten: what turned out wrong is corrected in a newer entry.
 
-## 2026-10-29 (2): documents 13 and 14, the edits as a description and the engine link
+## 2026-10-30: reverse is public, the product is not
 
 **EN**
 
-- Document 13 "What to change, and where" (EN, RU): the eleven edits of the former document 13 as a description, with the reading instruction of every address, the factory values, the choices and the checks with `egs_tables.py` and `gs860_crc.py`; no tool, no presets, no ready bytes, no code (the 1st-gear routine of the 19x0 is described, not shipped). The field notes stay.
-- Document 14 "The engine link" (EN, RU): the author's layer on the gearbox side as a specification: what the DME2 byte carries on each platform, the reception hook in the DME2 handler and the mixing into the lever dispatcher of the 19x0 (DMEX, MIX, BTNC, GATESET, the double tap, the 10 ms tick vector), the gate-pin hook of the 20C0 and why it mixes into `[9110]`, the protections, how to prove it. Licence CC BY-NC-SA 4.0 (`LICENSE-docs-nc`); README, NOTICE, CITATION and `test_tools.py` say so.
+- Documents 13 (the edits as a description) and 14 (the engine link), published on 29.10, are withdrawn, with the CC BY-NC-SA licence that covered document 14 and the remaining notes of the author's tuning method in documents 03, 10 and 12. The repository is the reverse of the two programs, the catalogs and XDF, and the checking tools; what the author builds on them is paid work (README, "Custom work").
 
 **RU**
 
-- Документ 13 «Что и где менять» (EN, RU): одиннадцать правок прежнего документа 13 описанием, с инструкцией-читателем каждого адреса, заводскими значениями, выбором и проверками `egs_tables.py` и `gs860_crc.py`; без инструмента, пресетов, готовых байт и кода (подпрограмма 1-й передачи 19x0 описана, не выложена). Полевые заметки остались.
-- Документ 14 «Связь с мотором» (EN, RU): слой автора на стороне коробки как спецификация: что несёт байт DME2 на каждой платформе, хук приёма в обработчике DME2 и подмес к диспетчеру рычага 19x0 (DMEX, MIX, BTNC, GATESET, двойной тап, вектор такта 10 мс), хук ножек кулисы 20C0 и почему подмес в `[9110]`, защиты, как доказать. Лицензия CC BY-NC-SA 4.0 (`LICENSE-docs-nc`); README, NOTICE, CITATION и `test_tools.py` это закрепляют.
+- Документы 13 (правки описанием) и 14 (связь с мотором), опубликованные 29.10, отозваны вместе с лицензией CC BY-NC-SA, которая покрывала документ 14, и остатками методики тюна автора в документах 03, 10 и 12. Репозиторий — реверс двух программ, каталоги и XDF, проверялки; то, что автор строит на них, — платная работа (README, «Работа на заказ»).
 
 ## 2026-10-29: patches, presets and recipes withdrawn
 

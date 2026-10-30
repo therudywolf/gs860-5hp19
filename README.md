@@ -46,7 +46,6 @@ This repository is the missing description: what each table does **in code**, wh
 ### What's new (29.10.2026)
 
 - **Patches, presets and recipes are withdrawn.** The repository is the reverse engineering, the XDF definitions and the checking tools; ready-made builds are not part of it any more (they are custom work, see below). The releases up to 28.10.2026 are withdrawn with them; the git history keeps the old files.
-- **Documents 13 and 14 (29.10, evening):** the eleven most requested edits are back as a description, what to change, where and why, with the reading instruction of every address and the way to check (document 13); and the engine link, how the cruise buttons and the mode reach the lever dispatcher of the 19x0 and the gate pins of the 20C0 through a free byte of the DME2 frame (document 14, CC BY-NC-SA 4.0). No tool, no presets, no code.
 
 28.10.2026:
 
@@ -110,8 +109,6 @@ How to rebuild the XDF and run the tests: [CONTRIBUTING.md](CONTRIBUTING.md).
 | [10 · Methodology](docs/en/10-methodology.md) | how the reverse was done, what counts as proven, refuted readings |
 | [11 · GS8.60.4 (20C0)](docs/en/11-gs8604-20c0.md) | the 512 KB image: map, checksums, matrices and roles, lockup, AGS, warm-up, kick-down, record roots, the `0B 03` frame |
 | [12 · GS8.60.0 and GS8.60.4](docs/en/12-gs8600-vs-gs8604.md) | the two programs side by side, and stock against stock: why GS8.60.4 feels faster (§10) |
-| [13 · What to change, and where](docs/en/13-what-to-change.md) | TCC in 1st, early lock-up, warm-up, no 5th in S, shift rpm, kick-down, manual mode, gate, sporty S, shift feel, converter curve: addresses, reading instructions, factory values, how to check |
-| [14 · The engine link](docs/en/14-engine-link.md) | cruise buttons and the mode through a free byte of DME2: reception, lever dispatcher and gate pins on the 19x0 and 20C0, protections (CC BY-NC-SA 4.0) |
 | [Glossary](docs/en/glossary.md) | terms |
 
 Every document also exists in Russian under `docs/ru/`, with the same structure and facts.
@@ -145,9 +142,8 @@ Use, share and build on everything here, commercially too, **on one condition: c
 |---|---|---|
 | Code: `tools/`, `tests/` | [Apache License 2.0](LICENSE) | copies and derived tools keep [`NOTICE`](NOTICE) with the credit and say what was changed |
 | Documents, catalogs (`catalog/`), XDF (`xdf/`) | [CC BY-SA 4.0](LICENSE-docs) | copies and adaptations credit the author, link the licence, say what was changed and stay under CC BY-SA 4.0; every XDF carries the licence and the credit in its header: keep them |
-| Documents about the author's own layer: `docs/*/14-*` and those that say so in their header | [CC BY-NC-SA 4.0](LICENSE-docs-nc) | as above, and not commercially: no builds or services sold on the strength of these documents; a finished build for a dump is the author's work |
 
-The documents about the author's own layer are the one exception to "commercially too": CC BY-NC-SA 4.0. The WOLF4X name and logo are not licensed for reuse; firmware of Bosch, ZF, Siemens and BMW is not part of this repository ([`NOTICE`](NOTICE)). GitHub offers a ready citation under "Cite this repository" ([`CITATION.cff`](CITATION.cff)). Releases up to v2026.10.14 shipped the tools under MIT; the code is Apache-2.0 from 28.10.2026.
+The WOLF4X name and logo are not licensed for reuse; firmware of Bosch, ZF, Siemens and BMW is not part of this repository ([`NOTICE`](NOTICE)). GitHub offers a ready citation under "Cite this repository" ([`CITATION.cff`](CITATION.cff)). Releases up to v2026.10.14 shipped the tools under MIT; the code is Apache-2.0 from 28.10.2026.
 
 ### Credits
 
@@ -178,7 +174,6 @@ Want a custom tune for **MS42 / MS43**, a custom tune of the **5HP19** gearbox (
 ### Что нового (29.10.2026)
 
 - **Патчи, пресеты и рецепты убраны.** Репозиторий — это реверс, определения XDF и проверялки; готовых сборок в нём больше нет (это работа на заказ, см. ниже). Вместе с ними сняты релизы по 28.10.2026; история git хранит старые файлы.
-- **Документы 13 и 14 (29.10, вечер):** одиннадцать самых нужных правок вернулись описанием — что, где и зачем менять, с инструкцией-читателем каждого адреса и способом проверки (документ 13); и связь с мотором — как кнопки круиза и режим доходят до диспетчера рычага 19x0 и ножек кулисы 20C0 через свободный байт кадра DME2 (документ 14, CC BY-NC-SA 4.0). Без инструмента, пресетов и кода.
 
 28.10.2026:
 
@@ -242,8 +237,6 @@ Python 3, только стандартная библиотека. Каждый
 | [10 · Методика](docs/ru/10-methodology.md) | как делался реверс, что считается доказанным, опровергнутые трактовки |
 | [11 · GS8.60.4 (20C0)](docs/ru/11-gs8604-20c0.md) | образ 512 КБ: карта, суммы, матрицы и роли, блокировка, AGS, прогрев, кикдаун, корни записей, кадр `0B 03` |
 | [12 · GS8.60.0 и GS8.60.4](docs/ru/12-gs8600-vs-gs8604.md) | две программы рядом и сток против стока: почему GS8.60.4 кажется быстрее (§10) |
-| [13 · Что и где менять](docs/ru/13-what-to-change.md) | ГДТ на 1-й, ранняя блокировка, прогрев, S без 5-й, обороты, кикдаун, ручной режим, кулиса, спортивная S, жёсткость, кривая ГДТ: адреса, инструкции-читатели, заводские значения, как проверить |
-| [14 · Связь с мотором](docs/ru/14-engine-link.md) | кнопки круиза и режим через свободный байт DME2: приём, диспетчер рычага и ножки кулисы на 19x0 и 20C0, защиты (CC BY-NC-SA 4.0) |
 | [Глоссарий](docs/ru/glossary.md) | термины |
 
 Английские версии всех документов лежат в `docs/en/`, структура и факты те же.
@@ -277,9 +270,8 @@ SECURITY.md          как лично сообщить об опасной ош
 |---|---|---|
 | Код: `tools/`, `tests/` | [Apache License 2.0](LICENSE) | копии и производные инструменты сохраняют [`NOTICE`](NOTICE) с указанием автора и сообщают, что изменено |
 | Документы, каталоги (`catalog/`), XDF (`xdf/`) | [CC BY-SA 4.0](LICENSE-docs) | копии и переработки указывают автора, дают ссылку на лицензию, сообщают, что изменено, и выходят под CC BY-SA 4.0; в заголовке каждого XDF записаны лицензия и автор, их не удалять |
-| Документы о собственном слое автора: `docs/*/14-*` и те, что так помечены в шапке | [CC BY-NC-SA 4.0](LICENSE-docs-nc) | как выше, и не в коммерческих целях: по этим документам не продают сборки и услуги; готовая сборка под дамп — работа автора |
 
-Документы о собственном слое автора — единственное исключение из «в том числе в коммерческих целях»: CC BY-NC-SA 4.0. Имя и логотип WOLF4X для повторного использования не лицензируются; прошивок Bosch, ZF, Siemens и BMW в репозитории нет ([`NOTICE`](NOTICE)). Готовая ссылка для цитирования — кнопка «Cite this repository» на GitHub ([`CITATION.cff`](CITATION.cff)). Релизы до v2026.10.14 выходили с инструментами под MIT, с 28.10.2026 код под Apache-2.0.
+Имя и логотип WOLF4X для повторного использования не лицензируются; прошивок Bosch, ZF, Siemens и BMW в репозитории нет ([`NOTICE`](NOTICE)). Готовая ссылка для цитирования — кнопка «Cite this repository» на GitHub ([`CITATION.cff`](CITATION.cff)). Релизы до v2026.10.14 выходили с инструментами под MIT, с 28.10.2026 код под Apache-2.0.
 
 ### Благодарности
 
